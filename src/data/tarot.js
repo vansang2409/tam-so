@@ -212,3 +212,102 @@ export function cardOfDay(date = new Date()) {
   const up = Math.floor(seed / TAROT_CARDS.length) % 2 === 0
   return { card: TAROT_CARDS[idx], up }
 }
+
+/* ===== Ảnh bài Rider–Waite–Smith (1909, phạm vi công cộng) =====
+ * Nhúng từ Wikimedia Commons qua Special:FilePath (ổn định theo tên file).
+ * Kèm fallback emoji ở UI nếu ảnh lỗi/offline. */
+const MAJOR_IMG = [
+  'RWS_Tarot_00_Fool.jpg', 'RWS_Tarot_01_Magician.jpg', 'RWS_Tarot_02_High_Priestess.jpg', 'RWS_Tarot_03_Empress.jpg',
+  'RWS_Tarot_04_Emperor.jpg', 'RWS_Tarot_05_Hierophant.jpg', 'RWS_Tarot_06_Lovers.jpg', 'RWS_Tarot_07_Chariot.jpg',
+  'RWS_Tarot_08_Strength.jpg', 'RWS_Tarot_09_Hermit.jpg', 'RWS_Tarot_10_Wheel_of_Fortune.jpg', 'RWS_Tarot_11_Justice.jpg',
+  'RWS_Tarot_12_Hanged_Man.jpg', 'RWS_Tarot_13_Death.jpg', 'RWS_Tarot_14_Temperance.jpg', 'RWS_Tarot_15_Devil.jpg',
+  'RWS_Tarot_16_Tower.jpg', 'RWS_Tarot_17_Star.jpg', 'RWS_Tarot_18_Moon.jpg', 'RWS_Tarot_19_Sun.jpg',
+  'RWS_Tarot_20_Judgement.jpg', 'RWS_Tarot_21_World.jpg'
+]
+const SUIT_PREFIX = { 'Gậy': 'Wands', 'Cốc': 'Cups', 'Kiếm': 'Swords', 'Tiền': 'Pents' }
+const RANK_NUM = { 'Át': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Thị Đồng': 11, 'Hiệp Sĩ': 12, 'Nữ Hoàng': 13, 'Vua': 14 }
+
+export function cardImageFile(card) {
+  if (card.arcana === 'major') return MAJOR_IMG[card.id]
+  const p = SUIT_PREFIX[card.suit], n = RANK_NUM[card.roman]
+  return p && n ? p + String(n).padStart(2, '0') + '.jpg' : null
+}
+export function cardImageUrl(card, width = 320) {
+  const f = cardImageFile(card)
+  return f ? `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=${width}` : null
+}
+
+/* ===== Luận giải đầy đủ 56 lá Ẩn Phụ (xuôi/ngược) — bám truyền thống RWS ===== */
+const MINOR_TEXT = {
+  wands: [
+    { u: 'Tia lửa cảm hứng, khởi đầu đầy nhiệt huyết và tiềm năng.', r: 'Ý tưởng chững lại, thiếu động lực hoặc bị trì hoãn.' },
+    { u: 'Đứng trước lựa chọn, lập kế hoạch và phóng tầm nhìn xa.', r: 'Do dự, ngại rời vùng an toàn, kế hoạch nửa vời.' },
+    { u: 'Nỗ lực bắt đầu đơm hoa; mở rộng và tiến về phía trước.', r: 'Chậm trễ, trở ngại, kỳ vọng chưa thành.' },
+    { u: 'Ăn mừng, ổn định và niềm vui sum vầy nơi mái ấm.', r: 'Chuyển tiếp chưa trọn, thiếu gắn kết tạm thời.' },
+    { u: 'Cạnh tranh, va chạm quan điểm; cần tinh thần xây dựng.', r: 'Né tránh xung đột, tìm cách hòa giải, buông căng thẳng.' },
+    { u: 'Chiến thắng và được công nhận sau nỗ lực bền bỉ.', r: 'Thiếu ghi nhận, thành công bị trì hoãn, tự tin lung lay.' },
+    { u: 'Giữ vững lập trường, can đảm bảo vệ điều mình tin.', r: 'Kiệt sức, áp lực dồn nén, muốn buông xuôi.' },
+    { u: 'Mọi việc chuyển động nhanh; tin tức và tiến triển dồn dập.', r: 'Chậm trễ, lộn xộn, thông tin đến sai thời điểm.' },
+    { u: 'Kiên cường trước thử thách cuối, đề phòng và bền chí.', r: 'Mệt mỏi, phòng thủ thái quá, cố chấp giữ rào cản.' },
+    { u: 'Gánh nặng trách nhiệm; ôm đồm quá nhiều việc một lúc.', r: 'Học cách buông bớt và san sẻ gánh nặng.' },
+    { u: 'Tinh thần khám phá, ý tưởng mới và nhiệt huyết tuổi trẻ.', r: 'Bốc đồng, thiếu định hướng, tin tức gây thất vọng.' },
+    { u: 'Lao về phía trước đầy đam mê và tinh thần phiêu lưu.', r: 'Nóng vội, thiếu kiên nhẫn, hành động bốc đồng.' },
+    { u: 'Tự tin, nồng nhiệt và cuốn hút, làm chủ cuộc chơi.', r: 'Thiếu tự tin, ghen tị, năng lượng phân tán.' },
+    { u: 'Tầm nhìn lãnh đạo, quyết đoán và truyền cảm hứng.', r: 'Độc đoán, hấp tấp, áp đặt lên người khác.' }
+  ],
+  cups: [
+    { u: 'Trái tim mở ra, tình cảm và trực giác mới tuôn chảy.', r: 'Cảm xúc bị dồn nén, trống rỗng hoặc khép lòng.' },
+    { u: 'Kết đôi hài hòa, sự đồng điệu và gắn kết hai phía.', r: 'Bất hòa, lệch nhịp, mối quan hệ mất cân bằng.' },
+    { u: 'Tình bạn, ăn mừng và niềm vui sẻ chia cùng cộng đồng.', r: 'Rạn nứt nhóm, vui quá đà, thị phi.' },
+    { u: 'Chán nản, thờ ơ; bỏ lỡ cơ hội ngay trước mắt.', r: 'Tỉnh thức trở lại, sẵn sàng đón nhận điều mới.' },
+    { u: 'Tiếc nuối mất mát, nhưng vẫn còn điều đáng để giữ.', r: 'Chấp nhận, tha thứ và bắt đầu hồi phục.' },
+    { u: 'Hoài niệm ngọt ngào, ký ức và sự trong trẻo ngây thơ.', r: 'Mắc kẹt trong quá khứ, khó bước tiếp.' },
+    { u: 'Nhiều lựa chọn mộng mơ; hãy cẩn thận với ảo tưởng.', r: 'Sáng tỏ, dứt khoát chọn điều thực tế.' },
+    { u: 'Rời bỏ điều không còn thỏa mãn để tìm ý nghĩa sâu hơn.', r: 'Lưỡng lự ở hay đi, sợ thay đổi.' },
+    { u: 'Mãn nguyện, điều ước thành hiện thực, cảm giác như ý.', r: 'Tự mãn, thỏa mãn bề mặt, mong cầu chưa trọn.' },
+    { u: 'Hạnh phúc viên mãn, gia đình hòa thuận đầm ấm.', r: 'Bất hòa gia đình, lý tưởng đổ vỡ.' },
+    { u: 'Thông điệp tình cảm, sáng tạo và tâm hồn mơ mộng.', r: 'Cảm xúc non nớt, né tránh, mơ mộng thiếu thực tế.' },
+    { u: 'Lãng mạn theo tiếng gọi trái tim, lời đề nghị ngọt ngào.', r: 'Mơ mộng hão, thất thường, lời hứa khó tin.' },
+    { u: 'Bao dung, thấu cảm và nuôi dưỡng bằng trái tim ấm.', r: 'Quá nhạy cảm, phụ thuộc tình cảm, dễ tổn thương.' },
+    { u: 'Làm chủ cảm xúc, điềm tĩnh và bao dung.', r: 'Ủ rũ, thao túng cảm xúc, kìm nén bất ổn.' }
+  ],
+  swords: [
+    { u: 'Đột phá tư duy, sự thật sắc bén và sự minh mẫn.', r: 'Rối trí, hiểu lầm, dùng lý trí sai cách.' },
+    { u: 'Bế tắc do dự, né tránh một quyết định khó.', r: 'Gỡ bế tắc, đối diện và đưa ra lựa chọn.' },
+    { u: 'Tổn thương, đau lòng và chia ly cần được thừa nhận.', r: 'Vết thương dần lành, tha thứ và buông bỏ.' },
+    { u: 'Nghỉ ngơi, tĩnh dưỡng và hồi phục sau căng thẳng.', r: 'Kiệt sức kéo dài, cần dừng nhưng chưa dừng được.' },
+    { u: 'Xung đột thắng-thua, chiến thắng để lại dư vị đắng.', r: 'Hòa giải, buông hơn thua, hàn gắn bất hòa.' },
+    { u: 'Chuyển sang vùng nước lặng hơn, rời bỏ khó khăn.', r: 'Mắc kẹt, kháng cự thay đổi, hành trình bị hoãn.' },
+    { u: 'Mưu lược, hành động âm thầm; cân nhắc sự chính trực.', r: 'Thú nhận, lương tâm cắn rứt, kế hoạch bị lộ.' },
+    { u: 'Cảm giác bị trói buộc — phần lớn là tự giới hạn.', r: 'Nhận ra lối thoát, cởi trói và giải phóng mình.' },
+    { u: 'Lo âu, mất ngủ, nỗi sợ bị phóng đại trong đêm.', r: 'Nỗi sợ dịu lại, tìm được hy vọng và trợ giúp.' },
+    { u: 'Kết thúc đau đớn chạm đáy — nhưng bình minh sắp đến.', r: 'Hồi sinh, vực dậy sau cùng cực.' },
+    { u: 'Tò mò, cảnh giác, đầu óc sắc và ham tìm sự thật.', r: 'Nói nhiều làm ít, hấp tấp, dò xét vụng về.' },
+    { u: 'Lao tới mục tiêu quyết liệt, hành động chớp nhoáng.', r: 'Hung hăng, thiếu suy xét, lời nói sắc như dao.' },
+    { u: 'Sắc sảo, độc lập, nhìn thấu vấn đề và nói thẳng.', r: 'Lạnh lùng, cay nghiệt, phán xét khắt khe.' },
+    { u: 'Lý trí công minh, quyền uy của trí tuệ và nguyên tắc.', r: 'Lạm quyền, lạnh lùng, áp đặt lý lẽ.' }
+  ],
+  pentacles: [
+    { u: 'Cơ hội vật chất mới, hạt giống của thịnh vượng.', r: 'Cơ hội lỡ làng, kế hoạch tài chính thiếu nền tảng.' },
+    { u: 'Linh hoạt cân bằng nhiều việc, xoay xở khéo léo.', r: 'Quá tải, mất cân đối, chật vật giữ thăng bằng.' },
+    { u: 'Hợp tác, mài giũa kỹ năng và làm việc nhóm hiệu quả.', r: 'Thiếu phối hợp, làm qua loa, bất đồng vai trò.' },
+    { u: 'Giữ gìn, tích lũy và bám trụ sự an toàn.', r: 'Keo kiệt hoặc bám víu thái quá, sợ mất mát.' },
+    { u: 'Khó khăn, thiếu thốn; đừng quên vẫn có nơi nương tựa.', r: 'Qua cơn bĩ cực, hồi phục tài chính và tinh thần.' },
+    { u: 'Cho và nhận hào phóng, sẻ chia đúng lúc.', r: 'Bất cân trong cho-nhận, nợ nần hoặc lệ thuộc.' },
+    { u: 'Kiên nhẫn vun trồng, đánh giá thành quả dài hạn.', r: 'Sốt ruột, đầu tư kém hiệu quả, nản lòng.' },
+    { u: 'Chăm chỉ rèn nghề, tỉ mỉ trau dồi kỹ năng.', r: 'Cẩu thả, thiếu động lực, làm cho có.' },
+    { u: 'Tự chủ, sung túc và tận hưởng thành quả tự thân.', r: 'Phụ thuộc, phô trương, đánh đổi tự do lấy vật chất.' },
+    { u: 'Của cải bền vững, gia sản và nền tảng lâu dài.', r: 'Rủi ro tài chính, mâu thuẫn tiền bạc hay thừa kế.' },
+    { u: 'Ham học, đặt mục tiêu và khởi đầu thực tế.', r: 'Lơ đãng, trì hoãn, mơ mà không làm.' },
+    { u: 'Cần mẫn, đáng tin, kiên trì từng bước chắc chắn.', r: 'Trì trệ, bảo thủ, công việc giậm chân.' },
+    { u: 'Chăm lo ấm áp, thực tế và vun vén tổ ấm.', r: 'Ôm đồm, bỏ bê bản thân, lo vật chất quá mức.' },
+    { u: 'Thành đạt, ổn định và quản trị tài sản khôn ngoan.', r: 'Tham lam, bảo thủ, đặt tiền bạc lên trên hết.' }
+  ]
+}
+const SUITKEY_BY_VI = { 'Gậy': 'wands', 'Cốc': 'cups', 'Kiếm': 'swords', 'Tiền': 'pentacles' }
+TAROT_CARDS.forEach(c => {
+  if (c.arcana === 'minor') {
+    const t = MINOR_TEXT[SUITKEY_BY_VI[c.suit]] && MINOR_TEXT[SUITKEY_BY_VI[c.suit]][RANK_NUM[c.roman] - 1]
+    if (t) { c.up = t.u; c.rev = t.r }
+  }
+})

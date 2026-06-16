@@ -150,3 +150,62 @@ export function tamTai(birthYear) {
   const g = TAM_TAI.find(t => t.nhom.includes(chi))
   return { chi, nhom: g ? g.nhom : [], nam: g ? g.nam : [] }
 }
+
+/* ===== CUNG PHI & BÁT TRẠCH (hướng hợp tuổi) =====
+ * Công thức & bảng tra: Wiki Batdongsan (cung-phi). Bảng du niên 8×8 đối xứng
+ * (đã chỉnh 1 ô Cấn–Chấn = Lục Sát theo tính đối xứng chuẩn). Dùng năm ÂM LỊCH;
+ * người sinh đầu năm dương lịch cần đối chiếu Tết. Mang tính tham khảo phong thủy. */
+const CUNG_PHI_MAP = {
+  1: { cung: 'Khảm', menh: 'Thủy', huong: 'Bắc' }, 2: { cung: 'Khôn', menh: 'Thổ', huong: 'Tây Nam' },
+  3: { cung: 'Chấn', menh: 'Mộc', huong: 'Đông' }, 4: { cung: 'Tốn', menh: 'Mộc', huong: 'Đông Nam' },
+  6: { cung: 'Càn', menh: 'Kim', huong: 'Tây Bắc' }, 7: { cung: 'Đoài', menh: 'Kim', huong: 'Tây' },
+  8: { cung: 'Cấn', menh: 'Thổ', huong: 'Đông Bắc' }, 9: { cung: 'Ly', menh: 'Hỏa', huong: 'Nam' }
+}
+const DONG_TU = ['Khảm', 'Chấn', 'Tốn', 'Ly']
+const CUNG_ORDER = ['Càn', 'Khảm', 'Cấn', 'Chấn', 'Tốn', 'Ly', 'Khôn', 'Đoài']
+const CUNG_DIR = { 'Càn': 'Tây Bắc', 'Khảm': 'Bắc', 'Cấn': 'Đông Bắc', 'Chấn': 'Đông', 'Tốn': 'Đông Nam', 'Ly': 'Nam', 'Khôn': 'Tây Nam', 'Đoài': 'Tây' }
+const STAR = { PV: 'Phục Vị', LS: 'Lục Sát', TY: 'Thiên Y', NQ: 'Ngũ Quỷ', HH: 'Họa Hại', TM: 'Tuyệt Mệnh', DN: 'Diên Niên', SK: 'Sinh Khí' }
+export const STAR_MEANING = {
+  'Sinh Khí': 'Tài lộc, thăng tiến, sinh sôi (đại cát)', 'Thiên Y': 'Sức khỏe, quý nhân, của cải (đại cát)',
+  'Diên Niên': 'Hòa thuận, quan hệ bền lâu (đại cát)', 'Phục Vị': 'Ổn định, củng cố, hanh thông vừa (tiểu cát)',
+  'Tuyệt Mệnh': 'Bệnh nặng, tổn thất lớn (đại hung)', 'Ngũ Quỷ': 'Thị phi, mất của, xui xẻo (đại hung)',
+  'Lục Sát': 'Kiện tụng, tai tiếng, bất hòa (hung)', 'Họa Hại': 'Cãi vã, thất bại nhỏ, hao tổn (hung)'
+}
+const DU_NIEN = {
+  'Càn': ['PV', 'LS', 'TY', 'NQ', 'HH', 'TM', 'DN', 'SK'],
+  'Khảm': ['LS', 'PV', 'NQ', 'TY', 'SK', 'DN', 'TM', 'HH'],
+  'Cấn': ['TY', 'NQ', 'PV', 'LS', 'TM', 'HH', 'SK', 'DN'],
+  'Chấn': ['NQ', 'TY', 'LS', 'PV', 'DN', 'SK', 'HH', 'TM'],
+  'Tốn': ['HH', 'SK', 'TM', 'DN', 'PV', 'TY', 'NQ', 'LS'],
+  'Ly': ['TM', 'DN', 'HH', 'SK', 'TY', 'PV', 'LS', 'NQ'],
+  'Khôn': ['DN', 'TM', 'SK', 'HH', 'NQ', 'LS', 'PV', 'TY'],
+  'Đoài': ['SK', 'HH', 'DN', 'TM', 'LS', 'NQ', 'TY', 'PV']
+}
+const GOOD_ORDER = ['SK', 'TY', 'DN', 'PV'], BAD_ORDER = ['TM', 'NQ', 'LS', 'HH']
+const _reduce1 = (n) => { while (n > 9) n = String(n).split('').reduce((a, b) => a + +b, 0); return n }
+
+/** Cung phi & Bát Trạch theo năm sinh (âm lịch) + giới tính ('nam'|'nu') */
+export function cungPhi(year, gender) {
+  const last2 = ((year % 100) + 100) % 100
+  const a = _reduce1(Math.floor(last2 / 10) + (last2 % 10))
+  let q = year < 2000
+    ? (gender === 'nam' ? 10 - a : _reduce1(5 + a))
+    : (gender === 'nam' ? 9 - a : _reduce1(6 + a))
+  q = _reduce1(q); if (q === 0) q = 9
+  let quai = q
+  if (q === 5) quai = gender === 'nam' ? 2 : 8
+  const info = CUNG_PHI_MAP[quai]
+  const row = DU_NIEN[info.cung]
+  const good = [], bad = []
+  CUNG_ORDER.forEach((c, i) => {
+    const code = row[i]
+    const item = { star: STAR[code], dir: CUNG_DIR[c], cung: c, code }
+    ;(GOOD_ORDER.includes(code) ? good : bad).push(item)
+  })
+  good.sort((x, y) => GOOD_ORDER.indexOf(x.code) - GOOD_ORDER.indexOf(y.code))
+  bad.sort((x, y) => BAD_ORDER.indexOf(x.code) - BAD_ORDER.indexOf(y.code))
+  return {
+    quaiSo: q, cung: info.cung, menh: info.menh, huongBanMenh: info.huong,
+    menhTrach: DONG_TU.includes(info.cung) ? 'Đông tứ mệnh' : 'Tây tứ mệnh', good, bad
+  }
+}

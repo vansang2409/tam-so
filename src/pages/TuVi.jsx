@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai } from '../data/tuvi.js'
+import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING } from '../data/tuvi.js'
 
 const VC = { 'Rất hợp': 'text-emerald-300', 'Hợp': 'text-emerald-300', 'Bình hòa': 'text-amber-200', 'Cần lưu ý': 'text-pink-300', 'Khá xung khắc': 'text-pink-300' }
 
@@ -7,12 +7,12 @@ export default function TuVi() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Can Chi · Lục Thập Hoa Giáp</div>
+        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Can Chi · Lục Thập Hoa Giáp · Bát Trạch</div>
         <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tử Vi · Can Chi</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Tra Can Chi năm/ngày/giờ, ngũ hành nạp âm, hợp tuổi, giờ hoàng đạo và Tam Tai.</p>
+        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Tra Can Chi năm/ngày/giờ, ngũ hành nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai và cung phi – hướng hợp tuổi.</p>
       </section>
 
-      <CanChiTool /><CompatTool /><DayTool />
+      <CanChiTool /><CompatTool /><DayTool /><CungPhiTool />
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">10 Thiên Can &amp; 12 Địa Chi</h2>
@@ -27,8 +27,8 @@ export default function TuVi() {
       <section className="wrap py-10">
         <div className="disclaimer max-w-[900px] mx-auto">
           <b>Dữ kiện &amp; diễn giải.</b> Can–Chi–nạp âm và Can Chi ngày/giờ là <b>lịch pháp, kiểm chứng được</b> (mốc 1/3/2000 = Mậu Ngọ).
-          Hợp tuổi, giờ hoàng đạo, Tam Tai là <b>quan niệm truyền thống</b>, chỉ tham khảo. Ranh giới năm đổi vào Tết/Lập Xuân.
-          Nguồn: <a href="https://wiki.batdongsan.com.vn/wiki/thien-can-dia-chi-783653" target="_blank" rel="noopener">Wiki Batdongsan</a>, <a href="https://vi.wikipedia.org/wiki/Gi%E1%BB%9D_ho%C3%A0ng_%C4%91%E1%BA%A1o" target="_blank" rel="noopener">Giờ hoàng đạo (Wikipedia)</a>.
+          Hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi/Bát Trạch là <b>quan niệm phong thủy truyền thống</b>, chỉ tham khảo. Cung phi dùng năm <b>âm lịch</b> — sinh đầu năm dương lịch cần đối chiếu Tết.
+          Nguồn: <a href="https://wiki.batdongsan.com.vn/wiki/thien-can-dia-chi-783653" target="_blank" rel="noopener">Wiki Batdongsan</a>, <a href="https://wiki.batdongsan.com.vn/wiki/cung-phi-la-gi-768289" target="_blank" rel="noopener">Cung phi Bát Trạch</a>, <a href="https://vi.wikipedia.org/wiki/Gi%E1%BB%9D_ho%C3%A0ng_%C4%91%E1%BA%A1o" target="_blank" rel="noopener">Giờ hoàng đạo</a>.
         </div>
       </section>
     </>
@@ -114,7 +114,7 @@ function DayTool() {
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">③ Can Chi ngày &amp; giờ hoàng đạo</h2>
       <div className="panel p-[26px] max-w-[820px] mx-auto">
-        <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Ngày" value={d} set={setD} ph="16" w="90px" /><Field label="Tháng" value={m} set={setM} ph="6" w="90px" /><Field label="Năm" value={y} set={setY} ph="2026" w="110px" /><Field label="Giờ (0–23, tùy chọn)" value={h} set={setH} ph="9" w="150px" /><button className="btn btn-primary" onClick={calc}>🕒 Xem ngày</button></div>
+        <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Ngày" value={d} set={setD} ph="16" w="90px" /><Field label="Tháng" value={m} set={setM} ph="6" w="90px" /><Field label="Năm" value={y} set={setY} ph="2026" w="110px" /><Field label="Giờ (0–23)" value={h} set={setH} ph="9" w="120px" /><button className="btn btn-primary" onClick={calc}>🕒 Xem ngày</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="panel p-[26px] mt-6 animate-fade">
@@ -122,14 +122,57 @@ function DayTool() {
             <p className="note text-center">Giờ hoàng đạo (tốt) tô vàng, hắc đạo để mờ:</p>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {res.hours.map(g => (
-                <div key={g.chi} className={`rounded-lg px-2 py-2 text-center border text-[.86rem] ${g.hoangdao ? 'border-gold/50 bg-[rgba(231,200,115,.12)] text-gold' : 'border-white/10 text-white/40'}`}>
+                <div key={g.chi} className={'rounded-lg px-2 py-2 text-center border text-[.86rem] ' + (g.hoangdao ? 'border-gold/50 bg-[rgba(211,162,78,.14)] text-gold' : 'border-white/10 text-white/40')}>
                   <b>{g.chi}</b> <span className="opacity-80">{g.range}h</span><br />{g.hoangdao ? 'Hoàng đạo' : 'Hắc đạo'}
                 </div>
               ))}
             </div>
           </div>
         )}
-        <p className="note text-center mt-4 mb-0">Mặc định là ngày hôm nay. Giờ Tý bắt đầu 23h. Bảng giờ hoàng đạo theo lịch vạn niên truyền thống.</p>
+        <p className="note text-center mt-4 mb-0">Mặc định là ngày hôm nay. Giờ Tý bắt đầu 23h.</p>
+      </div>
+    </section>
+  )
+}
+
+function CungPhiTool() {
+  const [y, setY] = useState(''); const [g, setG] = useState('nam')
+  const [res, setRes] = useState(null); const [err, setErr] = useState('')
+  const calc = () => {
+    const yy = +y
+    if (!yy || yy < 1 || yy > 3000) { setErr('Nhập năm sinh hợp lệ.'); setRes(null); return }
+    setErr(''); setRes(cungPhi(yy, g))
+  }
+  return (
+    <section className="wrap py-6">
+      <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">④ Cung phi &amp; hướng hợp tuổi <span className="note">(Bát Trạch)</span></h2>
+      <div className="panel p-[26px] max-w-[820px] mx-auto">
+        <div className="flex gap-3 flex-wrap items-end justify-center">
+          <Field label="Năm sinh (âm lịch)" value={y} set={setY} ph="1990" w="150px" />
+          <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giới tính</label>
+            <select value={g} onChange={e => setG(e.target.value)} className="field-input"><option value="nam">Nam</option><option value="nu">Nữ</option></select></div>
+          <button className="btn btn-primary" onClick={calc}>🧭 Xem cung phi</button>
+        </div>
+        {err && <div className="disclaimer mt-5">{err}</div>}
+        {res && (
+          <div className="panel p-[26px] mt-6 animate-fade">
+            <div className="text-center">
+              <h3 className="text-[2rem] my-1">Cung {res.cung} <span className="note">({res.menh})</span></h3>
+              <span className="badge badge-gold">{res.menhTrach}</span> <span className="badge">Hướng bản mệnh: {res.huongBanMenh}</span>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4 mt-5">
+              <div>
+                <div className="text-emerald-300 font-semibold mb-2">4 hướng TỐT</div>
+                {res.good.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
+              </div>
+              <div>
+                <div className="text-pink-300 font-semibold mb-2">4 hướng XẤU</div>
+                {res.bad.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
+              </div>
+            </div>
+            <p className="note mt-4 mb-0">Dùng để chọn hướng nhà, hướng bếp, bàn làm việc… Người {res.menhTrach} nên ưu tiên các hướng tốt phía trên. Chỉ mang tính tham khảo phong thủy.</p>
+          </div>
+        )}
       </div>
     </section>
   )

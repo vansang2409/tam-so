@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { TAROT_CARDS, TAROT_SPREADS, drawCards, cardOfDay } from '../data/tarot.js'
 import Modal from '../components/Modal.jsx'
+import CardImage from '../components/CardImage.jsx'
 import { Badge } from '../components/Disclaimer.jsx'
 
 const meaningOf = (c, up) => up ? (c.up || 'Từ khóa: ' + c.upKeys.join(', ')) : (c.rev || 'Từ khóa: ' + c.revKeys.join(', '))
@@ -17,6 +18,20 @@ function birthCards(d, m, y) {
   const c1 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t)
   const c2 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t2)
   return t === t2 ? [c1] : [c1, c2]
+}
+
+/** Một lá đã rút: ảnh + tên + chiều */
+function DrawnCard({ card, up, pos }) {
+  return (
+    <div className={'tcard ' + (up ? '' : 'rev')}>
+      <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">{pos}</div>
+      <CardImage card={card} w={260} reversed={!up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[3rem] my-6" />
+      <div>
+        <div className="font-serif text-[1.05rem] leading-tight">{card.nameVi}</div>
+        <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-300' : 'text-pink-300')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
+      </div>
+    </div>
+  )
 }
 
 export default function Tarot() {
@@ -46,17 +61,18 @@ export default function Tarot() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Bộ bài đầy đủ 78 lá</div>
+        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Bộ bài đầy đủ 78 lá · Rider–Waite–Smith</div>
         <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tarot</h1>
         <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">22 lá Ẩn Chính kể "Hành trình của Gã Khờ", 56 lá Ẩn Phụ soi rọi đời thường. Tĩnh tâm, nghĩ câu hỏi, rồi rút bài.</p>
       </section>
 
       <section className="wrap pb-2">
         <div className="panel p-[26px] flex flex-col md:flex-row items-center gap-6 max-w-[760px] mx-auto">
-          <div className={'tcard shrink-0 ' + (today.up ? '' : 'rev')} style={{ width: 150, minHeight: 240 }}>
+          <div className={'tcard shrink-0 ' + (today.up ? '' : 'rev')} style={{ width: 150, minHeight: 250 }}>
             <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Hôm nay</div>
-            <div><div className="sym text-[2.6rem] my-1">{today.card.symbol}</div><div className="font-serif text-muted text-[.9rem]">{today.card.roman}</div><div className="font-serif text-[1.15rem]">{today.card.nameVi}</div><div className={'text-[.78rem] font-semibold ' + (today.up ? 'text-emerald-300' : 'text-pink-300')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
-            <div className="text-[.8rem] text-muted">{(today.up ? today.card.upKeys : today.card.revKeys).slice(0, 3).join(' · ')}</div>
+            <CardImage card={today.card} w={240} reversed={!today.up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[2.6rem] my-5" />
+            <div><div className="font-serif text-[1.05rem] leading-tight">{today.card.nameVi}</div>
+              <div className={'text-[.78rem] font-semibold ' + (today.up ? 'text-emerald-300' : 'text-pink-300')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
           </div>
           <div><h3 className="text-[1.3rem] mb-1">Lá bài hôm nay</h3><p className="m-0">{meaningOf(today.card, today.up)}</p><p className="note mt-2 mb-0">Cố định trong ngày — mai có lá mới.</p></div>
         </div>
@@ -76,19 +92,14 @@ export default function Tarot() {
           {picks.length > 0 && isYesNo && (
             <div className="text-center mt-6 animate-fade">
               <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-300' : 'text-pink-300')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
-              <p>Lá rút: <b>{picks[0].card.nameVi}</b> ({picks[0].up ? 'xuôi' : 'ngược'}) — {meaningOf(picks[0].card, picks[0].up)}</p>
+              <div className="flex justify-center mt-2"><div style={{ width: 150 }}><DrawnCard card={picks[0].card} up={picks[0].up} pos="Trả lời" /></div></div>
+              <p className="mt-3">{meaningOf(picks[0].card, picks[0].up)}</p>
             </div>
           )}
           {picks.length > 0 && !isYesNo && (
             <>
               <div className="flex gap-[18px] justify-center flex-wrap mt-6">
-                {picks.map((p, i) => (
-                  <div key={i} className={'tcard ' + (p.up ? '' : 'rev')}>
-                    <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">{positions[i]}</div>
-                    <div><div className="sym text-[3rem] my-1">{p.card.symbol}</div><div className="font-serif text-muted text-[.95rem]">{p.card.roman}</div><div className="font-serif text-[1.2rem] my-1">{p.card.nameVi}</div><div className={'text-[.8rem] font-semibold ' + (p.up ? 'text-emerald-300' : 'text-pink-300')}>{p.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
-                    <div className="text-[.84rem] text-muted mt-1.5">{(p.up ? p.card.upKeys : p.card.revKeys).slice(0, 3).join(' · ')}</div>
-                  </div>
-                ))}
+                {picks.map((p, i) => <DrawnCard key={i} card={p.card} up={p.up} pos={positions[i]} />)}
               </div>
               <div className="max-w-[760px] mx-auto mt-5">
                 {picks.map((p, i) => <div key={i} className="bg-white/[.045] border border-gold/20 rounded-xl px-[18px] py-3.5 mb-2.5"><b className="text-gold">{positions[i]} — {p.card.nameVi} ({p.up ? 'xuôi' : 'ngược'}):</b> {meaningOf(p.card, p.up)}</div>)}
@@ -99,7 +110,7 @@ export default function Tarot() {
 
           {history.length > 0 && (
             <details className="mt-4 max-w-[760px] mx-auto bg-white/[.04] border border-gold/15 rounded-xl overflow-hidden">
-              <summary className="cursor-pointer px-4 py-2.5 text-[.9rem] font-semibold flex items-center justify-between"><span>🕘 Lịch sử rút ({history.length})</span></summary>
+              <summary className="cursor-pointer px-4 py-2.5 text-[.9rem] font-semibold">🕘 Lịch sử rút ({history.length})</summary>
               <div className="px-4 pb-3">
                 {history.map((h, i) => <div key={i} className="text-[.85rem] text-muted border-b border-white/5 py-2"><b className="text-cream">{new Date(h.t).toLocaleString('vi-VN')}</b> · {h.spread}<br />{h.cards.join(' · ')}</div>)}
                 <button onClick={clearHistory} className="btn btn-ghost mt-3 text-[.85rem] py-2 px-4">Xóa lịch sử</button>
@@ -115,25 +126,26 @@ export default function Tarot() {
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thư viện 78 lá</h2>
         <div className="flex gap-2 flex-wrap justify-center mb-6 mt-4">
           {FILTERS.map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gradient-to-br from-gold to-gold-soft text-[#1a1430] border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
+            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gradient-to-br from-gold to-gold-soft text-[#211606] border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
           ))}
         </div>
-        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(132px,1fr))' }}>
+        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map(c => (
-            <button key={c.id} onClick={() => setSel(c)} className="bg-white/[.045] border border-gold/20 rounded-[14px] px-2 py-3.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
-              <div className="text-[1.7rem]">{c.symbol}</div><div className="text-muted text-[.78rem] font-serif">{c.roman}</div><div className="text-[.9rem] font-semibold mt-0.5 text-cream">{c.nameVi}</div>
+            <button key={c.id} onClick={() => setSel(c)} className="bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+              <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
+              <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
             </button>
           ))}
         </div>
       </section>
 
       <section className="wrap py-10">
-        <div className="disclaimer max-w-[900px] mx-auto"><b>Nội dung &amp; hình ảnh.</b> Từ khóa theo truyền thống <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Rider–Waite–Smith / Labyrinthos</a>; bản hiện dùng thẻ cách điệu, bộ tranh gốc (phạm vi công cộng) ở <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>.</div>
+        <div className="disclaimer max-w-[900px] mx-auto"><b>Nội dung &amp; hình ảnh.</b> Từ khóa theo truyền thống <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Rider–Waite–Smith / Labyrinthos</a>; tranh minh họa là bộ <b>RWS (1909, Pamela Colman Smith) — phạm vi công cộng</b>, nhúng từ <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Nếu ngoại tuyến, thẻ tự hiển thị biểu tượng thay ảnh.</div>
       </section>
 
       <Modal open={!!sel} onClose={() => setSel(null)}>
         {sel && (<>
-          <div className="text-[3rem] text-center">{sel.symbol}</div>
+          <div className="flex justify-center"><CardImage card={sel} w={360} imgClass="rounded-lg w-[190px] h-auto mb-3" fallbackClass="text-[3rem]" /></div>
           <h3 className="text-center text-[1.6rem] my-1">{sel.nameVi} <span className="note">({sel.name} · {sel.roman})</span></h3>
           <p className="text-center mb-1"><Badge gold>▲ Xuôi</Badge></p>
           <div className="flex gap-2 flex-wrap my-1.5 justify-center">{sel.upKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
@@ -168,12 +180,7 @@ function BirthCardsTool() {
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="flex gap-[18px] justify-center flex-wrap mt-6 animate-fade">
-            {res.map(c => (
-              <div key={c.id} className="tcard"><div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Lá chủ đạo</div>
-                <div><div className="sym text-[3rem] my-1">{c.symbol}</div><div className="font-serif text-muted text-[.95rem]">{c.roman}</div><div className="font-serif text-[1.2rem] my-1">{c.nameVi}</div></div>
-                <div className="text-[.84rem] text-muted">{c.upKeys.join(' · ')}</div>
-              </div>
-            ))}
+            {res.map(c => <DrawnCard key={c.id} card={c} up={true} pos="Lá chủ đạo" />)}
           </div>
         )}
         <p className="note text-center mt-4 mb-0">Tính bằng cách cộng ngày + tháng + năm rồi rút gọn (theo phương pháp Labyrinthos) — lá Ẩn Chính phản ánh chủ đề cả đời.</p>

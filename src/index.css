@@ -87,3 +87,25 @@
 .h-Thủy { background: rgba(110,160,235,.18); color: #a9c6f5; }
 .h-Hỏa { background: rgba(235,120,120,.18); color: #f3aaaa; }
 .h-Thổ { background: rgba(211,162,78,.20); color: #ecd198; }
+
+/* In ấn / Lưu PDF cho trang Hồ sơ */
+@media print {
+  header, footer, .btn, .field-input, .no-print { display: none !important; }
+  body, body::before { background: #fff !important; }
+  body { color: #2a1c08 !important; }
+  .panel { box-shadow: none !important; border-color: #d8c79a !important; background: #fff !important; }
+  .note, .text-muted { color: #6a5a3a !important; }
+  a { color: #8a6a1e !important; text-decoration: none; }
+  .gradient-text { color: #8a5a1e !important; -webkit-text-fill-color: #8a5a1e !important; }
+}
+
+/* Tinh chỉnh mobile (≤520px) */
+@media (max-width: 520px) {
+  .wrap { padding: 0 16px; }
+  .kv { grid-template-columns: 1fr; gap: 1px 0; }
+  .kv dt { margin-top: .55rem; }
+  .panel { padding-left: 18px; padding-right: 18px; }
+  .btn { padding: 12px 20px; }
+  .big-number { font-size: 3.4rem; }
+  table.data { min-width: 420px; }
+}
