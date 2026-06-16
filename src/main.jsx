@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import Layout from './components/Layout.jsx'
 import Home from './pages/Home.jsx'
+import Profile from './pages/Profile.jsx'
 import Tarot from './pages/Tarot.jsx'
 import Numerology from './pages/Numerology.jsx'
 import TuVi from './pages/TuVi.jsx'
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="ho-so" element={<Profile />} />
           <Route path="tarot" element={<Tarot />} />
           <Route path="than-so-hoc" element={<Numerology />} />
           <Route path="tu-vi" element={<TuVi />} />

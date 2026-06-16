@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'Trang chủ', end: true },
+  { to: '/ho-so', label: 'Hồ sơ' },
   { to: '/tarot', label: 'Tarot' },
   { to: '/than-so-hoc', label: 'Thần số học' },
   { to: '/tu-vi', label: 'Tử vi' },
@@ -17,10 +18,10 @@ function Navbar() {
   useEffect(() => { setOpen(false) }, [loc])
   const base = 'px-3 py-2 rounded-full text-[.9rem] font-medium transition'
   const cls = ({ isActive }) => isActive
-    ? `${base} text-[#1a1430] bg-gradient-to-br from-gold to-gold-soft font-semibold`
+    ? `${base} text-[#211606] bg-gradient-to-br from-gold to-gold-soft font-semibold`
     : `${base} text-muted hover:text-cream hover:bg-white/5`
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-[#0c0a1c]/70 border-b border-gold/20">
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-[#150e05]/80 border-b border-gold/20">
       <nav className="flex items-center justify-between gap-4 px-[22px] py-3.5 max-w-content mx-auto">
         <Link to="/" className="flex items-center gap-2.5 font-serif text-[1.3rem] font-bold text-cream whitespace-nowrap no-underline hover:no-underline">
           ✦ Tam Sở<span className="text-gold">.</span>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
 const features = [
+  { ic: '🪪', title: 'Hồ sơ tổng hợp', to: '/ho-so', cta: 'Lập hồ sơ →', desc: 'Nhập một lần — xem ngay Số Chủ Đạo, Can Chi, cung hoàng đạo, lá Tarot chủ đạo và năm cá nhân trong một bức chân dung.' },
   { ic: '🃏', title: 'Tarot', to: '/tarot', cta: 'Vào phần Tarot →', desc: 'Bộ 78 lá đầy đủ, lá bài hôm nay, 6 kiểu trải (gồm Celtic Cross & Có/Không), lá chủ đạo theo ngày sinh, lưu lịch sử rút.' },
   { ic: '🔢', title: 'Thần số học', to: '/than-so-hoc', cta: 'Tính con số →', desc: 'Số Chủ Đạo, Vận Mệnh, Linh Hồn, Nhân Cách, Trưởng Thành, biểu đồ Lo Shu, nợ nghiệp, năm/tháng/ngày cá nhân.' },
   { ic: '☯️', title: 'Tử vi · Can Chi', to: '/tu-vi', cta: 'Tra Can Chi →', desc: 'Can Chi năm/ngày/giờ, ngũ hành nạp âm, xem hợp tuổi, giờ hoàng đạo, Tam Tai.' },
@@ -19,8 +20,8 @@ export default function Home() {
           Công cụ để bạn soi chiếu bản thân — với nguồn dẫn rõ ràng và sự thành thật về ranh giới giữa <em>dữ kiện</em> và <em>diễn giải</em>.
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <Link to="/tarot" className="btn btn-primary">🔮 Rút một lá bài</Link>
-          <Link to="/kinh-dich" className="btn btn-ghost">Gieo một quẻ Dịch</Link>
+          <Link to="/ho-so" className="btn btn-primary">🪪 Lập hồ sơ tổng hợp</Link>
+          <Link to="/tarot" className="btn btn-ghost">🔮 Rút một lá bài</Link>
         </div>
       </section>
 

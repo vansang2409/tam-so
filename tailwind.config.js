@@ -5,19 +5,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#0e0b1f',
-        ink2: '#161235',
-        gold: { DEFAULT: '#e7c873', soft: '#c9a24a' },
-        plum: { DEFAULT: '#9b80e8' },
-        cream: '#eceaf6',
-        muted: '#a89fce'
+        ink: '#1b1206',
+        ink2: '#2a1d0d',
+        gold: { DEFAULT: '#d3a24e', soft: '#a9772f' },
+        clay: { DEFAULT: '#c47648' },
+        plum: { DEFAULT: '#c47648' },
+        cream: '#efe7d6',
+        muted: '#b8a98c'
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
         sans: ['"Be Vietnam Pro"', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif']
       },
       maxWidth: { content: '1120px' },
-      boxShadow: { soft: '0 18px 48px rgba(0,0,0,.45)' },
+      boxShadow: { soft: '0 18px 48px rgba(0,0,0,.5)' },
       keyframes: {
         fade: { from: { opacity: 0, transform: 'translateY(8px)' }, to: { opacity: 1, transform: 'none' } },
         twinkle: { from: { opacity: .45 }, to: { opacity: .95 } }
