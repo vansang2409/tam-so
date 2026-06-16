@@ -1,0 +1,17 @@
+{
+  "name": "Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch",
+  "short_name": "Tam Sở",
+  "description": "Tarot, Thần số học, Tử vi/Bát Trạch, Cung hoàng đạo và Kinh Dịch — luận giải có nguồn.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "vi",
+  "background_color": "#150e05",
+  "theme_color": "#1b1206",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

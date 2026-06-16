@@ -209,3 +209,51 @@ export function cungPhi(year, gender) {
     menhTrach: DONG_TU.includes(info.cung) ? 'Đông tứ mệnh' : 'Tây tứ mệnh', good, bad
   }
 }
+
+/* ===== Luận tính cách 12 con giáp + ý nghĩa 30 nạp âm (dân gian, tham khảo) ===== */
+export const CONGIAP_LUAN = {
+  'Tý': 'Nhanh nhạy, thông minh và giỏi xoay xở, biết nắm cơ hội và tích lũy. Đôi khi hay tính toán và lo xa, nên học sự rộng rãi và tin tưởng người khác.',
+  'Sửu': 'Cần cù, nhẫn nại và đáng tin, làm việc bền bỉ đến cùng. Hơi bảo thủ và ít biểu lộ cảm xúc, nên linh hoạt và cởi mở hơn.',
+  'Dần': 'Dũng cảm, quyết đoán và có khí chất thủ lĩnh, dám nghĩ dám làm. Dễ nóng nảy và thích áp đặt, cần tiết chế và kiên nhẫn.',
+  'Mão': 'Ôn hòa, tinh tế và khéo léo trong ứng xử, yêu cái đẹp và sự bình yên. Đôi khi ngại va chạm, nên quyết đoán hơn khi cần.',
+  'Thìn': 'Tự tin, nhiều hoài bão và cuốn hút, có sức ảnh hưởng tự nhiên. Dễ kiêu và ôm mộng lớn, cần thực tế và khiêm nhường.',
+  'Tỵ': 'Sâu sắc, điềm tĩnh và nhiều suy tư, trực giác nhạy bén. Khá kín đáo và hay nghi ngờ, nên mở lòng và tin người hơn.',
+  'Ngọ': 'Năng động, phóng khoáng và yêu tự do, nhiệt tình và lạc quan. Dễ bốc đồng và thiếu kiên nhẫn, cần rèn sự bền bỉ.',
+  'Mùi': 'Hiền hòa, giàu cảm xúc và có tâm hồn nghệ sĩ, biết cảm thông. Hơi cả nể và thiếu quyết đoán, nên vững vàng hơn.',
+  'Thân': 'Thông minh, linh hoạt và hài hước, thích nghi rất nhanh. Dễ cả thèm chóng chán và tinh ranh, cần kiên định và chân thành.',
+  'Dậu': 'Chỉn chu, thẳng thắn và chăm chỉ, chú ý tiểu tiết. Hơi cầu toàn và hay phê phán, nên bao dung hơn với người và mình.',
+  'Tuất': 'Trung thành, chính trực và nghĩa tình, rất đáng tin cậy. Dễ lo lắng và cố chấp, nên thư giãn và linh hoạt hơn.',
+  'Hợi': 'Thật thà, rộng lượng và lạc quan, sống chan hòa với mọi người. Dễ tin người và ham hưởng thụ, cần cảnh giác và kỷ luật.'
+}
+export const NAP_AM_NGHIA = {
+  'Hải Trung Kim': 'Vàng trong biển — quý mà còn ẩn, cần thời cơ để tỏa sáng.',
+  'Lư Trung Hỏa': 'Lửa trong lò — ấm áp, mạnh mẽ khi được nuôi, cần môi trường nâng đỡ.',
+  'Đại Lâm Mộc': 'Cây rừng lớn — sức sống mạnh, vươn cao, độc lập và bao dung.',
+  'Lộ Bàng Thổ': 'Đất ven đường — bền bỉ chịu đựng, nâng đỡ vạn vật qua lại.',
+  'Kiếm Phong Kim': 'Vàng đầu mũi kiếm — sắc bén, quyết liệt, cần rèn giũa và tiết chế.',
+  'Sơn Đầu Hỏa': 'Lửa trên núi — sáng rực, lan tỏa, dễ thấy nhưng cần kiểm soát.',
+  'Giản Hạ Thủy': 'Nước dưới khe — trong trẻo, len lỏi bền bỉ, khiêm nhường mà thấm sâu.',
+  'Thành Đầu Thổ': 'Đất đắp thành — vững chắc, che chở, có tính phòng vệ và trách nhiệm.',
+  'Bạch Lạp Kim': 'Vàng chân đèn — mềm, cần được định hình, tỏa sáng khi đúng chỗ.',
+  'Dương Liễu Mộc': 'Cây dương liễu — mềm mại, uyển chuyển, thích nghi và duyên dáng.',
+  'Tuyền Trung Thủy': 'Nước trong suối — tinh khiết, dồi dào, âm thầm nuôi dưỡng.',
+  'Ốc Thượng Thổ': 'Đất trên mái — ở vị trí cao, che chở và vững vàng bảo vệ.',
+  'Tích Lịch Hỏa': 'Lửa sấm sét — bùng nổ, mạnh mẽ bất ngờ, đầy năng lượng.',
+  'Tùng Bách Mộc': 'Cây tùng bách — kiên cường, bền bỉ qua giá rét, chính trực.',
+  'Trường Lưu Thủy': 'Nước chảy dài — bền bỉ không ngừng, lan xa, kiên trì.',
+  'Sa Trung Kim': 'Vàng trong cát — quý ẩn trong thô, cần kiên nhẫn sàng lọc.',
+  'Sơn Hạ Hỏa': 'Lửa dưới núi — ấm áp gần gũi, soi sáng cho người quanh mình.',
+  'Bình Địa Mộc': 'Cây đồng bằng — vững chãi, che bóng, sinh trưởng ổn định.',
+  'Bích Thượng Thổ': 'Đất trên vách — bám trụ kiên cố, bảo vệ và bền lâu.',
+  'Kim Bạch Kim': 'Vàng pha bạc — sáng quý, thuần khiết, có giá trị bền.',
+  'Phú Đăng Hỏa': 'Lửa ngọn đèn — soi đường lặng lẽ, ấm áp và dẫn lối.',
+  'Thiên Hà Thủy': 'Nước trên trời (sông Ngân) — bao la, thanh cao, tưới mát muôn nơi.',
+  'Đại Trạch Thổ': 'Đất đầm lớn — màu mỡ, dung chứa, nuôi dưỡng dồi dào.',
+  'Thoa Xuyến Kim': 'Vàng trang sức — tinh tế, làm đẹp, quý phái và mềm mại.',
+  'Tang Đố Mộc': 'Cây dâu tằm — hữu ích, cần mẫn nuôi dưỡng, giàu đức hi sinh.',
+  'Đại Khê Thủy': 'Nước khe lớn — chảy mạnh, thông suốt, kiên định tiến tới.',
+  'Sa Trung Thổ': 'Đất pha cát — linh hoạt, dung hòa, cần sự kết dính để bền.',
+  'Thiên Thượng Hỏa': 'Lửa trên trời (mặt trời) — rực rỡ, bao trùm, sưởi ấm vạn vật.',
+  'Thạch Lựu Mộc': 'Cây thạch lựu — cứng cỏi, kết trái ngọt, bền bỉ và nồng nhiệt.',
+  'Đại Hải Thủy': 'Nước biển lớn — mênh mông, sâu thẳm, bao dung và đầy quyền năng.'
+}

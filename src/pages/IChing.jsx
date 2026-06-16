@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { HEXAGRAMS, TRIGRAMS, castHexagram } from '../data/iching.js'
+import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide } from '../data/iching.js'
 import Modal from '../components/Modal.jsx'
 
-function Line({ yang, changing }) {
+function Line({ yang, changing, delay = 0 }) {
   return (
-    <div className="flex items-center justify-center gap-2 my-1">
+    <div className="flex items-center justify-center gap-2 my-1 animate-castline" style={{ animationDelay: delay + 's' }}>
       {yang
         ? <span className="inline-block w-[120px] h-[12px] bg-gold rounded-sm" />
         : <><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /></>}
@@ -20,6 +20,8 @@ function HexView({ hex }) {
       <h3 className="text-[1.5rem] my-1">Quẻ {hex.n} · {hex.ten}</h3>
       <p className="note m-0">Trên {hex.up} ({TRIGRAMS[hex.up].nghia}) · Dưới {hex.lo} ({TRIGRAMS[hex.lo].nghia})</p>
       <p className="mt-2 mb-0">{hex.y}</p>
+      {hex.luan && <p className="note text-left mt-3 leading-relaxed">{hex.luan}</p>}
+      {hex.src && <a href={hex.src} target="_blank" rel="noopener" className="inline-block mt-3 text-[.85rem] font-semibold">📖 Đọc nguyên văn thoán từ &amp; hào từ →</a>}
     </div>
   )
 }
@@ -40,16 +42,23 @@ export default function IChing() {
 
       <section className="wrap py-8">
         <div className="panel p-[26px] max-w-[760px] mx-auto text-center">
-          <button className="btn btn-primary" onClick={() => setCast(castHexagram())}>🪙 Gieo quẻ</button>
+          <button className="btn btn-primary" onClick={() => setCast({ ...castHexagram(), _id: Date.now() })}>🪙 Gieo quẻ</button>
           {cast && (
             <div className="mt-6 animate-fade">
-              <div className="mb-4">{[...cast.lines].reverse().map((l, i) => <Line key={i} yang={l.yang} changing={l.changing} />)}</div>
+              <div className="mb-4" key={cast._id}>{[...cast.lines].reverse().map((l, i) => <Line key={i} yang={l.yang} changing={l.changing} delay={i * 0.1} />)}</div>
               <div className="grid md:grid-cols-2 gap-5">
                 <div className="panel p-5"><div className="text-gold text-[.8rem] uppercase tracking-wider mb-1">Quẻ chính</div><HexView hex={cast.present} /></div>
                 {cast.changed
                   ? <div className="panel p-5"><div className="text-gold text-[.8rem] uppercase tracking-wider mb-1">Quẻ biến (hào động {cast.changingPos.join(', ')})</div><HexView hex={cast.changed} /></div>
                   : <div className="panel p-5 flex items-center justify-center text-muted">Không có hào động — chỉ xét quẻ chính.</div>}
               </div>
+              {cast.changingPos.length > 0 && (
+                <div className="panel p-5 mt-5 text-left">
+                  <div className="text-gold text-[.8rem] uppercase tracking-wider mb-2 text-center">Luận hào động</div>
+                  <p className="m-0 mb-3 text-center text-cream">{readingGuide(cast.changingPos)}</p>
+                  {cast.changingPos.map(p => { const v = HAO_VITRI[p - 1]; return <p key={p} className="note m-0 mb-1"><b className="text-cream">{v.ten}:</b> {v.y}</p> })}
+                </div>
+              )}
             </div>
           )}
           <p className="note mt-4 mb-0">Gieo bằng số ngẫu nhiên trên máy bạn (ngửa=3, sấp=2). Hào tổng 6/9 là hào động.</p>
@@ -74,6 +83,7 @@ export default function IChing() {
       <section className="wrap py-10">
         <div className="disclaimer max-w-[900px] mx-auto">
           <b>Lưu ý.</b> Kinh Dịch là kinh điển triết học – bói toán phương Đông; lời quẻ ở đây là <b>gloss ngắn</b> mang tính tham khảo, không thay lời kinh đầy đủ.
+          Ý nghĩa 6 ngôi hào và cách luận hào động theo <a href="https://horos.vn/blog/post/64-que-kinh-dich-bang-tra-cuu-day-du-huong-dan-gieo-que-va-giai-que" target="_blank" rel="noopener">phương pháp phổ biến (Horos)</a>; <b>nguyên văn thoán từ &amp; hào từ</b> từng quẻ xem ở liên kết trong mỗi quẻ (nguồn <a href="https://dich.kabala.vn/" target="_blank" rel="noopener">Dịch học Kabala</a>).
           Tên quẻ theo thứ tự Văn Vương; bát quái theo <a href="https://vi.wikipedia.org/wiki/Kinh_D%E1%BB%8Bch" target="_blank" rel="noopener">Kinh Dịch (Wikipedia)</a>. Không phải khoa học.
         </div>
       </section>

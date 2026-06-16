@@ -1,99 +1,120 @@
 /* DỮ LIỆU TAROT — đủ 78 lá (22 Ẩn Chính + 56 Ẩn Phụ).
- * Từ khóa tham khảo truyền thống Rider–Waite–Smith / Labyrinthos.
+ * Từ khóa & luận giải bám truyền thống Rider–Waite–Smith / Labyrinthos.
  * Nội dung chiêm nghiệm/giải trí — không phải khoa học. */
 
 const MAJOR = [
   { id:0, arcana:'major', roman:'0', symbol:'🎒', name:'The Fool', nameVi:'Gã Khờ',
+    desc:'Chàng trai tay nải bước tới mép vực, mắt ngước trời, chú khuyển nhỏ theo sau — biểu tượng của khởi đầu thuần khiết và niềm tin vào hành trình.',
     upKeys:['khởi đầu mới','ngây thơ','tự do'], revKeys:['liều lĩnh','thiếu cân nhắc'],
-    up:'Một chương mới mở ra. Bước đi cởi mở, tin vào hành trình dù chưa thấy hết đường.',
-    rev:'Có thể bạn đang hấp tấp hoặc bỏ qua rủi ro. Dừng một nhịp để cân nhắc.' },
+    up:'Một chương hoàn toàn mới đang mở ra trước mặt bạn. Đây là lúc bước đi với tâm hồn rộng mở, dám liều một cách hồn nhiên và tin rằng con đường sẽ hiện ra dưới chân. Đừng để nỗi sợ điều chưa biết trói chân — hãy nói "có" với cuộc phiêu lưu.',
+    rev:'Sự hồn nhiên đang nghiêng về liều lĩnh hoặc thiếu chuẩn bị. Có thể bạn chần chừ mãi trước một khởi đầu, hoặc lao đi mà chưa nhìn đường. Hãy dừng đủ lâu để cân nhắc rủi ro và lắng nghe lời khuyên trước khi nhảy.' },
   { id:1, arcana:'major', roman:'I', symbol:'🪄', name:'The Magician', nameVi:'Nhà Ảo Thuật',
+    desc:'Một tay chỉ trời, một tay chỉ đất; trên bàn đủ bốn biểu tượng của bốn nguyên tố — người biết biến ý tưởng thành hiện thực.',
     upKeys:['ý chí','sáng tạo','hiện thực hóa'], revKeys:['thao túng','ảo tưởng'],
-    up:'Bạn có đủ công cụ để biến ý tưởng thành hiện thực. Tập trung ý chí vào mục tiêu.',
-    rev:'Coi chừng mánh khóe, lời hứa suông hoặc tiềm năng bị lãng phí.' },
+    up:'Bạn đang nắm trong tay mọi công cụ cần thiết để biến mong muốn thành hiện thực. Đây là thời điểm của ý chí, sự tập trung và hành động có chủ đích — hãy kết nối ý tưởng với việc làm cụ thể. Tin vào năng lực của mình và bắt tay vào tạo dựng.',
+    rev:'Năng lượng sáng tạo đang bị dùng sai cách: mánh khóe, lời hứa suông hoặc tự lừa dối bản thân. Có thể bạn thấy tiềm năng của mình bị lãng phí hoặc chưa biết bắt đầu từ đâu. Hãy thành thật về động cơ và sắp xếp lại nguồn lực.' },
   { id:2, arcana:'major', roman:'II', symbol:'🌙', name:'The High Priestess', nameVi:'Nữ Tư Tế',
+    desc:'Người phụ nữ ngồi giữa hai cột sáng–tối, sau lưng là tấm màn che giấu điều bí ẩn — hiện thân của trực giác và tri thức ẩn.',
     upKeys:['trực giác','tiềm thức','bí ẩn'], revKeys:['phớt lờ trực giác','kìm nén'],
-    up:'Lắng nghe trực giác và điều chưa nói thành lời. Câu trả lời ở bên trong.',
-    rev:'Bạn đang ngắt kết nối với tiếng nói nội tâm. Hãy tĩnh lại để nghe rõ.' },
+    up:'Câu trả lời bạn tìm nằm ở bên trong, không ở bề mặt. Đây là lúc lắng nghe trực giác, chú ý đến giấc mơ và những điều chưa nói thành lời. Hãy tĩnh lặng, quan sát và để sự thật tự hé lộ thay vì vội vàng hành động.',
+    rev:'Bạn đang ngắt kết nối với tiếng nói bên trong — phớt lờ linh cảm hoặc che giấu cảm xúc thật. Có thể bạn để lý trí át đi trực giác, hoặc bị thông tin bề mặt đánh lừa. Hãy dành thời gian một mình để nghe lại chính mình.' },
   { id:3, arcana:'major', roman:'III', symbol:'🌹', name:'The Empress', nameVi:'Nữ Hoàng',
+    desc:'Người mẹ thiên nhiên ngồi giữa vườn cây trĩu quả, biểu tượng của sự sinh sôi, nuôi dưỡng và vẻ đẹp dồi dào.',
     upKeys:['nuôi dưỡng','phồn thịnh','thiên nhiên'], revKeys:['phụ thuộc','trống rỗng'],
-    up:'Thời kỳ sinh sôi, chăm sóc và tận hưởng. Dồi dào khi bạn nuôi dưỡng bản thân và người khác.',
-    rev:'Có thể bạn cho đi quá mức đến cạn kiệt. Hãy cân bằng lại.' },
+    up:'Một thời kỳ sinh sôi và dồi dào đang đến — trong tình cảm, sáng tạo hay vật chất. Hãy cho phép mình tận hưởng cái đẹp, chăm sóc bản thân và những người quanh mình. Khi bạn nuôi dưỡng bằng trái tim, mọi thứ sẽ đơm hoa kết trái.',
+    rev:'Sự chăm sóc có thể đang mất cân bằng: cho đi đến cạn kiệt, bao bọc thái quá hoặc bỏ bê chính mình. Đôi khi là cảm giác trống rỗng, bế tắc sáng tạo. Hãy đổ đầy chiếc cốc của bạn trước khi rót cho người khác.' },
   { id:4, arcana:'major', roman:'IV', symbol:'🏛️', name:'The Emperor', nameVi:'Hoàng Đế',
+    desc:'Vị vua ngồi trên ngai đá khắc đầu cừu, tay cầm quyền trượng — hiện thân của trật tự, kỷ luật và quyền lực vững vàng.',
     upKeys:['quyền uy','cấu trúc','kỷ luật'], revKeys:['độc đoán','cứng nhắc'],
-    up:'Trật tự và lãnh đạo vững vàng mang lại kết quả. Thiết lập nền tảng rõ ràng.',
-    rev:'Sự kiểm soát trở nên cứng nhắc hoặc lạm quyền. Mềm dẻo sẽ hiệu quả hơn.' },
+    up:'Đây là lúc thiết lập trật tự, kỷ luật và một nền tảng vững chắc. Lãnh đạo bằng sự điềm tĩnh, đặt ra quy tắc rõ ràng và kiên định với mục tiêu sẽ mang lại kết quả. Sức mạnh thật đến từ cấu trúc và trách nhiệm, không phải sự áp đặt.',
+    rev:'Quyền lực đang trở nên cứng nhắc, độc đoán hoặc lạm dụng. Có thể bạn quá kiểm soát, hoặc đang chịu sự áp đặt từ ai đó. Hãy mềm dẻo hơn, lắng nghe và phân biệt giữa kỷ luật lành mạnh với sự bảo thủ.' },
   { id:5, arcana:'major', roman:'V', symbol:'🗝️', name:'The Hierophant', nameVi:'Giáo Hoàng',
+    desc:'Vị tăng lữ ban phước cho hai môn đồ, nắm giữ chìa khóa của tri thức truyền thống và đức tin.',
     upKeys:['truyền thống','chuẩn mực','dẫn dắt'], revKeys:['nổi loạn','phá cách'],
-    up:'Học hỏi từ truyền thống, người thầy hoặc thể chế đáng tin.',
-    rev:'Bạn muốn đi ra ngoài khuôn mẫu. Phá cách đôi khi cần thiết — nếu có chủ đích.' },
+    up:'Đây là lúc học hỏi từ truyền thống, người thầy hoặc một hệ giá trị đáng tin. Những chuẩn mực, nghi thức và lời chỉ dẫn có sẵn là điểm tựa vững chắc lúc này. Tìm đến cố vấn hoặc cộng đồng cùng niềm tin để được dẫn đường.',
+    rev:'Bạn muốn bước ra khỏi khuôn mẫu và đi theo con đường riêng. Có thể những quy tắc cũ không còn phù hợp, hoặc bạn đang nghi ngờ một thẩm quyền. Phá cách là chính đáng — miễn là có chủ đích và hiểu mình đang chọn gì.' },
   { id:6, arcana:'major', roman:'VI', symbol:'💞', name:'The Lovers', nameVi:'Tình Nhân',
+    desc:'Đôi nam nữ dưới sự chứng giám của thiên thần — biểu tượng của tình yêu, sự hòa hợp và những lựa chọn từ trái tim.',
     upKeys:['gắn kết','lựa chọn','hòa hợp'], revKeys:['mất cân bằng','bất hòa'],
-    up:'Một mối quan hệ sâu sắc hoặc lựa chọn quan trọng dựa trên giá trị thật.',
-    rev:'Bất hòa hoặc một quyết định đi ngược lòng mình. Xác định lại điều quan trọng.' },
+    up:'Một mối quan hệ sâu sắc hoặc sự hòa hợp đáng quý đang hiện diện. Đây cũng có thể là một lựa chọn quan trọng cần được đưa ra dựa trên giá trị thật của bạn, không phải nỗi sợ. Khi tim và lý trí cùng đồng thuận, con đường sẽ sáng rõ.',
+    rev:'Có sự bất hòa, hiểu lầm hoặc mất cân bằng trong quan hệ. Cũng có thể bạn đang đứng trước một quyết định đi ngược lòng mình. Hãy giao tiếp thẳng thắn và xác định lại điều gì thực sự quan trọng với bạn.' },
   { id:7, arcana:'major', roman:'VII', symbol:'🐎', name:'The Chariot', nameVi:'Cỗ Xe',
+    desc:'Người chiến binh điều khiển cỗ xe kéo bởi hai nhân sư đen–trắng — ý chí chế ngự những lực đối nghịch để tiến lên.',
     upKeys:['định hướng','ý chí','chiến thắng'], revKeys:['mất kiểm soát','lạc hướng'],
-    up:'Quyết tâm và kỷ luật đưa bạn tới đích. Giữ vững tay lái.',
-    rev:'Mất phương hướng hoặc để cảm xúc lấn át. Lấy lại mục tiêu và tự chủ.' },
+    up:'Quyết tâm và sự tự chủ đang đưa bạn tiến thẳng tới đích. Dù có những lực kéo ngược chiều, hãy giữ vững tay lái, tập trung ý chí và đừng để cảm xúc làm chệch hướng. Chiến thắng thuộc về người kiên định và biết kiểm soát.',
+    rev:'Bạn có thể đang mất phương hướng hoặc để cảm xúc, hoàn cảnh lấn át. Năng lượng bị phân tán khiến cỗ xe đi lệch. Hãy dừng lại, xác định rõ mục tiêu và giành lại quyền làm chủ trước khi tiếp tục.' },
   { id:8, arcana:'major', roman:'VIII', symbol:'🦁', name:'Strength', nameVi:'Sức Mạnh',
+    desc:'Người phụ nữ dịu dàng khép miệng sư tử bằng đôi tay mềm — sức mạnh của lòng can đảm và sự điềm tĩnh nội tâm.',
     upKeys:['nội lực','can đảm','trắc ẩn'], revKeys:['hoài nghi bản thân','bất an'],
-    up:'Sức mạnh thật đến từ sự dịu dàng và làm chủ bản thân, không phải vũ lực.',
-    rev:'Tự nghi ngờ đang bào mòn bạn. Hãy tử tế với chính mình.' },
+    up:'Sức mạnh thật của bạn nằm ở sự dịu dàng, kiên nhẫn và làm chủ bản thân — không phải ở vũ lực. Hãy đối diện thử thách bằng lòng can đảm điềm tĩnh và sự trắc ẩn. Khi bạn thuần phục được nỗi sợ bên trong, không gì cản nổi bạn.',
+    rev:'Sự tự nghi ngờ, bất an đang bào mòn nội lực của bạn. Có thể bạn thấy yếu đuối, dễ cáu hoặc mất bình tĩnh. Hãy tử tế với chính mình, phục hồi năng lượng và nhớ rằng bạn mạnh mẽ hơn mình tưởng.' },
   { id:9, arcana:'major', roman:'IX', symbol:'🏮', name:'The Hermit', nameVi:'Ẩn Sĩ',
+    desc:'Vị ẩn sĩ trên đỉnh núi giơ cao chiếc đèn lồng soi đường — hành trình hướng nội đi tìm chân lý.',
     upKeys:['chiêm nghiệm','tìm sự thật','nội tâm'], revKeys:['cô lập','lạc lối'],
-    up:'Thời điểm lùi lại, tĩnh lặng và lắng nghe bản thân. Ánh sáng ở bên trong.',
-    rev:'Sự đơn độc chuyển thành cô lập. Cân nhắc kết nối lại.' },
+    up:'Đây là thời điểm lùi lại, tĩnh lặng và soi rọi vào bên trong. Câu trả lời và ánh sáng bạn tìm kiếm đến từ sự chiêm nghiệm, không phải từ ồn ào bên ngoài. Hãy dành thời gian một mình để hiểu mình và tìm ra hướng đi đích thực.',
+    rev:'Sự đơn độc đang chuyển thành cô lập hoặc lảng tránh. Có thể bạn rút lui quá mức, hoặc ngược lại, sợ đối diện với chính mình. Hãy cân nhắc kết nối lại với người khác, hoặc tìm một người dẫn đường đáng tin.' },
   { id:10, arcana:'major', roman:'X', symbol:'🎡', name:'Wheel of Fortune', nameVi:'Bánh Xe Số Phận',
+    desc:'Bánh xe vũ trụ quay giữa các sinh vật và biểu tượng — nhắc rằng vạn vật xoay vần theo chu kỳ.',
     upKeys:['thay đổi','chu kỳ','bước ngoặt'], revKeys:['mất kiểm soát','vận xui'],
-    up:'Vòng quay cuộc đời đang chuyển. Đón nhận thay đổi như phần tất yếu của chu kỳ.',
-    rev:'Cảm giác mọi thứ ngoài tầm kiểm soát. Buông bớt kỳ vọng cứng nhắc.' },
+    up:'Vòng quay cuộc đời đang chuyển sang một nhịp mới, thường là theo hướng thuận lợi. Một bước ngoặt, cơ hội hay sự thay đổi bất ngờ đang đến — hãy đón nhận nó như phần tất yếu của chu kỳ. Khi ở đỉnh hãy khiêm nhường, khi ở đáy hãy giữ niềm tin.',
+    rev:'Bạn có cảm giác mọi thứ vượt ngoài tầm kiểm soát, hoặc đang mắc trong một vòng lặp xui rủi. Càng níu giữ và cưỡng lại đổi thay, càng mệt mỏi. Hãy buông bớt kỳ vọng cứng nhắc và thuận theo dòng chảy.' },
   { id:11, arcana:'major', roman:'XI', symbol:'⚖️', name:'Justice', nameVi:'Công Lý',
+    desc:'Vị thẩm phán cầm cân và thanh kiếm — biểu tượng của sự thật, lẽ công bằng và luật nhân quả.',
     upKeys:['nhân quả','sự thật','công bằng'], revKeys:['bất công','dối trá'],
-    up:'Sự thật và lẽ công bằng hiện rõ. Mỗi lựa chọn đều có hệ quả — hãy ngay thẳng.',
-    rev:'Có sự thiếu trung thực hoặc trốn tránh trách nhiệm. Đối diện sự thật.' },
+    up:'Sự thật và lẽ công bằng đang hiện rõ; mỗi hành động đều mang lại hệ quả tương xứng. Đây là lúc hành động ngay thẳng, nhận trách nhiệm và đưa ra quyết định dựa trên lý trí và đạo lý. Gieo gì gặt nấy — hãy gieo điều đúng đắn.',
+    rev:'Có sự thiếu trung thực, bất công hoặc trốn tránh trách nhiệm đang diễn ra. Có thể bạn đang tự bào chữa hoặc né tránh hậu quả. Hãy thành thật đối diện sự thật — đó là bước đầu để mọi thứ được cân bằng lại.' },
   { id:12, arcana:'major', roman:'XII', symbol:'🙃', name:'The Hanged Man', nameVi:'Người Treo Ngược',
+    desc:'Người treo ngược thanh thản, hào quang quanh đầu — sự buông bỏ tự nguyện để nhìn đời bằng góc khác.',
     upKeys:['buông bỏ','đổi góc nhìn','tạm dừng'], revKeys:['trì hoãn','kháng cự'],
-    up:'Đổi góc nhìn và chấp nhận tạm dừng. Đôi khi đứng yên là cách tiến lên.',
-    rev:'Bạn đang chống lại điều cần buông. Xem lại điều gì đáng giữ.' },
+    up:'Đã đến lúc tạm dừng, buông bỏ và nhìn mọi việc từ một góc độ khác. Sự hy sinh hoặc chờ đợi lúc này không vô ích — nó mở ra một cái nhìn mới mẻ. Đôi khi đứng yên và chấp nhận lại chính là cách tiến về phía trước.',
+    rev:'Bạn đang chống lại điều cần buông, hoặc trì hoãn một cách vô ích trong khi mọi thứ đình trệ. Có thể bạn hy sinh mà không thấy ý nghĩa. Hãy xem lại điều gì đáng giữ, điều gì nên thả, và ngừng cưỡng lại dòng chảy.' },
   { id:13, arcana:'major', roman:'XIII', symbol:'💀', name:'Death', nameVi:'Cái Chết',
-    upKeys:['kết thúc chu kỳ','chuyển hóa','tái sinh'], revKeys:['sợ thay đổi','trì trệ'],
-    up:'Một giai đoạn khép lại để cái mới sinh ra. Là chuyển hóa, hiếm khi nghĩa đen.',
-    rev:'Bạn níu giữ điều đã hết hạn. Sợ thay đổi khiến mọi thứ trì trệ.' },
+    desc:'Hiệp sĩ xương trắng cưỡi ngựa dưới lá cờ hoa hồng — sự kết thúc để mở đường cho tái sinh.',
+    upKeys:['kết thúc một chu kỳ','chuyển hóa','tái sinh'], revKeys:['sợ thay đổi','trì trệ'],
+    up:'Một giai đoạn của cuộc đời đang khép lại để nhường chỗ cho điều mới — đây là chuyển hóa, hiếm khi mang nghĩa đen. Dù khó rời bỏ cái cũ, sự kết thúc này là cần thiết và giải phóng. Hãy để cái đã hết hạn ra đi, một khởi đầu đang chờ phía sau.',
+    rev:'Bạn đang níu giữ điều lẽ ra nên buông, vì sợ thay đổi. Sự kháng cự này khiến mọi thứ trì trệ và kéo dài đau khổ không cần thiết. Hãy can đảm khép lại để được tái sinh.' },
   { id:14, arcana:'major', roman:'XIV', symbol:'⚗️', name:'Temperance', nameVi:'Tiết Độ',
+    desc:'Thiên thần rót nước qua lại giữa hai chiếc cốc — nghệ thuật điều hòa và pha trộn đúng liều lượng.',
     upKeys:['cân bằng','kiên nhẫn','trung dung'], revKeys:['thái quá','nóng vội'],
-    up:'Điều hòa và trung dung mang lại bình an. Pha trộn đúng liều giữa các thái cực.',
-    rev:'Thái quá hoặc nóng vội đang phá vỡ cân bằng. Chậm lại và điều tiết.' },
+    up:'Điều hòa, kiên nhẫn và trung dung sẽ mang lại sự bình an. Đây là lúc pha trộn đúng liều giữa các thái cực, tìm điểm cân bằng và để mọi thứ chín muồi theo thời gian. Sự ôn hòa và tiết chế là chìa khóa cho hài hòa lâu dài.',
+    rev:'Sự cân bằng đang bị phá vỡ bởi thái quá, nóng vội hoặc mâu thuẫn nội tâm. Có thể bạn đang làm quá sức hoặc thiếu kiên nhẫn. Hãy chậm lại, điều tiết và tìm lại nhịp điệu hài hòa.' },
   { id:15, arcana:'major', roman:'XV', symbol:'😈', name:'The Devil', nameVi:'Ác Quỷ',
+    desc:'Đôi nam nữ bị xiềng lỏng dưới chân ác quỷ — nhưng xiềng đủ rộng để tự cởi, nếu họ muốn.',
     upKeys:['ràng buộc','cám dỗ','lệ thuộc'], revKeys:['giải phóng','lấy lại tự chủ'],
-    up:'Một lệ thuộc, thói quen hay cám dỗ đang trói buộc bạn — thường là xiềng tự nguyện.',
-    rev:'Bạn đang nhận ra và cắt bỏ ràng buộc. Tự do khi lấy lại quyền làm chủ.' },
+    up:'Một sự lệ thuộc, thói quen hay cám dỗ đang trói buộc bạn — và thường đó là xiềng xích bạn tự đeo. Vật chất, dục vọng hay nỗi sợ có thể đang chi phối. Hãy nhận diện điều gì đang nắm giữ bạn; nhận ra đã là bước đầu để thoát.',
+    rev:'Bạn đang nhận ra xiềng xích và bắt đầu cắt bỏ ràng buộc. Đây là lúc giành lại quyền làm chủ, từ bỏ thói quen độc hại và bước ra ánh sáng. Tự do đến khi bạn dám buông điều vẫn níu mình lại.' },
   { id:16, arcana:'major', roman:'XVI', symbol:'🗼', name:'The Tower', nameVi:'Tòa Tháp',
+    desc:'Tia sét đánh sập đỉnh tháp, hai người rơi xuống — sự sụp đổ đột ngột của những gì xây trên nền giả.',
     upKeys:['biến động đột ngột','sụp đổ','vỡ lẽ'], revKeys:['tránh tai họa','sợ đổ vỡ'],
-    up:'Một cú chấn động làm lung lay nền tảng cũ — dọn chỗ cho sự thật và khởi đầu vững hơn.',
-    rev:'Bạn có thể đang né một đổ vỡ cần thiết, hoặc sợ điều chưa xảy ra.' },
+    up:'Một cú chấn động bất ngờ đang làm lung lay nền tảng cũ. Dù gây sốc và khó chịu, nó phá vỡ những gì được dựng trên ảo tưởng để sự thật và một khởi đầu vững hơn lộ ra. Hãy để cái giả sụp đổ — điều thật sẽ đứng vững.',
+    rev:'Bạn có thể đang né tránh một đổ vỡ cần thiết, hoặc nơm nớp sợ điều chưa xảy ra. Cố chống đỡ một cấu trúc đã mục chỉ kéo dài bất ổn. Đối diện và giải tỏa sớm sẽ nhẹ nhõm hơn là trì hoãn.' },
   { id:17, arcana:'major', roman:'XVII', symbol:'⭐', name:'The Star', nameVi:'Ngôi Sao',
+    desc:'Người thiếu nữ rót nước bên hồ dưới bầu trời đầy sao — hy vọng và sự chữa lành sau giông bão.',
     upKeys:['hy vọng','niềm tin','chữa lành'], revKeys:['mất niềm tin','nản lòng'],
-    up:'Sau giông bão là hy vọng và chữa lành. Giữ niềm tin và để mình phục hồi.',
-    rev:'Cảm giác nản lòng. Niềm tin cần được nuôi lại từ những điều nhỏ.' },
+    up:'Sau giông bão là hy vọng, sự chữa lành và bình yên trở lại. Đây là lúc nuôi dưỡng niềm tin, cho phép mình được phục hồi và mơ về tương lai tươi sáng. Vũ trụ đang mỉm cười — hãy để ánh sáng dẫn lối.',
+    rev:'Bạn đang cảm thấy nản lòng, mất phương hướng hoặc cạn niềm tin. Ánh sao như bị mây che. Hãy nuôi lại hy vọng từ những điều nhỏ bé và kiên nhẫn với quá trình chữa lành của mình.' },
   { id:18, arcana:'major', roman:'XVIII', symbol:'🌕', name:'The Moon', nameVi:'Mặt Trăng',
+    desc:'Mặt trăng soi con đường giữa hai cột, chó sói và tôm hùm — thế giới của ảo ảnh, mộng mị và tiềm thức.',
     upKeys:['ảo ảnh','trực giác','mơ hồ'], revKeys:['bối rối','hiểu lầm'],
-    up:'Mọi thứ chưa rõ; ảo ảnh và nỗi sợ có thể đánh lừa. Tin trực giác, đi từng bước.',
-    rev:'Sương mù đang tan, hiểu lầm dần sáng tỏ.' },
+    up:'Mọi thứ chưa rõ ràng; ảo ảnh, nỗi sợ và sự mơ hồ có thể đang đánh lừa bạn. Đây là lúc tin vào trực giác, chú ý đến giấc mơ và đi từng bước thận trọng qua màn sương. Đừng vội kết luận khi chưa nhìn rõ.',
+    rev:'Sương mù dần tan và những hiểu lầm bắt đầu sáng tỏ. Cũng có thể nỗi sợ vô cớ đang khiến bạn diễn giải sai sự việc. Hãy để cảm xúc lắng xuống, sự thật sẽ dần hiện ra.' },
   { id:19, arcana:'major', roman:'XIX', symbol:'☀️', name:'The Sun', nameVi:'Mặt Trời',
+    desc:'Đứa trẻ hồn nhiên trên lưng ngựa trắng dưới mặt trời rực rỡ và hoa hướng dương — niềm vui và sức sống thuần khiết.',
     upKeys:['niềm vui','thành công','sức sống'], revKeys:['u ám tạm thời','thiếu lạc quan'],
-    up:'Lá bài rạng rỡ nhất: niềm vui, thành công và sự rõ ràng. Hãy tận hưởng.',
-    rev:'Niềm vui bị che mờ tạm thời. Ánh sáng vẫn ở đó, chỉ cần thời gian.' },
+    up:'Đây là lá bài rạng rỡ nhất: niềm vui, thành công, sức sống và sự rõ ràng. Mọi việc hanh thông, năng lượng tích cực lan tỏa và bạn được là chính mình một cách trọn vẹn. Hãy tận hưởng ánh nắng và sẻ chia hạnh phúc.',
+    rev:'Niềm vui đang bị che mờ tạm thời, hoặc bạn đang gượng ép sự lạc quan. Có thể là chút u ám, mệt mỏi hay thành công bị trì hoãn. Ánh mặt trời vẫn ở đó sau mây — hãy cho mình thời gian.' },
   { id:20, arcana:'major', roman:'XX', symbol:'📯', name:'Judgement', nameVi:'Phán Xét',
+    desc:'Thiên thần thổi kèn gọi người sống dậy — lời thức tỉnh, sự đánh giá lại và tái sinh tinh thần.',
     upKeys:['thức tỉnh','đánh giá lại','tha thứ'], revKeys:['hoài nghi','tự trách'],
-    up:'Một lời thức tỉnh: nhìn lại quá khứ, tha thứ và bước sang chương mới.',
-    rev:'Bạn đang khó tha thứ cho mình. Hãy bao dung với bản thân.' },
+    up:'Một lời thức tỉnh đang vang lên: hãy nhìn lại hành trình đã qua, rút ra bài học và tha thứ để bước sang chương mới. Đây là thời khắc đánh giá lại bản thân và đáp lại tiếng gọi sâu thẳm bên trong. Một phiên bản trưởng thành hơn của bạn đang chờ.',
+    rev:'Bạn đang khó tha thứ cho mình, mắc kẹt trong tự trách hoặc phớt lờ tiếng gọi nội tâm. Sự hoài nghi khiến bạn chần chừ trước thay đổi đáng làm. Hãy bao dung với chính mình và lắng nghe điều trái tim mách bảo.' },
   { id:21, arcana:'major', roman:'XXI', symbol:'🌍', name:'The World', nameVi:'Thế Giới',
+    desc:'Vũ công giữa vòng nguyệt quế, bốn sinh vật ở bốn góc — sự hoàn tất viên mãn của một chu kỳ.',
     upKeys:['hoàn thành','viên mãn','trọn vẹn'], revKeys:['dang dở','chưa khép lại'],
-    up:'Một chu kỳ hoàn tất trong viên mãn. Bạn sẵn sàng cho vòng đời mới.',
-    rev:'Còn điều dang dở cần khép lại trước khi sang chặng tiếp theo.' }
+    up:'Một chu kỳ quan trọng đang hoàn tất trong viên mãn. Bạn đạt tới sự trọn vẹn, hài hòa và xứng đáng ăn mừng thành quả. Đây là đỉnh cao của một hành trình — và cũng là khởi điểm cho vòng đời mới rộng mở hơn.',
+    rev:'Còn điều gì đó dang dở cần được khép lại trước khi bạn thật sự sang chặng mới. Có thể bạn đang trì hoãn cái kết, hoặc thiếu một mảnh ghép cuối. Hãy hoàn tất nốt phần còn thiếu để chạm tới sự trọn vẹn.' }
 ]
 
-/* ----- 56 lá Ẩn Phụ (Minor Arcana) ----- */
 const SUITS = [
   { key:'wands', vi:'Gậy', en:'Wands', sym:'🔥', el:'Lửa' },
   { key:'cups', vi:'Cốc', en:'Cups', sym:'🍷', el:'Nước' },
@@ -103,84 +124,20 @@ const SUITS = [
 const RANK_VI = ['Át','2','3','4','5','6','7','8','9','10','Thị Đồng','Hiệp Sĩ','Nữ Hoàng','Vua']
 const RANK_EN = ['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King']
 
-/* mỗi phần tử: [từ khóa xuôi, từ khóa ngược] cho 14 lá của một chất */
 const MINOR_KW = {
-  wands: [
-    ['cảm hứng, khởi đầu','trì hoãn, thiếu định hướng'],
-    ['lên kế hoạch, tầm nhìn','do dự, kế hoạch dở'],
-    ['mở rộng, tiến triển','chậm trễ, trở ngại'],
-    ['ăn mừng, mái ấm','bất ổn, chuyển tiếp'],
-    ['cạnh tranh, bất đồng','tránh né, hòa giải'],
-    ['chiến thắng, được công nhận','thất bại, thiếu công nhận'],
-    ['kiên định, thách thức','kiệt sức, buông xuôi'],
-    ['chuyển động nhanh, tin tức','chậm trễ, hỗn loạn'],
-    ['kiên cường, đề phòng','kiệt sức, cố chấp'],
-    ['gánh nặng, trách nhiệm','quá tải, buông bớt'],
-    ['khám phá, ý tưởng mới','bốc đồng, thiếu định hướng'],
-    ['hành động, phiêu lưu','nóng vội, thiếu kiên nhẫn'],
-    ['tự tin, lôi cuốn','ghen tị, thiếu tự tin'],
-    ['tầm nhìn, lãnh đạo','độc đoán, hấp tấp']
-  ],
-  cups: [
-    ['tình cảm mới, trực giác','cảm xúc dồn nén, trống rỗng'],
-    ['kết đôi, hòa hợp','bất hòa, mất cân bằng'],
-    ['tình bạn, ăn mừng','rạn nứt nhóm, thừa thãi'],
-    ['chán nản, suy ngẫm','tỉnh thức, nắm cơ hội'],
-    ['mất mát, tiếc nuối','chấp nhận, hồi phục'],
-    ['hoài niệm, ký ức','mắc kẹt quá khứ'],
-    ['lựa chọn, mộng tưởng','rõ ràng, quyết định'],
-    ['rời bỏ, tìm điều sâu xa','lưỡng lự, sợ thay đổi'],
-    ['mãn nguyện, ước nguyện','tự mãn, chưa thỏa'],
-    ['hạnh phúc viên mãn','bất hòa gia đình'],
-    ['thông điệp tình cảm, mơ mộng','cảm xúc non nớt, né tránh'],
-    ['lãng mạn, theo trái tim','mơ mộng hão, thất thường'],
-    ['từ bi, thấu cảm','phụ thuộc cảm xúc, quá nhạy'],
-    ['cân bằng cảm xúc, bao dung','ủ rũ, thao túng cảm xúc']
-  ],
-  swords: [
-    ['đột phá, sáng suốt','hỗn loạn ý nghĩ, hiểu lầm'],
-    ['bế tắc, do dự','quyết định, gỡ bế tắc'],
-    ['tổn thương, chia ly','chữa lành, tha thứ'],
-    ['nghỉ ngơi, tĩnh tâm','kiệt sức, trì trệ'],
-    ['xung đột, bất hòa','hòa giải, buông hận'],
-    ['chuyển tiếp, rời đi','mắc kẹt, kháng cự'],
-    ['mưu mẹo, chiến lược','thú nhận, lương tâm'],
-    ['trói buộc, tự giới hạn','giải thoát, tìm lối ra'],
-    ['lo âu, dằn vặt','hy vọng, vượt nỗi sợ'],
-    ['kết thúc đau đớn','hồi sinh, vực dậy'],
-    ['tò mò, cảnh giác','nói suông, hấp tấp'],
-    ['quyết liệt, hành động nhanh','hung hăng, thiếu suy xét'],
-    ['sắc sảo, thẳng thắn','lạnh lùng, cay nghiệt'],
-    ['lý trí, công minh','lạm quyền, lạnh lùng']
-  ],
-  pentacles: [
-    ['cơ hội mới, thịnh vượng','cơ hội lỡ, thiếu nền tảng'],
-    ['cân bằng, linh hoạt','quá tải, mất cân đối'],
-    ['hợp tác, kỹ năng','thiếu phối hợp, qua loa'],
-    ['an toàn, kiểm soát','keo kiệt, bám víu'],
-    ['khó khăn, thiếu thốn','hồi phục, qua cơn bĩ'],
-    ['cho-nhận, hào phóng','bất cân, nợ nần'],
-    ['kiên nhẫn, đầu tư dài hạn','sốt ruột, đầu tư kém'],
-    ['chăm chỉ, rèn nghề','cẩu thả, thiếu động lực'],
-    ['tự chủ, sung túc','lệ thuộc, phô trương'],
-    ['của cải, bền vững','rủi ro tài chính'],
-    ['ham học, mục tiêu','lơ đãng, trì hoãn'],
-    ['cần mẫn, đáng tin','trì trệ, bảo thủ'],
-    ['chăm lo, thực tế','ôm đồm, bỏ bê bản thân'],
-    ['thành đạt, ổn định','tham lam, bảo thủ']
-  ]
+  wands: [['cảm hứng, khởi đầu','trì hoãn, thiếu định hướng'],['lên kế hoạch, tầm nhìn','do dự, kế hoạch dở'],['mở rộng, tiến triển','chậm trễ, trở ngại'],['ăn mừng, mái ấm','bất ổn, chuyển tiếp'],['cạnh tranh, bất đồng','tránh né, hòa giải'],['chiến thắng, được công nhận','thất bại, thiếu công nhận'],['kiên định, thách thức','kiệt sức, buông xuôi'],['chuyển động nhanh, tin tức','chậm trễ, hỗn loạn'],['kiên cường, đề phòng','kiệt sức, cố chấp'],['gánh nặng, trách nhiệm','quá tải, buông bớt'],['khám phá, ý tưởng mới','bốc đồng, thiếu định hướng'],['hành động, phiêu lưu','nóng vội, thiếu kiên nhẫn'],['tự tin, lôi cuốn','ghen tị, thiếu tự tin'],['tầm nhìn, lãnh đạo','độc đoán, hấp tấp']],
+  cups: [['tình cảm mới, trực giác','cảm xúc dồn nén, trống rỗng'],['kết đôi, hòa hợp','bất hòa, mất cân bằng'],['tình bạn, ăn mừng','rạn nứt nhóm, thừa thãi'],['chán nản, suy ngẫm','tỉnh thức, nắm cơ hội'],['mất mát, tiếc nuối','chấp nhận, hồi phục'],['hoài niệm, ký ức','mắc kẹt quá khứ'],['lựa chọn, mộng tưởng','rõ ràng, quyết định'],['rời bỏ, tìm điều sâu xa','lưỡng lự, sợ thay đổi'],['mãn nguyện, ước nguyện','tự mãn, chưa thỏa'],['hạnh phúc viên mãn','bất hòa gia đình'],['thông điệp tình cảm, mơ mộng','cảm xúc non nớt, né tránh'],['lãng mạn, theo trái tim','mơ mộng hão, thất thường'],['từ bi, thấu cảm','phụ thuộc cảm xúc, quá nhạy'],['cân bằng cảm xúc, bao dung','ủ rũ, thao túng cảm xúc']],
+  swords: [['đột phá, sáng suốt','hỗn loạn ý nghĩ, hiểu lầm'],['bế tắc, do dự','quyết định, gỡ bế tắc'],['tổn thương, chia ly','chữa lành, tha thứ'],['nghỉ ngơi, tĩnh tâm','kiệt sức, trì trệ'],['xung đột, bất hòa','hòa giải, buông hận'],['chuyển tiếp, rời đi','mắc kẹt, kháng cự'],['mưu mẹo, chiến lược','thú nhận, lương tâm'],['trói buộc, tự giới hạn','giải thoát, tìm lối ra'],['lo âu, dằn vặt','hy vọng, vượt nỗi sợ'],['kết thúc đau đớn','hồi sinh, vực dậy'],['tò mò, cảnh giác','nói suông, hấp tấp'],['quyết liệt, hành động nhanh','hung hăng, thiếu suy xét'],['sắc sảo, thẳng thắn','lạnh lùng, cay nghiệt'],['lý trí, công minh','lạm quyền, lạnh lùng']],
+  pentacles: [['cơ hội mới, thịnh vượng','cơ hội lỡ, thiếu nền tảng'],['cân bằng, linh hoạt','quá tải, mất cân đối'],['hợp tác, kỹ năng','thiếu phối hợp, qua loa'],['an toàn, kiểm soát','keo kiệt, bám víu'],['khó khăn, thiếu thốn','hồi phục, qua cơn bĩ'],['cho-nhận, hào phóng','bất cân, nợ nần'],['kiên nhẫn, đầu tư dài hạn','sốt ruột, đầu tư kém'],['chăm chỉ, rèn nghề','cẩu thả, thiếu động lực'],['tự chủ, sung túc','lệ thuộc, phô trương'],['của cải, bền vững','rủi ro tài chính'],['ham học, mục tiêu','lơ đãng, trì hoãn'],['cần mẫn, đáng tin','trì trệ, bảo thủ'],['chăm lo, thực tế','ôm đồm, bỏ bê bản thân'],['thành đạt, ổn định','tham lam, bảo thủ']]
 }
 
 function buildMinor() {
-  const out = []
-  let id = 22
+  const out = []; let id = 22
   for (const s of SUITS) {
     MINOR_KW[s.key].forEach((kw, i) => {
       out.push({
-        id: id++, arcana: 'minor', suit: s.vi, element: s.el,
-        roman: RANK_VI[i], symbol: s.sym,
-        name: RANK_EN[i] + ' of ' + s.en,
-        nameVi: RANK_VI[i] + ' ' + s.vi,
+        id: id++, arcana: 'minor', suit: s.vi, element: s.el, roman: RANK_VI[i], symbol: s.sym,
+        name: RANK_EN[i] + ' of ' + s.en, nameVi: RANK_VI[i] + ' ' + s.vi,
         upKeys: kw[0].split(', '), revKeys: kw[1].split(', ')
       })
     })
@@ -205,7 +162,6 @@ export function drawCards(n) {
   return idx.slice(0, n).map(i => ({ card: TAROT_CARDS[i], up: Math.random() < 0.5 }))
 }
 
-/** Lá bài hôm nay — tất định theo ngày (cùng một ngày luôn ra cùng lá) */
 export function cardOfDay(date = new Date()) {
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
   const idx = seed % TAROT_CARDS.length
@@ -213,95 +169,94 @@ export function cardOfDay(date = new Date()) {
   return { card: TAROT_CARDS[idx], up }
 }
 
-/* ===== Ảnh bài Rider–Waite–Smith (1909, phạm vi công cộng) =====
- * Nhúng từ Wikimedia Commons qua Special:FilePath (ổn định theo tên file).
- * Kèm fallback emoji ở UI nếu ảnh lỗi/offline. */
-const MAJOR_IMG = [
-  'RWS_Tarot_00_Fool.jpg', 'RWS_Tarot_01_Magician.jpg', 'RWS_Tarot_02_High_Priestess.jpg', 'RWS_Tarot_03_Empress.jpg',
-  'RWS_Tarot_04_Emperor.jpg', 'RWS_Tarot_05_Hierophant.jpg', 'RWS_Tarot_06_Lovers.jpg', 'RWS_Tarot_07_Chariot.jpg',
-  'RWS_Tarot_08_Strength.jpg', 'RWS_Tarot_09_Hermit.jpg', 'RWS_Tarot_10_Wheel_of_Fortune.jpg', 'RWS_Tarot_11_Justice.jpg',
-  'RWS_Tarot_12_Hanged_Man.jpg', 'RWS_Tarot_13_Death.jpg', 'RWS_Tarot_14_Temperance.jpg', 'RWS_Tarot_15_Devil.jpg',
-  'RWS_Tarot_16_Tower.jpg', 'RWS_Tarot_17_Star.jpg', 'RWS_Tarot_18_Moon.jpg', 'RWS_Tarot_19_Sun.jpg',
-  'RWS_Tarot_20_Judgement.jpg', 'RWS_Tarot_21_World.jpg'
-]
+/* ===== Ảnh bài Rider–Waite–Smith (Wikimedia Commons, phạm vi công cộng) ===== */
+const MAJOR_IMG = ['RWS_Tarot_00_Fool.jpg','RWS_Tarot_01_Magician.jpg','RWS_Tarot_02_High_Priestess.jpg','RWS_Tarot_03_Empress.jpg','RWS_Tarot_04_Emperor.jpg','RWS_Tarot_05_Hierophant.jpg','RWS_Tarot_06_Lovers.jpg','RWS_Tarot_07_Chariot.jpg','RWS_Tarot_08_Strength.jpg','RWS_Tarot_09_Hermit.jpg','RWS_Tarot_10_Wheel_of_Fortune.jpg','RWS_Tarot_11_Justice.jpg','RWS_Tarot_12_Hanged_Man.jpg','RWS_Tarot_13_Death.jpg','RWS_Tarot_14_Temperance.jpg','RWS_Tarot_15_Devil.jpg','RWS_Tarot_16_Tower.jpg','RWS_Tarot_17_Star.jpg','RWS_Tarot_18_Moon.jpg','RWS_Tarot_19_Sun.jpg','RWS_Tarot_20_Judgement.jpg','RWS_Tarot_21_World.jpg']
 const SUIT_PREFIX = { 'Gậy': 'Wands', 'Cốc': 'Cups', 'Kiếm': 'Swords', 'Tiền': 'Pents' }
 const RANK_NUM = { 'Át': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'Thị Đồng': 11, 'Hiệp Sĩ': 12, 'Nữ Hoàng': 13, 'Vua': 14 }
-
 export function cardImageFile(card) {
   if (card.arcana === 'major') return MAJOR_IMG[card.id]
   const p = SUIT_PREFIX[card.suit], n = RANK_NUM[card.roman]
   return p && n ? p + String(n).padStart(2, '0') + '.jpg' : null
 }
+/* Đặt true SAU KHI đã chạy `npm run fetch-cards` (tải 78 ảnh về public/cards/)
+ * để dùng ảnh nội bộ — chạy offline, nhanh hơn, không phụ thuộc Wikimedia.
+ * Mặc định false: hotlink Wikimedia Commons (cần mạng nhưng luôn sẵn). */
+export const LOCAL_CARDS = false
 export function cardImageUrl(card, width = 320) {
   const f = cardImageFile(card)
-  return f ? `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=${width}` : null
+  if (!f) return null
+  if (LOCAL_CARDS) {
+    const base = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || './'
+    return base + 'cards/' + f
+  }
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=${width}`
 }
 
-/* ===== Luận giải đầy đủ 56 lá Ẩn Phụ (xuôi/ngược) — bám truyền thống RWS ===== */
+/* ===== Luận giải đầy đủ 56 lá Ẩn Phụ (xuôi/ngược, 2 câu) ===== */
 const MINOR_TEXT = {
   wands: [
-    { u: 'Tia lửa cảm hứng, khởi đầu đầy nhiệt huyết và tiềm năng.', r: 'Ý tưởng chững lại, thiếu động lực hoặc bị trì hoãn.' },
-    { u: 'Đứng trước lựa chọn, lập kế hoạch và phóng tầm nhìn xa.', r: 'Do dự, ngại rời vùng an toàn, kế hoạch nửa vời.' },
-    { u: 'Nỗ lực bắt đầu đơm hoa; mở rộng và tiến về phía trước.', r: 'Chậm trễ, trở ngại, kỳ vọng chưa thành.' },
-    { u: 'Ăn mừng, ổn định và niềm vui sum vầy nơi mái ấm.', r: 'Chuyển tiếp chưa trọn, thiếu gắn kết tạm thời.' },
-    { u: 'Cạnh tranh, va chạm quan điểm; cần tinh thần xây dựng.', r: 'Né tránh xung đột, tìm cách hòa giải, buông căng thẳng.' },
-    { u: 'Chiến thắng và được công nhận sau nỗ lực bền bỉ.', r: 'Thiếu ghi nhận, thành công bị trì hoãn, tự tin lung lay.' },
-    { u: 'Giữ vững lập trường, can đảm bảo vệ điều mình tin.', r: 'Kiệt sức, áp lực dồn nén, muốn buông xuôi.' },
-    { u: 'Mọi việc chuyển động nhanh; tin tức và tiến triển dồn dập.', r: 'Chậm trễ, lộn xộn, thông tin đến sai thời điểm.' },
-    { u: 'Kiên cường trước thử thách cuối, đề phòng và bền chí.', r: 'Mệt mỏi, phòng thủ thái quá, cố chấp giữ rào cản.' },
-    { u: 'Gánh nặng trách nhiệm; ôm đồm quá nhiều việc một lúc.', r: 'Học cách buông bớt và san sẻ gánh nặng.' },
-    { u: 'Tinh thần khám phá, ý tưởng mới và nhiệt huyết tuổi trẻ.', r: 'Bốc đồng, thiếu định hướng, tin tức gây thất vọng.' },
-    { u: 'Lao về phía trước đầy đam mê và tinh thần phiêu lưu.', r: 'Nóng vội, thiếu kiên nhẫn, hành động bốc đồng.' },
-    { u: 'Tự tin, nồng nhiệt và cuốn hút, làm chủ cuộc chơi.', r: 'Thiếu tự tin, ghen tị, năng lượng phân tán.' },
-    { u: 'Tầm nhìn lãnh đạo, quyết đoán và truyền cảm hứng.', r: 'Độc đoán, hấp tấp, áp đặt lên người khác.' }
+    { u: 'Một tia lửa cảm hứng vừa lóe lên: ý tưởng mới, đam mê mới hay cơ hội khởi sự. Hãy nắm lấy và hành động khi ngọn lửa còn nóng.', r: 'Cảm hứng chững lại hoặc dự định bị trì hoãn. Có thể bạn thiếu động lực hay chưa rõ hướng — đừng ép, hãy chờ lửa nhen lại.' },
+    { u: 'Bạn đứng trước một lựa chọn và đang phóng tầm nhìn ra xa để lập kế hoạch. Hãy mạnh dạn quyết định thay vì mãi đứng giữa hai bờ.', r: 'Sự do dự và nỗi sợ rời vùng an toàn khiến kế hoạch dở dang. Hãy thu hẹp lựa chọn và cam kết với một hướng đi.' },
+    { u: 'Những nỗ lực ban đầu đang đơm hoa; tầm nhìn của bạn bắt đầu mở rộng. Đây là lúc tự tin tiến xa hơn và đón cơ hội hợp tác.', r: 'Có sự chậm trễ, trở ngại hoặc kỳ vọng chưa thành. Hãy kiên nhẫn rà soát lại kế hoạch trước khi đi tiếp.' },
+    { u: 'Một dịp ăn mừng, ổn định và niềm vui sum vầy nơi mái ấm. Hãy tận hưởng thành quả và sự hòa hợp đang có.', r: 'Giai đoạn chuyển tiếp khiến cảm giác gắn kết chưa trọn vẹn. Nền tảng vẫn đó — chỉ cần thêm thời gian vun đắp.' },
+    { u: 'Cạnh tranh và va chạm quan điểm đang diễn ra. Hãy xem đó là động lực rèn giũa thay vì xung đột hơn thua.', r: 'Bạn đang né tránh xung đột hoặc tìm cách hòa giải. Buông bớt cái tôi sẽ giúp căng thẳng lắng xuống.' },
+    { u: 'Chiến thắng và sự công nhận đang đến sau nỗ lực bền bỉ. Hãy đón nhận lời khen và tự hào về chặng đường đã qua.', r: 'Thành công bị trì hoãn hoặc thiếu ghi nhận khiến tự tin lung lay. Hãy nhớ giá trị của mình không phụ thuộc lời tán dương.' },
+    { u: 'Bạn đang ở thế phải giữ vững lập trường và can đảm bảo vệ điều mình tin. Kiên định lúc này sẽ được đền đáp.', r: 'Áp lực dồn nén khiến bạn kiệt sức và muốn buông xuôi. Hãy nghỉ lấy sức và chọn trận đáng để chiến đấu.' },
+    { u: 'Mọi việc chuyển động nhanh: tin tức, tiến triển và cơ hội dồn dập. Hãy bắt nhịp và hành động dứt khoát.', r: 'Sự chậm trễ và lộn xộn khiến thông tin đến sai thời điểm. Hãy kiên nhẫn, đừng vội phản ứng khi mọi thứ còn rối.' },
+    { u: 'Bạn kiên cường trước thử thách cuối cùng, vẫn đứng vững dù mỏi mệt. Hãy giữ ranh giới và đừng bỏ cuộc khi sắp tới đích.', r: 'Sự phòng thủ thái quá và cố chấp đang vắt kiệt bạn. Hãy hạ bớt hàng rào và cân nhắc khi nào nên buông.' },
+    { u: 'Bạn đang gánh quá nhiều trách nhiệm cùng lúc, vai trĩu nặng. Hãy san sẻ bớt và nhớ rằng không nhất thiết tự ôm tất cả.', r: 'Đã đến lúc đặt bớt gánh nặng xuống và ủy thác cho người khác. Buông bớt sẽ giúp bạn đi xa hơn.' },
+    { u: 'Tinh thần khám phá và ý tưởng mới đang bừng lên đầy nhiệt huyết. Hãy cho phép mình tò mò và thử nghiệm.', r: 'Sự bốc đồng và thiếu định hướng có thể khiến bạn lạc lối; một tin tức làm bạn hụt hẫng. Hãy đặt mục tiêu rõ trước khi lao đi.' },
+    { u: 'Bạn lao về phía trước đầy đam mê và tinh thần phiêu lưu. Đây là lúc dấn thân, miễn là giữ được tầm nhìn.', r: 'Sự nóng vội và thiếu kiên nhẫn dễ dẫn tới hành động bốc đồng. Hãy hãm phanh và suy xét hệ quả.' },
+    { u: 'Bạn tự tin, nồng nhiệt và cuốn hút, làm chủ cuộc chơi bằng năng lượng riêng. Hãy tỏa sáng và truyền cảm hứng.', r: 'Sự thiếu tự tin hoặc ghen tị đang khiến năng lượng phân tán. Hãy quay về với giá trị thật của mình.' },
+    { u: 'Tầm nhìn lãnh đạo, sự quyết đoán và khả năng truyền cảm hứng đang ở phía bạn. Hãy dẫn dắt bằng tầm nhìn dài hạn.', r: 'Sự độc đoán và hấp tấp có thể khiến bạn áp đặt người khác. Hãy lắng nghe và tiết chế cái tôi.' }
   ],
   cups: [
-    { u: 'Trái tim mở ra, tình cảm và trực giác mới tuôn chảy.', r: 'Cảm xúc bị dồn nén, trống rỗng hoặc khép lòng.' },
-    { u: 'Kết đôi hài hòa, sự đồng điệu và gắn kết hai phía.', r: 'Bất hòa, lệch nhịp, mối quan hệ mất cân bằng.' },
-    { u: 'Tình bạn, ăn mừng và niềm vui sẻ chia cùng cộng đồng.', r: 'Rạn nứt nhóm, vui quá đà, thị phi.' },
-    { u: 'Chán nản, thờ ơ; bỏ lỡ cơ hội ngay trước mắt.', r: 'Tỉnh thức trở lại, sẵn sàng đón nhận điều mới.' },
-    { u: 'Tiếc nuối mất mát, nhưng vẫn còn điều đáng để giữ.', r: 'Chấp nhận, tha thứ và bắt đầu hồi phục.' },
-    { u: 'Hoài niệm ngọt ngào, ký ức và sự trong trẻo ngây thơ.', r: 'Mắc kẹt trong quá khứ, khó bước tiếp.' },
-    { u: 'Nhiều lựa chọn mộng mơ; hãy cẩn thận với ảo tưởng.', r: 'Sáng tỏ, dứt khoát chọn điều thực tế.' },
-    { u: 'Rời bỏ điều không còn thỏa mãn để tìm ý nghĩa sâu hơn.', r: 'Lưỡng lự ở hay đi, sợ thay đổi.' },
-    { u: 'Mãn nguyện, điều ước thành hiện thực, cảm giác như ý.', r: 'Tự mãn, thỏa mãn bề mặt, mong cầu chưa trọn.' },
-    { u: 'Hạnh phúc viên mãn, gia đình hòa thuận đầm ấm.', r: 'Bất hòa gia đình, lý tưởng đổ vỡ.' },
-    { u: 'Thông điệp tình cảm, sáng tạo và tâm hồn mơ mộng.', r: 'Cảm xúc non nớt, né tránh, mơ mộng thiếu thực tế.' },
-    { u: 'Lãng mạn theo tiếng gọi trái tim, lời đề nghị ngọt ngào.', r: 'Mơ mộng hão, thất thường, lời hứa khó tin.' },
-    { u: 'Bao dung, thấu cảm và nuôi dưỡng bằng trái tim ấm.', r: 'Quá nhạy cảm, phụ thuộc tình cảm, dễ tổn thương.' },
-    { u: 'Làm chủ cảm xúc, điềm tĩnh và bao dung.', r: 'Ủ rũ, thao túng cảm xúc, kìm nén bất ổn.' }
+    { u: 'Trái tim bạn đang mở ra: một tình cảm mới, nguồn cảm xúc và trực giác tuôn chảy. Hãy đón nhận và để mình được yêu thương.', r: 'Cảm xúc bị dồn nén hoặc bạn đang khép lòng, thấy trống rỗng. Hãy cho phép mình cảm nhận và bày tỏ trở lại.' },
+    { u: 'Một sự kết đôi hài hòa, đồng điệu và gắn kết hai phía. Đây là mối quan hệ được xây trên sự tôn trọng và thấu hiểu.', r: 'Có sự bất hòa hoặc lệch nhịp trong quan hệ. Hãy giao tiếp chân thành để tìm lại cân bằng.' },
+    { u: 'Tình bạn, niềm vui và sự sẻ chia đang nở rộ trong cộng đồng. Hãy ăn mừng và trân trọng những người bên cạnh.', r: 'Có thể là rạn nứt trong nhóm, vui quá đà hoặc thị phi. Hãy chọn lọc các mối quan hệ nuôi dưỡng bạn.' },
+    { u: 'Cảm giác chán nản, thờ ơ có thể khiến bạn bỏ lỡ cơ hội ngay trước mắt. Hãy ngẩng lên và nhìn lại điều mình đang có.', r: 'Bạn đang tỉnh thức trở lại và sẵn sàng đón nhận điều mới. Một lời mời hay cơ hội xứng đáng được cân nhắc.' },
+    { u: 'Sự mất mát và tiếc nuối là có thật, nhưng vẫn còn điều đáng để giữ. Hãy cho phép mình buồn rồi nhẹ nhàng quay về phía ánh sáng.', r: 'Bạn đang chấp nhận, tha thứ và bắt đầu hồi phục sau tổn thương. Quá khứ dần khép lại để bạn bước tiếp.' },
+    { u: 'Những hoài niệm ngọt ngào và ký ức trong trẻo trở về sưởi ấm bạn. Đây là lúc trân trọng cội nguồn và sự chân thành.', r: 'Bạn có thể đang mắc kẹt trong quá khứ và khó bước tiếp. Hãy giữ kỷ niệm đẹp nhưng sống cho hiện tại.' },
+    { u: 'Nhiều lựa chọn mộng mơ bày ra trước mắt; hãy cẩn thận với ảo tưởng. Phân định đâu là khát khao thật, đâu chỉ là mơ hồ.', r: 'Sương mù tan đi, bạn nhìn rõ và dứt khoát chọn điều thực tế. Đây là lúc cam kết thay vì lửng lơ.' },
+    { u: 'Bạn rời bỏ điều không còn thỏa mãn để đi tìm ý nghĩa sâu hơn. Đây là một sự ra đi dũng cảm và cần thiết.', r: 'Bạn đang lưỡng lự giữa ở lại hay rời đi, bị nỗi sợ thay đổi níu giữ. Hãy lắng nghe điều trái tim thật sự cần.' },
+    { u: 'Sự mãn nguyện và điều ước thành hiện thực — cảm giác "như ý". Hãy tận hưởng và biết ơn những gì mình đạt được.', r: 'Có thể là sự tự mãn hoặc thỏa mãn chỉ ở bề mặt, mong cầu sâu xa chưa trọn. Hãy hỏi lòng mình điều gì mới thật sự khiến bạn đầy.' },
+    { u: 'Hạnh phúc viên mãn, gia đình hòa thuận và sự ấm áp lan tỏa. Đây là bức tranh của niềm vui bền vững và tình thân.', r: 'Có bất hòa trong gia đình hoặc một lý tưởng đẹp bị đổ vỡ. Hãy điều chỉnh kỳ vọng và hàn gắn từ những điều nhỏ.' },
+    { u: 'Một thông điệp tình cảm, nguồn sáng tạo và tâm hồn mơ mộng đang đến. Hãy mở lòng đón nhận và bày tỏ.', r: 'Cảm xúc còn non nớt hoặc bạn đang né tránh, mơ mộng thiếu thực tế. Hãy chững chạc hơn với cảm xúc của mình.' },
+    { u: 'Bạn lãng mạn và đi theo tiếng gọi trái tim, có thể là một lời đề nghị ngọt ngào. Hãy để cảm xúc dẫn đường nhưng vẫn tỉnh táo.', r: 'Sự mơ mộng hão và thất thường khiến lời hứa khó tin. Hãy nhìn vào hành động thực tế thay vì lời nói hoa mỹ.' },
+    { u: 'Sự bao dung, thấu cảm và nuôi dưỡng bằng trái tim ấm đang là sức mạnh của bạn. Hãy chăm sóc người khác mà không quên mình.', r: 'Bạn có thể quá nhạy cảm hoặc phụ thuộc cảm xúc, dễ tổn thương. Hãy thiết lập ranh giới lành mạnh.' },
+    { u: 'Bạn làm chủ cảm xúc, điềm tĩnh và bao dung trước sóng gió. Đây là sự trưởng thành của trái tim biết tự cân bằng.', r: 'Cảm xúc có thể đang bị kìm nén hoặc dùng để thao túng, khiến bạn ủ rũ. Hãy thành thật và để cảm xúc chảy đúng cách.' }
   ],
   swords: [
-    { u: 'Đột phá tư duy, sự thật sắc bén và sự minh mẫn.', r: 'Rối trí, hiểu lầm, dùng lý trí sai cách.' },
-    { u: 'Bế tắc do dự, né tránh một quyết định khó.', r: 'Gỡ bế tắc, đối diện và đưa ra lựa chọn.' },
-    { u: 'Tổn thương, đau lòng và chia ly cần được thừa nhận.', r: 'Vết thương dần lành, tha thứ và buông bỏ.' },
-    { u: 'Nghỉ ngơi, tĩnh dưỡng và hồi phục sau căng thẳng.', r: 'Kiệt sức kéo dài, cần dừng nhưng chưa dừng được.' },
-    { u: 'Xung đột thắng-thua, chiến thắng để lại dư vị đắng.', r: 'Hòa giải, buông hơn thua, hàn gắn bất hòa.' },
-    { u: 'Chuyển sang vùng nước lặng hơn, rời bỏ khó khăn.', r: 'Mắc kẹt, kháng cự thay đổi, hành trình bị hoãn.' },
-    { u: 'Mưu lược, hành động âm thầm; cân nhắc sự chính trực.', r: 'Thú nhận, lương tâm cắn rứt, kế hoạch bị lộ.' },
-    { u: 'Cảm giác bị trói buộc — phần lớn là tự giới hạn.', r: 'Nhận ra lối thoát, cởi trói và giải phóng mình.' },
-    { u: 'Lo âu, mất ngủ, nỗi sợ bị phóng đại trong đêm.', r: 'Nỗi sợ dịu lại, tìm được hy vọng và trợ giúp.' },
-    { u: 'Kết thúc đau đớn chạm đáy — nhưng bình minh sắp đến.', r: 'Hồi sinh, vực dậy sau cùng cực.' },
-    { u: 'Tò mò, cảnh giác, đầu óc sắc và ham tìm sự thật.', r: 'Nói nhiều làm ít, hấp tấp, dò xét vụng về.' },
-    { u: 'Lao tới mục tiêu quyết liệt, hành động chớp nhoáng.', r: 'Hung hăng, thiếu suy xét, lời nói sắc như dao.' },
-    { u: 'Sắc sảo, độc lập, nhìn thấu vấn đề và nói thẳng.', r: 'Lạnh lùng, cay nghiệt, phán xét khắt khe.' },
-    { u: 'Lý trí công minh, quyền uy của trí tuệ và nguyên tắc.', r: 'Lạm quyền, lạnh lùng, áp đặt lý lẽ.' }
+    { u: 'Một đột phá trong tư duy: sự thật hiện ra sắc bén và đầu óc minh mẫn. Đây là lúc nói thẳng, nghĩ rõ và cắt bỏ mơ hồ.', r: 'Suy nghĩ rối ren, hiểu lầm hoặc dùng lý trí sai cách. Hãy làm rõ thông tin trước khi kết luận.' },
+    { u: 'Bạn đang bế tắc, do dự và né tránh một quyết định khó. Hãy gỡ tấm khăn bịt mắt và dám nhìn vào lựa chọn.', r: 'Bế tắc được tháo gỡ; bạn đối diện và đưa ra quyết định. Sự thật được thừa nhận giúp bạn nhẹ lòng.' },
+    { u: 'Một tổn thương, nỗi đau lòng hay chia ly cần được thừa nhận thay vì chối bỏ. Hãy cho phép trái tim được khóc để rồi lành.', r: 'Vết thương dần lành, sự tha thứ và buông bỏ đang đến. Bạn đang hồi phục sau nỗi đau.' },
+    { u: 'Đây là lúc nghỉ ngơi, tĩnh dưỡng và hồi phục sau căng thẳng. Hãy cho tâm trí được nghỉ trước khi bước tiếp.', r: 'Sự kiệt sức kéo dài; bạn cần dừng nhưng chưa cho phép mình dừng. Hãy ưu tiên phục hồi trước khi quá muộn.' },
+    { u: 'Một cuộc xung đột thắng-thua đang diễn ra, chiến thắng để lại dư vị đắng. Hãy cân nhắc cái giá của việc hơn thua.', r: 'Bạn đang hòa giải, buông hơn thua và hàn gắn bất hòa. Đây là lúc làm lành thay vì tiếp tục đối đầu.' },
+    { u: 'Bạn đang chuyển sang vùng nước lặng hơn, rời bỏ khó khăn phía sau. Hành trình này tuy buồn nhưng cần thiết để hồi phục.', r: 'Bạn mắc kẹt hoặc kháng cự thay đổi, khiến hành trình bị hoãn. Hãy can đảm rời đi để tiến về phía trước.' },
+    { u: 'Mưu lược và hành động âm thầm có thể giúp bạn đạt mục tiêu; hãy cân nhắc tính chính trực. Đôi khi rút lui khôn ngoan hơn đối đầu.', r: 'Sự thật bị giấu nay lộ ra, hoặc lương tâm cắn rứt. Hãy hành động minh bạch để tránh hậu quả.' },
+    { u: 'Bạn cảm thấy bị trói buộc, bất lực — nhưng phần lớn là tự giới hạn. Tháo khăn bịt mắt ra, lối thoát vẫn luôn ở đó.', r: 'Bạn đang nhận ra lối thoát, cởi trói và giải phóng mình. Một giai đoạn tự do và nhẹ nhõm đang mở ra.' },
+    { u: 'Lo âu, mất ngủ và nỗi sợ bị phóng đại trong đêm tối. Hãy nhớ phần lớn nỗi sợ chỉ ở trong đầu, không phải thực tại.', r: 'Nỗi sợ dần dịu lại; bạn tìm được hy vọng và sự trợ giúp. Bình minh đang đến sau đêm dài.' },
+    { u: 'Một kết thúc đau đớn chạm đáy — nhưng đáy cũng là nơi bắt đầu đi lên. Điều tệ nhất đã qua, bình minh sắp ló dạng.', r: 'Sự hồi sinh và vực dậy sau cùng cực. Bạn đang gượng dậy mạnh mẽ hơn từ đổ vỡ.' },
+    { u: 'Sự tò mò, cảnh giác và đầu óc sắc bén thôi thúc bạn đi tìm sự thật. Hãy ham học hỏi nhưng cẩn trọng lời nói.', r: 'Nói nhiều làm ít, hấp tấp hoặc dò xét vụng về. Hãy suy nghĩ kỹ trước khi phát ngôn.' },
+    { u: 'Bạn lao tới mục tiêu quyết liệt, hành động chớp nhoáng và đầy tham vọng. Tốc độ là lợi thế nếu đi đúng hướng.', r: 'Sự hung hăng và thiếu suy xét khiến lời nói sắc như dao. Hãy hãm lại và cân nhắc tác động lên người khác.' },
+    { u: 'Sự sắc sảo, độc lập và thẳng thắn giúp bạn nhìn thấu vấn đề. Hãy dùng trí tuệ rõ ràng để soi sáng cho mình và người.', r: 'Sự lạnh lùng và cay nghiệt có thể khiến bạn phán xét khắt khe. Hãy thêm chút bao dung vào lý trí.' },
+    { u: 'Lý trí công minh và quyền uy của trí tuệ đang ở bên bạn. Hãy ra quyết định dựa trên nguyên tắc và sự công bằng.', r: 'Quyền lực trí tuệ có thể bị lạm dụng, trở nên lạnh lùng và áp đặt. Hãy cân bằng giữa lý lẽ và lòng người.' }
   ],
   pentacles: [
-    { u: 'Cơ hội vật chất mới, hạt giống của thịnh vượng.', r: 'Cơ hội lỡ làng, kế hoạch tài chính thiếu nền tảng.' },
-    { u: 'Linh hoạt cân bằng nhiều việc, xoay xở khéo léo.', r: 'Quá tải, mất cân đối, chật vật giữ thăng bằng.' },
-    { u: 'Hợp tác, mài giũa kỹ năng và làm việc nhóm hiệu quả.', r: 'Thiếu phối hợp, làm qua loa, bất đồng vai trò.' },
-    { u: 'Giữ gìn, tích lũy và bám trụ sự an toàn.', r: 'Keo kiệt hoặc bám víu thái quá, sợ mất mát.' },
-    { u: 'Khó khăn, thiếu thốn; đừng quên vẫn có nơi nương tựa.', r: 'Qua cơn bĩ cực, hồi phục tài chính và tinh thần.' },
-    { u: 'Cho và nhận hào phóng, sẻ chia đúng lúc.', r: 'Bất cân trong cho-nhận, nợ nần hoặc lệ thuộc.' },
-    { u: 'Kiên nhẫn vun trồng, đánh giá thành quả dài hạn.', r: 'Sốt ruột, đầu tư kém hiệu quả, nản lòng.' },
-    { u: 'Chăm chỉ rèn nghề, tỉ mỉ trau dồi kỹ năng.', r: 'Cẩu thả, thiếu động lực, làm cho có.' },
-    { u: 'Tự chủ, sung túc và tận hưởng thành quả tự thân.', r: 'Phụ thuộc, phô trương, đánh đổi tự do lấy vật chất.' },
-    { u: 'Của cải bền vững, gia sản và nền tảng lâu dài.', r: 'Rủi ro tài chính, mâu thuẫn tiền bạc hay thừa kế.' },
-    { u: 'Ham học, đặt mục tiêu và khởi đầu thực tế.', r: 'Lơ đãng, trì hoãn, mơ mà không làm.' },
-    { u: 'Cần mẫn, đáng tin, kiên trì từng bước chắc chắn.', r: 'Trì trệ, bảo thủ, công việc giậm chân.' },
-    { u: 'Chăm lo ấm áp, thực tế và vun vén tổ ấm.', r: 'Ôm đồm, bỏ bê bản thân, lo vật chất quá mức.' },
-    { u: 'Thành đạt, ổn định và quản trị tài sản khôn ngoan.', r: 'Tham lam, bảo thủ, đặt tiền bạc lên trên hết.' }
+    { u: 'Một cơ hội vật chất mới đang nảy mầm: công việc, tiền bạc hay dự án thịnh vượng. Hãy đặt nền móng vững và nuôi dưỡng nó.', r: 'Cơ hội có thể lỡ làng hoặc kế hoạch tài chính thiếu nền tảng. Hãy chuẩn bị kỹ trước khi khởi sự.' },
+    { u: 'Bạn đang khéo léo cân bằng nhiều việc cùng lúc, linh hoạt xoay xở. Hãy giữ nhịp và đừng nhận quá sức.', r: 'Quá tải và mất cân đối khiến bạn chật vật giữ thăng bằng. Hãy ưu tiên và buông bớt việc không thiết yếu.' },
+    { u: 'Sự hợp tác, mài giũa kỹ năng và làm việc nhóm đang mang lại kết quả tốt. Hãy trân trọng đóng góp của mỗi người.', r: 'Thiếu phối hợp hoặc làm qua loa khiến chất lượng đi xuống. Hãy thống nhất vai trò và tiêu chuẩn chung.' },
+    { u: 'Bạn đang giữ gìn, tích lũy và bám trụ sự an toàn. Một chút ổn định là tốt, nhưng đừng siết quá chặt.', r: 'Sự keo kiệt hoặc bám víu thái quá vì sợ mất mát. Hãy học cách cho đi và nới lỏng kiểm soát.' },
+    { u: 'Giai đoạn khó khăn, thiếu thốn về vật chất hoặc tinh thần. Đừng quên rằng vẫn có nơi nương tựa nếu bạn chịu mở lời.', r: 'Bạn đang qua cơn bĩ cực, hồi phục về tài chính và tinh thần. Ánh sáng cuối đường hầm đã hiện.' },
+    { u: 'Sự cho và nhận hào phóng, sẻ chia đúng lúc đang diễn ra. Hãy rộng lượng, và cũng biết đón nhận sự giúp đỡ.', r: 'Có sự bất cân trong cho-nhận, nợ nần hoặc lệ thuộc. Hãy thiết lập sự công bằng và ranh giới rõ ràng.' },
+    { u: 'Bạn kiên nhẫn vun trồng và đánh giá thành quả trong dài hạn. Hãy tin vào quá trình, mùa gặt sẽ đến.', r: 'Sự sốt ruột hoặc đầu tư kém hiệu quả khiến bạn nản lòng. Hãy xem lại chiến lược thay vì bỏ cuộc giữa chừng.' },
+    { u: 'Sự chăm chỉ, tỉ mỉ và rèn nghề đang nâng tầm kỹ năng của bạn. Hãy kiên trì trau dồi, thành thạo sẽ tới.', r: 'Sự cẩu thả hoặc thiếu động lực khiến bạn làm cho có. Hãy tìm lại ý nghĩa trong điều mình làm.' },
+    { u: 'Sự tự chủ, sung túc và khả năng tận hưởng thành quả tự thân. Bạn xứng đáng với những gì mình tạo dựng.', r: 'Sự phụ thuộc hoặc phô trương, đánh đổi tự do lấy vật chất. Hãy cân nhắc điều gì mới thật sự khiến bạn giàu có.' },
+    { u: 'Của cải bền vững, gia sản và một nền tảng lâu dài đang hình thành. Đây là sự thịnh vượng vững chắc, có thể truyền lại.', r: 'Rủi ro tài chính hoặc mâu thuẫn tiền bạc, thừa kế. Hãy minh bạch và lập kế hoạch dài hạn cẩn thận.' },
+    { u: 'Tinh thần ham học, đặt mục tiêu và khởi đầu thực tế. Hãy bắt tay vào học hỏi và lên kế hoạch cụ thể.', r: 'Sự lơ đãng và trì hoãn — mơ mà không bắt tay làm. Hãy biến ý định thành bước đi đầu tiên.' },
+    { u: 'Sự cần mẫn, đáng tin và kiên trì từng bước chắc chắn. Tiến chậm mà chắc sẽ đưa bạn tới đích bền vững.', r: 'Sự trì trệ, bảo thủ khiến công việc giậm chân tại chỗ. Hãy làm mới cách tiếp cận để khơi lại đà.' },
+    { u: 'Sự chăm lo ấm áp, thực tế và biết vun vén tổ ấm. Bạn nuôi dưỡng người khác bằng cả tấm lòng lẫn sự thiết thực.', r: 'Ôm đồm hoặc bỏ bê bản thân vì lo vật chất quá mức. Hãy dành sự chăm sóc cho chính mình nữa.' },
+    { u: 'Sự thành đạt, ổn định và khả năng quản trị tài sản khôn ngoan. Bạn là chỗ dựa vững chắc và hào phóng cho người quanh mình.', r: 'Sự tham lam hoặc bảo thủ, đặt tiền bạc lên trên hết. Hãy nhớ giá trị con người vượt trên của cải.' }
   ]
 }
 const SUITKEY_BY_VI = { 'Gậy': 'wands', 'Cốc': 'cups', 'Kiếm': 'swords', 'Tiền': 'pentacles' }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING } from '../data/tuvi.js'
+import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING, CONGIAP_LUAN, NAP_AM_NGHIA } from '../data/tuvi.js'
+import { solar2lunar } from '../data/lunar.js'
 
 const VC = { 'Rất hợp': 'text-emerald-300', 'Hợp': 'text-emerald-300', 'Bình hòa': 'text-amber-200', 'Cần lưu ý': 'text-pink-300', 'Khá xung khắc': 'text-pink-300' }
 
@@ -27,7 +28,7 @@ export default function TuVi() {
       <section className="wrap py-10">
         <div className="disclaimer max-w-[900px] mx-auto">
           <b>Dữ kiện &amp; diễn giải.</b> Can–Chi–nạp âm và Can Chi ngày/giờ là <b>lịch pháp, kiểm chứng được</b> (mốc 1/3/2000 = Mậu Ngọ).
-          Hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi/Bát Trạch là <b>quan niệm phong thủy truyền thống</b>, chỉ tham khảo. Cung phi dùng năm <b>âm lịch</b> — sinh đầu năm dương lịch cần đối chiếu Tết.
+          Hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi/Bát Trạch là <b>quan niệm phong thủy truyền thống</b>, chỉ tham khảo. Ô <b>① Tra Can Chi</b> nếu nhập đủ ngày/tháng sẽ <b>tự quy đổi âm lịch</b> (thuật toán <a href="https://www.informatik.uni-leipzig.de/~duc/amlich/" target="_blank" rel="noopener">Hồ Ngọc Đức</a>) để chuẩn ranh giới Tết; ô cung phi vẫn nhập theo năm âm lịch.
           Nguồn: <a href="https://wiki.batdongsan.com.vn/wiki/thien-can-dia-chi-783653" target="_blank" rel="noopener">Wiki Batdongsan</a>, <a href="https://wiki.batdongsan.com.vn/wiki/cung-phi-la-gi-768289" target="_blank" rel="noopener">Cung phi Bát Trạch</a>, <a href="https://vi.wikipedia.org/wiki/Gi%E1%BB%9D_ho%C3%A0ng_%C4%91%E1%BA%A1o" target="_blank" rel="noopener">Giờ hoàng đạo</a>.
         </div>
       </section>
@@ -41,8 +42,12 @@ function CanChiTool() {
   const calc = () => {
     const yy = +y
     if (!yy || yy < 1 || yy > 3000) { setErr('Nhập năm sinh hợp lệ.'); setRes(null); return }
-    setErr(''); const r = tinhCanChi(yy); const mm = +m, dd = +d
-    setRes({ ...r, tet: mm && (mm === 1 || (mm === 2 && (!dd || dd <= 20))), yy, tt: tamTai(yy) })
+    const mm = +m, dd = +d
+    let al = null, ccYear = yy
+    if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) { al = solar2lunar(dd, mm, yy); ccYear = al.year }
+    setErr(''); const r = tinhCanChi(ccYear)
+    const t = new Date(); const cur = tinhCanChi(solar2lunar(t.getDate(), t.getMonth() + 1, t.getFullYear()).year)
+    setRes({ ...r, yy, ccYear, al, tt: tamTai(ccYear), tuoiMu: cur.year - ccYear + 1, curCanChi: cur.tenCanChi, namTuoi: cur.chi === r.chi })
   }
   return (
     <section className="wrap py-6">
@@ -52,7 +57,7 @@ function CanChiTool() {
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="panel p-[26px] mt-6 animate-fade">
-            <div className="text-center"><span className="badge badge-gold">Năm {res.yy}</span></div>
+            <div className="text-center flex gap-2 justify-center flex-wrap"><span className="badge badge-gold">{res.al ? 'Dương lịch ' + res.yy : 'Năm ' + res.yy}</span>{res.al && <span className="badge">Âm lịch {res.al.day}/{res.al.month}{res.al.leap ? ' (nhuận)' : ''}/{res.al.year}</span>}</div>
             <h3 className="text-center text-[2rem] my-1.5">{res.tenCanChi}</h3>
             <p className="text-center text-muted -mt-1.5">Tuổi <b>{res.conGiap}</b> · Mệnh <span className={'pill h-' + res.menhHanh}>{res.napAm}</span></p>
             <dl className="kv">
@@ -61,9 +66,13 @@ function CanChiTool() {
               <dt className="text-muted font-semibold">Nạp âm</dt><dd><span className={'pill h-' + res.menhHanh}>{res.menhHanh}</span> — {res.napAm}</dd>
               <dt className="text-muted font-semibold">Tương sinh / khắc</dt><dd>{res.menhHanh} sinh {NGU_HANH.sinh[res.menhHanh]}, khắc {NGU_HANH.khac[res.menhHanh]}</dd>
               <dt className="text-muted font-semibold">Màu hợp mệnh</dt><dd>{NGU_HANH.mau[res.menhHanh]}</dd>
+              <dt className="text-muted font-semibold">Ý nghĩa nạp âm</dt><dd>{NAP_AM_NGHIA[res.napAm]}</dd>
+              <dt className="text-muted font-semibold">Luận con giáp</dt><dd>{CONGIAP_LUAN[res.chi]}</dd>
               <dt className="text-muted font-semibold">Tam Tai</dt><dd>Tuổi {res.tt.nhom.join('-')} gặp Tam Tai vào các năm <b>{res.tt.nam.join(', ')}</b></dd>
+              <dt className="text-muted font-semibold">Tuổi âm (mụ) năm nay</dt><dd>{res.tuoiMu} tuổi · năm nay {res.curCanChi}{res.namTuoi && <b className="text-gold"> — đúng NĂM TUỔI (cùng con giáp)!</b>}</dd>
             </dl>
-            {res.tet && <div className="disclaimer mt-2"><b>Ranh giới Tết:</b> sinh đầu năm dương lịch — nếu trước Tết, tuổi thực có thể là <b>năm {res.yy - 1}</b>. <span className="note">Cần kiểm chứng theo ngày âm lịch.</span></div>}
+            {!res.al && <div className="disclaimer mt-2"><span className="note">Mẹo: nhập thêm <b>ngày &amp; tháng sinh</b> để tự động quy đổi âm lịch — chuẩn cho người sinh quanh Tết.</span></div>}
+            {res.al && res.ccYear !== res.yy && <div className="disclaimer mt-2"><b>Đã quy đổi theo Tết:</b> ngày sinh rơi vào <b>trước Tết</b> năm dương {res.yy}, nên tính theo năm âm lịch <b>{res.ccYear}</b> — tức tuổi <b>{res.tenCanChi}</b>.</div>}
           </div>
         )}
       </div>
@@ -108,7 +117,8 @@ function DayTool() {
     const day = dayCanChi(yy, mm, dd)
     const hours = gioHoangDao(day.chi)
     const hour = (h !== '' && +h >= 0 && +h <= 23) ? hourCanChi(day.canIdx, +h) : null
-    setErr(''); setRes({ day, hours, hour })
+    const al = solar2lunar(dd, mm, yy)
+    setErr(''); setRes({ day, hours, hour, al })
   }
   return (
     <section className="wrap py-6">
@@ -119,6 +129,7 @@ function DayTool() {
         {res && (
           <div className="panel p-[26px] mt-6 animate-fade">
             <p className="text-center text-[1.4rem] font-serif m-0">Ngày <span className="text-gold">{res.day.tenCanChi}</span>{res.hour && <> · Giờ <span className="text-gold">{res.hour.tenCanChi}</span> ({res.hour.range}h)</>}</p>
+            {res.al && <p className="note text-center mt-1 mb-0">Âm lịch {res.al.day}/{res.al.month}{res.al.leap ? ' (nhuận)' : ''}/{res.al.year}</p>}
             <p className="note text-center">Giờ hoàng đạo (tốt) tô vàng, hắc đạo để mờ:</p>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {res.hours.map(g => (

@@ -140,3 +140,38 @@ export const PERSONAL_DAY_HINT = {
   4: 'Làm việc, sắp xếp.', 5: 'Linh hoạt, đổi mới.', 6: 'Gia đình, chăm lo.',
   7: 'Tĩnh tâm, suy ngẫm.', 8: 'Tài chính, quyết đoán.', 9: 'Hoàn tất, buông bỏ.'
 }
+
+/* ===== Đỉnh cao & Thử thách (Pinnacles & Challenges) — 4 chu kỳ đời =====
+ * Công thức chuẩn: rút tháng/ngày/năm; Đỉnh1=tháng+ngày, Đỉnh2=ngày+năm,
+ * Đỉnh3=Đỉnh1+Đỉnh2, Đỉnh4=tháng+năm. Thử thách = hiệu tuyệt đối (có thể 0).
+ * Đỉnh1 kết thúc ở tuổi 36 − Số Chủ Đạo; mỗi đỉnh sau 9 năm. Tham khảo. */
+export function pinnacles(d, m, y, lifePath) {
+  const sd = n => { n = Math.abs(n); while (n > 9) n = String(n).split('').reduce((a, b) => a + +b, 0); return n }
+  const rm = reduceKeep(m), rd = reduceKeep(d), ry = reduceKeep(y)
+  const p1 = reduceKeep(rm + rd), p2 = reduceKeep(rd + ry)
+  const p3 = reduceKeep(p1 + p2), p4 = reduceKeep(rm + ry)
+  const cm = sd(m), cd = sd(d), cy = sd(y)
+  const c1 = Math.abs(cm - cd), c2 = Math.abs(cd - cy), c3 = Math.abs(c1 - c2), c4 = Math.abs(cm - cy)
+  const e1 = 36 - sd(lifePath)
+  return [
+    { p: p1, c: c1, from: 0, to: e1 },
+    { p: p2, c: c2, from: e1, to: e1 + 9 },
+    { p: p3, c: c3, from: e1 + 9, to: e1 + 18 },
+    { p: p4, c: c4, from: e1 + 18, to: null }
+  ]
+}
+
+/* ===== Đam mê tiềm ẩn & Bài học nghiệp quả (từ chữ cái trong tên) =====
+ * Hidden Passion = (các) con số xuất hiện nhiều nhất; Karmic Lessons = (các)
+ * con số 1–9 vắng mặt. Quy ước Pythagorean phổ biến — tham khảo. */
+export function letterStats(fullName) {
+  const s = normalizeVN(fullName)
+  if (!s) return null
+  const freq = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
+  for (const c of s) { const v = LETTER_VALUES[c]; if (v) freq[v]++ }
+  const missing = [], passion = []
+  let max = 0
+  for (let i = 1; i <= 9; i++) { if (!freq[i]) missing.push(i); if (freq[i] > max) max = freq[i] }
+  for (let i = 1; i <= 9; i++) if (max > 0 && freq[i] === max) passion.push(i)
+  return { freq, missing, passion }
+}

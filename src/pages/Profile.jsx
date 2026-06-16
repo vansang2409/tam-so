@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { toPng } from 'html-to-image'
-import { computeLifePath, computeNameNumbers, personalYear, PERSONAL_YEAR, NUMEROLOGY } from '../data/numerology.js'
+import { computeLifePath, computeNameNumbers, personalYear, PERSONAL_YEAR, NUMEROLOGY, pinnacles } from '../data/numerology.js'
 import { tinhCanChi, cungPhi } from '../data/tuvi.js'
 import { getZodiac, LUCKY } from '../data/zodiac.js'
 import { TAROT_CARDS, cardOfDay } from '../data/tarot.js'
+import { solar2lunar } from '../data/lunar.js'
 
 const CUR = new Date()
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
@@ -19,10 +20,15 @@ function birthCards(d, m, y) {
 }
 
 function compute(name, dd, mm, yy, gender) {
+  const al = solar2lunar(dd, mm, yy)
+  const lp = computeLifePath(dd, mm, yy)
+  const pin = pinnacles(dd, mm, yy, lp.lp)
+  const age = CUR.getFullYear() - yy
+  const curPin = pin.find(p => p.to === null || age < p.to) || pin[pin.length - 1]
   return {
-    name, lp: computeLifePath(dd, mm, yy), nn: name && name.trim() ? computeNameNumbers(name) : null,
-    canChi: tinhCanChi(yy), zodiac: getZodiac(dd, mm), birth: birthCards(dd, mm, yy),
-    py: personalYear(dd, mm, yy), cp: cungPhi(yy, gender), gender
+    name, lp, nn: name && name.trim() ? computeNameNumbers(name) : null,
+    canChi: tinhCanChi(al.year), zodiac: getZodiac(dd, mm), birth: birthCards(dd, mm, yy),
+    py: personalYear(dd, mm, yy), cp: cungPhi(al.year, gender), gender, al, curPin, age
   }
 }
 
@@ -48,6 +54,8 @@ export default function Profile() {
       setName(n); setD(d0); setM(m0); setY(y0); setG(g0)
       const dd = +d0, mm = +m0, yy = +y0
       if (dd && mm && yy) setRes(compute(n, dd, mm, yy, g0))
+    } else {
+      try { const sv = JSON.parse(localStorage.getItem('tamso_profile') || 'null'); if (sv && sv.d && sv.m && sv.y) { setName(sv.n || ''); setD(sv.d); setM(sv.m); setY(sv.y); setG(sv.g || 'nam'); setRes(compute(sv.n || '', +sv.d, +sv.m, +sv.y, sv.g || 'nam')) } } catch (_) { }
     } // eslint-disable-next-line
   }, [])
 
@@ -56,6 +64,7 @@ export default function Profile() {
     if (!dd || !mm || !yy || dd < 1 || dd > 31 || mm < 1 || mm > 12 || yy < 1 || yy > 3000) { setErr('Vui lòng nhập ngày, tháng, năm sinh hợp lệ.'); setRes(null); return }
     setErr(''); setRes(compute(name, dd, mm, yy, g))
     setParams({ ...(name ? { n: name } : {}), d: '' + dd, m: '' + mm, y: '' + yy, g })
+    try { localStorage.setItem('tamso_profile', JSON.stringify({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g })) } catch (_) { }
   }
   const copyLink = () => {
     const qs = new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g }).toString()
@@ -115,9 +124,20 @@ export default function Profile() {
                       <div className="flex items-center gap-3"><span className="font-serif text-[3rem] text-gold leading-none">{res.nn.expression}</span><span className="font-serif text-[1.05rem]">{NUMEROLOGY[res.nn.expression].title.replace(/^Số \d+ — /, '')}</span></div>
                     </Card>
                   )}
+                  {res.nn && (
+                    <Card to="/than-so-hoc" label="Số Linh Hồn">
+                      <div className="flex items-center gap-3"><span className="font-serif text-[3rem] text-gold leading-none">{res.nn.soulUrge}</span><span className="font-serif text-[1.05rem]">{NUMEROLOGY[res.nn.soulUrge].title.replace(/^Số \d+ — /, '')}</span></div>
+                    </Card>
+                  )}
+                  {res.nn && (
+                    <Card to="/than-so-hoc" label="Số Nhân Cách">
+                      <div className="flex items-center gap-3"><span className="font-serif text-[3rem] text-gold leading-none">{res.nn.personality}</span><span className="font-serif text-[1.05rem]">{NUMEROLOGY[res.nn.personality].title.replace(/^Số \d+ — /, '')}</span></div>
+                    </Card>
+                  )}
                   <Card to="/tu-vi" label="Tử vi · Can Chi">
                     <div className="font-serif text-[1.6rem]">{res.canChi.tenCanChi}</div>
                     <div className="mt-1">Tuổi <b>{res.canChi.conGiap}</b> · <span className={'pill h-' + res.canChi.menhHanh}>{res.canChi.napAm}</span></div>
+                    <div className="note mt-1">Âm lịch {res.al.day}/{res.al.month}{res.al.leap ? ' (nhuận)' : ''}/{res.al.year}</div>
                   </Card>
                   {res.zodiac && (
                     <Card to="/cung-hoang-dao" label="Cung hoàng đạo">
@@ -136,6 +156,9 @@ export default function Profile() {
                   </Card>
                   <Card to="/than-so-hoc" label={'Năm cá nhân ' + CUR.getFullYear()}>
                     <div className="flex items-center gap-3"><span className="font-serif text-[3rem] text-gold leading-none">{res.py}</span><span className="font-serif text-[1.05rem]">{PERSONAL_YEAR[res.py].title.replace(/^Năm \d+ — /, '')}</span></div>
+                  </Card>
+                  <Card to="/than-so-hoc" label={'Đỉnh hiện tại · ~' + res.age + ' tuổi'}>
+                    <div className="flex items-center gap-3"><span className="font-serif text-[3rem] text-gold leading-none">{res.curPin.p}</span><div><div className="font-serif text-[1.05rem]">{NUMEROLOGY[res.curPin.p] ? NUMEROLOGY[res.curPin.p].title.replace(/^Số \d+ — /, '') : ''}</div><span className="note">Thử thách: {res.curPin.c}</span></div></div>
                   </Card>
                   <Card to="/tarot" label="Lá bài hôm nay">
                     <div className="flex items-center gap-3"><span className="text-[2.4rem] leading-none">{today.card.symbol}</span>

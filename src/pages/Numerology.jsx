@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   NUMEROLOGY, computeLifePath, reduceKeep, computeNameNumbers, personalYear, NUMBER_TYPE, PERSONAL_YEAR,
-  loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT
+  loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT, pinnacles, letterStats
 } from '../data/numerology.js'
 import { Badge } from '../components/Disclaimer.jsx'
 
@@ -36,7 +36,7 @@ export default function Numerology() {
 
       <section className="wrap py-10">
         <div className="disclaimer max-w-[900px] mx-auto">
-          <b>Nguồn &amp; lưu ý.</b> Tham khảo <a href="https://www.numerology.com/articles/your-numerology-chart/core-numbers-numerology/" target="_blank" rel="noopener">Numerology.com</a> (Pythagorean).
+          <b>Nguồn &amp; lưu ý.</b> Tham khảo <a href="https://www.numerology.com/articles/your-numerology-chart/core-numbers-numerology/" target="_blank" rel="noopener">Numerology.com</a> (Pythagorean). Phương pháp <b>Đỉnh cao &amp; Thử thách</b> theo <a href="https://www.worldnumerology.com/numerology-pinnacles/" target="_blank" rel="noopener">World Numerology</a>.
           Tên tiếng Việt được <b>bỏ dấu</b> rồi quy đổi (đ→d) — quy ước phổ biến, <span className="note">cần kiểm chứng theo trường phái</span>. Không phải khoa học.
         </div>
       </section>
@@ -85,7 +85,7 @@ function NameTool() {
     const pm = personalMonth(py, CUR.getMonth() + 1)
     const karmic = [karmicOf(lpObj.sum), [13, 14, 16, 19].includes(dd) ? dd : null].filter(Boolean)
     setErr('')
-    setRes({ ...nn, lp: lpObj.lp, birthday: dd, py, pm, pd: personalDay(pm, CUR.getDate()), maturity: maturity(lpObj.lp, nn.expression), karmic, lo: loShu(dd, mm, yy) })
+    setRes({ ...nn, lp: lpObj.lp, birthday: dd, py, pm, pd: personalDay(pm, CUR.getDate()), maturity: maturity(lpObj.lp, nn.expression), karmic, lo: loShu(dd, mm, yy), pin: pinnacles(dd, mm, yy, lpObj.lp), stats: letterStats(name), attitude: reduceKeep(dd + mm) })
   }
   return (
     <section className="wrap py-6">
@@ -104,6 +104,7 @@ function NameTool() {
               <NumBlock label={NUMBER_TYPE.soulUrge.label} n={res.soulUrge} note={NUMBER_TYPE.soulUrge.note} />
               <NumBlock label={NUMBER_TYPE.personality.label} n={res.personality} note={NUMBER_TYPE.personality.note} />
               <NumBlock label="Số Trưởng Thành (Maturity)" n={res.maturity} note="Số Chủ Đạo + Số Vận Mệnh — đích bạn hướng tới ở nửa sau cuộc đời." />
+              <NumBlock label="Số Thái Độ (Attitude)" n={res.attitude} note="Ngày + tháng sinh — ấn tượng ban đầu &amp; cách bạn phản ứng tức thì với đời." />
             </div>
             <div className="grid md:grid-cols-2 gap-4 mt-4">
               <div className="panel p-5">
@@ -130,6 +131,26 @@ function NameTool() {
                 )}
               </div>
             </div>
+            <div className="panel p-5 mt-4">
+              <div className="text-[.9rem] text-muted font-semibold mb-2">Đỉnh cao &amp; Thử thách <span className="note">(4 chu kỳ đời)</span></div>
+              <div className="overflow-x-auto"><table className="data"><thead><tr><th>Chu kỳ</th><th>Tuổi</th><th>Đỉnh</th><th>Thử thách</th></tr></thead>
+                <tbody>{res.pin.map((p, i) => <tr key={i}><td>{i + 1}</td><td>{p.from}–{p.to ?? '…'}</td><td><b className="text-gold">{p.p}</b>{NUMEROLOGY[p.p] ? ' · ' + NUMEROLOGY[p.p].keys[0] : ''}</td><td><b>{p.c}</b>{p.c === 0 ? ' · lựa chọn' : NUMEROLOGY[p.c] ? ' · ' + NUMEROLOGY[p.c].keys[0] : ''}</td></tr>)}</tbody></table></div>
+              <p className="note mt-2 mb-0">Đỉnh = cơ hội của giai đoạn; Thử thách = bài học cần vượt (số 0 = "thử thách của sự lựa chọn"). Ý nghĩa từng số xem mục "12 con số" bên dưới.</p>
+            </div>
+            <div className="panel p-5 mt-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <div className="text-[.9rem] text-gold font-semibold mb-1">Đam mê tiềm ẩn</div>
+                  {res.stats.passion.length ? <p className="m-0">{res.stats.passion.map(n => <span key={n} className="mr-3"><b className="text-cream">{n}</b> {NUMEROLOGY[n] ? '· ' + NUMEROLOGY[n].keys[0] : ''}</span>)}</p> : <p className="note m-0">—</p>}
+                  <p className="note mt-1 mb-0">Con số lặp nhiều nhất trong tên — thiên hướng nổi trội.</p>
+                </div>
+                <div>
+                  <div className="text-[.9rem] text-pink-300 font-semibold mb-1">Bài học nghiệp quả</div>
+                  {res.stats.missing.length ? <p className="m-0">{res.stats.missing.map(n => <span key={n} className="mr-3"><b className="text-cream">{n}</b> {NUMEROLOGY[n] ? '· ' + NUMEROLOGY[n].keys[0] : ''}</span>)}</p> : <p className="note m-0">Đủ cả 9 — hiếm gặp!</p>}
+                  <p className="note mt-1 mb-0">Con số vắng mặt trong tên — bài học cần trau dồi.</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -144,7 +165,7 @@ function NumBlock({ label, n, note }) {
       <div className="flex items-center justify-between gap-2"><span className="text-[.9rem] text-muted font-semibold">{label}</span><span className="font-serif text-[2rem] text-gold leading-none">{n}</span></div>
       <p className="note mt-1">{note}</p>
       <div className="flex gap-2 flex-wrap my-2">{info.keys.map(k => <Badge key={k}>{k}</Badge>)}</div>
-      <p className="m-0 text-[.95rem]"><b>{info.title}.</b> {info.strengths}</p>
+      <p className="m-0 text-[.9rem] leading-relaxed"><b>{info.title.replace(/^(Số|Năm) \d+ — /, '')}.</b> {info.desc}</p>
     </div>
   )
 }

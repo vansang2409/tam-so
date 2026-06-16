@@ -7,9 +7,10 @@ import { Badge } from '../components/Disclaimer.jsx'
 const meaningOf = (c, up) => up ? (c.up || 'Từ khóa: ' + c.upKeys.join(', ')) : (c.rev || 'Từ khóa: ' + c.revKeys.join(', '))
 const FILTERS = [
   { key: 'all', label: 'Tất cả' }, { key: 'major', label: 'Ẩn Chính' },
-  { key: 'Gậy', label: '🔥 Gậy' }, { key: 'Cốc', label: '🍷 Cốc' }, { key: 'Kiếm', label: '⚔️ Kiếm' }, { key: 'Tiền', label: '🪙 Tiền' }
+  { key: 'Gậy', label: '🔥 Gậy' }, { key: 'Cốc', label: '🍷 Cốc' }, { key: 'Kiếm', label: '⚔️ Kiếm' }, { key: 'Tiền', label: '🪙 Tiền' }, { key: 'fav', label: '★ Yêu thích' }
 ]
 const HKEY = 'tamso_tarot_history'
+const FKEY = 'tamso_tarot_favs'
 
 function birthCards(d, m, y) {
   const sd = n => String(n).split('').reduce((a, b) => a + +b, 0)
@@ -20,10 +21,9 @@ function birthCards(d, m, y) {
   return t === t2 ? [c1] : [c1, c2]
 }
 
-/** Một lá đã rút: ảnh + tên + chiều */
-function DrawnCard({ card, up, pos }) {
+function DrawnCard({ card, up, pos, delay = 0 }) {
   return (
-    <div className={'tcard ' + (up ? '' : 'rev')}>
+    <div className={'tcard animate-flip ' + (up ? '' : 'rev')} style={{ animationDelay: delay + 's' }}>
       <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">{pos}</div>
       <CardImage card={card} w={260} reversed={!up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[3rem] my-6" />
       <div>
@@ -37,26 +37,30 @@ function DrawnCard({ card, up, pos }) {
 export default function Tarot() {
   const [spread, setSpread] = useState('one')
   const [picks, setPicks] = useState([])
+  const [drawId, setDrawId] = useState(0)
   const [sel, setSel] = useState(null)
   const [filter, setFilter] = useState('all')
   const [reversed, setReversed] = useState(true)
   const [history, setHistory] = useState([])
+  const [favs, setFavs] = useState([])
   const today = useMemo(() => cardOfDay(), [])
   const positions = TAROT_SPREADS[spread].positions
   const isYesNo = spread === 'yesno'
 
-  useEffect(() => { try { setHistory(JSON.parse(localStorage.getItem(HKEY) || '[]')) } catch { } }, [])
+  useEffect(() => { try { setHistory(JSON.parse(localStorage.getItem(HKEY) || '[]')); setFavs(JSON.parse(localStorage.getItem(FKEY) || '[]')) } catch { } }, [])
+  const isFav = id => favs.includes(id)
+  const toggleFav = id => { const next = favs.includes(id) ? favs.filter(x => x !== id) : [...favs, id]; setFavs(next); try { localStorage.setItem(FKEY, JSON.stringify(next)) } catch { } }
 
   const handleDraw = () => {
     let p = drawCards(positions.length)
     if (!reversed) p = p.map(x => ({ ...x, up: true }))
-    setPicks(p)
+    setPicks(p); setDrawId(n => n + 1)
     const entry = { t: Date.now(), spread: TAROT_SPREADS[spread].label, cards: p.map((x, i) => `${positions[i]}: ${x.card.nameVi} (${x.up ? 'xuôi' : 'ngược'})`) }
     const next = [entry, ...history].slice(0, 8)
     setHistory(next); try { localStorage.setItem(HKEY, JSON.stringify(next)) } catch { }
   }
   const clearHistory = () => { setHistory([]); try { localStorage.removeItem(HKEY) } catch { } }
-  const cards = TAROT_CARDS.filter(c => filter === 'all' || (filter === 'major' ? c.arcana === 'major' : c.suit === filter))
+  const cards = TAROT_CARDS.filter(c => filter === 'all' ? true : filter === 'major' ? c.arcana === 'major' : filter === 'fav' ? favs.includes(c.id) : c.suit === filter)
 
   return (
     <>
@@ -93,13 +97,13 @@ export default function Tarot() {
             <div className="text-center mt-6 animate-fade">
               <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-300' : 'text-pink-300')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
               <div className="flex justify-center mt-2"><div style={{ width: 150 }}><DrawnCard card={picks[0].card} up={picks[0].up} pos="Trả lời" /></div></div>
-              <p className="mt-3">{meaningOf(picks[0].card, picks[0].up)}</p>
+              <p className="mt-3 max-w-[560px] mx-auto">{meaningOf(picks[0].card, picks[0].up)}</p>
             </div>
           )}
           {picks.length > 0 && !isYesNo && (
             <>
-              <div className="flex gap-[18px] justify-center flex-wrap mt-6">
-                {picks.map((p, i) => <DrawnCard key={i} card={p.card} up={p.up} pos={positions[i]} />)}
+              <div className="flex gap-[18px] justify-center flex-wrap mt-6" key={drawId}>
+                {picks.map((p, i) => <DrawnCard key={i} card={p.card} up={p.up} pos={positions[i]} delay={i * 0.08} />)}
               </div>
               <div className="max-w-[760px] mx-auto mt-5">
                 {picks.map((p, i) => <div key={i} className="bg-white/[.045] border border-gold/20 rounded-xl px-[18px] py-3.5 mb-2.5"><b className="text-gold">{positions[i]} — {p.card.nameVi} ({p.up ? 'xuôi' : 'ngược'}):</b> {meaningOf(p.card, p.up)}</div>)}
@@ -131,22 +135,26 @@ export default function Tarot() {
         </div>
         <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map(c => (
-            <button key={c.id} onClick={() => setSel(c)} className="bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+            <button key={c.id} onClick={() => setSel(c)} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+              <span onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 ' + (isFav(c.id) ? 'text-gold' : 'text-white/30 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</span>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
             </button>
           ))}
         </div>
+        {filter === 'fav' && cards.length === 0 && <p className="note text-center mt-4">Chưa có lá yêu thích — mở một lá bất kỳ rồi bấm "☆ Lưu yêu thích".</p>}
       </section>
 
       <section className="wrap py-10">
-        <div className="disclaimer max-w-[900px] mx-auto"><b>Nội dung &amp; hình ảnh.</b> Từ khóa theo truyền thống <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Rider–Waite–Smith / Labyrinthos</a>; tranh minh họa là bộ <b>RWS (1909, Pamela Colman Smith) — phạm vi công cộng</b>, nhúng từ <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Nếu ngoại tuyến, thẻ tự hiển thị biểu tượng thay ảnh.</div>
+        <div className="disclaimer max-w-[900px] mx-auto"><b>Nội dung &amp; hình ảnh.</b> Từ khóa &amp; luận giải theo truyền thống <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Rider–Waite–Smith / Labyrinthos</a>; tranh minh họa là bộ <b>RWS (1909, Pamela Colman Smith) — phạm vi công cộng</b>, nhúng từ <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Ngoại tuyến sẽ hiển thị biểu tượng thay ảnh.</div>
       </section>
 
       <Modal open={!!sel} onClose={() => setSel(null)}>
         {sel && (<>
           <div className="flex justify-center"><CardImage card={sel} w={360} imgClass="rounded-lg w-[190px] h-auto mb-3" fallbackClass="text-[3rem]" /></div>
           <h3 className="text-center text-[1.6rem] my-1">{sel.nameVi} <span className="note">({sel.name} · {sel.roman})</span></h3>
+          <div className="text-center mb-2"><button onClick={() => toggleFav(sel.id)} className="btn btn-ghost text-[.85rem] py-1.5 px-3">{isFav(sel.id) ? '★ Đã lưu yêu thích' : '☆ Lưu yêu thích'}</button></div>
+          {sel.desc && <p className="note text-center mb-2 leading-relaxed">{sel.desc}</p>}
           <p className="text-center mb-1"><Badge gold>▲ Xuôi</Badge></p>
           <div className="flex gap-2 flex-wrap my-1.5 justify-center">{sel.upKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
           {sel.up && <p>{sel.up}</p>}

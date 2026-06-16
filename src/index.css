@@ -109,3 +109,12 @@
   .big-number { font-size: 3.4rem; }
   table.data { min-width: 420px; }
 }
+
+@keyframes castline { from { opacity: 0; transform: translateY(-12px) scaleX(.25) } to { opacity: 1; transform: none } }
+.animate-castline { animation: castline .45s cubic-bezier(.2,.7,.3,1) both }
+
+@keyframes deal { from { opacity: 0; transform: translateY(16px) rotate(-4deg) scale(.96) } to { opacity: 1; transform: none } }
+.animate-deal { animation: deal .4s cubic-bezier(.2,.7,.3,1) both }
+
+@keyframes flipin { from { opacity: 0; transform: perspective(800px) rotateY(-92deg) } to { opacity: 1; transform: none } }
+.animate-flip { animation: flipin .5s cubic-bezier(.2,.7,.3,1) both; transform-origin: center }

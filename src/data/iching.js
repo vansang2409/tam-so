@@ -104,3 +104,120 @@ export function castHexagram() {
   }
   return { lines, present, changed, changingPos: lines.map((l, i) => l.changing ? i + 1 : null).filter(Boolean) }
 }
+
+/* ===== Luận giải sâu hơn cho 64 quẻ (gloss ~2-3 câu, không phải nguyên văn kinh) ===== */
+const LUAN = {
+  1: 'Sức sáng tạo cương kiện đang ở đỉnh; trời vận hành không ngừng nghỉ. Hãy chủ động, chính trực và bền bỉ như rồng, nhưng nhớ "lên quá cao mà kiêu thì hối hận".',
+  2: 'Đức nhu thuận, bao dung và nâng đỡ như đất chở muôn vật. Thành công đến khi bạn đi theo, hỗ trợ và kiên nhẫn thay vì tranh đi trước; giữ sự ngay thẳng bền bỉ.',
+  3: 'Buổi đầu gian nan như mầm non rẽ đất, rối ren và nhiều trắc trở. Đừng vội tiến; hãy tìm cộng sự, kiên trì sắp xếp rồi thời cơ sẽ mở.',
+  4: 'Còn non dại, mông muội cần được khai sáng. Hãy khiêm tốn học hỏi, tìm thầy tìm bạn; người dạy cũng cần kiên nhẫn đúng lúc.',
+  5: 'Cần chờ đợi đúng thời và nuôi dưỡng thực lực. Có lòng thành tín thì hanh thông; nóng vội vượt sông lúc nước xiết là tự chuốc nguy.',
+  6: 'Tranh chấp, kiện tụng đang manh nha. Nên dè dặt, tìm hòa giải và người trung gian công minh; cố thắng đến cùng thường gặt bất lợi.',
+  7: 'Dụng binh, tổ chức lực lượng cần kỷ luật và người dẫn dắt chính danh. Hành động vì lẽ phải và được lòng người thì mới vững.',
+  8: 'Thân ái, quy tụ và đoàn kết quanh một trung tâm đáng tin. Đến sớm với lòng thành thì tốt; chần chừ hay hai lòng thì muộn màng.',
+  9: 'Sức tích lũy còn nhỏ, chỉ đủ kìm hãm tạm thời. Hãy trau dồi nội lực và nhẫn nại chờ mây tụ thành mưa; chưa phải lúc làm lớn.',
+  10: 'Bước đi thận trọng như đạp lên đuôi cọp mà không bị cắn. Giữ lễ, cẩn trọng và đúng mực thì vượt qua được hiểm.',
+  11: 'Trời đất giao hòa, trên dưới thông suốt — thời thái bình hanh thông. Hãy tận dụng vận tốt để vun đắp, nhưng nhớ thịnh tất có lúc suy.',
+  12: 'Bế tắc, trên dưới cách trở, tiểu nhân đắc thế. Quân tử nên thu mình giữ đức và chờ thời, chớ cố vùng vẫy lúc này.',
+  13: 'Đồng lòng hợp quần vì mục tiêu chung, công khai và chính trực. Hợp tác rộng rãi sẽ giúp vượt qua cả khó khăn lớn.',
+  14: 'Sở hữu lớn, thịnh vượng và sáng rỡ. Giữ được nhờ khiêm nhường, sáng suốt và biết chia sẻ; kiêu căng thì sẽ mất.',
+  15: 'Khiêm tốn, nhún nhường mà vẫn vững như núi giấu trong lòng đất. Đây là đức bền vững nhất — càng khiêm càng được kính trọng và thành công.',
+  16: 'Hứng khởi, vui hòa và thuận thời để chuẩn bị hành động. Có kế hoạch và được lòng người thì thuận lợi; chớ buông thả trong an vui.',
+  17: 'Tùy thời mà thuận theo lẽ phải, linh hoạt thích ứng. Đi theo điều đúng và người hiền thì hanh thông; tùy tiện chạy theo thì hỏng.',
+  18: 'Việc cũ đổ nát cần chỉnh đốn, sửa chữa những sai lầm tích tụ. Mạnh dạn cải tổ từ gốc, cẩn trọng cả trước lẫn sau thì mới yên.',
+  19: 'Thời tiến tới, ảnh hưởng lớn dần như bề trên đến với dân. Hãy lãnh đạo bằng đức và sự chân thành, nhưng nhớ thịnh có kỳ hạn.',
+  20: 'Quan sát và chiêm nghiệm sâu sắc trước khi hành động. Lấy mình làm gương, nhìn rộng thời thế để hiểu và được tin phục.',
+  21: 'Cắn vỡ vật cản giữa hai hàm răng — trừ bỏ trở ngại một cách dứt khoát. Dùng quy tắc minh bạch và công bằng để thông suốt.',
+  22: 'Trang sức, vẻ đẹp và hình thức làm mọi thứ rạng rỡ. Hình thức đẹp là tốt, nhưng phải đi cùng nội dung thực chất, đừng phù phiếm.',
+  23: 'Bóc mòn, suy lạc — âm thịnh dương suy, nền tảng lung lay. Nên giữ gìn, ẩn nhẫn chờ qua giai đoạn này, không phải lúc tiến.',
+  24: 'Dương khí quay về sau cực điểm của âm — hồi sinh và trở lại. Sửa sai rồi bắt đầu lại đúng lúc; thuận theo chu kỳ tự nhiên.',
+  25: 'Chân thành, vô tư, thuận theo lẽ tự nhiên không vọng cầu. Giữ lòng ngay thẳng thì hanh; mưu tính trái đạo dễ gặp họa bất ngờ.',
+  26: 'Tích chứa lớn về tài lực và đức hạnh, dồn nén chờ ngày bung ra. Nuôi dưỡng và kiềm chế đúng lúc, biết dùng người hiền thì lợi lớn.',
+  27: 'Nuôi dưỡng — ăn uống và lời nói đều cần chừng mực, đúng đắn. Hãy chăm cả nuôi thân lẫn nuôi tâm, giữ gìn lời ăn tiếng nói.',
+  28: 'Gánh nặng vượt sức, xà nhà cong oằn — một tình thế phi thường. Cần biện pháp khác thường nhưng vẫn thận trọng, đừng để quá đà.',
+  29: 'Hiểm trùng hiểm như nước trong vực sâu. Giữ lòng thành tín và bản lĩnh, quen dần với hiểm thì mới thoát ra được.',
+  30: 'Sáng rõ, bám víu vào chính đạo như lửa cần củi để cháy. Nương vào điều đúng và người sáng suốt thì rạng rỡ; giữ sự ôn hòa.',
+  31: 'Cảm ứng, rung động và giao cảm chân thành — điềm tốt cho tình duyên. Hai bên thành thật cảm nhau thì hợp; chớ giả tạo hay vụ lợi.',
+  32: 'Bền lâu, kiên trì giữ đạo thường hằng. Thành công đến từ sự kiên định có nguyên tắc, không phải cố chấp bất biến.',
+  33: 'Lui ẩn đúng lúc khi tiểu nhân đang lên. Rút lui khôn ngoan để giữ mình không phải là thua, mà là biết chờ thời.',
+  34: 'Cường thịnh, sức mạnh dồi dào như sấm vang giữa trời. Dùng sức phải hợp lẽ và chính đáng; mạnh mà thô bạo sẽ vấp ngã.',
+  35: 'Tiến lên, thăng tiến và rạng rỡ như mặt trời mọc. Đây là thời cơ tốt để tiến thân bằng đức sáng và sự tín nhiệm.',
+  36: 'Ánh sáng bị che lấp, người hiền gặp thời tăm tối. Hãy giấu tài, giữ chí và sự ngay thẳng bên trong, chờ trời sáng trở lại.',
+  37: 'Đạo nhà — mỗi người tròn vai, trên dưới thuận hòa. Trị nhà ngay ngắn từ bên trong thì mọi việc bên ngoài đều yên.',
+  38: 'Trái lìa, khác biệt và hiểu lầm gây chia rẽ. Việc lớn khó thành, nhưng việc nhỏ vẫn nên; hãy tìm điểm chung trong dị biệt.',
+  39: 'Gian nan, bước đi khập khiễng trước hiểm trở. Nên dừng lại, cầu người giúp và xét lại mình thay vì liều tiến.',
+  40: 'Cởi mở, hóa giải sau cơn bế tắc như băng tan. Hãy tha thứ, buông bỏ và mau giải quyết tồn đọng; chủ động thì có lợi.',
+  41: 'Bớt dưới ích trên — hy sinh, giảm chi để dồn cho điều lớn hơn. Thành tâm và chừng mực thì sự giảm bớt lại hóa thành lợi.',
+  42: 'Tăng ích, lợi mình lợi người, người trên giúp người dưới. Thời thuận để hành thiện và làm việc lớn; hành động mau thì tốt.',
+  43: 'Quyết đoán dứt khoát để trừ bỏ điều xấu cuối cùng. Hãy công khai chính trực, cẩn trọng dùng sức, chớ chủ quan khinh địch.',
+  44: 'Gặp gỡ bất ngờ, một mầm âm mới sinh dưới quần dương. Cẩn trọng với cám dỗ và kẻ tiểu nhân mới xuất hiện, chớ vội kết thân.',
+  45: 'Tụ họp, quy tụ lòng người về một mối. Cần người lãnh đạo chính danh và lòng thành; nơi đông người cũng nên phòng biến cố.',
+  46: 'Đi lên dần dần như mầm cây xuyên qua đất. Tích lũy từng bước, theo người trên đáng tin thì thăng tiến hanh thông.',
+  47: 'Khốn cùng, bị vây hãm và cạn kiệt nguồn lực. Giữ chí và lời nói đáng tin, an nhiên chờ thoát; than vãn lúc này vô ích.',
+  48: 'Giếng nước nuôi dân — nguồn lực bền nhưng cần khơi thông, tu sửa. Nuôi dưỡng người khác và giữ nguồn trong sạch là điều cốt lõi.',
+  49: 'Cách mạng, thay cũ đổi mới khi thời cơ đã chín. Cải cách phải hợp lòng người và đúng thời thì mới được tin theo.',
+  50: 'Đỉnh vạc nấu chín, nuôi dưỡng hiền tài và đổi mới trong ổn định. Định vị đúng và vững vàng thì hanh thông lớn.',
+  51: 'Sấm động dồn dập gây chấn kinh. Giữ được bình tĩnh và lòng kính sợ giữa biến động thì vô sự, sau cơn sợ lại an.',
+  52: 'Dừng lại đúng lúc, tĩnh tại như núi. Biết khi nào nên ngừng và an trú trong hiện tại thì lòng yên, không lỗi.',
+  53: 'Tiến từ từ, tuần tự như cây lớn dần trên núi — điềm tốt cho hôn nhân. Theo đúng trình tự và kiên nhẫn thì bền vững.',
+  54: 'Cưới gả, kết hợp nhưng danh phận chưa chính. Cẩn trọng với vị trí và động cơ; nóng vội theo cảm xúc dễ sinh hối tiếc.',
+  55: 'Thịnh đại, rực rỡ đến đỉnh điểm như mặt trời chính ngọ. Hãy tận hưởng nhưng tỉnh táo, vì lên tới đỉnh rồi sẽ xế bóng.',
+  56: 'Lữ khách nơi đất lạ, tạm bợ và đơn độc. Khiêm nhường, cẩn trọng và giữ mình thì yên; kiêu hay sơ suất dễ gặp họa.',
+  57: 'Thuận nhập, mềm mỏng thấm dần như gió len khắp nơi. Khiêm hòa, kiên trì theo lẽ phải sẽ đạt mục tiêu; chớ nhu nhược thái quá.',
+  58: 'Vui đẹp, hòa duyệt và giao tiếp chân thành. Niềm vui chân thật và đúng đạo thì hanh; vui giả tạo, a dua thì hại.',
+  59: 'Ly tán cần được quy tụ lại, hóa giải chia rẽ. Lấy chí lớn và lòng thành để gắn kết mọi người; hành động kịp thời.',
+  60: 'Tiết chế, chừng mực và giữ điều độ như từng đốt tre. Có giới hạn hợp lý thì thông; tiết chế khắc nghiệt quá thì khó bền.',
+  61: 'Thành tín tự đáy lòng, cảm hóa được cả người lẫn vật. Lòng chân thật là gốc của mọi việc; tin nhau thì vượt được hiểm.',
+  62: 'Hơi vượt mức ở việc nhỏ thì được, việc lớn thì không nên. Hãy khiêm cung, cẩn thận tiểu tiết; chớ làm chuyện quá tầm.',
+  63: 'Việc đã thành, mọi thứ vào đúng chỗ — viên mãn. Nhưng thành rồi dễ lơi lỏng; phải đề phòng và giữ gìn ngay từ lúc đang yên.',
+  64: 'Việc chưa xong, đang ở ngưỡng hoàn tất. Kiên trì và cẩn trọng đến bước cuối; sắp qua sông thì chớ để ướt đuôi.'
+}
+HEXAGRAMS.forEach(h => { h.luan = LUAN[h.n] })
+
+/* ===== v2.8: Ý nghĩa 6 vị trí hào + quy tắc luận hào động =====
+ * Nguồn phương pháp: ngôi hào (đắc trung, "đa hung/đa cụ", ngôi chí tôn) theo
+ * Hệ Từ – Thập Dực; cách đọc hào động theo hướng dẫn phổ biến (horos.vn).
+ * Mang tính tham khảo, không phải khoa học. */
+export const HAO_VITRI = [
+  { vi: 1, ten: 'Sơ hào (1)', y: 'Ở dưới cùng — việc mới khởi, lực còn mỏng và ẩn vi. Nên thận trọng dò đường, chưa vội ra mặt.' },
+  { vi: 2, ten: 'Hào hai (2)', y: 'Giữa nội quái (đắc trung) — ngôi người dưới tài giỏi, phần nhiều tốt lành. Giữ trung chính thì được tin dùng.' },
+  { vi: 3, ten: 'Hào ba (3)', y: 'Cuối nội quái, giáp ranh trên–dưới, "đa hung" (nhiều nguy). Dễ bất an, cần cẩn trọng kẻo vấp.' },
+  { vi: 4, ten: 'Hào tư (4)', y: 'Đầu ngoại quái, sát ngôi vua (hào 5), "đa cụ" (nhiều lo). Phải khiêm thuận, dè dặt khi gần người trên.' },
+  { vi: 5, ten: 'Hào năm (5)', y: 'Giữa ngoại quái (đắc trung) và ngôi chí tôn — thường cát nhất, là chủ quẻ. Nên trung chính, độ lượng.' },
+  { vi: 6, ten: 'Thượng hào (6)', y: 'Trên cùng, thời đã đến cùng cực — công thành nên lui. Coi chừng thái quá mà hối (như "kháng long hữu hối").' }
+]
+
+/** Quy tắc đọc khi gieo có hào động (mức cơ bản) */
+export function readingGuide(pos) {
+  if (!pos || pos.length === 0) return 'Không có hào động — chỉ xét quẻ chính: đọc lời quẻ (thoán từ) và tượng quẻ.'
+  if (pos.length === 1) return `Một hào động (hào ${pos[0]}) — trọng tâm nằm ở lời hào động này; quẻ biến cho thấy chiều chuyển hóa.`
+  const min = Math.min(...pos), max = Math.max(...pos)
+  return `Nhiều hào động (${pos.join(', ')}) — ở mức cơ bản, lấy hào thấp nhất (hào ${min}) hoặc cao nhất (hào ${max}) làm trọng tâm, đồng thời xem quẻ biến để thấy xu hướng chuyển hóa.`
+}
+
+/* Link đọc nguyên văn thoán từ / hào từ từng quẻ (nguồn: Dịch học Kabala) */
+const SRC = {
+  1:'que-1-thuan-can',2:'que-2-thuan-khon',3:'que-3-thuy-loi-truan',4:'que-4-son-thuy-mong',
+  5:'que-5-thuy-thien-nhu',6:'que-6-thien-thuy-tung',7:'que-7-dia-thuy-su',8:'que-8-thuy-dia-ty',
+  9:'que-9-phong-thien-tieu-suc',10:'que-10-thien-trach-ly',11:'que-11-dia-thien-thai',12:'que-12-thien-dia-bi',
+  13:'que-13-thien-hoa-dong-nhan',14:'que-14-hoa-thien-dai-huu',15:'que-15-dia-son-khiem',16:'que-16-loi-dia-du',
+  17:'que-17-trach-loi-tuy',18:'que-18-son-phong-co',19:'que-19-dia-trach-lam',20:'que-20-phong-dia-quan',
+  21:'que-21-hoa-loi-phe-hap',22:'que-22-son-hoa-bi',23:'que-23-son-dia-bac',24:'que-24-dia-loi-phuc',
+  25:'que-25-thien-loi-vo-vong',26:'que-26-son-thien-dai-suc',27:'que-27-son-loi-di',28:'que-28-trach-phong-dai-qua',
+  29:'que-29-thuan-kham',30:'que-30-thuan-ly',31:'que-31-trach-son-ham',32:'que-32-loi-phong-hang',
+  33:'que-33-thien-son-don',34:'que-34-loi-thien-dai-trang',35:'que-35-hoa-dia-tan',36:'que-36-dia-hoa-minh-di',
+  37:'que-37-phong-hoa-gia-nhan',38:'que-38-hoa-trach-khue',39:'que-39-thuy-son-kien',40:'que-40-loi-thuy-giai',
+  41:'que-41-son-trach-ton',42:'que-42-phong-loi-ich',43:'que-43-trach-thien-quai',44:'que-44-thien-phong-cau',
+  45:'que-45-trach-dia-tuy',46:'que-46-dia-phong-thang',47:'que-47-trach-thuy-khon',48:'que-48-thuy-phong-tinh',
+  49:'que-49-trach-hoa-cach',50:'que-50-hoa-phong-dinh',51:'que-51-thuan-chan',52:'que-52-can-vi-son',
+  53:'que-53-phong-son-tiem',54:'que-54-loi-trach-quy-muoi',55:'que-55-loi-hoa-phong',56:'que-56-hoa-son-lu',
+  57:'que-57-thuan-ton',58:'que-58-thuan-doai',59:'que-59-phong-thuy-hoan',60:'que-60-thuy-trach-tiet',
+  61:'que-61-phong-trach-trung-phu',62:'que-62-loi-son-tieu-qua',63:'que-63-thuy-hoa-ky-te',64:'que-64-hoa-thuy-vi-te'
+}
+HEXAGRAMS.forEach(h => { h.src = 'https://dich.kabala.vn/' + SRC[h.n] })
+
+/** Quẻ "hôm nay" — tất định theo ngày (giống cardOfDay). */
+export function hexagramOfDay(date = new Date()) {
+  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
+  return HEXAGRAMS[seed % 64]
+}
