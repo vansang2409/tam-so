@@ -3,7 +3,7 @@ REM === Đẩy Tam Sở lên GitHub: github.com/vansang2409/tam-so ===
 cd /d "%~dp0"
 git init
 git add .
-git commit -m "Tam So v2.2 - Tarot, Than so hoc, Tu vi, Cung hoang dao, Kinh Dich"
+git commit -m "Tam So v2.11 - lich am (Ho Ngoc Duc), Hom nay, PWA, Tarot yeu thich, Dinh & Thu thach, Ho so day du"
 git branch -M main
 git remote remove origin 2>nul
 git remote add origin https://github.com/vansang2409/tam-so.git

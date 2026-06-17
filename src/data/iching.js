@@ -221,3 +221,21 @@ export function hexagramOfDay(date = new Date()) {
   const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
   return HEXAGRAMS[seed % 64]
 }
+
+/* ===== Mai Hoa Dịch Số — lập quẻ theo NĂM–THÁNG–NGÀY–GIỜ (âm lịch) =====
+ * Tiên Thiên bát quái số: Càn1 Đoài2 Ly3 Chấn4 Tốn5 Khảm6 Cấn7 Khôn8.
+ * Thượng quái=(năm+tháng+ngày)%8; Hạ quái=(năm+tháng+ngày+giờ)%8; Hào động=tổng%6.
+ * (số năm = địa chi năm 1–12, số giờ = địa chi giờ 1–12). Thuật toán Thiệu Khang Tiết — tham khảo. */
+const _TT_NUM = { 1: 'Càn', 2: 'Đoài', 3: 'Ly', 4: 'Chấn', 5: 'Tốn', 6: 'Khảm', 7: 'Cấn', 8: 'Khôn' }
+export function maiHoa(lunarYear, month, day, hour) {
+  const m8 = n => (n % 8 === 0 ? 8 : n % 8), m6 = n => (n % 6 === 0 ? 6 : n % 6)
+  const yearNum = ((((lunarYear - 4) % 12) + 12) % 12) + 1            // Tý=1 … Hợi=12
+  const hourNum = (Math.floor(((((hour % 24) + 1) % 24)) / 2) % 12) + 1 // giờ Tý=1
+  const sumU = yearNum + month + day, sumL = sumU + hourNum
+  const upper = _TT_NUM[m8(sumU)], lower = _TT_NUM[m8(sumL)], dong = m6(sumL)
+  const present = hexByBits(TRIGRAMS[lower].bits + TRIGRAMS[upper].bits)
+  const b = (TRIGRAMS[lower].bits + TRIGRAMS[upper].bits).split('')
+  b[dong - 1] = b[dong - 1] === '1' ? '0' : '1'
+  const changed = hexByBits(b.join(''))
+  return { yearNum, hourNum, upper, lower, dong, present, changed }
+}

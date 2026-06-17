@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING, CONGIAP_LUAN, NAP_AM_NGHIA } from '../data/tuvi.js'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING, CONGIAP_LUAN, NAP_AM_NGHIA, saoHan, SAO_HAN, hopTuoiChi } from '../data/tuvi.js'
 import { solar2lunar } from '../data/lunar.js'
 
-const VC = { 'Rất hợp': 'text-emerald-300', 'Hợp': 'text-emerald-300', 'Bình hòa': 'text-amber-200', 'Cần lưu ý': 'text-pink-300', 'Khá xung khắc': 'text-pink-300' }
+const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Bình hòa': 'text-amber-800', 'Cần lưu ý': 'text-rose-700', 'Khá xung khắc': 'text-rose-700' }
 
 export default function TuVi() {
   return (
@@ -13,7 +14,8 @@ export default function TuVi() {
         <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Tra Can Chi năm/ngày/giờ, ngũ hành nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai và cung phi – hướng hợp tuổi.</p>
       </section>
 
-      <CanChiTool /><CompatTool /><DayTool /><CungPhiTool />
+      <CanChiTool /><CompatTool /><DayTool /><CungPhiTool /><SaoHanTool />
+      <CongiapMatrix />
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">10 Thiên Can &amp; 12 Địa Chi</h2>
@@ -36,24 +38,86 @@ export default function TuVi() {
   )
 }
 
+function CongiapMatrix() {
+  const mark = { 'Tam hợp': '◎', 'Lục hợp': '○', 'Lục xung': '✕', 'Tứ hành xung': '△', 'Cùng tuổi': '=', 'Bình thường': '·' }
+  const sty = {
+    'Tam hợp': { background: 'rgba(120,210,150,.34)', color: '#d6f5e0' },
+    'Lục hợp': { background: 'rgba(120,210,150,.16)', color: '#a7e6bf' },
+    'Lục xung': { background: 'rgba(235,120,120,.24)', color: '#f3aaaa' },
+    'Tứ hành xung': { background: 'rgba(211,162,78,.20)', color: '#ecd198' },
+    'Cùng tuổi': { background: 'rgba(255,255,255,.07)', color: '#e7d8b0' },
+    'Bình thường': { background: 'rgba(255,255,255,.03)', color: '#9b8e72' }
+  }
+  return (
+    <section className="wrap py-8">
+      <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng hợp tuổi 12 con giáp</h2>
+      <p className="note text-center max-w-[660px] mx-auto mb-4">Tra nhanh quan hệ <b>Tam hợp · Lục hợp · Lục xung · Tứ hành xung</b> giữa các tuổi (theo địa chi). Di chuột/chạm vào ô để xem chi tiết — quan niệm dân gian, mang tính tham khảo.</p>
+      <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
+        <div className="panel p-4 max-w-[920px] mx-auto overflow-x-auto">
+        <table className="border-collapse mx-auto" style={{ minWidth: 470 }}>
+          <thead>
+            <tr>
+              <th className="p-1 text-gold">✦</th>
+              {DIA_CHI.map(z => <th key={z.ten} title={z.con} className="p-1 text-[.82rem] font-semibold text-cream">{z.ten}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {DIA_CHI.map(a => (
+              <tr key={a.ten}>
+                <th title={a.con} className="p-1 pr-2 text-[.82rem] font-semibold text-cream text-right whitespace-nowrap">{a.ten}</th>
+                {DIA_CHI.map(b => {
+                  const v = hopTuoiChi(a.ten, b.ten)
+                  return (
+                    <td key={b.ten} title={`${a.ten} (${a.con}) × ${b.ten} (${b.con}): ${v}`} className="p-0 text-center align-middle">
+                      <div className="m-[2px] rounded-md flex items-center justify-center text-[.82rem] mx-auto" style={{ width: 30, height: 30, ...sty[v] }}>{mark[v]}</div>
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex gap-3 flex-wrap justify-center mt-4 text-[.82rem] text-muted">
+          {['Tam hợp', 'Lục hợp', 'Lục xung', 'Tứ hành xung'].map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function CanChiTool() {
+  const [params, setParams] = useSearchParams()
   const [y, setY] = useState(''); const [m, setM] = useState(''); const [d, setD] = useState('')
   const [res, setRes] = useState(null); const [err, setErr] = useState('')
-  const calc = () => {
-    const yy = +y
-    if (!yy || yy < 1 || yy > 3000) { setErr('Nhập năm sinh hợp lệ.'); setRes(null); return }
-    const mm = +m, dd = +d
+  const [copied, setCopied] = useState('')
+  const compute = (yy, mm, dd) => {
+    if (!yy || yy < 1 || yy > 3000) return null
     let al = null, ccYear = yy
     if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) { al = solar2lunar(dd, mm, yy); ccYear = al.year }
-    setErr(''); const r = tinhCanChi(ccYear)
+    const r = tinhCanChi(ccYear)
     const t = new Date(); const cur = tinhCanChi(solar2lunar(t.getDate(), t.getMonth() + 1, t.getFullYear()).year)
-    setRes({ ...r, yy, ccYear, al, tt: tamTai(ccYear), tuoiMu: cur.year - ccYear + 1, curCanChi: cur.tenCanChi, namTuoi: cur.chi === r.chi })
+    return { ...r, yy, ccYear, al, tt: tamTai(ccYear), tuoiMu: cur.year - ccYear + 1, curCanChi: cur.tenCanChi, namTuoi: cur.chi === r.chi }
   }
+  useEffect(() => {
+    const yy = +(params.get('y') || 0)
+    if (yy) { setY(String(yy)); const mm = +(params.get('m') || 0), dd = +(params.get('d') || 0); if (mm) setM(String(mm)); if (dd) setD(String(dd)); const r = compute(yy, mm, dd); if (r) setRes(r) }
+    // eslint-disable-next-line
+  }, [])
+  const qs = () => new URLSearchParams({ y, ...(m ? { m } : {}), ...(d ? { d } : {}) }).toString()
+  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/tu-vi?${qs()}`
+  const calc = () => {
+    const r = compute(+y, +m, +d)
+    if (!r) { setErr('Nhập năm sinh hợp lệ.'); setRes(null); return }
+    setErr(''); setRes(r); setParams(new URLSearchParams(qs()))
+  }
+  const doCopy = (txt, tag) => { navigator.clipboard?.writeText(txt).then(() => { setCopied(tag); setTimeout(() => setCopied(''), 2000) }) }
+  const resultText = () => res ? `✦ Tử vi · Can Chi — ${res.tenCanChi} (tuổi ${res.conGiap}) · Mệnh ${res.napAm} (${res.menhHanh}). Màu hợp mệnh: ${NGU_HANH.mau[res.menhHanh]}. Năm nay ${res.tuoiMu} tuổi âm.\n— Tam Sở ${shareUrl()}` : ''
+
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">① Tra Can Chi <span className="note">(năm sinh)</span></h2>
       <div className="panel p-[26px] max-w-[820px] mx-auto">
-        <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Năm sinh *" value={y} set={setY} ph="1990" w="140px" /><Field label="Tháng" value={m} set={setM} ph="(cảnh báo Tết)" w="150px" /><Field label="Ngày" value={d} set={setD} ph="" w="100px" /><button className="btn btn-primary" onClick={calc}>☯️ Tra</button></div>
+        <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Năm sinh *" value={y} set={setY} ph="1990" w="140px" /><Field label="Tháng" value={m} set={setM} ph="(cảnh báo Tết)" w="150px" /><Field label="Ngày" value={d} set={setD} ph="" w="100px" /><button className="btn btn-primary" onClick={calc}>☯ Tra</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="panel p-[26px] mt-6 animate-fade">
@@ -73,6 +137,11 @@ function CanChiTool() {
             </dl>
             {!res.al && <div className="disclaimer mt-2"><span className="note">Mẹo: nhập thêm <b>ngày &amp; tháng sinh</b> để tự động quy đổi âm lịch — chuẩn cho người sinh quanh Tết.</span></div>}
             {res.al && res.ccYear !== res.yy && <div className="disclaimer mt-2"><b>Đã quy đổi theo Tết:</b> ngày sinh rơi vào <b>trước Tết</b> năm dương {res.yy}, nên tính theo năm âm lịch <b>{res.ccYear}</b> — tức tuổi <b>{res.tenCanChi}</b>.</div>}
+            <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
+              <button className="btn btn-ghost" onClick={() => doCopy(shareUrl(), 'link')}>{copied === 'link' ? '✓ Đã chép!' : '🔗 Sao chép liên kết'}</button>
+              <button className="btn btn-ghost" onClick={() => doCopy(resultText(), 'text')}>{copied === 'text' ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl())} target="_blank" rel="noopener">📘 Chia sẻ</a>
+            </div>
           </div>
         )}
       </div>
@@ -133,7 +202,7 @@ function DayTool() {
             <p className="note text-center">Giờ hoàng đạo (tốt) tô vàng, hắc đạo để mờ:</p>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {res.hours.map(g => (
-                <div key={g.chi} className={'rounded-lg px-2 py-2 text-center border text-[.86rem] ' + (g.hoangdao ? 'border-gold/50 bg-[rgba(211,162,78,.14)] text-gold' : 'border-white/10 text-white/40')}>
+                <div key={g.chi} className={'rounded-lg px-2 py-2 text-center border text-[.86rem] ' + (g.hoangdao ? 'border-gold/50 bg-[rgba(211,162,78,.14)] text-gold' : 'border-black/15 text-black/45')}>
                   <b>{g.chi}</b> <span className="opacity-80">{g.range}h</span><br />{g.hoangdao ? 'Hoàng đạo' : 'Hắc đạo'}
                 </div>
               ))}
@@ -173,11 +242,11 @@ function CungPhiTool() {
             </div>
             <div className="grid md:grid-cols-2 gap-4 mt-5">
               <div>
-                <div className="text-emerald-300 font-semibold mb-2">4 hướng TỐT</div>
+                <div className="text-emerald-800 font-semibold mb-2">4 hướng TỐT</div>
                 {res.good.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
               </div>
               <div>
-                <div className="text-pink-300 font-semibold mb-2">4 hướng XẤU</div>
+                <div className="text-rose-700 font-semibold mb-2">4 hướng XẤU</div>
                 {res.bad.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
               </div>
             </div>
@@ -189,6 +258,42 @@ function CungPhiTool() {
   )
 }
 
+const SAOC = { 'tốt': 'text-emerald-800', 'trung': 'text-amber-800', 'xấu': 'text-rose-700' }
+function SaoHanTool() {
+  const [y, setY] = useState(''); const [g, setG] = useState('nam')
+  const [res, setRes] = useState(null); const [err, setErr] = useState('')
+  const calc = () => {
+    const yy = +y
+    if (!yy || yy < 1900 || yy > 2100) { setErr('Nhập năm sinh hợp lệ (1900–2100).'); setRes(null); return }
+    const t = new Date(); const curLunar = solar2lunar(t.getDate(), t.getMonth() + 1, t.getFullYear()).year
+    const tuoiMu = curLunar - yy + 1
+    if (tuoiMu < 1) { setErr('Năm sinh chưa hợp lệ.'); setRes(null); return }
+    setErr(''); setRes({ tuoiMu, cur: tinhCanChi(curLunar), sao: saoHan(tuoiMu, g) })
+  }
+  return (
+    <section className="wrap py-6">
+      <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">⑤ Sao hạn năm nay <span className="note">(Cửu Diệu)</span></h2>
+      <div className="panel p-[26px] max-w-[820px] mx-auto">
+        <div className="flex gap-3 flex-wrap items-end justify-center">
+          <Field label="Năm sinh (âm lịch)" value={y} set={setY} ph="1990" w="150px" />
+          <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giới tính</label>
+            <select value={g} onChange={e => setG(e.target.value)} className="field-input"><option value="nam">Nam</option><option value="nu">Nữ</option></select></div>
+          <button className="btn btn-primary" onClick={calc}>🌟 Xem sao hạn</button>
+        </div>
+        {err && <div className="disclaimer mt-5">{err}</div>}
+        {res && (
+          <div className="panel p-[26px] mt-6 animate-fade text-center">
+            <span className="badge badge-gold">Tuổi mụ {res.tuoiMu} · năm {res.cur.tenCanChi}</span>
+            <h3 className={'text-[2rem] my-1.5 ' + (SAOC[res.sao.loai] || 'text-cream')}>{res.sao.ten}</h3>
+            <div className="mb-2"><span className="badge">Sao {res.sao.loai}</span></div>
+            <p className="max-w-[600px] mx-auto m-0">{res.sao.y}</p>
+            <p className="note mt-3 mb-0">Chu kỳ sao đối chiếu <a href="https://quantrimang.com/cuoc-song/bang-sao-giai-han-theo-tuoi-169419" target="_blank" rel="noopener">bảng sao hạn 2026 (Quantrimang)</a>. Quan niệm dân gian, chỉ để tham khảo — không hù dọa.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
 function Field({ label, value, set, ph, w = '120px' }) {
   return (<div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">{label}</label>
     <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={ph} className="field-input" style={{ width: w }} /></div>)

@@ -1,14 +1,15 @@
 {
   "name": "tam-so",
   "private": true,
-  "version": "2.11.0",
+  "version": "2.82.0",
   "type": "module",
   "description": "Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch (Vite + React + Tailwind)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "fetch-cards": "node scripts/download-cards.mjs"
+    "fetch-cards": "node scripts/download-cards.mjs",
+    "test": "node tests/run.mjs"
   },
   "dependencies": {
     "html-to-image": "^1.11.13",

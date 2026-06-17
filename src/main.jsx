@@ -10,6 +10,7 @@ import Numerology from './pages/Numerology.jsx'
 import TuVi from './pages/TuVi.jsx'
 import Zodiac from './pages/Zodiac.jsx'
 import IChing from './pages/IChing.jsx'
+import TuongHop from './pages/TuongHop.jsx'
 import Sources from './pages/Sources.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="tu-vi" element={<TuVi />} />
           <Route path="cung-hoang-dao" element={<Zodiac />} />
           <Route path="kinh-dich" element={<IChing />} />
+          <Route path="tuong-hop" element={<TuongHop />} />
           <Route path="nguon" element={<Sources />} />
         </Route>
       </Routes>

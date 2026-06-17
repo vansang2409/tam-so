@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://vansang2409.github.io/tam-so/sitemap.xml

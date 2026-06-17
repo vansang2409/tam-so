@@ -175,3 +175,21 @@ export function letterStats(fullName) {
   for (let i = 1; i <= 9; i++) if (max > 0 && freq[i] === max) passion.push(i)
   return { freq, missing, passion }
 }
+
+/** Số Ngày Sinh (Birthday Number) — rút gọn NGÀY sinh về 1 chữ số (vd 24 → 6). */
+export function birthdayNumber(d) {
+  let n = Math.abs(+d) || 0
+  while (n > 9) n = String(n).split('').reduce((a, b) => a + +b, 0)
+  return n
+}
+
+/* Tương hợp Số Chủ Đạo — MINH BẠCH: dựa trên so khớp từ khóa (NUMEROLOGY.keys),
+ * không phải thước đo tuyệt đối. Chỉ tham khảo. */
+export function lifePathCompat(a, b) {
+  const ka = (NUMEROLOGY[a] && NUMEROLOGY[a].keys) || []
+  const kb = (NUMEROLOGY[b] && NUMEROLOGY[b].keys) || []
+  const shared = ka.filter(k => kb.includes(k))
+  if (a === b) return { a, b, verdict: 'Đồng điệu', note: `Cùng Số Chủ Đạo ${a} — dễ thấu hiểu nhau; chỉ lưu ý cùng điểm mạnh thì cũng dễ chung điểm cần khắc phục.` }
+  if (shared.length) return { a, b, verdict: 'Có điểm chung', note: `Cùng đề cao: ${shared.join(', ')} — nền tảng tốt để đồng hành.` }
+  return { a, b, verdict: 'Bổ sung cho nhau', note: `Số ${a} thiên về "${ka[0] || ''}", số ${b} thiên về "${kb[0] || ''}" — khác biệt có thể bù đắp nếu biết tôn trọng nhau.` }
+}

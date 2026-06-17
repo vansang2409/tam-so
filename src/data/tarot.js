@@ -181,7 +181,11 @@ export function cardImageFile(card) {
 /* Đặt true SAU KHI đã chạy `npm run fetch-cards` (tải 78 ảnh về public/cards/)
  * để dùng ảnh nội bộ — chạy offline, nhanh hơn, không phụ thuộc Wikimedia.
  * Mặc định false: hotlink Wikimedia Commons (cần mạng nhưng luôn sẵn). */
-export const LOCAL_CARDS = false
+export const LOCAL_CARDS = true
+export function cardImageRemoteUrl(card, width = 320) {
+  const f = cardImageFile(card)
+  return f ? `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=${width}` : null
+}
 export function cardImageUrl(card, width = 320) {
   const f = cardImageFile(card)
   if (!f) return null
@@ -264,5 +268,93 @@ TAROT_CARDS.forEach(c => {
   if (c.arcana === 'minor') {
     const t = MINOR_TEXT[SUITKEY_BY_VI[c.suit]] && MINOR_TEXT[SUITKEY_BY_VI[c.suit]][RANK_NUM[c.roman] - 1]
     if (t) { c.up = t.u; c.rev = t.r }
+  }
+})
+
+/* Lời khuyên ngắn cho 22 Ẩn Chính (distil từ nghĩa RWS đã nêu ở trên) */
+const MAJOR_ADVICE = {
+  0: 'Hãy can đảm bước bước đầu tiên với tâm hồn rộng mở — nhưng vẫn nhìn đường dưới chân.',
+  1: 'Bạn đã có đủ công cụ; biến một ý tưởng thành hành động cụ thể ngay hôm nay.',
+  2: 'Tĩnh lại và tin vào trực giác trước khi đi tìm câu trả lời từ bên ngoài.',
+  3: 'Nuôi dưỡng bản thân và việc mình yêu; đổ đầy mình trước khi rót cho người khác.',
+  4: 'Lập kế hoạch và kỷ luật rõ ràng — vững vàng chứ đừng cứng nhắc.',
+  5: 'Học từ người đi trước và giá trị đã kiểm chứng trước khi chọn phá cách.',
+  6: 'Chọn theo giá trị thật của bạn, để trái tim và lý trí cùng đồng thuận.',
+  7: 'Tập trung ý chí về một hướng và làm chủ cảm xúc để tiến tới.',
+  8: 'Dùng sự dịu dàng và kiên nhẫn, không phải vũ lực, để chế ngự khó khăn.',
+  9: 'Cho mình một khoảng lặng để soi vào trong và tìm câu trả lời của riêng bạn.',
+  10: 'Thuận theo guồng đổi thay; nắm cơ hội khi nó đến và buông khi đã qua.',
+  11: 'Hành xử công bằng, nhận trách nhiệm và đối diện sự thật một cách trung thực.',
+  12: 'Tạm dừng và đổi góc nhìn; đôi khi buông tay lại là cách tiến lên.',
+  13: 'Cho phép cái cũ khép lại để chương mới có chỗ bắt đầu.',
+  14: 'Tìm điểm cân bằng, pha trộn vừa phải và kiên nhẫn dung hòa.',
+  15: 'Nhìn thẳng vào điều đang trói buộc bạn — chính bạn giữ chìa khóa để tự cởi.',
+  16: 'Khi điều giả tạo sụp đổ, hãy để nó đi và xây lại trên nền vững thật hơn.',
+  17: 'Giữ hy vọng và cho mình được chữa lành; điều tốt đẹp đang dần trở lại.',
+  18: 'Đi chậm qua vùng mơ hồ; phân biệt nỗi sợ tưởng tượng với sự thật.',
+  19: 'Hãy lạc quan và sống thật với niềm vui — tỏa sáng và chia sẻ nó.',
+  20: 'Lắng nghe tiếng gọi bên trong, tha thứ quá khứ và bước lên một tầng mới.',
+  21: 'Ghi nhận thành quả và tận hưởng sự trọn vẹn trước khi mở một vòng mới.'
+}
+TAROT_CARDS.forEach(c => { if (c.arcana === 'major') c.advice = MAJOR_ADVICE[c.id] })
+
+/* Ý nghĩa theo chủ đề (Tình yêu / Công việc) cho 22 Ẩn Chính — distil từ nghĩa RWS. */
+const MAJOR_TOPIC = {
+  0: { love: 'Khởi đầu tình cảm mới mẻ — mở lòng, hồn nhiên nhưng đừng nhắm mắt đưa chân.', work: 'Cơ hội/khởi sự mới; dám thử với một kế hoạch tối thiểu.' },
+  1: { love: 'Sức hút và chủ động bày tỏ; biến cảm xúc thành hành động cụ thể.', work: 'Bạn có đủ công cụ để bắt đầu — tập trung hiện thực hóa ý tưởng.' },
+  2: { love: 'Lắng nghe trực giác, để tình cảm tự hé lộ; chưa nên hối thúc.', work: 'Quan sát, thu thập thông tin và tin linh cảm trước khi quyết.' },
+  3: { love: 'Ấm áp, nuôi dưỡng, gắn kết — thời kỳ nở hoa của tình cảm.', work: 'Sáng tạo dồi dào, dự án "đơm hoa"; chăm chút chất lượng.' },
+  4: { love: 'Ổn định, đáng tin, có trách nhiệm; tránh kiểm soát đối phương.', work: 'Lập trật tự và kế hoạch rõ ràng; lãnh đạo vững vàng.' },
+  5: { love: 'Quan hệ nghiêm túc, cam kết; tìm điểm chung về giá trị.', work: 'Học từ người đi trước, theo quy chuẩn; hợp tác có khuôn khổ.' },
+  6: { love: 'Tình yêu, sự hòa hợp và lựa chọn từ trái tim.', work: 'Hợp tác ăn ý, hoặc một quyết định quan trọng theo giá trị thật.' },
+  7: { love: 'Kiên định theo đuổi, cùng nhau vượt trở ngại.', work: 'Tập trung mục tiêu, tự chủ; tiến tới bằng ý chí.' },
+  8: { love: 'Yêu bằng sự dịu dàng, kiên nhẫn và bao dung.', work: 'Bền bỉ, điềm tĩnh trước áp lực; mềm mỏng mà thắng.' },
+  9: { love: 'Cần khoảng riêng để soi lại lòng mình; có thể tạm lùi.', work: 'Làm việc độc lập, tự nghiên cứu; tìm câu trả lời bên trong.' },
+  10: { love: 'Bước ngoặt, duyên đến và đi theo chu kỳ; thuận theo.', work: 'Vận may xoay chuyển — nắm cơ hội đúng thời điểm.' },
+  11: { love: 'Công bằng, trung thực, cân bằng cho và nhận.', work: 'Quyết định công tâm; hợp đồng/pháp lý cần rõ ràng.' },
+  12: { love: 'Tạm dừng, đổi góc nhìn; đôi khi nhường là để hiểu nhau.', work: 'Chờ thời, nhìn khác đi; chưa phải lúc cố ép.' },
+  13: { love: 'Một giai đoạn khép lại để mở chương mới; buông cái đã cũ.', work: 'Kết thúc/chuyển đổi tất yếu — làm mới cách làm.' },
+  14: { love: 'Hài hòa, dung hòa khác biệt, kiên nhẫn vun đắp.', work: 'Cân bằng và phối hợp nhịp nhàng; tránh thái quá.' },
+  15: { love: 'Coi chừng lệ thuộc hay ràng buộc không lành mạnh — nhìn cho rõ.', work: 'Cẩn thận cám dỗ, ràng buộc trói tay; chìa khóa nằm ở bạn.' },
+  16: { love: 'Điều giả tạo đổ vỡ để xây lại thật hơn; có thể nhiều biến động.', work: 'Xáo trộn bất ngờ — để cái cũ sụp rồi dựng nền vững hơn.' },
+  17: { love: 'Hy vọng, chữa lành, niềm tin trở lại sau giông bão.', work: 'Cảm hứng và triển vọng tươi sáng; cứ kiên trì.' },
+  18: { love: 'Mơ hồ, dễ hiểu lầm, cảm xúc lẫn lộn; cần làm rõ.', work: 'Thông tin chưa rõ, coi chừng ảo tưởng; đi chậm và chắc.' },
+  19: { love: 'Vui tươi, ấm áp, hạnh phúc rạng rỡ.', work: 'Thành công, được công nhận; năng lượng tích cực.' },
+  20: { love: 'Tha thứ, làm lại, một tiếng gọi từ trái tim.', work: 'Bước ngoặt lớn — đánh giá lại và vươn lên tầng mới.' },
+  21: { love: 'Trọn vẹn, viên mãn — một chu kỳ tình cảm hoàn thành.', work: 'Hoàn thành mục tiêu, thành tựu; sẵn sàng cho vòng mới.' }
+}
+TAROT_CARDS.forEach(c => { if (c.arcana === 'major' && MAJOR_TOPIC[c.id]) { c.love = MAJOR_TOPIC[c.id].love; c.work = MAJOR_TOPIC[c.id].work } })
+
+// — Ẩn Phụ: luận Tình yêu/Sự nghiệp theo KHUNG CHẤT (nguyên tố) × SỐ/COURT (Labyrinthos) —
+// Không phải lời phán riêng từng lá; là cách đọc Ẩn Phụ phổ biến: chất = lĩnh vực đời sống, số = giai đoạn, court = nhân vật.
+const SUIT_TOPIC = {
+  'Gậy': { love: 'đam mê, chủ động, sức sống (Lửa) — tình cảm bốc lửa, cần giữ lửa mà không nóng vội', work: 'sáng tạo, dự án, tham vọng, dấn thân (Lửa)' },
+  'Cốc': { love: 'cảm xúc, gắn kết, lãng mạn (Nước) — lĩnh vực cốt lõi của chuyện tình', work: 'quan hệ, đồng cảm, công việc cần trực giác và nuôi dưỡng (Nước)' },
+  'Kiếm': { love: 'giao tiếp, lý trí, đôi khi va chạm lời nói (Khí) — cần nói thẳng và lắng nghe', work: 'tư duy, quyết định, thử thách trí óc và xung đột (Khí)' },
+  'Tiền': { love: 'ổn định, tin cậy, vun vén dài lâu (Đất) hơn là bốc đồng', work: 'tài chính, sự nghiệp, thành quả vật chất nhờ kiên trì (Đất)' }
+}
+const RANK_ARC = {
+  'Át': 'hạt mầm — cơ hội/khởi đầu thuần khiết',
+  '2': 'cân bằng, lựa chọn, quan hệ đôi bên',
+  '3': 'phát triển, hợp tác, kết quả đầu tiên',
+  '4': 'ổn định, củng cố, tạm dừng để giữ gìn',
+  '5': 'thử thách, xáo trộn, mất mát hoặc va chạm',
+  '6': 'hài hòa trở lại, cho – nhận, hồi phục',
+  '7': 'kiên trì, đánh giá lại, lựa chọn khó',
+  '8': 'tăng tốc, chuyên tâm, chuyển động nhanh',
+  '9': 'gần đích — no đủ hoặc lo toan',
+  '10': 'trọn một chu kỳ — viên mãn hoặc gánh nặng',
+  'Thị Đồng': 'người học việc — tin nhắn, khởi sự, tò mò',
+  'Hiệp Sĩ': 'người hành động — lao tới, theo đuổi (đôi khi vội)',
+  'Nữ Hoàng': 'trưởng thành nội tâm — nuôi dưỡng, làm chủ cảm xúc',
+  'Vua': 'làm chủ bên ngoài — dẫn dắt, quyết đoán, trách nhiệm'
+}
+const COURT = ['Thị Đồng', 'Hiệp Sĩ', 'Nữ Hoàng', 'Vua']
+TAROT_CARDS.forEach(c => {
+  if (c.arcana !== 'major' && SUIT_TOPIC[c.suit] && RANK_ARC[c.roman]) {
+    const st = SUIT_TOPIC[c.suit]
+    const stage = (COURT.includes(c.roman) ? 'Nhân vật' : 'Giai đoạn ' + c.roman) + ' — ' + RANK_ARC[c.roman]
+    c.love = `Chất ${c.suit} (${c.element}): ${st.love}. ${stage}.`
+    c.work = `Chất ${c.suit} (${c.element}): ${st.work}. ${stage}.`
   }
 })

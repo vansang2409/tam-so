@@ -1,8 +1,54 @@
-import { useState } from 'react'
-import { ZODIAC, getZodiac, zodiacCompat, LUCKY } from '../data/zodiac.js'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { ZODIAC, getZodiac, zodiacCompat, LUCKY, decanOf } from '../data/zodiac.js'
 
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
-const VC = { 'Rất hợp': 'text-emerald-300', 'Hợp': 'text-emerald-300', 'Cần dung hòa': 'text-pink-300', 'Trung bình': 'text-amber-200' }
+const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Cần dung hòa': 'text-rose-700', 'Trung bình': 'text-amber-800' }
+
+function CompatMatrix() {
+  const mark = { 'Rất hợp': '♥', 'Hợp': '+', 'Trung bình': '•', 'Cần dung hòa': '~' }
+  const sty = {
+    'Rất hợp': { background: 'rgba(120,210,150,.34)', color: '#d6f5e0' },
+    'Hợp': { background: 'rgba(120,210,150,.16)', color: '#a7e6bf' },
+    'Trung bình': { background: 'rgba(211,162,78,.18)', color: '#ecd198' },
+    'Cần dung hòa': { background: 'rgba(235,120,120,.20)', color: '#f3aaaa' }
+  }
+  return (
+    <section className="wrap py-8">
+      <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng tương hợp nhanh 12 cung</h2>
+      <p className="note text-center max-w-[640px] mx-auto mb-4">Tra nhanh mức hợp giữa hai cung (theo nguyên tố &amp; góc chiếu). Di chuột/chạm vào ô để xem chi tiết — chỉ mang tính tham khảo.</p>
+      <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
+        <div className="panel p-4 max-w-[900px] mx-auto overflow-x-auto">
+        <table className="border-collapse mx-auto" style={{ minWidth: 460 }}>
+          <thead>
+            <tr>
+              <th className="p-1 text-gold text-[1rem]">✦</th>
+              {ZODIAC.map(z => <th key={z.en} title={z.ten} className="p-1 text-[1.05rem] font-normal text-cream">{z.sym}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {ZODIAC.map(a => (
+              <tr key={a.en}>
+                <th title={a.ten} className="p-1 pr-2 text-[1.05rem] font-normal text-cream text-right whitespace-nowrap">{a.sym}</th>
+                {ZODIAC.map(b => {
+                  const v = zodiacCompat(a, b).verdict
+                  return (
+                    <td key={b.en} title={`${a.ten} × ${b.ten}: ${v}`} className="p-0 text-center align-middle">
+                      <div className="m-[2px] rounded-md flex items-center justify-center text-[.82rem] mx-auto" style={{ width: 30, height: 30, ...sty[v] }}>{mark[v]}</div>
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex gap-3 flex-wrap justify-center mt-4 text-[.82rem] text-muted">
+          {Object.keys(mark).map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function Zodiac() {
   return (
@@ -15,6 +61,7 @@ export default function Zodiac() {
 
       <SignTool />
       <CompatTool />
+      <CompatMatrix />
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Toàn bộ 12 cung</h2>
@@ -45,12 +92,26 @@ export default function Zodiac() {
 }
 
 function SignTool() {
+  const [params, setParams] = useSearchParams()
   const [d, setD] = useState(''); const [m, setM] = useState(''); const [res, setRes] = useState(null); const [err, setErr] = useState('')
+  const [copied, setCopied] = useState('')
+  const compute = (dd, mm) => (dd && mm && dd >= 1 && dd <= 31 && mm >= 1 && mm <= 12) ? { ...getZodiac(dd, mm), decan: decanOf(dd, mm) } : null
+  useEffect(() => {
+    const dd = +(params.get('d') || 0), mm = +(params.get('m') || 0)
+    if (dd && mm) { setD(String(dd)); setM(String(mm)); const r = compute(dd, mm); if (r) setRes(r) }
+    // eslint-disable-next-line
+  }, [])
+  const qs = () => new URLSearchParams({ d, m }).toString()
+  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/cung-hoang-dao?${qs()}`
   const calc = () => {
     const dd = +d, mm = +m
-    if (!dd || !mm || dd < 1 || dd > 31 || mm < 1 || mm > 12) { setErr('Vui lòng nhập ngày và tháng hợp lệ.'); setRes(null); return }
-    setErr(''); setRes(getZodiac(dd, mm))
+    const r = compute(dd, mm)
+    if (!r) { setErr('Vui lòng nhập ngày và tháng hợp lệ.'); setRes(null); return }
+    setErr(''); setRes(r); setParams(new URLSearchParams(qs()))
   }
+  const doCopy = (txt, tag) => { navigator.clipboard?.writeText(txt).then(() => { setCopied(tag); setTimeout(() => setCopied(''), 2000) }) }
+  const resultText = () => res ? `✦ Cung hoàng đạo — ${res.ten} (${res.en}) · Nguyên tố ${res.nguyenTo} · ${res.sao}. Màu may mắn ${LUCKY[res.en].mau}, đá ${LUCKY[res.en].da}, số ${LUCKY[res.en].so}.\n— Tam Sở ${shareUrl()}` : ''
+
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">① Xem cung của bạn</h2>
@@ -67,6 +128,12 @@ function SignTool() {
             <div className="flex gap-2 flex-wrap justify-center my-2"><span className={`pill ${elColor[res.nguyenTo]}`}>Nguyên tố {res.nguyenTo}</span><span className="badge">{res.sao}</span></div>
             <p className="max-w-[560px] mx-auto">{res.net}</p>
             <p className="note m-0">Màu may mắn {LUCKY[res.en].mau} · Đá {LUCKY[res.en].da} · Số {LUCKY[res.en].so}</p>
+            {res.decan && <p className="note m-0 mt-2">Thập phân (decan) {res.decan.num}/3 — {res.decan.pure ? 'thuần ' + res.ten + ', nét đặc trưng đậm nhất' : 'mang thêm sắc thái ' + res.decan.sub.ten}</p>}
+            <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
+              <button className="btn btn-ghost" onClick={() => doCopy(shareUrl(), 'link')}>{copied === 'link' ? '✓ Đã chép!' : '🔗 Sao chép liên kết'}</button>
+              <button className="btn btn-ghost" onClick={() => doCopy(resultText(), 'text')}>{copied === 'text' ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl())} target="_blank" rel="noopener">📘 Chia sẻ</a>
+            </div>
           </div>
         )}
       </div>

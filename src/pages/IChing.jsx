@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide } from '../data/iching.js'
+import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide, maiHoa } from '../data/iching.js'
+import { solar2lunar } from '../data/lunar.js'
 import Modal from '../components/Modal.jsx'
+import Hexagram from '../components/Hexagram.jsx'
 
 function Line({ yang, changing, delay = 0 }) {
   return (
@@ -8,7 +10,7 @@ function Line({ yang, changing, delay = 0 }) {
       {yang
         ? <span className="inline-block w-[120px] h-[12px] bg-gold rounded-sm" />
         : <><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /></>}
-      {changing && <span className="text-pink-300 text-[.8rem]">● động</span>}
+      {changing && <span className="text-rose-700 text-[.8rem]">● động</span>}
     </div>
   )
 }
@@ -16,7 +18,7 @@ function Line({ yang, changing, delay = 0 }) {
 function HexView({ hex }) {
   return (
     <div className="text-center">
-      <div className="text-[2.2rem] leading-none">{TRIGRAMS[hex.up].sym}<br />{TRIGRAMS[hex.lo].sym}</div>
+      <div className="flex justify-center my-1"><Hexagram up={hex.up} lo={hex.lo} w={56} /></div>
       <h3 className="text-[1.5rem] my-1">Quẻ {hex.n} · {hex.ten}</h3>
       <p className="note m-0">Trên {hex.up} ({TRIGRAMS[hex.up].nghia}) · Dưới {hex.lo} ({TRIGRAMS[hex.lo].nghia})</p>
       <p className="mt-2 mb-0">{hex.y}</p>
@@ -26,9 +28,49 @@ function HexView({ hex }) {
   )
 }
 
+function MhField({ label, value, set }) {
+  return (<div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">{label}</label>
+    <input type="number" value={value} onChange={e => set(e.target.value)} className="field-input w-[90px]" /></div>)
+}
+function MaiHoaTool() {
+  const now = new Date()
+  const [d, setD] = useState('' + now.getDate()); const [m, setM] = useState('' + (now.getMonth() + 1)); const [y, setY] = useState('' + now.getFullYear()); const [h, setH] = useState('' + now.getHours())
+  const [res, setRes] = useState(null); const [err, setErr] = useState('')
+  const calc = () => {
+    const dd = +d, mm = +m, yy = +y, hh = +h
+    if (!dd || !mm || !yy || mm < 1 || mm > 12 || dd < 1 || dd > 31 || hh < 0 || hh > 23) { setErr('Nhập ngày/tháng/năm + giờ (0–23) hợp lệ.'); setRes(null); return }
+    const al = solar2lunar(dd, mm, yy)
+    setErr(''); setRes({ al, mh: maiHoa(al.year, al.month, al.day, hh) })
+  }
+  return (
+    <section className="wrap py-8">
+      <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Gieo quẻ theo ngày giờ <span className="note">(Mai Hoa Dịch Số)</span></h2>
+      <p className="text-muted text-center max-w-[680px] mx-auto mb-5">Lập quẻ từ năm–tháng–ngày–giờ âm lịch theo phép Mai Hoa — tất định, không phụ thuộc may rủi.</p>
+      <div className="panel p-[26px] max-w-[820px] mx-auto">
+        <div className="flex gap-3 flex-wrap items-end justify-center">
+          <MhField label="Ngày" value={d} set={setD} /><MhField label="Tháng" value={m} set={setM} /><MhField label="Năm" value={y} set={setY} /><MhField label="Giờ (0–23)" value={h} set={setH} />
+          <button className="btn btn-primary" onClick={calc}>🌸 Lập quẻ</button>
+        </div>
+        {err && <div className="disclaimer mt-5">{err}</div>}
+        {res && (
+          <div className="mt-6 animate-fade">
+            <p className="text-center note">Âm lịch {res.al.day}/{res.al.month}{res.al.leap ? ' (nhuận)' : ''}/{res.al.year} · Thượng {res.mh.upper} · Hạ {res.mh.lower} · Hào động {res.mh.dong}</p>
+            <div className="grid md:grid-cols-2 gap-5">
+              <div className="panel p-5"><div className="text-gold text-[.8rem] uppercase tracking-wider mb-1">Quẻ chính</div><HexView hex={res.mh.present} /></div>
+              <div className="panel p-5"><div className="text-gold text-[.8rem] uppercase tracking-wider mb-1">Quẻ biến (hào động {res.mh.dong})</div><HexView hex={res.mh.changed} /></div>
+            </div>
+            <p className="note text-left mt-3 mb-0"><b className="text-cream">{HAO_VITRI[res.mh.dong - 1].ten}:</b> {HAO_VITRI[res.mh.dong - 1].y}</p>
+            <p className="note text-center mt-2 mb-0">Phép Mai Hoa (Thiệu Khang Tiết) — <a href="https://vi.wikipedia.org/wiki/Mai_Hoa_D%E1%BB%8Bch_s%E1%BB%91" target="_blank" rel="noopener">tham khảo</a>. Chỉ để chiêm nghiệm.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
 export default function IChing() {
   const [cast, setCast] = useState(null)
   const [sel, setSel] = useState(null)
+  const [castCopied, setCastCopied] = useState(false)
 
   return (
     <>
@@ -59,11 +101,17 @@ export default function IChing() {
                   {cast.changingPos.map(p => { const v = HAO_VITRI[p - 1]; return <p key={p} className="note m-0 mb-1"><b className="text-cream">{v.ten}:</b> {v.y}</p> })}
                 </div>
               )}
+              <div className="flex gap-2 justify-center flex-wrap mt-5 no-print">
+                <button className="btn btn-ghost" onClick={() => { const u = `${window.location.origin}${window.location.pathname}#/kinh-dich`; let t = `✦ Quẻ Dịch: ${cast.present.n} · ${cast.present.ten}`; if (cast.changed) t += ` → biến ${cast.changed.n} · ${cast.changed.ten} (hào động ${cast.changingPos.join(', ')})`; t += `\n${cast.present.y || ''}\n— Tam Sở ${u}`; navigator.clipboard?.writeText(t).then(() => { setCastCopied(true); setTimeout(() => setCastCopied(false), 2000) }) }}>{castCopied ? '✓ Đã chép!' : '📋 Chép quẻ'}</button>
+                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/kinh-dich`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
+              </div>
             </div>
           )}
           <p className="note mt-4 mb-0">Gieo bằng số ngẫu nhiên trên máy bạn (ngửa=3, sấp=2). Hào tổng 6/9 là hào động.</p>
         </div>
       </section>
+
+      <MaiHoaTool />
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Tra cứu 64 quẻ</h2>
@@ -72,7 +120,7 @@ export default function IChing() {
           {HEXAGRAMS.map(h => (
             <button key={h.n} onClick={() => setSel(h)}
               className="bg-white/[.045] border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
-              <div className="text-[1.3rem] leading-none">{TRIGRAMS[h.up].sym}{TRIGRAMS[h.lo].sym}</div>
+              <div className="flex justify-center mb-1"><Hexagram up={h.up} lo={h.lo} w={38} /></div>
               <div className="text-muted text-[.72rem] mt-1">Quẻ {h.n}</div>
               <div className="text-[.86rem] font-semibold text-cream leading-tight">{h.ten}</div>
             </button>

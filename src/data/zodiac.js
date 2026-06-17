@@ -54,3 +54,17 @@ export function zodiacCompat(a, b) {
   else { verdict = 'Trung bình'; note = 'Hai nguyên tố cần thời gian điều chỉnh để hòa hợp.' }
   return { a, b, verdict, note }
 }
+
+/* Decan (thập phân) — hệ TRIPLICITY: mỗi cung chia 3 đoạn ~10°/~10 ngày.
+ * Decan 1 = nét thuần của cung; decan 2 & 3 nhuốm thêm hai cung cùng nguyên tố.
+ * Tính xấp xỉ theo ngày; là một trong vài hệ decan — chỉ tham khảo. */
+const _DOY = (m, d) => { const c = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]; return c[m - 1] + d }
+export function decanOf(day, month) {
+  const z = getZodiac(day, month); if (!z) return null
+  let start = _DOY(z.from[0], z.from[1]), cur = _DOY(month, day)
+  if (cur < start) cur += 365
+  const idx = Math.min(2, Math.max(0, Math.floor((cur - start) / 10)))
+  const sameEl = ZODIAC.filter(s => s.nguyenTo === z.nguyenTo)
+  const pos = sameEl.findIndex(s => s.en === z.en)
+  return { num: idx + 1, sub: sameEl[(pos + idx) % sameEl.length], pure: idx === 0 }
+}

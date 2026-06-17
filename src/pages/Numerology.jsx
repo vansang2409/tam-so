@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   NUMEROLOGY, computeLifePath, reduceKeep, computeNameNumbers, personalYear, NUMBER_TYPE, PERSONAL_YEAR,
-  loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT, pinnacles, letterStats
+  loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT, pinnacles, letterStats, birthdayNumber, lifePathCompat
 } from '../data/numerology.js'
 import { Badge } from '../components/Disclaimer.jsx'
 
@@ -18,6 +19,7 @@ export default function Numerology() {
 
       <LifePathTool />
       <NameTool />
+      <LifePathMatrix />
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Ý nghĩa 12 con số</h2>
@@ -41,6 +43,51 @@ export default function Numerology() {
         </div>
       </section>
     </>
+  )
+}
+
+function LifePathMatrix() {
+  const vals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33]
+  const mark = { 'Đồng điệu': '◎', 'Có điểm chung': '○', 'Bổ sung cho nhau': '+' }
+  const sty = {
+    'Đồng điệu': { background: 'rgba(120,210,150,.34)', color: '#d6f5e0' },
+    'Có điểm chung': { background: 'rgba(120,210,150,.16)', color: '#a7e6bf' },
+    'Bổ sung cho nhau': { background: 'rgba(211,162,78,.18)', color: '#ecd198' }
+  }
+  return (
+    <section className="wrap py-8">
+      <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng hợp Số Chủ Đạo</h2>
+      <p className="note text-center max-w-[640px] mx-auto mb-4">Tra nhanh sự cộng hưởng giữa hai Số Chủ Đạo (kể cả số bậc thầy 11/22/33). Di chuột/chạm vào ô để xem chi tiết — chỉ mang tính tham khảo.</p>
+      <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
+        <div className="panel p-4 max-w-[760px] mx-auto overflow-x-auto">
+        <table className="border-collapse mx-auto" style={{ minWidth: 420 }}>
+          <thead>
+            <tr>
+              <th className="p-1 text-gold">✦</th>
+              {vals.map(v => <th key={v} className="p-1 text-[.85rem] font-semibold text-cream" style={{ minWidth: 26 }}>{v}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {vals.map(a => (
+              <tr key={a}>
+                <th className="p-1 pr-2 text-[.85rem] font-semibold text-cream text-right">{a}</th>
+                {vals.map(b => {
+                  const v = lifePathCompat(a, b).verdict
+                  return (
+                    <td key={b} title={`Số ${a} × Số ${b}: ${v}`} className="p-0 text-center align-middle">
+                      <div className="m-[2px] rounded-md flex items-center justify-center text-[.8rem] mx-auto" style={{ width: 28, height: 28, ...sty[v] }}>{mark[v]}</div>
+                    </td>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex gap-3 flex-wrap justify-center mt-4 text-[.82rem] text-muted">
+          {Object.keys(mark).map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -74,19 +121,49 @@ function LifePathTool() {
 }
 
 function NameTool() {
+  const [params, setParams] = useSearchParams()
   const [name, setName] = useState(''); const [d, setD] = useState(''); const [m, setM] = useState(''); const [y, setY] = useState('')
   const [res, setRes] = useState(null); const [err, setErr] = useState('')
-  const calc = () => {
-    const nn = computeNameNumbers(name); const dd = +d, mm = +m, yy = +y
-    if (!nn) { setErr('Nhập họ tên (có chữ cái).'); setRes(null); return }
-    if (!dd || !mm || !yy) { setErr('Nhập đủ ngày, tháng, năm sinh.'); setRes(null); return }
+  const [copied, setCopied] = useState('')
+
+  const compute = (nm, dd, mm, yy) => {
+    const nn = computeNameNumbers(nm)
+    if (!nn || !dd || !mm || !yy) return null
     const lpObj = computeLifePath(dd, mm, yy)
-    const py = personalYear(dd, mm, yy)
+    const py = personalYear(dd, mm, CUR.getFullYear())
     const pm = personalMonth(py, CUR.getMonth() + 1)
     const karmic = [karmicOf(lpObj.sum), [13, 14, 16, 19].includes(dd) ? dd : null].filter(Boolean)
-    setErr('')
-    setRes({ ...nn, lp: lpObj.lp, birthday: dd, py, pm, pd: personalDay(pm, CUR.getDate()), maturity: maturity(lpObj.lp, nn.expression), karmic, lo: loShu(dd, mm, yy), pin: pinnacles(dd, mm, yy, lpObj.lp), stats: letterStats(name), attitude: reduceKeep(dd + mm) })
+    return { ...nn, name: nm, dd, mm, yy, lp: lpObj.lp, birthday: dd, py, pm, pd: personalDay(pm, CUR.getDate()), maturity: maturity(lpObj.lp, nn.expression), karmic, lo: loShu(dd, mm, yy), pin: pinnacles(dd, mm, yy, lpObj.lp), stats: letterStats(nm), attitude: reduceKeep(dd + mm), bday: birthdayNumber(dd) }
   }
+
+  useEffect(() => {
+    const g = k => params.get(k) || ''
+    if (g('d') && g('m') && g('y')) {
+      const nm = g('n'), dd = +g('d'), mm = +g('m'), yy = +g('y')
+      setName(nm); setD(g('d')); setM(g('m')); setY(g('y'))
+      const r = compute(nm, dd, mm, yy); if (r) setRes(r)
+    } // eslint-disable-next-line
+  }, [])
+
+  const qs = () => new URLSearchParams({ d, m, y, ...(name.trim() ? { n: name.trim() } : {}) }).toString()
+  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/than-so-hoc?${qs()}`
+  const calc = () => {
+    const dd = +d, mm = +m, yy = +y
+    if (!computeNameNumbers(name)) { setErr('Nhập họ tên (có chữ cái).'); setRes(null); return }
+    if (!dd || !mm || !yy) { setErr('Nhập đủ ngày, tháng, năm sinh.'); setRes(null); return }
+    setErr(''); setRes(compute(name, dd, mm, yy)); setParams(new URLSearchParams(qs()))
+  }
+  const doCopy = (txt, tag) => { navigator.clipboard?.writeText(txt).then(() => { setCopied(tag); setTimeout(() => setCopied(''), 2000) }) }
+  const resultText = () => res ? [
+    `✦ Thần số học — ${res.name || 'Bạn'} (${res.dd}/${res.mm}/${res.yy})`,
+    `Số Chủ Đạo: ${res.lp}`,
+    `Vận Mệnh: ${res.expression} · Linh Hồn: ${res.soulUrge} · Nhân Cách: ${res.personality}`,
+    `Trưởng Thành: ${res.maturity} · Thái Độ: ${res.attitude} · Ngày Sinh: ${res.bday}`,
+    `Năm cá nhân ${CUR.getFullYear()}: ${res.py} · Ngày hôm nay: ${res.pd}`,
+    res.lo.missing.length ? `Lo Shu thiếu: ${res.lo.missing.join(', ')}` : 'Lo Shu: đủ 9 số',
+    `— Tam Sở ${shareUrl()}`
+  ].join('\n') : ''
+
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">② Bộ số đầy đủ <span className="note">(họ tên + ngày sinh)</span></h2>
@@ -99,12 +176,18 @@ function NameTool() {
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="mt-6 animate-fade">
+            <div className="flex gap-2 justify-center flex-wrap mb-4 no-print">
+              <button className="btn btn-ghost" onClick={() => doCopy(shareUrl(), 'link')}>{copied === 'link' ? '✓ Đã chép!' : '🔗 Sao chép liên kết'}</button>
+              <button className="btn btn-ghost" onClick={() => doCopy(resultText(), 'text')}>{copied === 'text' ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl())} target="_blank" rel="noopener">📘 Chia sẻ</a>
+            </div>
             <div className="grid md:grid-cols-2 gap-4">
               <NumBlock label={NUMBER_TYPE.expression.label} n={res.expression} note={NUMBER_TYPE.expression.note} />
               <NumBlock label={NUMBER_TYPE.soulUrge.label} n={res.soulUrge} note={NUMBER_TYPE.soulUrge.note} />
               <NumBlock label={NUMBER_TYPE.personality.label} n={res.personality} note={NUMBER_TYPE.personality.note} />
               <NumBlock label="Số Trưởng Thành (Maturity)" n={res.maturity} note="Số Chủ Đạo + Số Vận Mệnh — đích bạn hướng tới ở nửa sau cuộc đời." />
               <NumBlock label="Số Thái Độ (Attitude)" n={res.attitude} note="Ngày + tháng sinh — ấn tượng ban đầu &amp; cách bạn phản ứng tức thì với đời." />
+              <NumBlock label="Số Ngày Sinh (Birthday)" n={res.bday} note="Rút gọn ngày sinh — tài năng bẩm sinh, món quà tự nhiên của bạn." />
             </div>
             <div className="grid md:grid-cols-2 gap-4 mt-4">
               <div className="panel p-5">
@@ -112,7 +195,7 @@ function NameTool() {
                 <div className="grid grid-cols-3 gap-1.5 max-w-[220px] mx-auto">
                   {LO_SHU_LAYOUT.flat().map(num => {
                     const c = res.lo.counts[num]
-                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-white/[.05]' : 'border-white/10 text-white/25'}`}>{c ? String(num).repeat(c) : num}</div>
+                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-white/[.05]' : 'border-black/10 text-black/30'}`}>{c ? String(num).repeat(c) : num}</div>
                   })}
                 </div>
                 <p className="note mt-3 mb-0">{res.lo.missing.length ? 'Số còn thiếu: ' + res.lo.missing.join(', ') + '.' : 'Đủ cả 9 số — hiếm gặp!'}</p>
@@ -123,9 +206,10 @@ function NameTool() {
                 <p className="m-0"><span className="badge badge-gold">Năm {CUR.getFullYear()}: {res.py}</span> {PERSONAL_YEAR[res.py].title}</p>
                 <p className="m-0 mt-1.5">{PERSONAL_YEAR[res.py].desc}</p>
                 <p className="m-0 mt-2"><b>Tháng cá nhân:</b> {res.pm} · <b>Ngày hôm nay:</b> {res.pd} — {PERSONAL_DAY_HINT[res.pd]}</p>
+                <p className="note m-0 mt-2">Năm tới ({CUR.getFullYear() + 1}): số <b className="text-gold">{personalYear(res.dd, res.mm, CUR.getFullYear() + 1)}</b> · ({CUR.getFullYear() + 2}): số <b className="text-gold">{personalYear(res.dd, res.mm, CUR.getFullYear() + 2)}</b> — Năm cá nhân xoay vòng 1→9 rồi lặp lại.</p>
                 {res.karmic.length > 0 && (
                   <div className="mt-3">
-                    <div className="text-[.9rem] text-pink-300 font-semibold">Nợ nghiệp (Karmic Debt)</div>
+                    <div className="text-[.9rem] text-rose-700 font-semibold">Nợ nghiệp (Karmic Debt)</div>
                     {res.karmic.map(k => <p key={k} className="note m-0">• {KARMIC_DEBT[k]}</p>)}
                   </div>
                 )}
@@ -145,7 +229,7 @@ function NameTool() {
                   <p className="note mt-1 mb-0">Con số lặp nhiều nhất trong tên — thiên hướng nổi trội.</p>
                 </div>
                 <div>
-                  <div className="text-[.9rem] text-pink-300 font-semibold mb-1">Bài học nghiệp quả</div>
+                  <div className="text-[.9rem] text-rose-700 font-semibold mb-1">Bài học nghiệp quả</div>
                   {res.stats.missing.length ? <p className="m-0">{res.stats.missing.map(n => <span key={n} className="mr-3"><b className="text-cream">{n}</b> {NUMEROLOGY[n] ? '· ' + NUMEROLOGY[n].keys[0] : ''}</span>)}</p> : <p className="note m-0">Đủ cả 9 — hiếm gặp!</p>}
                   <p className="note mt-1 mb-0">Con số vắng mặt trong tên — bài học cần trau dồi.</p>
                 </div>

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { TAROT_CARDS, TAROT_SPREADS, drawCards, cardOfDay } from '../data/tarot.js'
 import Modal from '../components/Modal.jsx'
 import CardImage from '../components/CardImage.jsx'
@@ -9,8 +10,53 @@ const FILTERS = [
   { key: 'all', label: 'Tất cả' }, { key: 'major', label: 'Ẩn Chính' },
   { key: 'Gậy', label: '🔥 Gậy' }, { key: 'Cốc', label: '🍷 Cốc' }, { key: 'Kiếm', label: '⚔️ Kiếm' }, { key: 'Tiền', label: '🪙 Tiền' }, { key: 'fav', label: '★ Yêu thích' }
 ]
+
+// Câu hỏi gợi ý (tự biên soạn) -> bấm là rút bài với kiểu trải phù hợp
+const TOPICS = [
+  { title: '💞 Tarot tình yêu & mối quan hệ', items: [
+    ['Người ấy thật sự nghĩ gì về mình?', 'love'],
+    ['Mối quan hệ này rồi sẽ đi về đâu?', 'love'],
+    ['Mình và người ấy có thật sự hợp nhau?', 'three'],
+    ['Điều gì đang cản trở chuyện tình cảm của mình?', 'love'],
+    ['Crush có đang để ý đến mình không?', 'yesno'],
+    ['Người cũ có còn nghĩ về mình không?', 'yesno'],
+    ['Có nên cho mối quan hệ này thêm một cơ hội?', 'yesno']
+  ] },
+  { title: '🌙 Tarot bản thân & tháng này', items: [
+    ['Tháng này mình nên tập trung vào điều gì?', 'three'],
+    ['Điểm mạnh nào mình chưa khai thác hết?', 'one'],
+    ['Mình cần buông bỏ điều gì để nhẹ lòng hơn?', 'one'],
+    ['Bài học quan trọng nhất lúc này của mình là gì?', 'three'],
+    ['Năng lượng quanh mình hôm nay ra sao?', 'one'],
+    ['Điều gì đang âm thầm ảnh hưởng đến mình?', 'three']
+  ] },
+  { title: '💼 Tarot sự nghiệp & tài lộc (4 lá)', items: [
+    ['Công việc của mình thời gian tới sẽ ra sao?', 'career'],
+    ['Mình có nên thay đổi công việc lúc này?', 'career'],
+    ['Tình hình tài chính vài tháng tới của mình thế nào?', 'career'],
+    ['Mình nên làm gì để tiến xa hơn trong sự nghiệp?', 'career'],
+    ['Đâu là cơ hội mình đang vô tình bỏ lỡ?', 'three']
+  ] },
+  { title: '⚡ Hỏi nhanh Có / Không', items: [
+    ['Mình có nên nhận lời đề nghị này không?', 'yesno'],
+    ['Quyết định sắp tới của mình có ổn không?', 'yesno'],
+    ['Mình có nên kiên nhẫn chờ thêm không?', 'yesno'],
+    ['Đây có phải thời điểm tốt để bắt đầu không?', 'yesno']
+  ] }
+]
+const RELATED = [
+  ['/', 'Trang chủ'], ['/ho-so', 'Hồ sơ tổng hợp'], ['/than-so-hoc', 'Thần số học'],
+  ['/tu-vi', 'Tử vi · Can Chi'], ['/cung-hoang-dao', 'Cung hoàng đạo'],
+  ['/tuong-hop', 'Tương hợp 2 người'], ['/kinh-dich', 'Kinh Dịch'], ['/nguon', 'Nguồn & Lưu ý']
+]
 const HKEY = 'tamso_tarot_history'
 const FKEY = 'tamso_tarot_favs'
+function spreadSummary(picks, positions, q) {
+  const n = picks.length
+  const up = picks.filter(p => p.up).length
+  const lean = up > n - up ? 'nghiêng về hướng thuận, tích cực' : up < n - up ? 'nghiêng về sự thận trọng, cần điều chỉnh' : 'khá cân bằng giữa thuận và nghịch'
+  return (q ? 'Về câu hỏi “' + q + '”: ' : 'Cho trải bài này: ') + n + ' lá có ' + up + ' xuôi / ' + (n - up) + ' ngược — ' + lean + '. Đọc “' + positions[0] + '” như điểm khởi đầu và “' + positions[n - 1] + '” như xu hướng đang mở ra; các lá giữa là mạch nối. Đây là gợi ý để bạn tự chiêm nghiệm, không phải lời phán chắc chắn.'
+}
 
 function birthCards(d, m, y) {
   const sd = n => String(n).split('').reduce((a, b) => a + +b, 0)
@@ -21,14 +67,32 @@ function birthCards(d, m, y) {
   return t === t2 ? [c1] : [c1, c2]
 }
 
+const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 function DrawnCard({ card, up, pos, delay = 0 }) {
+  const [revealed, setRevealed] = useState(() => prefersReduced())
+  useEffect(() => {
+    if (prefersReduced()) return
+    const t = setTimeout(() => setRevealed(true), 130 + delay * 1000)
+    return () => clearTimeout(t)
+  }, [delay])
   return (
-    <div className={'tcard animate-flip ' + (up ? '' : 'rev')} style={{ animationDelay: delay + 's' }}>
-      <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">{pos}</div>
-      <CardImage card={card} w={260} reversed={!up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[3rem] my-6" />
-      <div>
-        <div className="font-serif text-[1.05rem] leading-tight">{card.nameVi}</div>
-        <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-300' : 'text-pink-300')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
+    <div className="flip3d" style={{ width: 170 }}>
+      <div className="flip3d-inner" style={{ transform: revealed ? 'rotateY(0deg)' : 'rotateY(180deg)' }}>
+        <div className={'tcard ' + (up ? '' : 'rev')} style={{ width: '100%', WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}>
+          <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">{pos}</div>
+          <CardImage card={card} w={260} reversed={!up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[3rem] my-6" />
+          <div>
+            <div className="font-serif text-[1.05rem] leading-tight">{card.nameVi}</div>
+            <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-800' : 'text-rose-700')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
+          </div>
+        </div>
+        <div className="flip3d-back" style={{ borderRadius: 16, background: 'linear-gradient(160deg,#2a1d0d,#3a2912)', border: '1px solid rgba(211,162,78,.4)', boxShadow: 'inset 0 0 0 4px rgba(211,162,78,.10), inset 0 0 0 5px rgba(211,162,78,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center', color: '#d3a24e' }}>
+            <div style={{ fontSize: '2.4rem', lineHeight: 1 }}>✦</div>
+            <div style={{ fontFamily: 'serif', letterSpacing: '.22em', fontSize: '.68rem', marginTop: 6, opacity: .82 }}>TAM SỞ</div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -43,6 +107,9 @@ export default function Tarot() {
   const [reversed, setReversed] = useState(true)
   const [history, setHistory] = useState([])
   const [favs, setFavs] = useState([])
+  const [question, setQuestion] = useState('')
+  const [dayCopied, setDayCopied] = useState(false)
+  const [readCopied, setReadCopied] = useState(false)
   const today = useMemo(() => cardOfDay(), [])
   const positions = TAROT_SPREADS[spread].positions
   const isYesNo = spread === 'yesno'
@@ -51,15 +118,30 @@ export default function Tarot() {
   const isFav = id => favs.includes(id)
   const toggleFav = id => { const next = favs.includes(id) ? favs.filter(x => x !== id) : [...favs, id]; setFavs(next); try { localStorage.setItem(FKEY, JSON.stringify(next)) } catch { } }
 
-  const handleDraw = () => {
-    let p = drawCards(positions.length)
+  const runDraw = (sp, q) => {
+    const pos = TAROT_SPREADS[sp].positions
+    let p = drawCards(pos.length)
     if (!reversed) p = p.map(x => ({ ...x, up: true }))
     setPicks(p); setDrawId(n => n + 1)
-    const entry = { t: Date.now(), spread: TAROT_SPREADS[spread].label, cards: p.map((x, i) => `${positions[i]}: ${x.card.nameVi} (${x.up ? 'xuôi' : 'ngược'})`) }
+    const entry = { t: Date.now(), q: (q || '').trim(), spread: TAROT_SPREADS[sp].label, cards: p.map((x, i) => `${pos[i]}: ${x.card.nameVi} (${x.up ? 'xuôi' : 'ngược'})`) }
     const next = [entry, ...history].slice(0, 8)
     setHistory(next); try { localStorage.setItem(HKEY, JSON.stringify(next)) } catch { }
   }
+  const handleDraw = () => runDraw(spread, question)
+  const askPreset = (q, sp) => {
+    setQuestion(q); setSpread(sp); runDraw(sp, q)
+    setTimeout(() => { const el = document.getElementById('rut-bai'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, 60)
+  }
   const clearHistory = () => { setHistory([]); try { localStorage.removeItem(HKEY) } catch { } }
+  const copyReading = () => {
+    if (!picks.length) return
+    const u = `${window.location.origin}${window.location.pathname}#/tarot`
+    const head = `✦ Trải bài Tarot — ${TAROT_SPREADS[spread].label}` + (question.trim() ? `\nCâu hỏi: ${question.trim()}` : '')
+    const body = isYesNo
+      ? `Trả lời: ${picks[0].up ? 'CÓ' : 'KHÔNG'} — ${picks[0].card.nameVi} (${picks[0].up ? 'xuôi' : 'ngược'})`
+      : picks.map((pk, i) => `${positions[i]}: ${pk.card.nameVi} (${pk.up ? 'xuôi' : 'ngược'})`).join('\n')
+    navigator.clipboard?.writeText(`${head}\n${body}\n— Tam Sở ${u}`).then(() => { setReadCopied(true); setTimeout(() => setReadCopied(false), 2000) })
+  }
   const cards = TAROT_CARDS.filter(c => filter === 'all' ? true : filter === 'major' ? c.arcana === 'major' : filter === 'fav' ? favs.includes(c.id) : c.suit === filter)
 
   return (
@@ -76,15 +158,21 @@ export default function Tarot() {
             <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Hôm nay</div>
             <CardImage card={today.card} w={240} reversed={!today.up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[2.6rem] my-5" />
             <div><div className="font-serif text-[1.05rem] leading-tight">{today.card.nameVi}</div>
-              <div className={'text-[.78rem] font-semibold ' + (today.up ? 'text-emerald-300' : 'text-pink-300')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
+              <div className={'text-[.78rem] font-semibold ' + (today.up ? 'text-emerald-800' : 'text-rose-700')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
           </div>
-          <div><h3 className="text-[1.3rem] mb-1">Lá bài hôm nay</h3><p className="m-0">{meaningOf(today.card, today.up)}</p><p className="note mt-2 mb-0">Cố định trong ngày — mai có lá mới.</p></div>
+          <div><h3 className="text-[1.3rem] mb-1">Lá bài hôm nay</h3><p className="m-0">{meaningOf(today.card, today.up)}</p><p className="note mt-2 mb-0">Cố định trong ngày — mai có lá mới.</p>
+            <div className="flex gap-2 flex-wrap mt-3 no-print">
+              <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={() => { const u = `${window.location.origin}${window.location.pathname}#/tarot`; navigator.clipboard?.writeText(`✦ Lá Tarot hôm nay: ${today.card.nameVi} (${today.up ? 'xuôi' : 'ngược'})\n${meaningOf(today.card, today.up)}\n— Tam Sở ${u}`).then(() => { setDayCopied(true); setTimeout(() => setDayCopied(false), 2000) }) }}>{dayCopied ? '✓ Đã chép!' : '📋 Chép lá hôm nay'}</button>
+              <a className="btn btn-ghost text-[.82rem] py-1.5 px-3" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/tarot`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
+            </div></div>
         </div>
       </section>
 
-      <section className="wrap py-10">
+      <section id="rut-bai" className="wrap py-10">
         <div className="panel p-[26px]">
           <div className="flex gap-3 flex-wrap items-end justify-center">
+            <div className="flex flex-col gap-1.5"><label htmlFor="tquestion" className="text-[.85rem] text-muted font-semibold">Câu hỏi (tùy chọn)</label>
+              <input id="tquestion" value={question} onChange={e => setQuestion(e.target.value)} placeholder="VD: Mình nên tập trung vào điều gì lúc này?" className="field-input w-[250px]" /></div>
             <div className="flex flex-col gap-1.5"><label htmlFor="spread" className="text-[.85rem] text-muted font-semibold">Kiểu trải bài</label>
               <select id="spread" value={spread} onChange={e => { setSpread(e.target.value); setPicks([]) }} className="field-input">
                 {Object.entries(TAROT_SPREADS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
@@ -92,10 +180,11 @@ export default function Tarot() {
             <label className="flex items-center gap-2 text-[.9rem] text-muted pb-2 cursor-pointer"><input type="checkbox" checked={reversed} onChange={e => setReversed(e.target.checked)} /> Cho phép lá ngược</label>
             <button className="btn btn-primary" onClick={handleDraw}>🔮 Rút bài</button>
           </div>
+          {picks.length > 0 && question.trim() && <p className="text-center mt-4 mb-0 text-cream"><span className="note">Câu hỏi của bạn:</span> “{question.trim()}”</p>}
 
           {picks.length > 0 && isYesNo && (
             <div className="text-center mt-6 animate-fade">
-              <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-300' : 'text-pink-300')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
+              <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-800' : 'text-rose-700')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
               <div className="flex justify-center mt-2"><div style={{ width: 150 }}><DrawnCard card={picks[0].card} up={picks[0].up} pos="Trả lời" /></div></div>
               <p className="mt-3 max-w-[560px] mx-auto">{meaningOf(picks[0].card, picks[0].up)}</p>
             </div>
@@ -108,7 +197,17 @@ export default function Tarot() {
               <div className="max-w-[760px] mx-auto mt-5">
                 {picks.map((p, i) => <div key={i} className="bg-white/[.045] border border-gold/20 rounded-xl px-[18px] py-3.5 mb-2.5"><b className="text-gold">{positions[i]} — {p.card.nameVi} ({p.up ? 'xuôi' : 'ngược'}):</b> {meaningOf(p.card, p.up)}</div>)}
               </div>
+              <div className="panel p-5 mt-4 text-left max-w-[760px] mx-auto">
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">Tổng hợp quẻ bài <span className="note">(tham khảo)</span></div>
+                <p className="m-0 leading-relaxed">{spreadSummary(picks, positions, question.trim())}</p>
+              </div>
             </>
+          )}
+          {picks.length > 0 && (
+            <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
+              <button className="btn btn-ghost" onClick={copyReading}>{readCopied ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/tarot`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
+            </div>
           )}
           <p className="note text-center mt-[18px]">Rút ngẫu nhiên trên máy bạn. Lịch sử lưu cục bộ trong trình duyệt.</p>
 
@@ -116,11 +215,28 @@ export default function Tarot() {
             <details className="mt-4 max-w-[760px] mx-auto bg-white/[.04] border border-gold/15 rounded-xl overflow-hidden">
               <summary className="cursor-pointer px-4 py-2.5 text-[.9rem] font-semibold">🕘 Lịch sử rút ({history.length})</summary>
               <div className="px-4 pb-3">
-                {history.map((h, i) => <div key={i} className="text-[.85rem] text-muted border-b border-white/5 py-2"><b className="text-cream">{new Date(h.t).toLocaleString('vi-VN')}</b> · {h.spread}<br />{h.cards.join(' · ')}</div>)}
+                {history.map((h, i) => <div key={i} className="text-[.85rem] text-muted border-b border-white/5 py-2"><b className="text-cream">{new Date(h.t).toLocaleString('vi-VN')}</b> · {h.spread}{h.q ? ' · “' + h.q + '”' : ''}<br />{h.cards.join(' · ')}</div>)}
                 <button onClick={clearHistory} className="btn btn-ghost mt-3 text-[.85rem] py-2 px-4">Xóa lịch sử</button>
               </div>
             </details>
           )}
+        </div>
+      </section>
+
+      <section className="wrap py-8">
+        <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Câu hỏi gợi ý — bấm để rút bài ngay</h2>
+        <p className="note text-center max-w-[640px] mx-auto mb-5">Chọn một câu hợp tâm trạng, Tam Sở tự chọn kiểu trải phù hợp rồi rút bài. Bạn vẫn sửa lại câu hỏi ở ô phía trên được. Chỉ để chiêm nghiệm, không phải lời phán chắc chắn.</p>
+        <div className="max-w-[920px] mx-auto grid gap-5">
+          {TOPICS.map(g => (
+            <div key={g.title}>
+              <div className="text-gold font-serif text-[1.05rem] font-semibold mb-2">{g.title}</div>
+              <div className="flex flex-wrap gap-2">
+                {g.items.map(([q, sp]) => (
+                  <button key={q} onClick={() => askPreset(q, sp)} className="text-left border border-gold/30 rounded-lg px-3 py-2 text-[.88rem] text-cream hover:border-gold/60 hover:bg-black/5 transition cursor-pointer">{q}</button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -130,19 +246,28 @@ export default function Tarot() {
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thư viện 78 lá</h2>
         <div className="flex gap-2 flex-wrap justify-center mb-6 mt-4">
           {FILTERS.map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gradient-to-br from-gold to-gold-soft text-[#211606] border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
+            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gradient-to-br from-[#d3a24e] to-[#a9772f] text-[#211606] border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
           ))}
         </div>
         <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map(c => (
-            <button key={c.id} onClick={() => setSel(c)} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
-              <span onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 ' + (isFav(c.id) ? 'text-gold' : 'text-white/30 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</span>
+            <div key={c.id} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+              <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
-            </button>
+            </div>
           ))}
         </div>
         {filter === 'fav' && cards.length === 0 && <p className="note text-center mt-4">Chưa có lá yêu thích — mở một lá bất kỳ rồi bấm "☆ Lưu yêu thích".</p>}
+      </section>
+
+      <section className="wrap py-8">
+        <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-4">Khám phá thêm</h2>
+        <div className="flex flex-wrap gap-2 justify-center max-w-[820px] mx-auto">
+          {RELATED.map(([to, label]) => (
+            <Link key={to} to={to} className="border border-gold/30 rounded-full px-4 py-2 text-[.86rem] text-cream hover:border-gold/60 hover:bg-black/5 transition no-underline">{label}</Link>
+          ))}
+        </div>
       </section>
 
       <section className="wrap py-10">
@@ -161,6 +286,9 @@ export default function Tarot() {
           <p className="text-center mb-1 mt-3"><Badge>▼ Ngược</Badge></p>
           <div className="flex gap-2 flex-wrap my-1.5 justify-center">{sel.revKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
           {sel.rev && <p className="mb-0">{sel.rev}</p>}
+          {sel.advice && <p className="mt-3 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {sel.advice}</p>}
+          {sel.love && <p className="mt-2 mb-0 text-[.92rem]"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {sel.love}</p>}
+          {sel.work && <p className="mt-1 mb-0 text-[.92rem]"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {sel.work}</p>}
         </>)}
       </Modal>
     </>

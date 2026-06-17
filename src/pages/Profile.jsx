@@ -2,13 +2,20 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { toPng } from 'html-to-image'
 import { computeLifePath, computeNameNumbers, personalYear, PERSONAL_YEAR, NUMEROLOGY, pinnacles } from '../data/numerology.js'
-import { tinhCanChi, cungPhi } from '../data/tuvi.js'
-import { getZodiac, LUCKY } from '../data/zodiac.js'
+import { tinhCanChi, cungPhi, dayCanChi, hourCanChi, saoHan, hopTuoiChi, DIA_CHI } from '../data/tuvi.js'
+import { getZodiac, LUCKY, decanOf } from '../data/zodiac.js'
 import { TAROT_CARDS, cardOfDay } from '../data/tarot.js'
 import { solar2lunar } from '../data/lunar.js'
+import { buildReport } from '../data/report.js'
 
 const CUR = new Date()
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
+
+function hopKhacLine(chi) {
+  const g = { 'Tam hợp': [], 'Lục hợp': [], 'Lục xung': [], 'Tứ hành xung': [] }
+  DIA_CHI.forEach(z => { const r = hopTuoiChi(chi, z.ten); if (g[r]) g[r].push(z.con) })
+  return `Tuổi hợp/khắc — Tam hợp: ${g['Tam hợp'].join(', ') || '—'}; Lục hợp: ${g['Lục hợp'].join(', ') || '—'}; Lục xung: ${g['Lục xung'].join(', ') || '—'}; Tứ hành xung: ${g['Tứ hành xung'].join(', ') || '—'}.`
+}
 
 function birthCards(d, m, y) {
   const sd = n => ('' + n).split('').reduce((a, b) => a + +b, 0)
@@ -19,17 +26,24 @@ function birthCards(d, m, y) {
   return t === t2 ? [c1] : [c1, c2]
 }
 
-function compute(name, dd, mm, yy, gender) {
+function compute(name, dd, mm, yy, gender, hour, topic, question) {
   const al = solar2lunar(dd, mm, yy)
   const lp = computeLifePath(dd, mm, yy)
   const pin = pinnacles(dd, mm, yy, lp.lp)
   const age = CUR.getFullYear() - yy
   const curPin = pin.find(p => p.to === null || age < p.to) || pin[pin.length - 1]
-  return {
+  const hourCC = (hour !== '' && hour != null && !isNaN(+hour) && +hour >= 0 && +hour <= 23) ? hourCanChi(dayCanChi(yy, mm, dd).canIdx, +hour) : null
+  const nowL = solar2lunar(CUR.getDate(), CUR.getMonth() + 1, CUR.getFullYear()).year
+  const sao = saoHan(nowL - al.year + 1, gender)
+  const base = {
     name, lp, nn: name && name.trim() ? computeNameNumbers(name) : null,
     canChi: tinhCanChi(al.year), zodiac: getZodiac(dd, mm), birth: birthCards(dd, mm, yy),
-    py: personalYear(dd, mm, yy), cp: cungPhi(al.year, gender), gender, al, curPin, age
+    py: personalYear(dd, mm, CUR.getFullYear()), cp: cungPhi(al.year, gender), gender, al, curPin, age, decan: decanOf(dd, mm),
+    hour: hour == null ? '' : ('' + hour), topic: topic || 'Tổng quan', question: (question || '').trim(),
+    noHour: hour == null || hour === '' || isNaN(+hour), hourCC, sao
   }
+  base.report = buildReport(base, cardOfDay())
+  return base
 }
 
 function Card({ to, label, children }) {
@@ -44,30 +58,63 @@ function Card({ to, label, children }) {
 export default function Profile() {
   const [params, setParams] = useSearchParams()
   const [name, setName] = useState(''); const [d, setD] = useState(''); const [m, setM] = useState(''); const [y, setY] = useState(''); const [g, setG] = useState('nam')
-  const [res, setRes] = useState(null); const [err, setErr] = useState(''); const [copied, setCopied] = useState(false); const [saving, setSaving] = useState(false)
+  const [hour, setHour] = useState(''); const [topic, setTopic] = useState('Tổng quan'); const [question, setQuestion] = useState('')
+  const [res, setRes] = useState(null); const [err, setErr] = useState(''); const [copied, setCopied] = useState(false); const [repCopied, setRepCopied] = useState(false); const [saving, setSaving] = useState(false)
+  const [hist, setHist] = useState([])
   const shotRef = useRef(null)
   const today = cardOfDay()
 
   useEffect(() => {
+    try { setHist(JSON.parse(localStorage.getItem('tamso_profile_hist') || '[]')) } catch (_) { }
     const n = params.get('n') || '', d0 = params.get('d'), m0 = params.get('m'), y0 = params.get('y'), g0 = params.get('g') || 'nam'
+    const h0 = params.get('h') || '', t0 = params.get('t') || 'Tổng quan', q0 = params.get('q') || ''
     if (d0 && m0 && y0) {
-      setName(n); setD(d0); setM(m0); setY(y0); setG(g0)
+      setName(n); setD(d0); setM(m0); setY(y0); setG(g0); setHour(h0); setTopic(t0); setQuestion(q0)
       const dd = +d0, mm = +m0, yy = +y0
-      if (dd && mm && yy) setRes(compute(n, dd, mm, yy, g0))
+      if (dd && mm && yy) setRes(compute(n, dd, mm, yy, g0, h0, t0, q0))
     } else {
-      try { const sv = JSON.parse(localStorage.getItem('tamso_profile') || 'null'); if (sv && sv.d && sv.m && sv.y) { setName(sv.n || ''); setD(sv.d); setM(sv.m); setY(sv.y); setG(sv.g || 'nam'); setRes(compute(sv.n || '', +sv.d, +sv.m, +sv.y, sv.g || 'nam')) } } catch (_) { }
+      try { const sv = JSON.parse(localStorage.getItem('tamso_profile') || 'null'); if (sv && sv.d && sv.m && sv.y) { setName(sv.n || ''); setD(sv.d); setM(sv.m); setY(sv.y); setG(sv.g || 'nam'); setHour(sv.h || ''); setTopic(sv.t || 'Tổng quan'); setQuestion(sv.q || ''); setRes(compute(sv.n || '', +sv.d, +sv.m, +sv.y, sv.g || 'nam', sv.h || '', sv.t || 'Tổng quan', sv.q || '')) } } catch (_) { }
     } // eslint-disable-next-line
   }, [])
 
   const calc = () => {
     const dd = +d, mm = +m, yy = +y
     if (!dd || !mm || !yy || dd < 1 || dd > 31 || mm < 1 || mm > 12 || yy < 1 || yy > 3000) { setErr('Vui lòng nhập ngày, tháng, năm sinh hợp lệ.'); setRes(null); return }
-    setErr(''); setRes(compute(name, dd, mm, yy, g))
-    setParams({ ...(name ? { n: name } : {}), d: '' + dd, m: '' + mm, y: '' + yy, g })
-    try { localStorage.setItem('tamso_profile', JSON.stringify({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g })) } catch (_) { }
+    setErr(''); setRes(compute(name, dd, mm, yy, g, hour, topic, question))
+    setParams({ ...(name ? { n: name } : {}), d: '' + dd, m: '' + mm, y: '' + yy, g, ...(hour !== '' ? { h: '' + hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) })
+    try { localStorage.setItem('tamso_profile', JSON.stringify({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g, h: '' + hour, t: topic, q: question.trim() })) } catch (_) { }
+    saveHist({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g, h: '' + hour, t: topic, q: question.trim() })
+  }
+  const saveHist = (e) => {
+    setHist(prev => {
+      const key = x => (x.n || '') + x.d + '-' + x.m + '-' + x.y + '-' + x.g
+      const next = [e, ...prev.filter(x => key(x) !== key(e))].slice(0, 6)
+      try { localStorage.setItem('tamso_profile_hist', JSON.stringify(next)) } catch (_) { }
+      return next
+    })
+  }
+  const loadProfile = (h) => {
+    setName(h.n || ''); setD(h.d); setM(h.m); setY(h.y); setG(h.g || 'nam'); setHour(h.h || ''); setTopic(h.t || 'Tổng quan'); setQuestion(h.q || '')
+    setErr(''); setRes(compute(h.n || '', +h.d, +h.m, +h.y, h.g || 'nam', h.h || '', h.t || 'Tổng quan', h.q || ''))
+    setParams({ ...(h.n ? { n: h.n } : {}), d: h.d, m: h.m, y: h.y, g: h.g || 'nam', ...(h.h ? { h: h.h } : {}), t: h.t || 'Tổng quan', ...(h.q ? { q: h.q } : {}) })
+    window.scrollTo(0, 0)
+  }
+  const clearHist = () => { setHist([]); try { localStorage.removeItem('tamso_profile_hist') } catch (_) { } }
+  const copyReport = () => {
+    if (!res || !res.report) return
+    const r = res.report
+    const txt = [r.intro, r.focus, r.topicNote, r.saoNote, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
+    navigator.clipboard?.writeText(txt).then(() => { setRepCopied(true); setTimeout(() => setRepCopied(false), 2000) })
+  }
+  const downloadReport = () => {
+    if (!res || !res.report) return
+    const r = res.report
+    const txt = ['TAM SỞ — BÁO CÁO TỔNG HỢP', res.name ? 'Tên: ' + res.name : '', d + '/' + m + '/' + y, '', r.intro, r.focus, r.topicNote, r.saoNote, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' })
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bao-cao-tam-so' + (res.name ? '-' + res.name.replace(/\s+/g, '_') : '') + '.txt'; a.click(); URL.revokeObjectURL(a.href)
   }
   const copyLink = () => {
-    const qs = new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g }).toString()
+    const qs = new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g, ...(hour !== '' ? { h: hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) }).toString()
     const url = `${window.location.origin}${window.location.pathname}#/ho-so?${qs}`
     navigator.clipboard?.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
   }
@@ -97,23 +144,38 @@ export default function Profile() {
             <Field label="Năm" value={y} set={setY} ph="1990" />
             <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giới tính</label>
               <select value={g} onChange={e => setG(e.target.value)} className="field-input"><option value="nam">Nam</option><option value="nu">Nữ</option></select></div>
+            <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giờ sinh (tùy chọn)</label>
+              <input type="number" value={hour} onChange={e => setHour(e.target.value)} placeholder="0–23" className="field-input w-[110px]" /></div>
+            <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Chủ đề</label>
+              <select value={topic} onChange={e => setTopic(e.target.value)} className="field-input"><option>Tổng quan</option><option>Tình yêu</option><option>Công việc</option><option>Tài chính</option></select></div>
+            <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Câu hỏi (tùy chọn)</label>
+              <input value={question} onChange={e => setQuestion(e.target.value)} placeholder="Điều bạn đang băn khoăn…" className="field-input w-[220px]" /></div>
             <button className="btn btn-primary" onClick={calc}>✦ Lập hồ sơ</button>
           </div>
           {err && <div className="disclaimer mt-5">{err}</div>}
+          {hist.length > 0 && (
+            <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
+              <span className="note">Gần đây:</span>
+              {hist.map((h, i) => <button key={i} onClick={() => loadProfile(h)} className="badge cursor-pointer hover:text-gold">{h.n || (h.d + '/' + h.m + '/' + h.y)}</button>)}
+              <button onClick={clearHist} className="note hover:text-rose-700">xóa</button>
+            </div>
+          )}
 
           {res && (
             <>
               <div className="flex gap-3 justify-center flex-wrap mt-5 no-print">
                 <button className="btn btn-ghost" onClick={copyLink}>{copied ? '✓ Đã sao chép!' : '🔗 Sao chép liên kết'}</button>
+                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.origin + window.location.pathname + '#/ho-so?' + new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g, ...(hour !== '' ? { h: hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) }).toString())} target="_blank" rel="noopener">📘 Chia sẻ</a>
                 <button className="btn btn-ghost" onClick={savePng} disabled={saving}>{saving ? '⏳ Đang tạo ảnh…' : '🖼️ Tải ảnh PNG'}</button>
                 <button className="btn btn-ghost" onClick={() => window.print()}>🖨️ In / Lưu PDF</button>
               </div>
+              {res.noHour && <div className="disclaimer mt-4 no-print">Bạn chưa nhập giờ sinh nên phần tử vi chỉ được phân tích ở mức cơ bản.</div>}
 
               <div ref={shotRef} className="rounded-2xl p-3 mt-4">
                 <div className="text-center mb-3">
                   <div className="font-serif text-gold text-[1.4rem]">✦ Tam Sở</div>
                   {res.name && <div className="font-serif text-[1.2rem] text-cream">{res.name}</div>}
-                  <div className="note">{d}/{m}/{y} · {g === 'nam' ? 'Nam' : 'Nữ'}</div>
+                  <div className="note">{d}/{m}/{y}{res.hour !== '' ? ' · ' + res.hour + 'h' : ''} · {g === 'nam' ? 'Nam' : 'Nữ'} · {res.topic}</div>
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade">
                   <Card to="/than-so-hoc" label="Số Chủ Đạo">
@@ -138,11 +200,13 @@ export default function Profile() {
                     <div className="font-serif text-[1.6rem]">{res.canChi.tenCanChi}</div>
                     <div className="mt-1">Tuổi <b>{res.canChi.conGiap}</b> · <span className={'pill h-' + res.canChi.menhHanh}>{res.canChi.napAm}</span></div>
                     <div className="note mt-1">Âm lịch {res.al.day}/{res.al.month}{res.al.leap ? ' (nhuận)' : ''}/{res.al.year}</div>
+                    {res.hourCC && <div className="note mt-1">Giờ sinh: <b className="text-cream">{res.hourCC.tenCanChi}</b> ({res.hourCC.range}h)</div>}
                   </Card>
                   {res.zodiac && (
                     <Card to="/cung-hoang-dao" label="Cung hoàng đạo">
                       <div className="flex items-center gap-3"><span className="text-[2.4rem] leading-none">{res.zodiac.sym}</span>
                         <div><div className="font-serif text-[1.3rem]">{res.zodiac.ten}</div><span className={'pill ' + elColor[res.zodiac.nguyenTo]}>{res.zodiac.nguyenTo}</span></div></div>
+                      {res.decan && <div className="note mt-1">Decan {res.decan.num}{res.decan.pure ? ' (thuần)' : ' · ' + res.decan.sub.ten}</div>}
                       <div className="note mt-2">Màu {LUCKY[res.zodiac.en].mau} · Số {LUCKY[res.zodiac.en].so}</div>
                     </Card>
                   )}
@@ -150,6 +214,21 @@ export default function Profile() {
                     <div className="font-serif text-[1.4rem]">Cung {res.cp.cung} <span className="note">({res.cp.menh})</span></div>
                     <div className="mt-1"><span className="badge badge-gold">{res.cp.menhTrach}</span></div>
                     <div className="note mt-2">Hướng tốt: {res.cp.good.map(x => x.dir).join(', ')}</div>
+                  </Card>
+                  <Card to="/tu-vi" label="Tuổi hợp / khắc">
+                    {(() => {
+                      const me = res.canChi.chi
+                      const g = { 'Tam hợp': [], 'Lục hợp': [], 'Lục xung': [], 'Tứ hành xung': [] }
+                      DIA_CHI.forEach(z => { const r = hopTuoiChi(me, z.ten); if (g[r]) g[r].push(z.con) })
+                      return (
+                        <div className="text-[.95rem] leading-relaxed">
+                          <div><span className="text-emerald-800 font-semibold">Tam hợp:</span> {g['Tam hợp'].join(', ') || '—'}</div>
+                          <div><span className="text-emerald-800 font-semibold">Lục hợp:</span> {g['Lục hợp'].join(', ') || '—'}</div>
+                          <div className="mt-0.5"><span className="text-rose-700 font-semibold">Lục xung:</span> {g['Lục xung'].join(', ') || '—'}</div>
+                          <div className="note">Tứ hành xung: {g['Tứ hành xung'].join(', ') || '—'}</div>
+                        </div>
+                      )
+                    })()}
                   </Card>
                   <Card to="/tarot" label="Lá Tarot chủ đạo">
                     <div className="flex items-center gap-3"><span className="text-[2.4rem] leading-none">{res.birth.map(c => c.symbol).join(' ')}</span><span className="font-serif text-[1.1rem]">{res.birth.map(c => c.nameVi).join(' · ')}</span></div>
@@ -162,11 +241,26 @@ export default function Profile() {
                   </Card>
                   <Card to="/tarot" label="Lá bài hôm nay">
                     <div className="flex items-center gap-3"><span className="text-[2.4rem] leading-none">{today.card.symbol}</span>
-                      <div><div className="font-serif text-[1.2rem]">{today.card.nameVi}</div><span className={'text-[.8rem] font-semibold ' + (today.up ? 'text-emerald-300' : 'text-pink-300')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</span></div></div>
+                      <div><div className="font-serif text-[1.2rem]">{today.card.nameVi}</div><span className={'text-[.8rem] font-semibold ' + (today.up ? 'text-emerald-800' : 'text-rose-700')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</span></div></div>
                   </Card>
                 </div>
                 <p className="note text-center mt-3 mb-0">tamso · chiêm nghiệm để hiểu mình — không phải lời tiên tri.</p>
               </div>
+              {res.report && (
+                <div className="panel p-5 mt-5 text-left">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="text-gold text-[.72rem] uppercase tracking-[.18em]">Báo cáo tổng hợp <span className="note">(tự động · tham khảo)</span></div>
+                    <div className="flex gap-1.5"><button onClick={downloadReport} className="btn btn-ghost text-[.78rem] py-1 px-2.5 no-print">📄 .txt</button><button onClick={copyReport} className="btn btn-ghost text-[.78rem] py-1 px-2.5 no-print">{repCopied ? '✓ Đã chép' : '📋 Chép'}</button></div>
+                  </div>
+                  <p className="m-0 mb-2 leading-relaxed">{res.report.intro}</p>
+                  <p className="m-0 mb-3 leading-relaxed">{res.report.focus}</p>
+                  {res.report.topicNote && <p className="m-0 mb-3 leading-relaxed text-cream">{res.report.topicNote}</p>}
+                  {res.report.saoNote && <p className="m-0 mb-3 leading-relaxed note">{res.report.saoNote}</p>}
+                  <div className="text-gold text-[.9rem] font-semibold mb-1">Gợi ý 7 ngày tới</div>
+                  <ol className="m-0 pl-5">{res.report.week.map((w, i) => <li key={i} className="text-[.95rem] mb-1">{w}</li>)}</ol>
+                  <p className="note mt-3 mb-0">Tổng hợp tự động từ hồ sơ để bạn chiêm nghiệm — không phải lời tiên tri, không thay tư vấn chuyên môn.</p>
+                </div>
+              )}
               <p className="note text-center mt-3 no-print">Nhấp từng thẻ để xem chi tiết. Mọi luận giải chỉ mang tính tham khảo — xem <Link to="/nguon">Nguồn &amp; Lưu ý</Link>.</p>
             </>
           )}
