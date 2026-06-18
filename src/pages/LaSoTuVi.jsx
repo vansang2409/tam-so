@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { toPng } from 'html-to-image'
 import { solar2lunar } from '../data/lunar.js'
-import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI, DO_SANG_LABEL, DO_SANG_NGHIA } from '../data/tuvidauso.js'
+import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI, DO_SANG_LABEL, DO_SANG_NGHIA, doSangSummary } from '../data/tuvidauso.js'
 import { SAO_CUNG } from '../data/tuvi-saocung.js'
 
 // Vị trí 12 chi trên lá số 4×4 [cột, hàng] (1-indexed)
@@ -183,6 +183,7 @@ export default function LaSoTuVi() {
                   return <>{cat.length > 0 && <>Điểm sáng nổi bật: <span className="text-emerald-800 font-semibold">{cat.join(', ')}</span>. </>}{xau.length > 0 && <>Nên lưu tâm thêm: <span className="text-rose-700">{xau.join(', ')}</span> (đều có cách hóa giải, không phải điềm gở). </>}</>
                 })()}
                 {ls.van && <>Năm {ls.van.year} (~{ls.van.age} tuổi âm), đại hạn đang ở cung <b className="text-cream">{ls.palaces[ls.van.daiHanChi].cung}</b>.</>}</p>
+              {(() => { const ds = doSangSummary(ls); return ds && ds.text ? <p className="mt-1.5 mb-0 leading-relaxed"><span className="text-gold font-semibold">Độ sáng Mệnh:</span> {ds.text}</p> : null })()}
               <p className="note mt-1.5 mb-0">Bức tranh tổng quan để chiêm nghiệm — không phải lời phán; lá số cần luận tổng hòa, và mọi quyết định vẫn ở bạn.</p>
             </div>
             <div ref={shotRef} className="panel p-2.5 md:p-3 max-w-[820px] mx-auto overflow-x-auto"><p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem trọn lá số →</p>
