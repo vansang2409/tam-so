@@ -9,6 +9,7 @@ import * as I from '../src/data/iching.js'
 import * as Z from '../src/data/zodiac.js'
 import * as R from '../src/data/report.js'
 import * as SITE from '../src/data/site.js'
+import * as TV from '../src/data/tuvidauso.js'
 
 let pass = 0, fail = 0
 const ok = (cond, msg) => { if (cond) { pass++ } else { fail++; console.error('  ✗ FAIL: ' + msg) } }
@@ -159,5 +160,21 @@ global.window = { location: { protocol: 'file:', origin: 'null', pathname: '/C:/
 ok(SITE.shareUrl('/tarot').includes('#/tarot') && !SITE.shareUrl('/tarot').includes('/tam-so/tarot'), 'shareUrl hash-mode khi file://')
 delete global.window
 
+// === Tử Vi Đẩu Số: an sao (thuật toán cổ điển, kiểm chứng được) ===
+{
+  const A = TV.anSao({ lunarDay:1, lunarMonth:4, year:2018, hourRank:7, gender:"nam" })
+  eq(A.menhChi, "Hợi", "Mậu Tuất t4 giờ Ngọ -> Mệnh Hợi")
+  eq(A.cuc.num, 2, "-> Thủy nhị cục")
+  eq(A.thanCu, "Mệnh", "giờ Ngọ -> Thân cư Mệnh")
+  const mp = {}; A.palaces.forEach(p => p.sao.forEach(s => { if (s.loai==="chinh") mp[s.ten]=p.chiIdx }))
+  const md=(n,m)=>((n%m)+m)%m, tv=mp["Tử Vi"], tp=mp["Thiên Phủ"]
+  ok(tp===md(4-tv,12), "Thiên Phủ = (4 - Tử Vi) mod 12")
+  ok(mp["Thiên Cơ"]===md(tv-1,12) && mp["Liêm Trinh"]===md(tv-8,12), "chùm Tử Vi offset đúng")
+  ok(mp["Thái Âm"]===md(tp+1,12) && mp["Phá Quân"]===md(tp+10,12), "chùm Thiên Phủ offset đúng")
+  const all14=["Tử Vi","Thiên Cơ","Thái Dương","Vũ Khúc","Thiên Đồng","Liêm Trinh","Thiên Phủ","Thái Âm","Tham Lang","Cự Môn","Thiên Tướng","Thiên Lương","Thất Sát","Phá Quân"]
+  ok(all14.every(t=>typeof mp[t]==="number"), "đủ 14 chính tinh, mỗi sao 1 cung")
+  const ky=A.palaces.flatMap(p=>p.sao).find(s=>s.hoa==="Kỵ"); ok(ky&&ky.ten==="Thiên Cơ", "Mậu: Hóa Kỵ ở Thiên Cơ")
+  ok(A.palaces.length===12 && A.palaces.filter(p=>p.daihan).length===12, "12 cung + đại hạn đủ")
+}
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

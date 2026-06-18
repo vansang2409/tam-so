@@ -16,6 +16,12 @@
 - **Đổi dương→âm lịch (Hồ Ngọc Đức, UTC+7)**: ô ① Tra Can Chi nhập đủ ngày/tháng → tự tính đúng **năm âm lịch** cho Can Chi & Tam Tai (chuẩn ranh giới Tết), hiện ngày âm; ô Can Chi ngày cũng hiện âm lịch. Đã kiểm chứng mốc Tết 1990/2000/2020/2024/2025.
 - **Hiệu ứng**: sáu hào "rơi" so le khi gieo Kinh Dịch; lá Tarot "chia bài" so le khi rút. Thêm thẻ chia sẻ mạng xã hội (Open Graph).
 
+## ✅ 3.10 — Tử Vi Đẩu Số: LÁ SỐ 12 CUNG (an sao đầy đủ)
+- Trang **Lá số Tử Vi** (`/la-so-tu-vi`): nhập ngày–giờ sinh → an sao lá số 12 cung (lưới 4×4).
+- Engine `src/data/tuvidauso.js` (tất định, đối chiếu nhiều nguồn): an Mệnh/Thân, định Cục, an Tử Vi + **14 chính tinh** (chùm Tử Vi nghịch + chùm Thiên Phủ thuận), **Tứ Hóa**, lục cát, lục sát, Lộc Tồn, Thiên Mã, đào hoa, **đại hạn**.
+- Kiểm chứng: Mệnh Hợi/Thủy nhị (khớp ví dụ Mậu Tuất), Thân cư Mệnh (khớp bài thơ), cách đồng cung kinh điển (Tử-Phá, Liêm-Tham, Đồng-Lương, Vũ-Sát) — **npm test 104 mốc**.
+- Ý nghĩa 14 chính tinh + 19 phụ tinh + Tứ Hóa + 12 cung (tự biên soạn, tham khảo). Phân biệt rõ an sao (dữ kiện) vs luận giải.
+
 ## ✅ 3.05 — Kinh Dịch HOÀN CHỈNH: 64 Thoán + 384 hào từ
 - **Đủ 64 quẻ** có **Thoán từ (lời quẻ)** + **6 hào từ** mỗi quẻ (tổng **384 hào từ**) + lời **Dụng Cửu/Dụng Lục** cho quẻ 1 & 2.
 - Phỏng dịch tiếng Việt mạch lạc, trấn an từ bản **James Legge 1899 (phạm vi công cộng)**; quẻ 12 & 46 (trang nguồn lỗi) dịch từ bản Legge chuẩn đã đối chiếu.
@@ -308,13 +314,4 @@
 
 ## ✅ 2.10 — Mục "Hôm nay" & PWA
 - **Mục "Hôm nay" ở trang chủ**: lá bài Tarot, quẻ Dịch (tất định theo ngày), Can Chi ngày + âm lịch + giờ hoàng đạo — bấm để mở công cụ tương ứng.
-- **PWA**: cài như app (manifest + icon PNG), service worker cache offline (asset cùng origin) — mở lại không cần mạng sau lần đầu. Áp dụng cho bản online.
-- **Lưu lá Tarot yêu thích**: gắn ★ ở thư viện & trong modal, bộ lọc "★ Yêu thích" riêng, lưu localStorage.
-
-## 🔭 3.0 — Tiếp theo
-- Đa ngôn ngữ Việt/Anh; hiệu ứng lật mặt lá Tarot.
-- Backend khi cần lưu kết quả/tài khoản/AI luận giải phía máy chủ.
-
-## 🧭 Nguyên tắc
-1. Có nguồn mới đưa; chưa chắc ghi "cần kiểm chứng thêm". 2. Tách dữ kiện vs diễn giải.
-3. Dữ liệu rời giao diện. 4. Kiểm thử + build sạch + kiểm mobile. 5. Tôn trọng bản quyền. 6. Ưu tiên dễ triển khai.
+- **PWA**: cài như app (manifest + icon PNG), service worker cache offl

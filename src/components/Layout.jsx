@@ -8,6 +8,7 @@ const links = [
   { to: '/tarot', label: 'Tarot' },
   { to: '/than-so-hoc', label: 'Thần số học' },
   { to: '/tu-vi', label: 'Tử vi' },
+  { to: '/la-so-tu-vi', label: 'Lá số Tử Vi' },
   { to: '/cung-hoang-dao', label: 'Cung hoàng đạo' },
   { to: '/tuong-hop', label: 'Tương hợp' },
   { to: '/kinh-dich', label: 'Kinh Dịch' },
@@ -49,13 +50,14 @@ function Footer() {
   )
 }
 
-const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
+const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/la-so-tu-vi': 'Lá số Tử Vi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
 const DESCS = {
   '/': 'Tam Sở gom Tarot, Thần số học, Tử vi/Can Chi, Cung hoàng đạo và Kinh Dịch về một nơi — xem lá bài, quẻ và Can Chi của hôm nay.',
   '/ho-so': 'Lập hồ sơ huyền học tổng hợp: Số Chủ Đạo, Can Chi, cung hoàng đạo, cung phi, lá Tarot chủ đạo, tuổi hợp/khắc và báo cáo theo chủ đề.',
   '/tarot': 'Rút Tarot 78 lá Rider–Waite–Smith: lá hôm nay, nhiều kiểu trải bài, bài ngược, ý nghĩa xuôi/ngược và lời khuyên — chép & chia sẻ.',
   '/than-so-hoc': 'Tính Số Chủ Đạo và bộ số Pythagorean: Vận Mệnh, Linh Hồn, Lo Shu, Năm cá nhân, Đỉnh cao & Thử thách và bảng hợp Số Chủ Đạo.',
   '/tu-vi': 'Tra Can Chi năm/ngày/giờ, nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi Bát Trạch, Sao hạn và bảng hợp tuổi 12 con giáp.',
+  '/la-so-tu-vi': 'Lập lá số Tử Vi Đẩu Số: an Mệnh/Thân, định Cục, an 14 chính tinh, Tứ Hóa, lục cát – lục sát và đại hạn vào 12 cung — kèm luận giải tham khảo.',
   '/cung-hoang-dao': '12 cung hoàng đạo phương Tây: tính cung theo ngày sinh, decan, màu/đá/số may mắn và bảng tương hợp nhanh 12×12.',
   '/tuong-hop': 'Xem tương hợp hai người qua Số Chủ Đạo, Can Chi và cung hoàng đạo — chia sẻ kết quả cho người ấy và bạn bè.',
   '/kinh-dich': 'Gieo quẻ Kinh Dịch bằng 3 đồng xu hoặc Mai Hoa Dịch Số, luận hào động và tra cứu đủ 64 quẻ kèm nguyên văn thoán/hào từ.',

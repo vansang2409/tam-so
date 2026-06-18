@@ -8,6 +8,7 @@
 - **Tarot (78 lá):** rút nhanh một lá (ngẫu nhiên mỗi lần), 6 kiểu trải (1/3 lá, Tình yêu, Sự nghiệp, Celtic Cross, Có/Không), tùy chọn bài ngược, **lá bài chủ đạo** theo ngày sinh, **lịch sử rút** (localStorage), thư viện lọc theo chất; **luận Tình yêu/Sự nghiệp riêng từng lá** (22 Ẩn Chính + 56 Ẩn Phụ); **chép/chia sẻ** lá vừa rút và cả kết quả trải bài; **chip câu hỏi gợi ý** bấm là rút.
 - **Thần số học:** Số Chủ Đạo, Vận Mệnh, Linh Hồn, Nhân Cách, Trưởng Thành, Số Ngày Sinh, **biểu đồ Lo Shu** (số thiếu), **Nợ nghiệp** (13/14/16/19), **Năm/Tháng/Ngày cá nhân**, **Đỉnh cao & Thử thách** (4 chu kỳ đời), **Đam mê tiềm ẩn**, **Bài học nghiệp quả**, **Số Thái Độ**, **xu hướng Năm cá nhân kế tiếp**, **Bảng hợp Số Chủ Đạo** (ma trận 12×12, kể cả 11/22/33); chia sẻ/lưu kết quả + tự điền lại từ liên kết.
 - **Tử vi / Can Chi:** Can Chi năm + nạp âm, **tự quy đổi âm lịch** (Hồ Ngọc Đức — chuẩn ranh giới Tết), **xem hợp tuổi** (tam hợp/lục hợp/tứ hành xung/lục xung/can/ngũ hành), **Can Chi ngày & giờ**, **giờ hoàng đạo**, **Tam Tai**, **tuổi âm/năm tuổi**, **Sao hạn Cửu Diệu** (đối chiếu bảng 2026), **Bảng hợp tuổi 12 con giáp** (ma trận Tam hợp / Lục hợp / Lục xung / Tứ hành xung); chia sẻ liên kết.
+- **Lá số Tử Vi (Tử Vi Đẩu Số):** nhập ngày–giờ sinh → **an sao** lá số **12 cung** (lưới 4×4 truyền thống): an Mệnh/Thân, định **Cục**, an đủ **14 chính tinh** (chùm Tử Vi + Thiên Phủ), **Tứ Hóa** (Lộc/Quyền/Khoa/Kỵ), **lục cát – lục sát**, Lộc Tồn, Thiên Mã, đào hoa… và **đại hạn 10 năm**; chạm từng cung để xem luận giải sao & cung. Thuật toán an sao **tất định, đối chiếu nhiều nguồn**; phần ý nghĩa là tham khảo.
 - **Cung hoàng đạo:** 12 cung phương Tây, **Decan (thập phân)**, **tương hợp hai cung** và **Bảng tương hợp nhanh 12×12**, màu/đá/số may mắn; chia sẻ liên kết.
 - **Tương hợp (2 người):** ghép hai ngày sinh — tương hợp **Số Chủ Đạo + Can Chi + cung hoàng đạo** + tổng kết.
 - **Hồ sơ tổng hợp:** nhập một lần → Số Chủ Đạo, Can Chi (+ giờ Can Chi & âm lịch), cung hoàng đạo, cung phi, lá Tarot chủ đạo, Đỉnh hiện tại; **Báo cáo tổng hợp** (theo chủ đề + Sao hạn + gợi ý 7 ngày; nút Chép/📄.txt), nhớ lịch sử, chia sẻ link/PNG/PDF.
@@ -41,15 +42,11 @@ tests/          run.mjs (npm test — 83 mốc)
 ```
 
 ## Đã kiểm thử
-Mọi công thức đối chiếu mốc đã biết: 2026 = Bính Ngọ/Thiên Hà Thủy; **1/3/2000 = Mậu Ngọ** (Can Chi ngày); 16/6 = Song Tử; LP 22/10/1980 = 5; LP 13/4/1988 chạm nợ nghiệp 16; Kinh Dịch 64 quẻ với 64 mẫu nhị phân duy nhất; Sao hạn đối chiếu bảng 2026; ca biên Tết VN 1985 (≠ Tết TQ). Bộ test **npm test — 95 mốc, 0 fail**, gồm **test quét biên** (getZodiac/decan/zodiacCompat/lifePathCompat mọi cặp, Can Chi lặp 60 năm, castHexagram 60 lần) và **kiểm chứng đủ 64 Thoán + 384 hào từ Kinh Dịch**. Build production sạch (Vite).
+Mọi công thức đối chiếu mốc đã biết: 2026 = Bính Ngọ/Thiên Hà Thủy; **1/3/2000 = Mậu Ngọ** (Can Chi ngày); 16/6 = Song Tử; LP 22/10/1980 = 5; LP 13/4/1988 chạm nợ nghiệp 16; Kinh Dịch 64 quẻ với 64 mẫu nhị phân duy nhất; Sao hạn đối chiếu bảng 2026; ca biên Tết VN 1985 (≠ Tết TQ). Bộ test **npm test — 104 mốc, 0 fail**, gồm **test quét biên** (getZodiac/decan/zodiacCompat/lifePathCompat mọi cặp, Can Chi lặp 60 năm, castHexagram 60 lần) và **kiểm chứng đủ 64 Thoán + 384 hào từ Kinh Dịch**, **an sao Tử Vi Đẩu Số** (Mệnh/Cục/14 chính tinh/Tứ Hóa khớp ví dụ & cách đồng cung kinh điển). Build production sạch (Vite).
 
 ## Bản quyền & Giấy phép
 - **Ảnh Tarot Rider–Waite–Smith (1909)** — phạm vi công cộng (PD); bản quét từ Wikimedia Commons. Họa sĩ Pamela Colman Smith (mất 1951) & A. E. Waite.
 - **Phông chữ** Be Vietnam Pro, Playfair Display — SIL Open Font License (Google Fonts).
 - **Thư viện** React, Vite, Tailwind CSS, React Router, html-to-image — giấy phép MIT.
 - **Lịch âm** — thuật toán Hồ Ngọc Đức (ghi công tác giả).
-- **Nội dung luận giải** — Tam Sở tự biên soạn bằng tiếng Việt từ ý nghĩa truyền thống, có dẫn nguồn tham khảo; không sao chép nguyên văn. Biểu trưng, icon và ảnh chia sẻ do dự án tự tạo.
-- **Nội dung luận giải** do Tam Sở biên soạn bằng tiếng Việt từ ý nghĩa truyền thống, có dẫn nguồn; không sao chép nguyên văn. Biểu trưng/icon/OG do dự án tự tạo.
-
----
-*Phiên bản 2.88 — © 2026 Tam Sở.*
+- **Nội dung luận giải** — Tam Sở tự biên soạn bằng tiếng Việt từ ý nghĩa truyền thống, có dẫn nguồn tham khảo; không sao chép nguyên văn. Biểu trưng, icon và ảnh chia sẻ do dự án tự tạ
