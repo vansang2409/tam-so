@@ -386,3 +386,27 @@ export const DO_SANG_NGHIA = {
   B:'Bình hòa — sao ở mức trung tính, không tỏ rõ tốt xấu.',
   H:'Hãm địa — sao lạc nhà, sức yếu, cần cát tinh hỗ trợ (KHÔNG phải điềm xấu tất định).'
 }
+
+// Tóm tắt độ sáng chính tinh tại cung Mệnh — trả về dữ liệu + câu mô tả nhẹ nhàng (không phán số phận).
+export function doSangSummary(laso) {
+  if (!laso || !laso.palaces) return null
+  const menh = laso.palaces.find(p => p.isMenh)
+  if (!menh) return null
+  const items = menh.sao.filter(s => s.loai === 'chinh' && s.do)
+    .map(s => ({ ten: s.ten, do: s.do, nhan: DO_SANG_LABEL[s.do] }))
+  const manh = items.filter(s => ['M', 'V', 'Đ'].includes(s.do)).length
+  const binh = items.filter(s => s.do === 'B').length
+  const ham = items.filter(s => s.do === 'H').length
+  let text
+  if (!items.length) {
+    text = 'Cung Mệnh vô chính diệu (không có chính tinh) — tính cách thường uyển chuyển theo hoàn cảnh; theo truyền thống mượn sao ở cung đối diện để luận.'
+  } else {
+    const parts = items.map(s => s.ten + ' ' + s.nhan.toLowerCase())
+    text = 'Mệnh có ' + parts.join(', ') + '. '
+    if (manh && !ham) text += 'Các chính tinh ở Mệnh đều ở thế sáng (miếu/vượng/đắc) — nền tảng thuận lợi để phát huy.'
+    else if (ham && !manh) text += 'Chính tinh ở Mệnh đang ở thế hãm (sao yếu) — đây KHÔNG phải điềm xấu, mà là gợi ý nên cậy thêm cát tinh hội chiếu và nỗ lực bản thân; rất nhiều người Mệnh hãm vẫn thành đạt.'
+    else if (manh && ham) text += 'Có cả sao sáng lẫn sao hãm — thuận lợi và thử thách đan xen, nên xét thêm tam phương tứ chính để cân bằng.'
+    else text += 'Ở thế bình hòa — trung tính, tiềm năng tùy cách vận dụng.'
+  }
+  return { menhSao: items, manh, binh, ham, text }
+}

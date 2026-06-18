@@ -1,5 +1,14 @@
 # 🗺️ ROADMAP — Tam Sở
 
+## ✅ 3.x — Lá số Tử Vi Đẩu Số đầy đủ (mốc hiện tại, 2026-06-18)
+- **Engine an sao `tuvidauso.js`**: an Mệnh/Thân, Cục, 14 chính tinh (chùm Tử Vi + Thiên Phủ), Tứ Hóa, lục cát/lục sát, Lộc Tồn/Thiên Mã/đào hoa, Tràng Sinh, đại hạn + tiểu hạn + lưu niên — tất định, đối chiếu nhiều nguồn.
+- **Cách cục**: menhCach (4 tinh hệ) + tự phát hiện 14 cách nổi tiếng (tam phương tứ chính).
+- **Độ sáng đầy đủ M/V/Đ/B/H** cho cả 14 chính tinh × 12 cung (nguồn tracuutuvi.com; Miếu khớp 100% với HOROS; có dị bản → tham khảo). Hiển thị badge màu + chú giải; Hãm diễn đạt trấn an.
+- **168 luận sao×cung** (`tuvi-saocung.js`), trang **Lá số** (lưới 4×4, lưu lịch sử, PNG, In/PDF, .txt) + **So đôi lá số** (dữ kiện, không phán) + tích hợp **Hồ sơ**.
+- **Kinh Dịch**: 64 Thoán từ + 384 hào từ (phỏng dịch Legge 1899).
+- Kiểm thử: **npm test = 134 mốc, 0 fail**. Giao diện nền sáng "giấy cổ/kem".
+
+
 ## ✅ 2.0–2.6 — Nền React; Tarot 78 lá + tranh RWS + luận giải đầy đủ; Thần số học; Tử vi (Can Chi ngày/giờ, giờ hoàng đạo, Tam Tai, hợp tuổi, Bát Trạch); Cung hoàng đạo; Kinh Dịch 64 quẻ; giao diện vàng nâu đất; Hồ sơ tổng hợp (chia sẻ link, In/PDF, tải ảnh PNG); tối ưu mobile
 ## ✅ 2.7 — Chiều sâu nội dung "pro" (hiện tại)
 - **Kinh Dịch chuyên sâu**: luận giải 2–3 câu cho cả 64 quẻ (ý nghĩa + lời khuyên), hiện ở quẻ gieo và tra cứu.

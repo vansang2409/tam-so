@@ -254,5 +254,27 @@ delete global.window
   for (const p of ls.palaces) for (const st of p.sao) if (st.loai === 'chinh' && st.do) hasDo = true
   ok(hasDo, "anSao: chính tinh được gắn st.do (độ sáng)")
 }
+{
+  // doSangSummary: dữ liệu + câu mô tả nhẹ nhàng
+  const ls = TV.anSao({ lunarDay: 15, lunarMonth: 4, year: 1958, hourRank: 6, gender: 'nam', viewYear: 2026 })
+  const ds = TV.doSangSummary(ls)
+  ok(ds && typeof ds.text === 'string' && ds.text.length > 10, "doSangSummary: trả về object có text")
+  ok(ds && (ds.manh + ds.binh + ds.ham) === ds.menhSao.length, "doSangSummary: manh+binh+ham = số chính tinh Mệnh")
+  ok(TV.doSangSummary(null) === null, "doSangSummary(null) an toàn → null")
+  // không bao giờ phán xấu kiểu tuyệt đối
+  ok(!/chắc chắn (xấu|thất bại|nghèo|chết)/i.test(ds.text), "doSangSummary: không phán xấu tuyệt đối")
+}
+{
+  // STRESS: quét nhiều lá số — engine không crash, mọi chính tinh có st.do hợp lệ
+  const LV = ['M','V','Đ','B','H']; let n = 0, sOk = true
+  for (const year of [1960, 1985, 2000, 2010, 1992]) for (const mo of [1,4,7,11]) for (const day of [1,8,15,23,30]) for (const hr of [1,4,7,12]) for (const g of ['nam','nu']) {
+    let ls; try { ls = TV.anSao({ lunarDay: day, lunarMonth: mo, year, hourRank: hr, gender: g, viewYear: 2026 }) } catch(e){ sOk=false; continue }
+    if (!ls || ls.palaces.length !== 12) { sOk = false; continue }
+    for (const p of ls.palaces) for (const st of p.sao) if (st.loai === 'chinh' && !LV.includes(st.do)) sOk = false
+    if (!TV.doSangSummary(ls)) sOk = false
+    n++
+  }
+  ok(sOk && n === 800, "stress " + n + " lá số: an sao không lỗi, st.do hợp lệ, doSangSummary chạy")
+}
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)
