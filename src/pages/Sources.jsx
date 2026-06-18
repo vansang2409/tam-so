@@ -7,6 +7,26 @@ const FAQ = [
   { q: 'Vì sao đôi khi lá Tarot hiện khung biểu tượng thay vì tranh?', a: 'Khi ảnh chưa tải được (mạng hạn chế nguồn ảnh hoặc đang offline), web hiển thị một khung thẻ thay thế để giao diện không vỡ. Bản cài đặt đầy đủ (tự host ảnh) sẽ hiển thị tranh Rider–Waite–Smith.' }
 ]
 
+const GLOSSARY = [
+  ['Ẩn Chính (Major Arcana)', '22 lá kể "Hành trình của Gã Khờ", ứng với các bài học và bước ngoặt lớn của đời.'],
+  ['Ẩn Phụ (Minor Arcana)', '56 lá chia 4 chất Gậy/Cốc/Kiếm/Tiền, soi những việc đời thường hằng ngày.'],
+  ['Lá ngược (reversed)', 'Lá rút ra bị lật ngược — thường gợi sắc thái nội tâm, cản trở hoặc mặt cần điều chỉnh của nghĩa gốc.'],
+  ['Can Chi', 'Cách ghi năm/ngày/giờ bằng 10 Thiên Can ghép 12 Địa Chi, lặp theo chu kỳ 60 (Lục thập hoa giáp).'],
+  ['Nạp âm', 'Ngũ hành "ẩn" gán cho mỗi cặp Can Chi (vd Bính Ngọ = Thiên Hà Thủy) — khác ngũ hành của riêng Can hay Chi.'],
+  ['Tam hợp / Tứ hành xung', 'Nhóm 3 con giáp được cho là hợp nhau / nhóm 4 con giáp khắc nhau theo quan niệm dân gian.'],
+  ['Giờ hoàng đạo', 'Các canh giờ được xem là thuận trong ngày, tính theo Can Chi của ngày (quan niệm phong thủy).'],
+  ['Tam Tai', 'Ba năm liên tiếp được cho là kém thuận với mỗi nhóm tuổi tam hợp.'],
+  ['Cung phi · Bát Trạch', 'Quẻ mệnh tính theo năm sinh và giới tính, dùng để xem hướng hợp tuổi.'],
+  ['Sao hạn (Cửu Diệu)', 'Chín sao luân phiên "chiếu" mỗi tuổi mỗi năm theo quan niệm dân gian.'],
+  ['Số Chủ Đạo (Life Path)', 'Rút gọn ngày-tháng-năm sinh về một chữ số (giữ 11/22/33) — gợi thiên hướng xuyên suốt cuộc đời.'],
+  ['Số bậc thầy (11/22/33)', 'Các số không rút gọn tiếp, mang năng lượng mạnh và đặc thù hơn.'],
+  ['Năm cá nhân (Personal Year)', 'Chu kỳ 1→9 lặp lại, tính từ ngày-tháng sinh cộng năm dương hiện tại.'],
+  ['Biểu đồ Lo Shu', 'Ma trận cửu cung dựng từ các chữ số ngày sinh, để xem con số nào thiếu hay thừa.'],
+  ['Hào · Quẻ', 'Quẻ Dịch gồm 6 hào (vạch) liền là dương, đứt là âm, dựng từ dưới lên.'],
+  ['Hào động · Quẻ biến', 'Hào "động" (tổng 6 hoặc 9 khi gieo) đổi âm↔dương, sinh ra "quẻ biến" gợi xu hướng chuyển tiếp.'],
+  ['Decan (thập phân)', 'Mỗi cung hoàng đạo chia 3 đoạn 10°, mỗi đoạn nhuốm thêm sắc thái một cung cùng nguyên tố.']
+]
+
 export default function Sources() {
   return (
     <>
@@ -41,11 +61,11 @@ export default function Sources() {
       <section className="wrap py-8">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Nguồn tham khảo</h2>
         <div className="panel p-[26px] max-w-[900px] mx-auto">
-          <p><b>🃏 Tarot:</b> <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Labyrinthos Academy</a> · bộ Rider–Waite–Smith (1909, phạm vi công cộng) · <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Luận <b>Tình yêu/Sự nghiệp</b> cho lá Ẩn Phụ theo khung <b>chất (nguyên tố) + số/court</b> phổ biến (Labyrinthos), không phải lời phán riêng từng lá.</p>
+          <p><b>🃏 Tarot:</b> <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Labyrinthos Academy</a> · bộ Rider–Waite–Smith (1909, phạm vi công cộng) · <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Luận <b>Tình yêu/Sự nghiệp</b> cho 22 lá Ẩn Chính và 56 lá Ẩn Phụ do Tam Sở biên soạn theo nghĩa truyền thống RWS (tham khảo Labyrinthos) — chỉ mang tính tham khảo, chiêm nghiệm.</p>
           <p><b>🔢 Thần số học:</b> <a href="https://www.numerology.com/articles/your-numerology-chart/core-numbers-numerology/" target="_blank" rel="noopener">Numerology.com — Core Numbers</a> & <a href="https://www.numerology.com/articles/your-numerology-chart/life-path-number-meanings/" target="_blank" rel="noopener">Life Path</a> (Pythagorean) · Đỉnh cao & Thử thách: <a href="https://www.worldnumerology.com/numerology-pinnacles/" target="_blank" rel="noopener">World Numerology</a> · Năm cá nhân (tháng+ngày sinh + năm dương hiện tại) & Ngày cá nhân: <a href="https://www.numerology.com/articles/numerology-news/2026-numerology-predictions/" target="_blank" rel="noopener">Numerology.com — Personal Year</a>, <a href="https://www.numerology.com/daily-number/" target="_blank" rel="noopener">Personal Day</a>.</p>
           <p><b>☯ Tử vi · Can Chi:</b> <a href="https://wiki.batdongsan.com.vn/wiki/thien-can-dia-chi-783653" target="_blank" rel="noopener">Wiki Batdongsan</a> · <a href="https://vi.wikipedia.org/wiki/L%E1%BB%A5c_th%E1%BA%ADp_hoa_gi%C3%A1p" target="_blank" rel="noopener">Lục thập hoa giáp</a> · can chi ngày (mốc 1/3/2000 = Mậu Ngọ, vanhoavaphattrien.vn) · <a href="https://vi.wikipedia.org/wiki/Gi%E1%BB%9D_ho%C3%A0ng_%C4%91%E1%BA%A1o" target="_blank" rel="noopener">Giờ hoàng đạo</a> · tam hợp/tứ hành xung (bachhoaxanh, mytour) · đổi âm lịch: <a href="https://www.informatik.uni-leipzig.de/~duc/amlich/" target="_blank" rel="noopener">Hồ Ngọc Đức</a> · sao hạn Cửu Diệu đối chiếu <a href="https://quantrimang.com/cuoc-song/bang-sao-giai-han-theo-tuoi-169419" target="_blank" rel="noopener">Quantrimang</a>.</p>
           <p><b>♈ Cung hoàng đạo:</b> mốc ngày theo hệ chiêm tinh phương Tây phổ biến (sforum/CellphoneS, mytour); decan theo hệ triplicity decanate.</p>
-          <p className="m-0"><b>📖 Kinh Dịch:</b> <a href="https://vi.wikipedia.org/wiki/Kinh_D%E1%BB%8Bch" target="_blank" rel="noopener">Kinh Dịch (Wikipedia)</a> — thứ tự Văn Vương, bát quái; lời quẻ là gloss ngắn · cách luận hào động: <a href="https://horos.vn/blog/post/64-que-kinh-dich-bang-tra-cuu-day-du-huong-dan-gieo-que-va-giai-que" target="_blank" rel="noopener">Horos</a> · nguyên văn thoán/hào từ: <a href="https://dich.kabala.vn/" target="_blank" rel="noopener">Dịch học Kabala</a>.</p>
+          <p className="m-0"><b>📖 Kinh Dịch:</b> <a href="https://vi.wikipedia.org/wiki/Kinh_D%E1%BB%8Bch" target="_blank" rel="noopener">Kinh Dịch (Wikipedia)</a> — thứ tự Văn Vương, bát quái; lời quẻ là gloss ngắn · cách luận hào động: <a href="https://horos.vn/blog/post/64-que-kinh-dich-bang-tra-cuu-day-du-huong-dan-gieo-que-va-giai-que" target="_blank" rel="noopener">Horos</a> · nguyên văn thoán/hào từ: <a href="https://dich.kabala.vn/" target="_blank" rel="noopener">Dịch học Kabala</a>. <b>Đại Tượng (象)</b> phỏng dịch theo bản <i>I Ching</i> của James Legge (1899) — phạm vi công cộng.</p>
         </div>
       </section>
 
@@ -57,6 +77,18 @@ export default function Sources() {
           <p><b>🧩 Thư viện mã nguồn mở:</b> React, Vite, Tailwind CSS, React Router, html-to-image (giấy phép MIT).</p>
           <p><b>🗓 Lịch âm:</b> thuật toán quy đổi của <a href="https://www.informatik.uni-leipzig.de/~duc/amlich/" target="_blank" rel="noopener">Hồ Ngọc Đức</a> — xin ghi công tác giả.</p>
           <p className="m-0"><b>✍️ Nội dung luận giải:</b> do Tam Sở <b>biên soạn bằng tiếng Việt</b> từ ý nghĩa truyền thống của mỗi hệ thống, có dẫn nguồn tham khảo ở trên — <b>không sao chép nguyên văn</b>. Biểu trưng ✦, ảnh chia sẻ và icon do dự án tự tạo. Nếu bạn là chủ sở hữu một nội dung và thấy chưa được ghi công đúng, vui lòng liên hệ để chỉnh sửa.</p>
+        </div>
+      </section>
+
+      <section className="wrap py-8">
+        <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thuật ngữ thường gặp</h2>
+        <p className="text-muted text-center max-w-[680px] mx-auto mb-5">Vài khái niệm hay gặp, giải thích ngắn gọn để bạn đọc kết quả đỡ bỡ ngỡ.</p>
+        <div className="panel p-[26px] max-w-[900px] mx-auto">
+          <div className="grid sm:grid-cols-2 gap-x-7 gap-y-3.5">
+            {GLOSSARY.map(([t, d]) => (
+              <div key={t}><b className="text-gold">{t}.</b> <span className="text-muted">{d}</span></div>
+            ))}
+          </div>
         </div>
       </section>
 

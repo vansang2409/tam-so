@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { TAROT_CARDS, TAROT_SPREADS, drawCards, cardOfDay } from '../data/tarot.js'
+import { useState, useEffect } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
+import { TAROT_CARDS, TAROT_SPREADS, drawCards } from '../data/tarot.js'
 import Modal from '../components/Modal.jsx'
 import CardImage from '../components/CardImage.jsx'
 import { Badge } from '../components/Disclaimer.jsx'
@@ -43,11 +43,6 @@ const TOPICS = [
     ['Mình có nên kiên nhẫn chờ thêm không?', 'yesno'],
     ['Đây có phải thời điểm tốt để bắt đầu không?', 'yesno']
   ] }
-]
-const RELATED = [
-  ['/', 'Trang chủ'], ['/ho-so', 'Hồ sơ tổng hợp'], ['/than-so-hoc', 'Thần số học'],
-  ['/tu-vi', 'Tử vi · Can Chi'], ['/cung-hoang-dao', 'Cung hoàng đạo'],
-  ['/tuong-hop', 'Tương hợp 2 người'], ['/kinh-dich', 'Kinh Dịch'], ['/nguon', 'Nguồn & Lưu ý']
 ]
 const HKEY = 'tamso_tarot_history'
 const FKEY = 'tamso_tarot_favs'
@@ -110,7 +105,8 @@ export default function Tarot() {
   const [question, setQuestion] = useState('')
   const [dayCopied, setDayCopied] = useState(false)
   const [readCopied, setReadCopied] = useState(false)
-  const today = useMemo(() => cardOfDay(), [])
+  const [quick, setQuick] = useState(null)
+  const drawQuick = () => { const p = drawCards(1)[0]; setQuick({ card: p.card, up: p.up }) }
   const positions = TAROT_SPREADS[spread].positions
   const isYesNo = spread === 'yesno'
 
@@ -135,7 +131,7 @@ export default function Tarot() {
   const clearHistory = () => { setHistory([]); try { localStorage.removeItem(HKEY) } catch { } }
   const copyReading = () => {
     if (!picks.length) return
-    const u = `${window.location.origin}${window.location.pathname}#/tarot`
+    const u = routeShareUrl('/tarot')
     const head = `✦ Trải bài Tarot — ${TAROT_SPREADS[spread].label}` + (question.trim() ? `\nCâu hỏi: ${question.trim()}` : '')
     const body = isYesNo
       ? `Trả lời: ${picks[0].up ? 'CÓ' : 'KHÔNG'} — ${picks[0].card.nameVi} (${picks[0].up ? 'xuôi' : 'ngược'})`
@@ -154,17 +150,31 @@ export default function Tarot() {
 
       <section className="wrap pb-2">
         <div className="panel p-[26px] flex flex-col md:flex-row items-center gap-6 max-w-[760px] mx-auto">
-          <div className={'tcard shrink-0 ' + (today.up ? '' : 'rev')} style={{ width: 150, minHeight: 250 }}>
-            <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Hôm nay</div>
-            <CardImage card={today.card} w={240} reversed={!today.up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[2.6rem] my-5" />
-            <div><div className="font-serif text-[1.05rem] leading-tight">{today.card.nameVi}</div>
-              <div className={'text-[.78rem] font-semibold ' + (today.up ? 'text-emerald-800' : 'text-rose-700')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
-          </div>
-          <div><h3 className="text-[1.3rem] mb-1">Lá bài hôm nay</h3><p className="m-0">{meaningOf(today.card, today.up)}</p><p className="note mt-2 mb-0">Cố định trong ngày — mai có lá mới.</p>
-            <div className="flex gap-2 flex-wrap mt-3 no-print">
-              <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={() => { const u = `${window.location.origin}${window.location.pathname}#/tarot`; navigator.clipboard?.writeText(`✦ Lá Tarot hôm nay: ${today.card.nameVi} (${today.up ? 'xuôi' : 'ngược'})\n${meaningOf(today.card, today.up)}\n— Tam Sở ${u}`).then(() => { setDayCopied(true); setTimeout(() => setDayCopied(false), 2000) }) }}>{dayCopied ? '✓ Đã chép!' : '📋 Chép lá hôm nay'}</button>
-              <a className="btn btn-ghost text-[.82rem] py-1.5 px-3" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/tarot`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
-            </div></div>
+          {!quick ? (
+            <div className="text-center w-full py-2">
+              <h3 className="text-[1.3rem] mb-1">Rút nhanh một lá</h3>
+              <p className="note max-w-[440px] mx-auto mb-3">Tĩnh tâm, nghĩ về điều bạn muốn hỏi rồi rút một lá cho riêng mình.</p>
+              <button className="btn btn-primary" onClick={drawQuick}>🔮 Rút một lá</button>
+            </div>
+          ) : (
+            <>
+              <div className={'tcard shrink-0 ' + (quick.up ? '' : 'rev')} style={{ width: 150, minHeight: 250 }}>
+                <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Lá của bạn</div>
+                <CardImage card={quick.card} w={240} reversed={!quick.up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[2.6rem] my-5" />
+                <div><div className="font-serif text-[1.05rem] leading-tight">{quick.card.nameVi}</div>
+                  <div className={'text-[.78rem] font-semibold ' + (quick.up ? 'text-emerald-800' : 'text-rose-700')}>{quick.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
+              </div>
+              <div><h3 className="text-[1.3rem] mb-1">{quick.card.nameVi} <span className="note">({quick.up ? 'xuôi' : 'ngược'})</span></h3><p className="m-0">{meaningOf(quick.card, quick.up)}</p>
+                {quick.card.advice && <p className="note mt-1 mb-0"><span className="text-gold font-semibold">✦ Bạn có thể làm gì:</span> {quick.card.advice}</p>}
+                <p className="note mt-2 mb-0">Mỗi lần rút là một lá ngẫu nhiên cho riêng bạn.</p>
+                <div className="flex gap-2 flex-wrap mt-3 no-print">
+                  <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={drawQuick}>🔄 Rút lại</button>
+                  <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={() => { const u = routeShareUrl('/tarot'); navigator.clipboard?.writeText(`✦ Lá Tarot: ${quick.card.nameVi} (${quick.up ? 'xuôi' : 'ngược'})\n${meaningOf(quick.card, quick.up)}\n— Tam Sở ${u}`).then(() => { setDayCopied(true); setTimeout(() => setDayCopied(false), 2000) }) }}>{dayCopied ? '✓ Đã chép!' : '📋 Chép lá này'}</button>
+                  <a className="btn btn-ghost text-[.82rem] py-1.5 px-3" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/tarot'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -206,7 +216,7 @@ export default function Tarot() {
           {picks.length > 0 && (
             <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
               <button className="btn btn-ghost" onClick={copyReading}>{readCopied ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
-              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/tarot`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/tarot'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
             </div>
           )}
           <p className="note text-center mt-[18px]">Rút ngẫu nhiên trên máy bạn. Lịch sử lưu cục bộ trong trình duyệt.</p>
@@ -261,15 +271,6 @@ export default function Tarot() {
         {filter === 'fav' && cards.length === 0 && <p className="note text-center mt-4">Chưa có lá yêu thích — mở một lá bất kỳ rồi bấm "☆ Lưu yêu thích".</p>}
       </section>
 
-      <section className="wrap py-8">
-        <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-4">Khám phá thêm</h2>
-        <div className="flex flex-wrap gap-2 justify-center max-w-[820px] mx-auto">
-          {RELATED.map(([to, label]) => (
-            <Link key={to} to={to} className="border border-gold/30 rounded-full px-4 py-2 text-[.86rem] text-cream hover:border-gold/60 hover:bg-black/5 transition no-underline">{label}</Link>
-          ))}
-        </div>
-      </section>
-
       <section className="wrap py-10">
         <div className="disclaimer max-w-[900px] mx-auto"><b>Nội dung &amp; hình ảnh.</b> Từ khóa &amp; luận giải theo truyền thống <a href="https://labyrinthos.co/blogs/tarot-card-meanings-list/tagged/major-arcana" target="_blank" rel="noopener">Rider–Waite–Smith / Labyrinthos</a>; tranh minh họa là bộ <b>RWS (1909, Pamela Colman Smith) — phạm vi công cộng</b>, nhúng từ <a href="https://commons.wikimedia.org/wiki/Category:Rider-Waite_tarot_deck" target="_blank" rel="noopener">Wikimedia Commons</a>. Ngoại tuyến sẽ hiển thị biểu tượng thay ảnh.</div>
       </section>
@@ -280,6 +281,7 @@ export default function Tarot() {
           <h3 className="text-center text-[1.6rem] my-1">{sel.nameVi} <span className="note">({sel.name} · {sel.roman})</span></h3>
           <div className="text-center mb-2"><button onClick={() => toggleFav(sel.id)} className="btn btn-ghost text-[.85rem] py-1.5 px-3">{isFav(sel.id) ? '★ Đã lưu yêu thích' : '☆ Lưu yêu thích'}</button></div>
           {sel.desc && <p className="note text-center mb-2 leading-relaxed">{sel.desc}</p>}
+          {(sel.astro || sel.element) && <p className="note text-center mb-2"><span className="text-gold font-semibold">✦ Tương ứng:</span> {sel.arcana === 'major' ? sel.astro : ((sel.astro ? sel.astro + ' · ' : '') + 'chất ' + sel.suit + ' · nguyên tố ' + sel.element)}</p>}
           <p className="text-center mb-1"><Badge gold>▲ Xuôi</Badge></p>
           <div className="flex gap-2 flex-wrap my-1.5 justify-center">{sel.upKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
           {sel.up && <p>{sel.up}</p>}

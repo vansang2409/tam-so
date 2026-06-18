@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { Link, useSearchParams } from 'react-router-dom'
 import { toPng } from 'html-to-image'
 import { computeLifePath, computeNameNumbers, personalYear, PERSONAL_YEAR, NUMEROLOGY, pinnacles } from '../data/numerology.js'
@@ -115,7 +116,7 @@ export default function Profile() {
   }
   const copyLink = () => {
     const qs = new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g, ...(hour !== '' ? { h: hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) }).toString()
-    const url = `${window.location.origin}${window.location.pathname}#/ho-so?${qs}`
+    const url = routeShareUrl('/ho-so', qs)
     navigator.clipboard?.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
   }
   const savePng = () => {
@@ -165,7 +166,7 @@ export default function Profile() {
             <>
               <div className="flex gap-3 justify-center flex-wrap mt-5 no-print">
                 <button className="btn btn-ghost" onClick={copyLink}>{copied ? '✓ Đã sao chép!' : '🔗 Sao chép liên kết'}</button>
-                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.origin + window.location.pathname + '#/ho-so?' + new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g, ...(hour !== '' ? { h: hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) }).toString())} target="_blank" rel="noopener">📘 Chia sẻ</a>
+                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/ho-so', new URLSearchParams({ ...(name ? { n: name } : {}), d, m, y, g, ...(hour !== '' ? { h: hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) }).toString()))} target="_blank" rel="noopener">📘 Chia sẻ</a>
                 <button className="btn btn-ghost" onClick={savePng} disabled={saving}>{saving ? '⏳ Đang tạo ảnh…' : '🖼️ Tải ảnh PNG'}</button>
                 <button className="btn btn-ghost" onClick={() => window.print()}>🖨️ In / Lưu PDF</button>
               </div>
@@ -261,7 +262,7 @@ export default function Profile() {
                   <p className="note mt-3 mb-0">Tổng hợp tự động từ hồ sơ để bạn chiêm nghiệm — không phải lời tiên tri, không thay tư vấn chuyên môn.</p>
                 </div>
               )}
-              <p className="note text-center mt-3 no-print">Nhấp từng thẻ để xem chi tiết. Mọi luận giải chỉ mang tính tham khảo — xem <Link to="/nguon">Nguồn &amp; Lưu ý</Link>.</p>
+              <p className="note text-center mt-3 no-print">Nhấp từng thẻ để xem chi tiết. Mọi luận giải chỉ mang tính tham khảo.</p>
             </>
           )}
         </div>

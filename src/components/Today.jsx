@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { drawCards } from '../data/tarot.js'
 import CardImage from './CardImage.jsx'
 import { dayCanChi, gioHoangDao } from '../data/tuvi.js'
@@ -42,7 +43,13 @@ export default function Today() {
   const doy = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 0)) / 86400000)
   const reflect = REFLECT[doy % REFLECT.length]
   const [drawn, setDrawn] = useState(null)
-  const draw = () => { const p = drawCards(1)[0]; setDrawn({ card: p.card, up: p.up, hex: castHexagram().present }) }
+  const [copied, setCopied] = useState(false)
+  const draw = () => { const p = drawCards(1)[0]; setDrawn({ card: p.card, up: p.up, hex: castHexagram().present }); setCopied(false) }
+  const shareCopy = () => {
+    if (!drawn) return
+    const txt = `✦ Tam Sở — quẻ hôm nay của tôi\n🃏 ${drawn.card.nameVi} (${drawn.up ? 'xuôi' : 'ngược'}): ${drawn.up ? drawn.card.up : drawn.card.rev}\n☯ Quẻ ${drawn.hex.n} ${drawn.hex.ten}: ${drawn.hex.y}\n— ${routeShareUrl('/')}`
+    navigator.clipboard?.writeText(txt).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) })
+  }
 
   return (
     <section className="wrap py-8">
@@ -95,11 +102,14 @@ export default function Today() {
               <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mt-4 mb-1">☯ Quẻ {drawn.hex.n} · {drawn.hex.ten}</div>
               <p className="m-0 leading-relaxed">{drawn.hex.y}</p>
               {drawn.hex.luan && drawn.hex.luan !== drawn.hex.y && <p className="note mt-1 mb-0 leading-relaxed">{drawn.hex.luan}</p>}
+              {drawn.hex.an && <p className="mt-1 mb-0 leading-relaxed"><span className="text-gold font-semibold">💡 Hiểu nôm na:</span> {drawn.hex.an}</p>}
               {drawn.hex.src && <a href={drawn.hex.src} target="_blank" rel="noopener" className="inline-block mt-2 text-[.85rem] font-semibold">📖 Đọc nguyên văn thoán/hào từ →</a>}
               <p className="note mt-3 mb-0 leading-relaxed">Nếu lá bài hay quẻ có vẻ thử thách, hãy xem đó là lời nhắc để <b className="text-cream">chuẩn bị và chủ động</b> hơn — không điều gì ở đây là định sẵn.</p>
             </div>
-            <div className="text-center mt-4">
+            <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
               <button className="btn btn-ghost" onClick={draw}>🔄 Rút lại</button>
+              <button className="btn btn-ghost" onClick={shareCopy}>{copied ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
             </div>
             <p className="note text-center mt-3 mb-0">Lá bài &amp; quẻ ở đây là <b className="text-cream">ngẫu nhiên mỗi lần rút</b> (không cố định theo ngày). Giờ hoàng đạo &amp; con số ngày là dữ kiện lịch của hôm nay. Bấm vào ô để mở công cụ đầy đủ.</p>
           </>

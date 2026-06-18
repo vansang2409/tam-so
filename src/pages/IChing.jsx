@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide, maiHoa } from '../data/iching.js'
 import { solar2lunar } from '../data/lunar.js'
 import Modal from '../components/Modal.jsx'
@@ -23,6 +24,18 @@ function HexView({ hex }) {
       <p className="note m-0">Trên {hex.up} ({TRIGRAMS[hex.up].nghia}) · Dưới {hex.lo} ({TRIGRAMS[hex.lo].nghia})</p>
       <p className="mt-2 mb-0">{hex.y}</p>
       {hex.luan && <p className="note text-left mt-3 leading-relaxed">{hex.luan}</p>}
+      {hex.tuong && <p className="text-left mt-2 mb-0 leading-relaxed"><span className="text-gold font-semibold">象 Đại Tượng:</span> {hex.tuong}</p>}
+      {hex.thoan && <p className="text-left mt-2 mb-0 leading-relaxed"><span className="text-gold font-semibold">卦 Thoán từ:</span> {hex.thoan}</p>}
+      {hex.hao && (
+        <details className="text-left mt-2">
+          <summary className="cursor-pointer text-gold font-semibold text-[.9rem] marker:content-none">▸ Lời 6 hào (hào từ)</summary>
+          <div className="mt-1.5">
+            {hex.hao.map((ht, i) => <p key={i} className="note mb-1 leading-relaxed">{ht}</p>)}
+            {hex.dung && <p className="note mb-0 leading-relaxed">{hex.dung}</p>}
+          </div>
+        </details>
+      )}
+      {hex.an && <p className="text-left mt-2 mb-0 leading-relaxed"><span className="text-gold font-semibold">💡 Hiểu nôm na:</span> {hex.an}</p>}
       {hex.src && <a href={hex.src} target="_blank" rel="noopener" className="inline-block mt-3 text-[.85rem] font-semibold">📖 Đọc nguyên văn thoán từ &amp; hào từ →</a>}
     </div>
   )
@@ -98,12 +111,12 @@ export default function IChing() {
                 <div className="panel p-5 mt-5 text-left">
                   <div className="text-gold text-[.8rem] uppercase tracking-wider mb-2 text-center">Luận hào động</div>
                   <p className="m-0 mb-3 text-center text-cream">{readingGuide(cast.changingPos)}</p>
-                  {cast.changingPos.map(p => { const v = HAO_VITRI[p - 1]; return <p key={p} className="note m-0 mb-1"><b className="text-cream">{v.ten}:</b> {v.y}</p> })}
+                  {cast.changingPos.map(p => { const v = HAO_VITRI[p - 1]; const ht = cast.present.hao && cast.present.hao[p - 1]; return <div key={p} className="mb-2"><p className="note m-0"><b className="text-cream">{v.ten}:</b> {v.y}</p>{ht && <p className="m-0 leading-relaxed">📜 {ht}</p>}</div> })}
                 </div>
               )}
               <div className="flex gap-2 justify-center flex-wrap mt-5 no-print">
-                <button className="btn btn-ghost" onClick={() => { const u = `${window.location.origin}${window.location.pathname}#/kinh-dich`; let t = `✦ Quẻ Dịch: ${cast.present.n} · ${cast.present.ten}`; if (cast.changed) t += ` → biến ${cast.changed.n} · ${cast.changed.ten} (hào động ${cast.changingPos.join(', ')})`; t += `\n${cast.present.y || ''}\n— Tam Sở ${u}`; navigator.clipboard?.writeText(t).then(() => { setCastCopied(true); setTimeout(() => setCastCopied(false), 2000) }) }}>{castCopied ? '✓ Đã chép!' : '📋 Chép quẻ'}</button>
-                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(`${window.location.origin}${window.location.pathname}#/kinh-dich`)} target="_blank" rel="noopener">📘 Chia sẻ</a>
+                <button className="btn btn-ghost" onClick={() => { const u = routeShareUrl('/kinh-dich'); let t = `✦ Quẻ Dịch: ${cast.present.n} · ${cast.present.ten}`; if (cast.changed) t += ` → biến ${cast.changed.n} · ${cast.changed.ten} (hào động ${cast.changingPos.join(', ')})`; t += `\n${cast.present.y || ''}\n— Tam Sở ${u}`; navigator.clipboard?.writeText(t).then(() => { setCastCopied(true); setTimeout(() => setCastCopied(false), 2000) }) }}>{castCopied ? '✓ Đã chép!' : '📋 Chép quẻ'}</button>
+                <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/kinh-dich'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
               </div>
             </div>
           )}
@@ -112,6 +125,30 @@ export default function IChing() {
       </section>
 
       <MaiHoaTool />
+
+      <section className="wrap py-10">
+        <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Bát Quái — 8 quẻ đơn</h2>
+        <p className="note text-center max-w-[680px] mx-auto mb-5">Tám quái dựng nên 64 quẻ kép. Tương ứng theo Hậu Thiên Bát Quái (Văn Vương).</p>
+        <div className="panel p-4 max-w-[920px] mx-auto overflow-x-auto">
+          <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
+          <table className="data" style={{ minWidth: 660 }}>
+            <thead><tr><th>Quái</th><th>Nghĩa</th><th>Ngũ hành</th><th>Người</th><th>Thân</th><th>Hướng</th><th>Tính chất</th></tr></thead>
+            <tbody>
+              {Object.entries(TRIGRAMS).map(([ten, t]) => (
+                <tr key={ten}>
+                  <td><div className="flex items-center gap-2"><Hexagram up={ten} w={24} /><b>{ten}</b></div></td>
+                  <td>{t.nghia}</td>
+                  <td><span className={'pill h-' + t.hanh}>{t.hanh}</span></td>
+                  <td>{t.nguoi}</td>
+                  <td>{t.than}</td>
+                  <td className="whitespace-nowrap">{t.huong}</td>
+                  <td className="text-muted">{t.tinh}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Tra cứu 64 quẻ</h2>

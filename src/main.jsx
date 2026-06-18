@@ -1,6 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, BrowserRouter, Routes, Route } from 'react-router-dom'
+import { USE_PATH, BASENAME } from './data/site.js'
 import './index.css'
 import Layout from './components/Layout.jsx'
 import Home from './pages/Home.jsx'
@@ -13,9 +14,12 @@ import IChing from './pages/IChing.jsx'
 import TuongHop from './pages/TuongHop.jsx'
 import Sources from './pages/Sources.jsx'
 
+const Router = USE_PATH ? BrowserRouter : HashRouter
+const routerProps = USE_PATH ? { basename: BASENAME } : {}
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HashRouter>
+    <Router {...routerProps}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -29,12 +33,12 @@ createRoot(document.getElementById('root')).render(
           <Route path="nguon" element={<Sources />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </Router>
   </React.StrictMode>
 )
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js').catch(() => {})
+    navigator.serviceWorker.register((USE_PATH ? BASENAME + '/' : import.meta.env.BASE_URL) + 'sw.js').catch(() => {})
   })
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams } from 'react-router-dom'
 import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING, CONGIAP_LUAN, NAP_AM_NGHIA, saoHan, SAO_HAN, hopTuoiChi } from '../data/tuvi.js'
 import { solar2lunar } from '../data/lunar.js'
@@ -20,10 +21,10 @@ export default function TuVi() {
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">10 Thiên Can &amp; 12 Địa Chi</h2>
         <div className="grid md:grid-cols-2 gap-5 mt-3.5">
-          <div className="overflow-x-auto"><table className="data"><thead><tr><th>#</th><th>Thiên Can</th><th>Ngũ hành</th><th>Â/D</th></tr></thead>
-            <tbody>{THIEN_CAN.map((c, i) => <tr key={c.ten}><td>{i + 1}</td><td><b>{c.ten}</b></td><td><span className={'pill h-' + c.hanh}>{c.hanh}</span></td><td>{c.amduong}</td></tr>)}</tbody></table></div>
-          <div className="overflow-x-auto"><table className="data"><thead><tr><th>#</th><th>Địa Chi</th><th>Con giáp</th><th>Ngũ hành</th></tr></thead>
-            <tbody>{DIA_CHI.map((c, i) => <tr key={c.ten}><td>{i + 1}</td><td><b>{c.ten}</b></td><td>{c.con}</td><td><span className={'pill h-' + c.hanh}>{c.hanh}</span></td></tr>)}</tbody></table></div>
+          <div className="overflow-x-auto"><table className="data"><thead><tr><th>#</th><th>Thiên Can</th><th>Ngũ hành</th><th>Â/D</th><th>Hướng</th><th>Hình tượng</th></tr></thead>
+            <tbody>{THIEN_CAN.map((c, i) => <tr key={c.ten}><td>{i + 1}</td><td><b>{c.ten}</b></td><td><span className={'pill h-' + c.hanh}>{c.hanh}</span></td><td>{c.amduong}</td><td>{c.huong}</td><td className="text-muted">{c.nghia}</td></tr>)}</tbody></table></div>
+          <div className="overflow-x-auto"><table className="data"><thead><tr><th>#</th><th>Địa Chi</th><th>Con giáp</th><th>Ngũ hành</th><th>Giờ</th><th>Hướng</th></tr></thead>
+            <tbody>{DIA_CHI.map((c, i) => <tr key={c.ten}><td>{i + 1}</td><td><b>{c.ten}</b></td><td>{c.con}</td><td><span className={'pill h-' + c.hanh}>{c.hanh}</span></td><td className="whitespace-nowrap">{c.gio}h</td><td>{c.huong}</td></tr>)}</tbody></table></div>
         </div>
       </section>
 
@@ -104,7 +105,7 @@ function CanChiTool() {
     // eslint-disable-next-line
   }, [])
   const qs = () => new URLSearchParams({ y, ...(m ? { m } : {}), ...(d ? { d } : {}) }).toString()
-  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/tu-vi?${qs()}`
+  const shareUrl = () => routeShareUrl('/tu-vi', qs())
   const calc = () => {
     const r = compute(+y, +m, +d)
     if (!r) { setErr('Nhập năm sinh hợp lệ.'); setRes(null); return }

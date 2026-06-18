@@ -8,6 +8,7 @@ import * as T from '../src/data/tarot.js'
 import * as I from '../src/data/iching.js'
 import * as Z from '../src/data/zodiac.js'
 import * as R from '../src/data/report.js'
+import * as SITE from '../src/data/site.js'
 
 let pass = 0, fail = 0
 const ok = (cond, msg) => { if (cond) { pass++ } else { fail++; console.error('  ✗ FAIL: ' + msg) } }
@@ -59,6 +60,7 @@ ok(T.TAROT_CARDS.filter(c => c.arcana === 'major').every(c => c.advice && c.advi
 eq(I.HEXAGRAMS.length, 64, 'Đủ 64 quẻ')
 ok(new Set(I.HEXAGRAMS.map(h => I.TRIGRAMS[h.lo].bits + I.TRIGRAMS[h.up].bits)).size === 64, '64 mã nhị phân duy nhất')
 ok(I.HAO_VITRI.length === 6 && typeof I.readingGuide([3]) === 'string', 'Hào động: 6 ngôi + readingGuide')
+ok(Object.values(I.TRIGRAMS).every(t => t.hanh && t.nguoi && t.than && t.huong && t.tinh), '8 Bat Quai co hanh/nguoi/than/huong/tinh')
 ok(I.hexagramOfDay(new Date()).n >= 1, 'hexagramOfDay chạy')
 ok(I.hexagramOfDay(new Date('2026-06-16')).n === I.hexagramOfDay(new Date('2026-06-16')).n, 'hexagramOfDay tất định')
 ok(I.maiHoa(2026,5,2,9).present.n === 3 && I.maiHoa(2026,5,2,9).changed && I.maiHoa(2026,5,2,9).dong === 2, 'Mai Hoa 2026/5/2/9h → quẻ #3, hào động 2')
@@ -81,7 +83,11 @@ ok(T.TAROT_CARDS.every(c => c.up && c.rev), 'tarot 78 la co upright+reversed')
 ok(T.TAROT_CARDS.filter(c => c.arcana === 'major').every(c => c.desc && c.advice), 'major 22 co desc+advice')
 ok(T.TAROT_CARDS.filter(c => c.arcana === 'major').every(c => c.love && c.work), 'major 22 co love+work')
 ok(T.TAROT_CARDS.filter(c => c.arcana !== 'major').every(c => c.love && c.work), 'minor 56 co love+work (khung chat x so)')
+ok(T.TAROT_CARDS.filter(c => c.arcana === 'major').every(c => typeof c.astro === 'string' && c.astro.length > 5), 'major 22 co tuong ung chiem tinh (astro)')
+ok(T.TAROT_CARDS.filter(c => c.arcana !== 'major' && c.astro).length === 40, 'minor 40 (Ach+pip) co decan chiem tinh')
 eq(V.THIEN_CAN.length, 10, 'Thien Can 10'); eq(V.DIA_CHI.length, 12, 'Dia Chi 12'); eq(V.NAP_AM.length, 30, 'Nap am 30')
+ok(V.DIA_CHI.every(c => c.gio && c.huong && c.mua), 'Dia Chi co gio/huong/mua')
+ok(V.THIEN_CAN.every(c => c.huong && c.nghia), 'Thien Can co huong/nghia')
 ok(Object.keys(V.NAP_AM_NGHIA).length === 30 && Object.keys(V.CONGIAP_LUAN).length === 12, 'nap am nghia 30 + con giap 12')
 ok(V.gioHoangDao('Ty').length === 12, 'gio hoang dao 12')
 ok(V.tamTai(1990).nam.length === 3, 'tam tai 3 nam')
@@ -89,13 +95,22 @@ ok(V.cungPhi(1990, 'nam').cung && V.cungPhi(1990, 'nu').cung, 'cung phi nam+nu')
 ok([1,2,3,4,5,6,7,8,9].every(n => N.PERSONAL_DAY_HINT[n]), 'personal day hint 1-9')
 ok([1,2,3,4,5,6,7,8,9].every(n => N.PERSONAL_YEAR[n]), 'personal year 1-9')
 ok([1,2,3,4,5,6,7,8,9,11,22,33].every(n => N.NUMEROLOGY[n]), 'numerology 1-9,11,22,33')
+ok([1,2,3,4,5,6,7,8,9,11,22,33].every(n => N.NUM_SAO[n]), 'NUM_SAO du 12 so (hanh tinh lien he)')
 ok(N.computeNameNumbers('Nguyen Van An').expression >= 1, 'computeNameNumbers ok')
 ok(N.loShu(22,10,1990).counts && Array.isArray(N.loShu(22,10,1990).missing), 'lo shu counts+missing')
 ok(I.HEXAGRAMS.every(h => h.luan && h.y && h.src), '64 que co luan+y+src')
+ok(I.HEXAGRAMS.every(h => h.tuong && h.tuong.length > 10), '64 que co Dai Tuong (tuong)')
 const _cast = I.castHexagram(); ok(_cast.lines.length === 6 && _cast.present && Array.isArray(_cast.changingPos), 'castHexagram 6 hao')
 ok(I.readingGuide([]).length > 5 && I.readingGuide([2,5]).length > 5, 'readingGuide 0 + nhieu hao')
 ok(I.maiHoa(2000,1,1,0).present && I.maiHoa(2000,1,1,0).changed, 'maiHoa que chinh+bien')
+ok([3,6,12,29,39,47].every(n => I.HEXAGRAMS.find(h => h.n === n).an), 'que nang co cau Hieu nom na (an)')
+// Thoán từ + 384 hào từ đầy đủ (phỏng dịch Legge 1899, phạm vi công cộng)
+ok(I.HEXAGRAMS.filter(h => h.thoan && h.thoan.length > 10).length === 64, 'ca 64 que co Thoan tu (Judgment)')
+ok(I.HEXAGRAMS.filter(h => Array.isArray(h.hao) && h.hao.length === 6).length === 64, 'ca 64 que co du 6 hao tu')
+ok(I.HEXAGRAMS.every(h => !h.hao || h.hao.every(x => x && x.length >= 8)), 'khong hao tu nao bi rong/qua ngan')
+ok(I.HEXAGRAMS.find(h => h.n === 1).dung && I.HEXAGRAMS.find(h => h.n === 2).dung, 'que 1 & 2 co loi Dung Cuu/Dung Luc')
 ok([1,2,3].includes(Z.decanOf(15,8).num), 'decan 1-3')
+ok(Z.ZODIAC.every(z => z.tinh && z.than), '12 cung co tinh chat + bo phan co the')
 ok(R.buildReport({ ...rRes, sao: V.saoHan(37,'nam') }, T.cardOfDay()).saoNote.includes('La Hau') || R.buildReport({ ...rRes, sao: V.saoHan(37,'nam') }, T.cardOfDay()).saoNote.length > 10, 'bao cao co sao han')
 
 // === v2.56: guard cac truong dung cho tinh nang Chia se ===
@@ -135,6 +150,14 @@ ok(V.tinhCanChi(1984).tenCanChi === V.tinhCanChi(2044).tenCanChi, 'Can Chi lap l
   }
   ok(castOk, 'castHexagram 60 lan: que chinh hop le, co bien khi co hao dong')
 }
+
+// === site.js shareUrl (2 chế độ) ===
+global.window = { location: { protocol: 'https:', origin: 'https://vansang2409.github.io', pathname: '/tam-so/' } }
+eq(SITE.shareUrl('/tarot'), 'https://vansang2409.github.io/tam-so/tarot', 'shareUrl path-mode (http)')
+eq(SITE.shareUrl('/than-so-hoc', 'd=1&m=2'), 'https://vansang2409.github.io/tam-so/than-so-hoc?d=1&m=2', 'shareUrl path-mode co query')
+global.window = { location: { protocol: 'file:', origin: 'null', pathname: '/C:/x/tam-so-test.html' } }
+ok(SITE.shareUrl('/tarot').includes('#/tarot') && !SITE.shareUrl('/tarot').includes('/tam-so/tarot'), 'shareUrl hash-mode khi file://')
+delete global.window
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams } from 'react-router-dom'
 import {
-  NUMEROLOGY, computeLifePath, reduceKeep, computeNameNumbers, personalYear, NUMBER_TYPE, PERSONAL_YEAR,
+  NUMEROLOGY, NUM_SAO, computeLifePath, reduceKeep, computeNameNumbers, personalYear, NUMBER_TYPE, PERSONAL_YEAR,
   loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT, pinnacles, letterStats, birthdayNumber, lifePathCompat
 } from '../data/numerology.js'
 import { Badge } from '../components/Disclaimer.jsx'
@@ -29,7 +30,7 @@ export default function Numerology() {
             return (
               <details key={k} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
                 <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.12rem] font-semibold marker:content-none flex items-center gap-3"><span className="text-gold text-[.9rem]">✦</span>{n.title}</summary>
-                <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p></div>
+                <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}</div>
               </details>
             )
           })}
@@ -146,7 +147,7 @@ function NameTool() {
   }, [])
 
   const qs = () => new URLSearchParams({ d, m, y, ...(name.trim() ? { n: name.trim() } : {}) }).toString()
-  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/than-so-hoc?${qs()}`
+  const shareUrl = () => routeShareUrl('/than-so-hoc', qs())
   const calc = () => {
     const dd = +d, mm = +m, yy = +y
     if (!computeNameNumbers(name)) { setErr('Nhập họ tên (có chữ cái).'); setRes(null); return }

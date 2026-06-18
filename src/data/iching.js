@@ -1,16 +1,17 @@
+import { HEX_TEXT } from './iching-text.js'
 /* KINH DỊCH (I Ching) — 64 quẻ, gieo bằng 3 đồng xu (có hào động).
  * Tên Hán-Việt theo thứ tự Văn Vương; ý nghĩa là gloss ngắn truyền thống.
  * Nguồn: Kinh Dịch / Bát quái (Wikipedia tiếng Việt) — tham khảo, không phải khoa học. */
 
 export const TRIGRAMS = {
-  'Càn': { bits: '111', sym: '☰', nghia: 'Trời' },
-  'Đoài': { bits: '110', sym: '☱', nghia: 'Đầm/Hồ' },
-  'Ly': { bits: '101', sym: '☲', nghia: 'Lửa' },
-  'Chấn': { bits: '100', sym: '☳', nghia: 'Sấm' },
-  'Tốn': { bits: '011', sym: '☴', nghia: 'Gió' },
-  'Khảm': { bits: '010', sym: '☵', nghia: 'Nước' },
-  'Cấn': { bits: '001', sym: '☶', nghia: 'Núi' },
-  'Khôn': { bits: '000', sym: '☷', nghia: 'Đất' }
+  'Càn': { bits: '111', sym: '☰', nghia: 'Trời', hanh: 'Kim', nguoi: 'Cha', than: 'Đầu', huong: 'Tây Bắc', tinh: 'Cương kiện, sáng tạo' },
+  'Đoài': { bits: '110', sym: '☱', nghia: 'Đầm/Hồ', hanh: 'Kim', nguoi: 'Thiếu nữ', than: 'Miệng', huong: 'Tây', tinh: 'Vui vẻ, cởi mở' },
+  'Ly': { bits: '101', sym: '☲', nghia: 'Lửa', hanh: 'Hỏa', nguoi: 'Trung nữ', than: 'Mắt', huong: 'Nam', tinh: 'Sáng tỏ, bám víu' },
+  'Chấn': { bits: '100', sym: '☳', nghia: 'Sấm', hanh: 'Mộc', nguoi: 'Trưởng nam', than: 'Chân', huong: 'Đông', tinh: 'Chấn động, khởi phát' },
+  'Tốn': { bits: '011', sym: '☴', nghia: 'Gió', hanh: 'Mộc', nguoi: 'Trưởng nữ', than: 'Đùi', huong: 'Đông Nam', tinh: 'Thuận nhập, lan tỏa' },
+  'Khảm': { bits: '010', sym: '☵', nghia: 'Nước', hanh: 'Thủy', nguoi: 'Trung nam', than: 'Tai', huong: 'Bắc', tinh: 'Hiểm, sa hãm' },
+  'Cấn': { bits: '001', sym: '☶', nghia: 'Núi', hanh: 'Thổ', nguoi: 'Thiếu nam', than: 'Tay', huong: 'Đông Bắc', tinh: 'Dừng lại, tĩnh tại' },
+  'Khôn': { bits: '000', sym: '☷', nghia: 'Đất', hanh: 'Thổ', nguoi: 'Mẹ', than: 'Bụng', huong: 'Tây Nam', tinh: 'Nhu thuận, dung chứa' }
 }
 
 /* lo = quẻ dưới (nội), up = quẻ trên (ngoại) */
@@ -80,6 +81,25 @@ export const HEXAGRAMS = [
   { n: 63, ten: 'Thủy Hỏa Ký Tế', lo: 'Ly', up: 'Khảm', y: 'Đã xong, viên mãn — đề phòng buông lơi.' },
   { n: 64, ten: 'Hỏa Thủy Vị Tế', lo: 'Khảm', up: 'Ly', y: 'Chưa xong, sắp hoàn tất — kiên trì đến cùng.' }
 ]
+
+// "Hiểu nôm na" — diễn nôm trấn an cho các quẻ lời nặng (tránh gây hoang mang, hướng hành động)
+export const HEXAGRAM_AN = {
+  3: 'Khởi đầu nào cũng rối và chậm. Đừng nản — kiên trì từng bước nhỏ và đừng ngại nhờ người giúp, rồi sẽ thông.',
+  6: 'Đang có bất hòa, tranh chấp. Tốt nhất ngồi lại hòa giải, nhường một bước giữ hòa khí — thắng lý chưa chắc thắng lòng.',
+  12: 'Một quãng trì trệ, khó thông. Đây chỉ là giai đoạn tạm — giữ mình ngay thẳng, làm điều trong tầm tay và chờ thời điểm tốt hơn.',
+  18: 'Có việc cũ bê trễ cần sửa. Bình tĩnh dọn dẹp, chấn chỉnh dần từng phần — sửa được thì mọi thứ tốt lên.',
+  23: 'Giai đoạn hao mòn, đi xuống. Hãy giữ gìn nền tảng, khoan phiêu lưu; tới đáy rồi sẽ phục hồi.',
+  28: 'Đang gánh quá sức, mất cân đối. Bớt ôm đồm, củng cố lại điểm tựa và xin trợ giúp trước khi quá tải.',
+  29: 'Khó khăn nối tiếp khó khăn. Giữ bình tĩnh và thành thật, đi qua từng việc một — quen dần sẽ vượt được, đừng hoảng.',
+  33: 'Nên lùi một bước, tạm rút lui. Rút đúng lúc không phải là thua — là giữ sức cho cơ hội sau.',
+  36: 'Tài năng tạm bị che, gặp môi trường chưa thuận. Cứ kín đáo giữ mình, chờ thời — khoan phô trương lúc này.',
+  38: 'Đang lệch pha, hiểu lầm nhau. Tìm một điểm chung nhỏ và nói cho rõ — khác biệt không có nghĩa là đối đầu.',
+  39: 'Đường đang khó đi, vướng trở ngại. Khôn ngoan thì dừng lại, đổi cách hoặc tìm người đồng hành thay vì cố lao tới.',
+  41: 'Phải bớt đi, hy sinh một phần. Giảm cái rườm rà, tập trung điều cốt lõi — chịu thiệt nay để được về sau.',
+  47: 'Đang bị bó buộc, thiếu nguồn lực và mệt mỏi. Giữ vững tinh thần, lời nói đáng tin, kiên nhẫn chờ — khó rồi sẽ qua.',
+  59: 'Có sự rời rạc, ly tán. Đây là lúc hóa giải hiềm khích và kết nối lại; mềm mỏng sẽ gom được lòng người.'
+}
+HEXAGRAMS.forEach(h => { if (HEXAGRAM_AN[h.n]) h.an = HEXAGRAM_AN[h.n] })
 
 const bitsOf = (h) => TRIGRAMS[h.lo].bits + TRIGRAMS[h.up].bits  // 6 hào, dưới→trên
 const BY_BITS = {}; HEXAGRAMS.forEach(h => { BY_BITS[bitsOf(h)] = h })
@@ -239,3 +259,76 @@ export function maiHoa(lunarYear, month, day, hour) {
   const changed = hexByBits(b.join(''))
   return { yearNum, hourNum, upper, lower, dong, present, changed }
 }
+
+
+// — Đại Tượng (象 / Tượng truyện): hình tượng + bài học "quân tử dĩ…" cho 64 quẻ —
+// Phỏng dịch theo bản cổ điển (James Legge 1899 — phạm vi công cộng); giữ link nguyên văn (h.src) để đối chiếu.
+const TUONG = {
+  1: 'Trời vận hành mạnh mẽ; quân tử lấy đó mà tự cường không nghỉ.',
+  2: 'Đất có đức dày; quân tử lấy đó mà lấy đức dày nâng đỡ muôn vật.',
+  3: 'Mây và sấm; quân tử lấy đó mà gây dựng, sắp đặt việc đời (kinh luân).',
+  4: 'Dưới núi suối chảy ra; quân tử lấy đó mà quả quyết hành động, nuôi dưỡng đức.',
+  5: 'Mây lên trời; quân tử lấy đó mà ăn uống yến lạc, an nhiên chờ thời.',
+  6: 'Trời và nước đi ngược nhau; quân tử lấy đó mà làm việc gì cũng tính kỹ từ đầu.',
+  7: 'Giữa đất có nước; quân tử lấy đó mà bao dung dân, nuôi chứa quần chúng.',
+  8: 'Trên đất có nước; tiên vương lấy đó mà lập muôn nước, thân với chư hầu.',
+  9: 'Gió đi trên trời; quân tử lấy đó mà trau dồi văn đức.',
+  10: 'Trên trời dưới đầm; quân tử lấy đó mà phân định trên dưới, yên lòng dân.',
+  11: 'Trời đất giao hòa; vua lấy đó mà thành tựu đạo trời đất, giúp đỡ dân.',
+  12: 'Trời đất không giao; quân tử lấy đó mà kiệm đức tránh nạn, không màng vinh lộc.',
+  13: 'Trời cùng lửa; quân tử lấy đó mà phân loại sự vật, biện rõ đồng dị.',
+  14: 'Lửa ở trên trời; quân tử lấy đó mà ngăn ác dương thiện, thuận theo mệnh trời.',
+  15: 'Trong đất có núi; quân tử lấy đó mà bớt chỗ nhiều bù chỗ ít cho công bằng.',
+  16: 'Sấm vang động đất; tiên vương lấy đó mà làm nhạc tôn đức, dâng lên trời.',
+  17: 'Trong đầm có sấm; quân tử lấy đó mà tối đến thì vào nghỉ ngơi.',
+  18: 'Dưới núi có gió; quân tử lấy đó mà chấn hưng dân, nuôi dưỡng đức.',
+  19: 'Trên đầm có đất; quân tử lấy đó mà dạy dỗ không cùng, bao dung giữ dân không bờ.',
+  20: 'Gió đi trên đất; tiên vương lấy đó mà xem xét các phương, đặt ra giáo hóa.',
+  21: 'Sấm chớp cùng tới; tiên vương lấy đó mà làm rõ hình phạt, sửa sang pháp luật.',
+  22: 'Dưới núi có lửa; quân tử lấy đó mà làm sáng việc chính, không xử ngục tụng cẩu thả.',
+  23: 'Núi tựa trên đất; người trên lấy đó mà hậu đãi kẻ dưới, an ổn nhà cửa.',
+  24: 'Sấm ở trong đất; tiên vương lấy đó mà ngày đông chí đóng cửa, thương lữ ngừng đi.',
+  25: 'Dưới trời sấm động, muôn vật vô vọng (chân thật); tiên vương lấy đó mà nuôi muôn vật hợp thời.',
+  26: 'Trong núi có trời; quân tử lấy đó mà ghi nhớ lời xưa nết cũ để nuôi đức.',
+  27: 'Dưới núi có sấm; quân tử lấy đó mà thận trọng lời nói, tiết độ ăn uống.',
+  28: 'Đầm ngập cây; quân tử lấy đó mà đứng một mình không sợ, lánh đời không buồn.',
+  29: 'Nước chảy tới không ngừng; quân tử lấy đó mà giữ đức hạnh bền, lo việc dạy dỗ.',
+  30: 'Hai lửa nối sáng; bậc đại nhân lấy đó mà nối ánh sáng, soi khắp bốn phương.',
+  31: 'Trên núi có đầm; quân tử lấy đó mà giữ lòng trống (khiêm hư) để dung nạp người.',
+  32: 'Sấm và gió; quân tử lấy đó mà đứng vững, không đổi phương hướng.',
+  33: 'Dưới trời có núi; quân tử lấy đó mà xa kẻ tiểu nhân, nghiêm mà không ghét.',
+  34: 'Sấm ở trên trời; quân tử lấy đó mà không hợp lễ thì không làm.',
+  35: 'Mặt trời mọc trên đất; quân tử lấy đó mà tự làm sáng cái đức sáng của mình.',
+  36: 'Ánh sáng lặn vào trong đất; quân tử lấy đó mà cai trị dân, giấu sáng mà vẫn sáng.',
+  37: 'Gió từ lửa sinh ra; quân tử lấy đó mà lời nói có thực, việc làm có thường.',
+  38: 'Trên lửa dưới đầm; quân tử lấy đó mà hòa hợp nhưng vẫn giữ riêng (hòa nhi bất đồng).',
+  39: 'Trên núi có nước; quân tử lấy đó mà quay vào tự xét mình, sửa đức.',
+  40: 'Sấm mưa nổi lên; quân tử lấy đó mà tha thứ lỗi lầm, khoan dung tội nhẹ.',
+  41: 'Dưới núi có đầm; quân tử lấy đó mà kiềm chế giận dữ, ngăn ngừa dục vọng.',
+  42: 'Gió và sấm; quân tử lấy đó mà thấy điều thiện thì làm theo, có lỗi thì sửa.',
+  43: 'Đầm bốc lên trời; quân tử lấy đó mà ban lộc xuống dưới, kỵ thói chứa đức kiêu.',
+  44: 'Dưới trời có gió; vua lấy đó mà ban mệnh lệnh, truyền khắp bốn phương.',
+  45: 'Trên đất có đầm; quân tử lấy đó mà sửa sang binh khí, phòng việc bất ngờ.',
+  46: 'Trong đất sinh cây; quân tử lấy đó mà thuận đức, chứa cái nhỏ thành cao lớn.',
+  47: 'Đầm cạn nước; quân tử lấy đó mà liều mình để đạt được chí hướng.',
+  48: 'Trên cây có nước (giếng); quân tử lấy đó mà khuyên dân làm lụng, giúp đỡ nhau.',
+  49: 'Trong đầm có lửa; quân tử lấy đó mà làm lịch, định rõ thời tiết.',
+  50: 'Trên cây có lửa (vạc); quân tử lấy đó mà giữ ngôi cho chính, ngưng tụ mệnh trời.',
+  51: 'Sấm nối tiếp sấm; quân tử lấy đó mà sợ hãi tu tỉnh, tự xét mình.',
+  52: 'Núi liền núi; quân tử lấy đó mà nghĩ không ra ngoài cương vị của mình.',
+  53: 'Trên núi có cây; quân tử lấy đó mà giữ đức hiền, làm tốt phong tục.',
+  54: 'Trên đầm có sấm; quân tử lấy đó mà nghĩ tới cái kết để biết chỗ hỏng.',
+  55: 'Sấm chớp đều tới; quân tử lấy đó mà xử kiện công minh, thi hành hình phạt.',
+  56: 'Trên núi có lửa; quân tử lấy đó mà sáng suốt thận trọng khi dùng hình, không giam giữ lâu.',
+  57: 'Gió theo gió; quân tử lấy đó mà ban mệnh lệnh, thi hành công việc.',
+  58: 'Hai đầm liền nhau; quân tử lấy đó mà cùng bạn bè giảng tập, học hỏi.',
+  59: 'Gió đi trên nước; tiên vương lấy đó mà tế trời, lập tông miếu.',
+  60: 'Trên đầm có nước; quân tử lấy đó mà chế định mức độ, bàn về đức hạnh.',
+  61: 'Trên đầm có gió; quân tử lấy đó mà bàn kỹ án từ, hoãn việc tử hình.',
+  62: 'Trên núi có sấm; quân tử lấy đó mà cung kính, thương xót, tiết kiệm có phần hơn mức thường.',
+  63: 'Nước ở trên lửa; quân tử lấy đó mà lo nghĩ hoạn nạn mà phòng bị từ trước.',
+  64: 'Lửa ở trên nước; quân tử lấy đó mà thận trọng phân biệt sự vật, để mỗi thứ ở đúng chỗ.'
+}
+HEXAGRAMS.forEach(h => { if (TUONG[h.n]) h.tuong = TUONG[h.n] })
+
+HEXAGRAMS.forEach(h => { const t = HEX_TEXT[h.n]; if (t) { h.thoan = t.thoan; h.hao = t.hao; if (t.dung) h.dung = t.dung } })

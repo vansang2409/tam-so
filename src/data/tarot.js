@@ -325,36 +325,110 @@ const MAJOR_TOPIC = {
 }
 TAROT_CARDS.forEach(c => { if (c.arcana === 'major' && MAJOR_TOPIC[c.id]) { c.love = MAJOR_TOPIC[c.id].love; c.work = MAJOR_TOPIC[c.id].work } })
 
-// — Ẩn Phụ: luận Tình yêu/Sự nghiệp theo KHUNG CHẤT (nguyên tố) × SỐ/COURT (Labyrinthos) —
-// Không phải lời phán riêng từng lá; là cách đọc Ẩn Phụ phổ biến: chất = lĩnh vực đời sống, số = giai đoạn, court = nhân vật.
-const SUIT_TOPIC = {
-  'Gậy': { love: 'đam mê, chủ động, sức sống (Lửa) — tình cảm bốc lửa, cần giữ lửa mà không nóng vội', work: 'sáng tạo, dự án, tham vọng, dấn thân (Lửa)' },
-  'Cốc': { love: 'cảm xúc, gắn kết, lãng mạn (Nước) — lĩnh vực cốt lõi của chuyện tình', work: 'quan hệ, đồng cảm, công việc cần trực giác và nuôi dưỡng (Nước)' },
-  'Kiếm': { love: 'giao tiếp, lý trí, đôi khi va chạm lời nói (Khí) — cần nói thẳng và lắng nghe', work: 'tư duy, quyết định, thử thách trí óc và xung đột (Khí)' },
-  'Tiền': { love: 'ổn định, tin cậy, vun vén dài lâu (Đất) hơn là bốc đồng', work: 'tài chính, sự nghiệp, thành quả vật chất nhờ kiên trì (Đất)' }
+// — Ẩn Phụ: luận Tình yêu / Sự nghiệp CỤ THỂ cho từng lá (biên soạn theo nghĩa truyền thống RWS) —
+const MINOR_TOPIC = {
+  22: { love: 'Tia lửa hấp dẫn ban đầu, ham muốn mới chớm — dám chủ động bắt chuyện.', work: 'Ý tưởng hoặc dự án mới đầy hứng khởi — thời điểm tốt để khởi sự.' },
+  23: { love: 'Cân nhắc bước tiếp trong tình cảm: tiến tới hay giữ khoảng cách an toàn.', work: 'Lên kế hoạch dài hơi, chọn hướng đi; tầm nhìn quan trọng hơn vội vàng.' },
+  24: { love: 'Quan hệ bắt đầu có kết quả; chờ tin vui, có thể là chuyện yêu xa.', work: 'Nỗ lực bắt đầu sinh trái; mở rộng, hợp tác, nhìn xa hơn.' },
+  25: { love: 'Ổn định, ra mắt, về chung một nhà — một cột mốc đáng ăn mừng.', work: 'Hoàn thành một chặng, ăn mừng thành quả chung; nền móng vững.' },
+  26: { love: 'Cãi vặt, ghen tuông, tranh quan điểm — đừng biến khác biệt thành cuộc chiến.', work: 'Cạnh tranh, va chạm ý kiến trong nhóm; giữ bình tĩnh và lắng nghe.' },
+  27: { love: 'Được đáp lại; tự tin tỏ lòng hoặc làm hòa trong thế thắng.', work: 'Thành công được công nhận, có thể thăng tiến sau nỗ lực bền bỉ.' },
+  28: { love: 'Cần bảo vệ mối quan hệ trước áp lực bên ngoài; giữ vững điều mình tin.', work: 'Giữ vị thế trước cạnh tranh; kiên định bảo vệ thành quả.' },
+  29: { love: 'Mọi thứ tăng tốc: tin nhắn, hẹn hò dồn dập, tình cảm tiến nhanh.', work: 'Tiến triển nhanh, tin tức tới dồn dập; bắt nhịp kịp thời.' },
+  30: { love: 'Mệt mỏi, phòng thủ vì tổn thương cũ — đừng để quá khứ chắn lối người mới.', work: 'Gần đích nhưng đuối sức; ráng thêm một chút, đừng bỏ cuộc.' },
+  31: { love: 'Ôm đồm trách nhiệm khiến tình cảm ngột ngạt; hãy san sẻ bớt gánh nặng.', work: 'Quá tải, làm thay phần người khác; học cách ủy thác và buông bớt.' },
+  32: { love: 'Tín hiệu mới đầy hào hứng, một người trẻ trung nhiệt thành; cứ thử khám phá.', work: 'Cảm hứng và ý tưởng mới; dám đề xuất, dám bắt đầu từ việc nhỏ.' },
+  33: { love: 'Cuốn hút, nồng nhiệt nhưng dễ bốc đồng — vui mà nhớ giữ chừng mực.', work: 'Lao tới mục tiêu đầy năng lượng; nhớ kiên trì đến cùng.' },
+  34: { love: 'Tự tin, rạng rỡ, cuốn hút — cứ là chính mình thì duyên tự đến.', work: 'Bản lĩnh, truyền cảm hứng, làm chủ tình huống.' },
+  35: { love: 'Một người dẫn dắt ấm áp, quyết đoán; quan hệ có tầm nhìn chung.', work: 'Lãnh đạo, định hướng, truyền lửa cho tập thể.' },
+  36: { love: 'Trái tim mở ra: rung động mới, tình cảm tràn đầy — hãy đón nhận.', work: 'Khởi đầu giàu cảm hứng, công việc chạm tới điều mình yêu thích.' },
+  37: { love: 'Kết đôi hài hòa, đồng điệu hai phía — một lá rất đẹp cho tình yêu.', work: 'Hợp tác ăn ý, gặp đối tác hoặc đồng nghiệp hợp gu.' },
+  38: { love: 'Niềm vui, bạn bè, tụ họp; tình cảm được vun đắp giữa cộng đồng.', work: 'Làm việc nhóm vui vẻ, cùng ăn mừng một cột mốc.' },
+  39: { love: 'Chán nản, hờ hững dễ làm bỏ lỡ người tốt trước mắt — hãy ngẩng lên nhìn lại.', work: 'Mất hứng, thờ ơ; coi chừng bỏ lỡ cơ hội đang có sẵn.' },
+  40: { love: 'Tiếc nuối một mất mát tình cảm; vẫn còn điều tốt đẹp bên cạnh để quay về.', work: 'Hụt hẫng vì thất bại; đừng quên những gì còn lại để gây dựng tiếp.' },
+  41: { love: 'Hoài niệm ngọt ngào, có thể gặp lại người cũ; sự chân thành thuở ban đầu.', work: 'Quan hệ hay kinh nghiệm cũ giúp ích; sự tử tế giản dị được đền đáp.' },
+  42: { love: 'Nhiều lựa chọn mộng mơ, dễ ảo tưởng về đối phương — hãy nhìn cho thực tế.', work: 'Nhiều phương án hấp dẫn nhưng mơ hồ; chọn cái khả thi nhất.' },
+  43: { love: 'Rời mối quan hệ không còn thỏa mãn để đi tìm điều sâu sắc hơn.', work: 'Buông công việc đã cạn ý nghĩa, đi tìm hướng đáng giá hơn.' },
+  44: { love: 'Mãn nguyện, điều mong ước trong tình cảm thành hiện thực.', work: 'Hài lòng với thành quả, đạt được điều mình mong muốn.' },
+  45: { love: 'Hạnh phúc viên mãn, gia đình hòa thuận — đỉnh cao của tình thân.', work: 'Môi trường hài hòa, đồng nghiệp gắn bó như người nhà.' },
+  46: { love: 'Một lời ngỏ tình cảm, sự lãng mạn trong trẻo; cứ mở lòng đón nhận.', work: 'Ý tưởng sáng tạo, trực giác mách bảo; thử nuôi dưỡng nó.' },
+  47: { love: 'Lãng mạn, đi theo tiếng gọi trái tim — có thể là một lời tỏ tình.', work: 'Theo đuổi công việc bằng đam mê và cảm hứng.' },
+  48: { love: 'Bao dung, thấu cảm, nuôi dưỡng bằng trái tim ấm — một tình yêu dịu dàng.', work: 'Đồng cảm, hỗ trợ người khác; hợp việc chăm sóc và sáng tạo.' },
+  49: { love: 'Làm chủ cảm xúc, điềm tĩnh và bao dung trước sóng gió tình cảm.', work: 'Cân bằng lý trí và cảm xúc, điềm đạm xử lý căng thẳng.' },
+  50: { love: 'Một sự thật được nói rõ; hiểu nhau hơn nhờ sự thẳng thắn.', work: 'Đột phá trong tư duy, ý tưởng sắc bén, quyết định sáng suốt.' },
+  51: { love: 'Bế tắc, né tránh một quyết định tình cảm — cần đối diện và nói ra.', work: 'Do dự giữa hai lựa chọn; gỡ tấm bịt mắt để nhìn cho rõ.' },
+  52: { love: 'Tổn thương, chia ly hoặc lời làm đau — cho phép mình buồn rồi chữa lành.', work: 'Thất vọng hay bị phê bình gây đau; tìm bài học để bước tiếp.' },
+  53: { love: 'Cần một khoảng lặng để nghỉ và hồi phục sau căng thẳng tình cảm.', work: 'Tạm dừng, dưỡng sức trước khi bước tiếp; nghỉ ngơi là cần thiết.' },
+  54: { love: 'Cãi vã hơn-thua để lại dư vị đắng; thắng lý mà có thể thua tình.', work: 'Xung đột, cạnh tranh thiếu lành mạnh; cân nhắc cái giá của hơn thua.' },
+  55: { love: 'Rời vùng sóng gió, tình cảm dần lặng lại sau giai đoạn khó khăn.', work: 'Chuyển sang môi trường êm hơn; tiến dần tới giải pháp ổn định.' },
+  56: { love: 'Cẩn trọng với giấu giếm, thiếu thành thật — minh bạch để tin nhau.', work: 'Chiến thuật khôn khéo, nhưng tránh đi đường tắt mờ ám.' },
+  57: { love: 'Cảm giác mắc kẹt trong quan hệ phần lớn do tự trói — bạn có nhiều lựa chọn hơn mình nghĩ.', work: 'Thấy bí bách nhưng rào cản chủ yếu nằm trong suy nghĩ; thử một bước nhỏ ra ngoài.' },
+  58: { love: 'Lo âu, hoang mang bị thổi phồng trong đêm; ban ngày thường nhẹ hơn ta tưởng.', work: 'Căng thẳng vì lo nghĩ; chia nhỏ vấn đề, đừng gánh một mình.' },
+  59: { love: 'Một kết thúc đau nhưng dứt khoát — chạm đáy rồi sẽ là khởi đầu mới.', work: 'Một chương khép lại; buông để bắt đầu lại nhẹ nhõm hơn.' },
+  60: { love: 'Tò mò, hay dò xét và nói thẳng; cảnh giác vừa phải kẻo hóa nghi ngờ.', work: 'Đầu óc sắc bén, ham tìm hiểu; hợp việc học hỏi và thu thập thông tin.' },
+  61: { love: 'Quyết liệt, nói nhanh làm nhanh — nhớ tiết chế những lời sắc.', work: 'Lao tới mục tiêu chớp nhoáng; nhớ cân nhắc hệ quả.' },
+  62: { love: 'Sắc sảo, độc lập, thẳng thắn; cần người hiểu sự rạch ròi của bạn.', work: 'Nhìn thấu vấn đề, ra quyết định công tâm và rõ ràng.' },
+  63: { love: 'Lý trí và công bằng dẫn dắt; giao tiếp minh bạch giữ quan hệ bền.', work: 'Quyết định bằng lý trí, nguyên tắc và sự công minh.' },
+  64: { love: 'Nền tảng vững cho một quan hệ thực tế, đáng tin; khởi đầu chắc chắn.', work: 'Cơ hội mới về việc làm hoặc tiền bạc đang nảy mầm; hãy nắm lấy.' },
+  65: { love: 'Khéo cân bằng tình cảm với các việc khác; linh hoạt, đừng để quá tải.', work: 'Tung hứng nhiều việc cùng lúc; linh hoạt nhưng giữ thứ tự ưu tiên.' },
+  66: { love: 'Xây đắp quan hệ bằng hợp tác, cùng vun vén; lắng nghe góp ý của nhau.', work: 'Làm việc nhóm, mài giũa kỹ năng, được ghi nhận.' },
+  67: { love: 'Giữ gìn, có phần khư khư hoặc sợ tổn thương — hãy mở lòng hơn một chút.', work: 'Tích lũy, bám sự an toàn; coi chừng quá dè dặt mà bỏ lỡ.' },
+  68: { love: 'Giai đoạn thiếu thốn, thấy lạc lõng; đừng ngại tìm tới sự nâng đỡ ở gần.', work: 'Khó khăn vật chất tạm thời; giúp đỡ vẫn ở quanh, đừng tự cô lập.' },
+  69: { love: 'Cho và nhận cân bằng, sẻ chia đúng lúc; giữ sự công bằng giữa hai người.', work: 'Được hỗ trợ hoặc đãi ngộ xứng đáng, hoặc bạn giúp lại người khác.' },
+  70: { love: 'Kiên nhẫn vun trồng, chờ tình cảm chín; nhìn lại điều mình đã đầu tư.', work: 'Gặt hái dài hạn; dừng lại xem thành quả rồi điều chỉnh.' },
+  71: { love: 'Chăm chút mối quan hệ tỉ mỉ mỗi ngày; sự bền bỉ tạo nên gắn bó.', work: 'Rèn nghề, chăm chỉ, nâng tay nghề; nỗ lực rồi sẽ được đền.' },
+  72: { love: 'Tự chủ và đủ đầy một mình trước đã; người phù hợp sẽ tới khi bạn an.', work: 'Hưởng thành quả tự gây dựng, độc lập và sung túc.' },
+  73: { love: 'Bền vững, tính chuyện lâu dài, gia đình; nền tảng ổn định cho cả hai.', work: 'Của cải bền, di sản, một nền tảng dài lâu được thiết lập.' },
+  74: { love: 'Nghiêm túc tìm hiểu, đặt mục tiêu rõ ràng; bước chậm mà chắc.', work: 'Ham học, lập mục tiêu thực tế, khởi đầu vững vàng.' },
+  75: { love: 'Cần mẫn, đáng tin, có phần chậm rãi; sự ổn định là điểm cộng lớn.', work: 'Kiên trì từng bước chắc chắn, đáng tin, làm tới nơi tới chốn.' },
+  76: { love: 'Ấm áp, chăm lo thực tế, biết vun vén tổ ấm; một tình yêu nuôi dưỡng.', work: 'Quán xuyến khéo léo, cân bằng việc và nhà, lo cho người khác.' },
+  77: { love: 'Vững vàng, hào phóng, đáng để dựa vào; quan hệ an toàn cả vật chất lẫn tinh thần.', work: 'Thành đạt, quản trị tài sản khôn ngoan, dẫn dắt ổn định.' }
 }
-const RANK_ARC = {
-  'Át': 'hạt mầm — cơ hội/khởi đầu thuần khiết',
-  '2': 'cân bằng, lựa chọn, quan hệ đôi bên',
-  '3': 'phát triển, hợp tác, kết quả đầu tiên',
-  '4': 'ổn định, củng cố, tạm dừng để giữ gìn',
-  '5': 'thử thách, xáo trộn, mất mát hoặc va chạm',
-  '6': 'hài hòa trở lại, cho – nhận, hồi phục',
-  '7': 'kiên trì, đánh giá lại, lựa chọn khó',
-  '8': 'tăng tốc, chuyên tâm, chuyển động nhanh',
-  '9': 'gần đích — no đủ hoặc lo toan',
-  '10': 'trọn một chu kỳ — viên mãn hoặc gánh nặng',
-  'Thị Đồng': 'người học việc — tin nhắn, khởi sự, tò mò',
-  'Hiệp Sĩ': 'người hành động — lao tới, theo đuổi (đôi khi vội)',
-  'Nữ Hoàng': 'trưởng thành nội tâm — nuôi dưỡng, làm chủ cảm xúc',
-  'Vua': 'làm chủ bên ngoài — dẫn dắt, quyết đoán, trách nhiệm'
+TAROT_CARDS.forEach(c => { if (MINOR_TOPIC[c.id]) { c.love = MINOR_TOPIC[c.id].love; c.work = MINOR_TOPIC[c.id].work } })
+
+
+// — Ẩn Chính: tương ứng chiêm tinh + nguyên tố (hệ Golden Dawn — dữ kiện tham chiếu) —
+const MAJOR_ASTRO = {
+  0: 'Thiên Vương tinh (Uranus) · nguyên tố Khí',
+  1: 'Thủy tinh (Mercury) · nguyên tố Khí',
+  2: 'Mặt Trăng (Moon) · nguyên tố Nước',
+  3: 'Kim tinh (Venus) · nguyên tố Đất',
+  4: 'Bạch Dương (Aries) · nguyên tố Lửa',
+  5: 'Kim Ngưu (Taurus) · nguyên tố Đất',
+  6: 'Song Tử (Gemini) · nguyên tố Khí',
+  7: 'Cự Giải (Cancer) · nguyên tố Nước',
+  8: 'Sư Tử (Leo) · nguyên tố Lửa',
+  9: 'Xử Nữ (Virgo) · nguyên tố Đất',
+  10: 'Mộc tinh (Jupiter) · nguyên tố Lửa',
+  11: 'Thiên Bình (Libra) · nguyên tố Khí',
+  12: 'Hải Vương tinh (Neptune) · nguyên tố Nước',
+  13: 'Hổ Cáp (Scorpio) · nguyên tố Nước',
+  14: 'Nhân Mã (Sagittarius) · nguyên tố Lửa',
+  15: 'Ma Kết (Capricorn) · nguyên tố Đất',
+  16: 'Hỏa tinh (Mars) · nguyên tố Lửa',
+  17: 'Bảo Bình (Aquarius) · nguyên tố Khí',
+  18: 'Song Ngư (Pisces) · nguyên tố Nước',
+  19: 'Mặt Trời (Sun) · nguyên tố Lửa',
+  20: 'Diêm Vương tinh (Pluto) · nguyên tố Lửa',
+  21: 'Thổ tinh (Saturn) · nguyên tố Đất'
 }
-const COURT = ['Thị Đồng', 'Hiệp Sĩ', 'Nữ Hoàng', 'Vua']
-TAROT_CARDS.forEach(c => {
-  if (c.arcana !== 'major' && SUIT_TOPIC[c.suit] && RANK_ARC[c.roman]) {
-    const st = SUIT_TOPIC[c.suit]
-    const stage = (COURT.includes(c.roman) ? 'Nhân vật' : 'Giai đoạn ' + c.roman) + ' — ' + RANK_ARC[c.roman]
-    c.love = `Chất ${c.suit} (${c.element}): ${st.love}. ${stage}.`
-    c.work = `Chất ${c.suit} (${c.element}): ${st.work}. ${stage}.`
-  }
-})
+TAROT_CARDS.forEach(c => { if (c.arcana === 'major' && MAJOR_ASTRO[c.id]) c.astro = MAJOR_ASTRO[c.id] })
+
+
+// — Ẩn Phụ (Ách + pip 2–10): decan chiêm tinh Golden Dawn (hành tinh trong cung) —
+const MINOR_ASTRO = {
+  'Gậy Át': 'Gốc nguyên tố Lửa', 'Cốc Át': 'Gốc nguyên tố Nước', 'Kiếm Át': 'Gốc nguyên tố Khí', 'Tiền Át': 'Gốc nguyên tố Đất',
+  'Gậy 2': 'Hỏa tinh (Mars) trong Bạch Dương', 'Gậy 3': 'Mặt Trời (Sun) trong Bạch Dương', 'Gậy 4': 'Kim tinh (Venus) trong Bạch Dương',
+  'Gậy 5': 'Thổ tinh (Saturn) trong Sư Tử', 'Gậy 6': 'Mộc tinh (Jupiter) trong Sư Tử', 'Gậy 7': 'Hỏa tinh (Mars) trong Sư Tử',
+  'Gậy 8': 'Thủy tinh (Mercury) trong Nhân Mã', 'Gậy 9': 'Mặt Trăng (Moon) trong Nhân Mã', 'Gậy 10': 'Thổ tinh (Saturn) trong Nhân Mã',
+  'Cốc 2': 'Kim tinh (Venus) trong Cự Giải', 'Cốc 3': 'Thủy tinh (Mercury) trong Cự Giải', 'Cốc 4': 'Mặt Trăng (Moon) trong Cự Giải',
+  'Cốc 5': 'Hỏa tinh (Mars) trong Bọ Cạp', 'Cốc 6': 'Mặt Trời (Sun) trong Bọ Cạp', 'Cốc 7': 'Kim tinh (Venus) trong Bọ Cạp',
+  'Cốc 8': 'Thổ tinh (Saturn) trong Song Ngư', 'Cốc 9': 'Mộc tinh (Jupiter) trong Song Ngư', 'Cốc 10': 'Hỏa tinh (Mars) trong Song Ngư',
+  'Kiếm 2': 'Mặt Trăng (Moon) trong Thiên Bình', 'Kiếm 3': 'Thổ tinh (Saturn) trong Thiên Bình', 'Kiếm 4': 'Mộc tinh (Jupiter) trong Thiên Bình',
+  'Kiếm 5': 'Kim tinh (Venus) trong Bảo Bình', 'Kiếm 6': 'Thủy tinh (Mercury) trong Bảo Bình', 'Kiếm 7': 'Mặt Trăng (Moon) trong Bảo Bình',
+  'Kiếm 8': 'Mộc tinh (Jupiter) trong Song Tử', 'Kiếm 9': 'Hỏa tinh (Mars) trong Song Tử', 'Kiếm 10': 'Mặt Trời (Sun) trong Song Tử',
+  'Tiền 2': 'Mộc tinh (Jupiter) trong Ma Kết', 'Tiền 3': 'Hỏa tinh (Mars) trong Ma Kết', 'Tiền 4': 'Mặt Trời (Sun) trong Ma Kết',
+  'Tiền 5': 'Thủy tinh (Mercury) trong Kim Ngưu', 'Tiền 6': 'Mặt Trăng (Moon) trong Kim Ngưu', 'Tiền 7': 'Thổ tinh (Saturn) trong Kim Ngưu',
+  'Tiền 8': 'Mặt Trời (Sun) trong Xử Nữ', 'Tiền 9': 'Kim tinh (Venus) trong Xử Nữ', 'Tiền 10': 'Thủy tinh (Mercury) trong Xử Nữ'
+}
+TAROT_CARDS.forEach(c => { if (c.arcana !== 'major') { const k = MINOR_ASTRO[c.suit + ' ' + c.roman]; if (k) c.astro = k } })

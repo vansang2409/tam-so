@@ -48,15 +48,25 @@ npm run preview    # xem thử bản build tại localhost
 
 ---
 
-## 🃏 Tuỳ chọn: ảnh Tarot thật, chạy offline
-Mặc định web ưu tiên ảnh trong `public/cards/`; nếu chưa có sẽ lấy tạm từ Wikimedia. Muốn có đủ 78 ảnh để chạy offline:
-```bash
-npm run fetch-cards   # cần internet — tải 78 ảnh RWS (phạm vi công cộng) về public/cards/
-npm run build
-```
-Nếu deploy lên GitHub Pages, nhớ commit luôn thư mục `public/cards/`.
+## 🃏 Hiện ảnh Tarot THẬT trên site (thay vì thẻ dự phòng)
+Hiện `public/cards/` đang trống nên web dùng ảnh tạm từ Wikimedia (đôi khi chậm/bị chặn) hoặc thẻ vẽ sẵn. Làm **một lần** để có đủ 78 tranh RWS (phạm vi công cộng) ngay trên site:
 
----
+**Trên máy của bạn** (có internet), trong thư mục `D:\tam-so`:
+```bash
+npm install            # nếu chưa cài lần nào
+npm run fetch-cards    # tải 78 ảnh RWS về public/cards/ (chờ ~1–2 phút)
+```
+Kiểm tra: thư mục `public/cards/` có khoảng **78 file ảnh**.
+
+Rồi đẩy lên GitHub để site live cập nhật:
+```bash
+git add public/cards
+git commit -m "Them anh Tarot RWS (public domain)"
+git push               # hoặc double-click push-to-github.bat
+```
+GitHub Pages sẽ tự build lại; sau ít phút site hiện tranh thật.
+
+> Ảnh RWS 1909 thuộc **phạm vi công cộng** (đã ghi nguồn ở trang Nguồn). Công tắc `LOCAL_CARDS` trong `src/data/tarot.js` đang bật nên web ưu tiên ảnh nội bộ vừa tải.
 
 ## 🛠 Khắc phục sự cố thường gặp
 - **`npm` / `node` không phải là lệnh** → chưa cài Node.js (Bước 1), hoặc cần **mở lại cửa sổ terminal mới** sau khi cài.

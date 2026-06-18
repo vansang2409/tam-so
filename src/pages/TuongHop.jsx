@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { Link, useSearchParams } from 'react-router-dom'
 import { toPng } from 'html-to-image'
 import { computeLifePath, lifePathCompat } from '../data/numerology.js'
@@ -60,7 +61,7 @@ export default function TuongHop() {
   }, [])
 
   const qs = () => new URLSearchParams({ d1: p1.d, m1: p1.m, y1: p1.y, d2: p2.d, m2: p2.m, y2: p2.y, ...(p1.name.trim() ? { n1: p1.name.trim() } : {}), ...(p2.name.trim() ? { n2: p2.name.trim() } : {}) }).toString()
-  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/tuong-hop?${qs()}`
+  const shareUrl = () => routeShareUrl('/tuong-hop', qs())
   const calc = () => {
     const r = build(p1, p2)
     if (!r) { setErr('Nhập đủ ngày/tháng/năm hợp lệ cho cả hai người.'); setRes(null); return }

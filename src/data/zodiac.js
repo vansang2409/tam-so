@@ -3,18 +3,18 @@
  * Mang tính tham khảo/giải trí, không phải khoa học. */
 
 export const ZODIAC = [
-  { ten: 'Bạch Dương', en: 'Aries', sym: '♈', from: [3, 21], to: [4, 19], nguyenTo: 'Lửa', sao: 'Hỏa tinh (Mars)', net: 'Nhiệt huyết, quyết liệt, tiên phong, thẳng thắn.' },
-  { ten: 'Kim Ngưu', en: 'Taurus', sym: '♉', from: [4, 20], to: [5, 20], nguyenTo: 'Đất', sao: 'Kim tinh (Venus)', net: 'Kiên định, thực tế, yêu cái đẹp, đáng tin.' },
-  { ten: 'Song Tử', en: 'Gemini', sym: '♊', from: [5, 21], to: [6, 20], nguyenTo: 'Khí', sao: 'Thủy tinh (Mercury)', net: 'Linh hoạt, hoạt ngôn, tò mò, đa tài.' },
-  { ten: 'Cự Giải', en: 'Cancer', sym: '♋', from: [6, 21], to: [7, 22], nguyenTo: 'Nước', sao: 'Mặt Trăng', net: 'Tình cảm, chở che, gắn bó gia đình, nhạy cảm.' },
-  { ten: 'Sư Tử', en: 'Leo', sym: '♌', from: [7, 23], to: [8, 22], nguyenTo: 'Lửa', sao: 'Mặt Trời', net: 'Tự tin, hào phóng, lôi cuốn, thích dẫn dắt.' },
-  { ten: 'Xử Nữ', en: 'Virgo', sym: '♍', from: [8, 23], to: [9, 22], nguyenTo: 'Đất', sao: 'Thủy tinh (Mercury)', net: 'Tỉ mỉ, chỉn chu, phân tích, cầu toàn.' },
-  { ten: 'Thiên Bình', en: 'Libra', sym: '♎', from: [9, 23], to: [10, 22], nguyenTo: 'Khí', sao: 'Kim tinh (Venus)', net: 'Hài hòa, công bằng, ngoại giao, yêu cái đẹp.' },
-  { ten: 'Bọ Cạp', en: 'Scorpio', sym: '♏', from: [10, 23], to: [11, 21], nguyenTo: 'Nước', sao: 'Diêm Vương (Pluto)', net: 'Sâu sắc, mãnh liệt, bí ẩn, ý chí mạnh.' },
-  { ten: 'Nhân Mã', en: 'Sagittarius', sym: '♐', from: [11, 22], to: [12, 21], nguyenTo: 'Lửa', sao: 'Mộc tinh (Jupiter)', net: 'Phóng khoáng, lạc quan, ưa tự do, ham khám phá.' },
-  { ten: 'Ma Kết', en: 'Capricorn', sym: '♑', from: [12, 22], to: [1, 19], nguyenTo: 'Đất', sao: 'Thổ tinh (Saturn)', net: 'Kỷ luật, tham vọng, kiên trì, trách nhiệm.' },
-  { ten: 'Bảo Bình', en: 'Aquarius', sym: '♒', from: [1, 20], to: [2, 18], nguyenTo: 'Khí', sao: 'Thiên Vương (Uranus)', net: 'Độc lập, sáng tạo, nhân văn, khác biệt.' },
-  { ten: 'Song Ngư', en: 'Pisces', sym: '♓', from: [2, 19], to: [3, 20], nguyenTo: 'Nước', sao: 'Hải Vương (Neptune)', net: 'Mơ mộng, giàu trực giác, nghệ sĩ, đồng cảm.' }
+  { ten: 'Bạch Dương', en: 'Aries', sym: '♈', from: [3, 21], to: [4, 19], nguyenTo: 'Lửa', sao: 'Hỏa tinh (Mars)', tinh: 'Khởi (Cardinal)', than: 'Đầu, mặt', net: 'Nhiệt huyết, quyết liệt, tiên phong, thẳng thắn.' },
+  { ten: 'Kim Ngưu', en: 'Taurus', sym: '♉', from: [4, 20], to: [5, 20], nguyenTo: 'Đất', sao: 'Kim tinh (Venus)', tinh: 'Định (Fixed)', than: 'Cổ, họng', net: 'Kiên định, thực tế, yêu cái đẹp, đáng tin.' },
+  { ten: 'Song Tử', en: 'Gemini', sym: '♊', from: [5, 21], to: [6, 20], nguyenTo: 'Khí', sao: 'Thủy tinh (Mercury)', tinh: 'Biến (Mutable)', than: 'Vai, tay, phổi', net: 'Linh hoạt, hoạt ngôn, tò mò, đa tài.' },
+  { ten: 'Cự Giải', en: 'Cancer', sym: '♋', from: [6, 21], to: [7, 22], nguyenTo: 'Nước', sao: 'Mặt Trăng', tinh: 'Khởi (Cardinal)', than: 'Ngực, dạ dày', net: 'Tình cảm, chở che, gắn bó gia đình, nhạy cảm.' },
+  { ten: 'Sư Tử', en: 'Leo', sym: '♌', from: [7, 23], to: [8, 22], nguyenTo: 'Lửa', sao: 'Mặt Trời', tinh: 'Định (Fixed)', than: 'Tim, lưng', net: 'Tự tin, hào phóng, lôi cuốn, thích dẫn dắt.' },
+  { ten: 'Xử Nữ', en: 'Virgo', sym: '♍', from: [8, 23], to: [9, 22], nguyenTo: 'Đất', sao: 'Thủy tinh (Mercury)', tinh: 'Biến (Mutable)', than: 'Bụng, hệ tiêu hóa', net: 'Tỉ mỉ, chỉn chu, phân tích, cầu toàn.' },
+  { ten: 'Thiên Bình', en: 'Libra', sym: '♎', from: [9, 23], to: [10, 22], nguyenTo: 'Khí', sao: 'Kim tinh (Venus)', tinh: 'Khởi (Cardinal)', than: 'Thận, eo', net: 'Hài hòa, công bằng, ngoại giao, yêu cái đẹp.' },
+  { ten: 'Bọ Cạp', en: 'Scorpio', sym: '♏', from: [10, 23], to: [11, 21], nguyenTo: 'Nước', sao: 'Diêm Vương (Pluto)', tinh: 'Định (Fixed)', than: 'Cơ quan sinh sản', net: 'Sâu sắc, mãnh liệt, bí ẩn, ý chí mạnh.' },
+  { ten: 'Nhân Mã', en: 'Sagittarius', sym: '♐', from: [11, 22], to: [12, 21], nguyenTo: 'Lửa', sao: 'Mộc tinh (Jupiter)', tinh: 'Biến (Mutable)', than: 'Hông, đùi', net: 'Phóng khoáng, lạc quan, ưa tự do, ham khám phá.' },
+  { ten: 'Ma Kết', en: 'Capricorn', sym: '♑', from: [12, 22], to: [1, 19], nguyenTo: 'Đất', sao: 'Thổ tinh (Saturn)', tinh: 'Khởi (Cardinal)', than: 'Đầu gối, xương', net: 'Kỷ luật, tham vọng, kiên trì, trách nhiệm.' },
+  { ten: 'Bảo Bình', en: 'Aquarius', sym: '♒', from: [1, 20], to: [2, 18], nguyenTo: 'Khí', sao: 'Thiên Vương (Uranus)', tinh: 'Định (Fixed)', than: 'Cẳng chân, mắt cá', net: 'Độc lập, sáng tạo, nhân văn, khác biệt.' },
+  { ten: 'Song Ngư', en: 'Pisces', sym: '♓', from: [2, 19], to: [3, 20], nguyenTo: 'Nước', sao: 'Hải Vương (Neptune)', tinh: 'Biến (Mutable)', than: 'Bàn chân', net: 'Mơ mộng, giàu trực giác, nghệ sĩ, đồng cảm.' }
 ]
 
 export function getZodiac(day, month) {

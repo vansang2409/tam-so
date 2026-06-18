@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams } from 'react-router-dom'
 import { ZODIAC, getZodiac, zodiacCompat, LUCKY, decanOf } from '../data/zodiac.js'
 
@@ -75,6 +76,7 @@ export default function Zodiac() {
               </div>
               <div className="flex gap-2 flex-wrap my-2"><span className={`pill ${elColor[z.nguyenTo]}`}>{z.nguyenTo}</span><span className="badge">{z.sao}</span></div>
               <p className="text-[.92rem] text-muted m-0">{z.net}</p>
+              <p className="note mt-1 mb-0">Tính chất {z.tinh} · Cơ thể: {z.than}</p>
               <p className="note mt-2 mb-0">Màu {LUCKY[z.en].mau} · Đá {LUCKY[z.en].da} · Số {LUCKY[z.en].so}</p>
             </div>
           ))}
@@ -102,7 +104,7 @@ function SignTool() {
     // eslint-disable-next-line
   }, [])
   const qs = () => new URLSearchParams({ d, m }).toString()
-  const shareUrl = () => `${window.location.origin}${window.location.pathname}#/cung-hoang-dao?${qs()}`
+  const shareUrl = () => routeShareUrl('/cung-hoang-dao', qs())
   const calc = () => {
     const dd = +d, mm = +m
     const r = compute(dd, mm)
@@ -127,6 +129,7 @@ function SignTool() {
             <h3 className="text-[2rem] my-1">{res.ten} <span className="note">({res.en})</span></h3>
             <div className="flex gap-2 flex-wrap justify-center my-2"><span className={`pill ${elColor[res.nguyenTo]}`}>Nguyên tố {res.nguyenTo}</span><span className="badge">{res.sao}</span></div>
             <p className="max-w-[560px] mx-auto">{res.net}</p>
+            <p className="note m-0">Tính chất {res.tinh} · Hành tinh {res.sao} · Cơ thể: {res.than}</p>
             <p className="note m-0">Màu may mắn {LUCKY[res.en].mau} · Đá {LUCKY[res.en].da} · Số {LUCKY[res.en].so}</p>
             {res.decan && <p className="note m-0 mt-2">Thập phân (decan) {res.decan.num}/3 — {res.decan.pure ? 'thuần ' + res.ten + ', nét đặc trưng đậm nhất' : 'mang thêm sắc thái ' + res.decan.sub.ten}</p>}
             <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">

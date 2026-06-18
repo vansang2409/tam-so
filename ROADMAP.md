@@ -16,6 +16,72 @@
 - **Đổi dương→âm lịch (Hồ Ngọc Đức, UTC+7)**: ô ① Tra Can Chi nhập đủ ngày/tháng → tự tính đúng **năm âm lịch** cho Can Chi & Tam Tai (chuẩn ranh giới Tết), hiện ngày âm; ô Can Chi ngày cũng hiện âm lịch. Đã kiểm chứng mốc Tết 1990/2000/2020/2024/2025.
 - **Hiệu ứng**: sáu hào "rơi" so le khi gieo Kinh Dịch; lá Tarot "chia bài" so le khi rút. Thêm thẻ chia sẻ mạng xã hội (Open Graph).
 
+## ✅ 3.05 — Kinh Dịch HOÀN CHỈNH: 64 Thoán + 384 hào từ
+- **Đủ 64 quẻ** có **Thoán từ (lời quẻ)** + **6 hào từ** mỗi quẻ (tổng **384 hào từ**) + lời **Dụng Cửu/Dụng Lục** cho quẻ 1 & 2.
+- Phỏng dịch tiếng Việt mạch lạc, trấn an từ bản **James Legge 1899 (phạm vi công cộng)**; quẻ 12 & 46 (trang nguồn lỗi) dịch từ bản Legge chuẩn đã đối chiếu.
+- Hiển thị: trang Kinh Dịch (HexView) hiện Thoán từ + mục xổ "Lời 6 hào"; kết quả gieo hiện đúng hào từ của hào động (📜).
+- Test: **95 mốc, 0 fail** (thêm kiểm chứng đủ 64 Thoán + 384 hào, không hào rỗng).
+
+## ✅ 3.02 — Thoán từ + hào từ: 30/64 quẻ
+- Đã có quẻ 1–30 (thoán từ + 6 hào, phỏng dịch Legge). Tiếp 31–64.
+
+## ✅ 3.01 — Thoán từ + hào từ: 15/64 quẻ (đợt 1)
+- Phỏng dịch Legge cho quẻ 1–11, 13–15 (thoán từ + 6 hào). Quẻ 12 nguồn lỗi, sẽ lấy lại; còn 16–64.
+
+## ✅ 3.00 — Thoán từ + hào từ Kinh Dịch (bắt đầu, quẻ 1 mẫu)
+- File iching-text.js (HEX_TEXT): Thoán từ + 6 hào từ phỏng dịch Legge 1899; HexView hiện thoán từ + lời 6 hào; khi gieo có hào động thì hiện lời hào cụ thể. Quẻ 1 làm mẫu, sẽ cuốn chiếu 64 quẻ.
+
+## ✅ 2.99 — Đại Tượng (象) cho 64 quẻ Kinh Dịch
+- Mỗi quẻ thêm Đại Tượng (hình tượng + bài học quân tử dĩ…), phỏng dịch theo Legge 1899 (công cộng), ghi nguồn. 91 test.
+
+## ✅ 2.98 — Hoàn tất chiêm tinh Tarot: decan 40 lá Ẩn Phụ
+- MINOR_ASTRO: Ách (gốc nguyên tố) + 36 pip (hành tinh trong cung, Golden Dawn). Modal hiện decan + chất. 90 test. Toàn bộ 78 lá nay có tương ứng chiêm tinh.
+
+## ✅ 2.97 — Dữ liệu sâu: hành tinh liên hệ 12 con số
+- NUM_SAO: hành tinh ứng mỗi số chủ đạo (ghi rõ theo trường phái, tham khảo). 89 test.
+
+## ✅ 2.96 — Dữ liệu sâu: 12 cung hoàng đạo (tính chất + cơ thể)
+- ZODIAC thêm tính chất Khởi/Định/Biến + bộ phận cơ thể; hiện ở thẻ 12 cung và kết quả xem cung. 88 test.
+
+## ✅ 2.95 — Dữ liệu sâu: 10 Thiên Can (hướng/hình tượng)
+- THIEN_CAN thêm hướng + hình tượng cổ điển; bảng Thiên Can thêm 2 cột. 87 test.
+
+## ✅ 2.94 — Dữ liệu sâu: bảng Bát Quái (Kinh Dịch)
+- 8 quái thêm ngũ hành/người/thân/hướng/tính chất (Hậu Thiên Bát Quái); bảng tra trên trang Kinh Dịch (vẽ quái bằng thanh). 86 test.
+
+## ✅ 2.93 — Dữ liệu sâu: 12 Địa Chi (giờ/hướng/mùa)
+- DIA_CHI thêm giờ canh, hướng, mùa; bảng 12 Địa Chi thêm cột Giờ & Hướng. 85 test.
+
+## ✅ 2.92 — Dữ liệu sâu hơn: tương ứng chiêm tinh Tarot
+- 22 Ẩn Chính thêm tương ứng hành tinh/cung + nguyên tố (Golden Dawn, dữ kiện); modal hiện "✦ Tương ứng" cho cả Ẩn Chính & Ẩn Phụ (chất+nguyên tố). 84 test.
+
+## ✅ 2.91 — Gỡ hết điều hướng phụ ra trang Nguồn
+- Bỏ cả khối "Khám phá thêm" (Tarot) + link Nguồn ở Trang chủ. Trang tập trung vào kết quả; Nguồn chỉ còn ở menu/chân trang.
+
+## ✅ 2.90 — Gỡ điều hướng Nguồn không mong muốn
+- Bỏ chip "Nguồn & Lưu ý" khỏi khối Khám phá thêm (Tarot) và bỏ link Nguồn ở chú thích "xem chi tiết" (Hồ sơ). Nguồn vẫn vào qua menu/chân trang.
+
+## ✅ 2.89 — Vá nốt link chia sẻ FB ở Hồ sơ (kiểm định độc lập)
+- Nút Chia sẻ Facebook ở Hồ sơ còn dùng URL #/ thủ công → đổi sang routeShareUrl (path-routing đồng bộ). Đã rà sạch toàn bộ.
+
+## ✅ 2.88 — Mục "Thuật ngữ thường gặp" (trang Nguồn)
+- 17 khái niệm (Ẩn Chính/Ẩn Phụ, Can Chi, nạp âm, Số Chủ Đạo, hào động, decan…) giải thích ngắn gọn — đỡ bỡ ngỡ + thêm nội dung cho SEO.
+
+## ✅ 2.87 — Chia sẻ kết quả "Hôm nay" + dọn copy
+- Mục Hôm nay: thêm 📋 Chép kết quả / 📘 Chia sẻ cho lần rút; sửa mô tả Tarot ở trang chủ cho khớp "rút nhanh một lá".
+
+## ✅ 2.86 — SEO path-routing (URL thường + 404.html)
+- Bản web dùng BrowserRouter /tam-so/<route> (Google index 9 trang) qua kỹ thuật spa-github-pages (404.html + restore script); file:// vẫn HashRouter. Helper shareUrl đồng bộ link chia sẻ. Cờ ENABLE_PATH_ROUTING trong src/data/site.js để revert 1 dòng. Sitemap 9 URL.
+
+## ✅ 2.85 — Trang Tarot: "Rút nhanh một lá" (bấm-rút ngẫu nhiên)
+- Ô "Lá bài hôm nay" cố định đổi thành bấm-để-rút ngẫu nhiên + nghĩa + lời khuyên + rút lại + chép/chia sẻ, nhất quán với mục Hôm nay.
+
+## ✅ 2.84 — Diễn nôm trấn an cho 14 quẻ lời nặng
+- HEXAGRAM_AN: câu "Hiểu nôm na" nhẹ nhàng, hướng hành động cho các quẻ Truân/Tụng/Bĩ/Bác/Khảm/Minh Di/Khuê/Kiển/Tổn/Khốn/Hoán… hiện ở Kinh Dịch & mục Hôm nay. 80 test.
+
+## ✅ 2.83 — Love/Work 56 lá Ẩn Phụ cụ thể (bớt mơ hồ)
+- Thay khung công thức "Chất X… Giai đoạn N" bằng luận Tình yêu/Sự nghiệp riêng từng lá, bám nghĩa truyền thống RWS, đời thường & nhẹ nhàng.
+
 ## ✅ 2.82 — Diễn giải rõ & trấn an hơn (Hôm nay)
 - Bỏ love/work công thức khỏi lần rút ngày; lời khuyên đổi thành "Bạn có thể làm gì"; quẻ nêu ý ngắn rõ trước; thêm khung nhấn quyền tự quyết, tránh gieo lo sợ.
 

@@ -1,6 +1,8 @@
 /* THẦN SỐ HỌC — Số Chủ Đạo (Life Path). Hệ Pythagorean.
  * Phương pháp & nội dung tham khảo: Numerology.com (diễn giải lại tiếng Việt). */
 
+export const NUM_SAO = { 1: 'Mặt Trời (Sun)', 2: 'Mặt Trăng (Moon)', 3: 'Mộc tinh (Jupiter)', 4: 'Thiên Vương tinh (Uranus)', 5: 'Thủy tinh (Mercury)', 6: 'Kim tinh (Venus)', 7: 'Hải Vương tinh (Neptune)', 8: 'Thổ tinh (Saturn)', 9: 'Hỏa tinh (Mars)', 11: 'Mặt Trăng (số chủ 2) — trực giác nâng cao', 22: 'Thiên Vương tinh (số chủ 4) — kiến tạo lớn', 33: 'Kim tinh (số chủ 6) — tình thương lớn' }
+
 export const NUMEROLOGY = {
   1: { title: 'Số 1 — Người Tiên Phong', keys: ['độc lập', 'lãnh đạo', 'tiên phong', 'quyết đoán'],
     desc: 'Sứ mệnh của bạn là khẳng định sự độc lập và bước vào sức mạnh cá nhân. Bạn mang khí chất thủ lĩnh, thích là người đầu tiên thử cái mới và hành động nhanh. Điểm cần lưu ý: học cách hợp tác và kiên nhẫn với người khác.',

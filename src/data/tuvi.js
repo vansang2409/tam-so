@@ -4,26 +4,31 @@
  * Nguồn: Wiki Batdongsan; Lục thập hoa giáp (Wikipedia tiếng Việt). */
 
 export const THIEN_CAN = [
-  { ten: 'Giáp', hanh: 'Mộc', amduong: 'Dương' }, { ten: 'Ất', hanh: 'Mộc', amduong: 'Âm' },
-  { ten: 'Bính', hanh: 'Hỏa', amduong: 'Dương' }, { ten: 'Đinh', hanh: 'Hỏa', amduong: 'Âm' },
-  { ten: 'Mậu', hanh: 'Thổ', amduong: 'Dương' }, { ten: 'Kỷ', hanh: 'Thổ', amduong: 'Âm' },
-  { ten: 'Canh', hanh: 'Kim', amduong: 'Dương' }, { ten: 'Tân', hanh: 'Kim', amduong: 'Âm' },
-  { ten: 'Nhâm', hanh: 'Thủy', amduong: 'Dương' }, { ten: 'Quý', hanh: 'Thủy', amduong: 'Âm' }
+  { ten: 'Giáp', hanh: 'Mộc', amduong: 'Dương', huong: 'Đông', nghia: 'cây lớn, rường cột, vươn thẳng' },
+  { ten: 'Ất', hanh: 'Mộc', amduong: 'Âm', huong: 'Đông', nghia: 'cỏ hoa, mềm dẻo, uyển chuyển' },
+  { ten: 'Bính', hanh: 'Hỏa', amduong: 'Dương', huong: 'Nam', nghia: 'mặt trời, rực rỡ, nhiệt thành' },
+  { ten: 'Đinh', hanh: 'Hỏa', amduong: 'Âm', huong: 'Nam', nghia: 'ngọn đèn, ấm áp, soi tỏ' },
+  { ten: 'Mậu', hanh: 'Thổ', amduong: 'Dương', huong: 'Trung tâm', nghia: 'núi đồi, vững chãi, bao dung' },
+  { ten: 'Kỷ', hanh: 'Thổ', amduong: 'Âm', huong: 'Trung tâm', nghia: 'đất ruộng, nuôi dưỡng, cần mẫn' },
+  { ten: 'Canh', hanh: 'Kim', amduong: 'Dương', huong: 'Tây', nghia: 'rìu búa, cứng cỏi, quyết đoán' },
+  { ten: 'Tân', hanh: 'Kim', amduong: 'Âm', huong: 'Tây', nghia: 'trang sức, tinh tế, sắc bén' },
+  { ten: 'Nhâm', hanh: 'Thủy', amduong: 'Dương', huong: 'Bắc', nghia: 'biển lớn, bao la, lưu động' },
+  { ten: 'Quý', hanh: 'Thủy', amduong: 'Âm', huong: 'Bắc', nghia: 'mưa sương, mềm mại, thấm nhuần' }
 ]
 
 export const DIA_CHI = [
-  { ten: 'Tý', con: 'Chuột', hanh: 'Thủy', amduong: 'Dương', net: 'nhanh nhạy, tháo vát, biết tích lũy' },
-  { ten: 'Sửu', con: 'Trâu', hanh: 'Thổ', amduong: 'Âm', net: 'cần cù, kiên nhẫn, đáng tin' },
-  { ten: 'Dần', con: 'Hổ', hanh: 'Mộc', amduong: 'Dương', net: 'dũng cảm, quyết đoán, có uy' },
-  { ten: 'Mão', con: 'Mèo', hanh: 'Mộc', amduong: 'Âm', net: 'ôn hòa, tinh tế, khéo léo' },
-  { ten: 'Thìn', con: 'Rồng', hanh: 'Thổ', amduong: 'Dương', net: 'tự tin, nhiều hoài bão, lôi cuốn' },
-  { ten: 'Tỵ', con: 'Rắn', hanh: 'Hỏa', amduong: 'Âm', net: 'sâu sắc, điềm tĩnh, nhiều suy tư' },
-  { ten: 'Ngọ', con: 'Ngựa', hanh: 'Hỏa', amduong: 'Dương', net: 'năng động, phóng khoáng, yêu tự do' },
-  { ten: 'Mùi', con: 'Dê', hanh: 'Thổ', amduong: 'Âm', net: 'hiền hòa, nghệ sĩ, giàu cảm xúc' },
-  { ten: 'Thân', con: 'Khỉ', hanh: 'Kim', amduong: 'Dương', net: 'thông minh, linh hoạt, hài hước' },
-  { ten: 'Dậu', con: 'Gà', hanh: 'Kim', amduong: 'Âm', net: 'chỉn chu, thẳng thắn, chăm chỉ' },
-  { ten: 'Tuất', con: 'Chó', hanh: 'Thổ', amduong: 'Dương', net: 'trung thành, chính trực, nghĩa tình' },
-  { ten: 'Hợi', con: 'Lợn', hanh: 'Thủy', amduong: 'Âm', net: 'thật thà, rộng lượng, lạc quan' }
+  { ten: 'Tý', con: 'Chuột', hanh: 'Thủy', amduong: 'Dương', net: 'nhanh nhạy, tháo vát, biết tích lũy', gio: '23–1', huong: 'Bắc', mua: 'Đông' },
+  { ten: 'Sửu', con: 'Trâu', hanh: 'Thổ', amduong: 'Âm', net: 'cần cù, kiên nhẫn, đáng tin', gio: '1–3', huong: 'Đông Bắc', mua: 'Đông' },
+  { ten: 'Dần', con: 'Hổ', hanh: 'Mộc', amduong: 'Dương', net: 'dũng cảm, quyết đoán, có uy', gio: '3–5', huong: 'Đông Bắc', mua: 'Xuân' },
+  { ten: 'Mão', con: 'Mèo', hanh: 'Mộc', amduong: 'Âm', net: 'ôn hòa, tinh tế, khéo léo', gio: '5–7', huong: 'Đông', mua: 'Xuân' },
+  { ten: 'Thìn', con: 'Rồng', hanh: 'Thổ', amduong: 'Dương', net: 'tự tin, nhiều hoài bão, lôi cuốn', gio: '7–9', huong: 'Đông Nam', mua: 'Xuân' },
+  { ten: 'Tỵ', con: 'Rắn', hanh: 'Hỏa', amduong: 'Âm', net: 'sâu sắc, điềm tĩnh, nhiều suy tư', gio: '9–11', huong: 'Đông Nam', mua: 'Hạ' },
+  { ten: 'Ngọ', con: 'Ngựa', hanh: 'Hỏa', amduong: 'Dương', net: 'năng động, phóng khoáng, yêu tự do', gio: '11–13', huong: 'Nam', mua: 'Hạ' },
+  { ten: 'Mùi', con: 'Dê', hanh: 'Thổ', amduong: 'Âm', net: 'hiền hòa, nghệ sĩ, giàu cảm xúc', gio: '13–15', huong: 'Tây Nam', mua: 'Hạ' },
+  { ten: 'Thân', con: 'Khỉ', hanh: 'Kim', amduong: 'Dương', net: 'thông minh, linh hoạt, hài hước', gio: '15–17', huong: 'Tây Nam', mua: 'Thu' },
+  { ten: 'Dậu', con: 'Gà', hanh: 'Kim', amduong: 'Âm', net: 'chỉn chu, thẳng thắn, chăm chỉ', gio: '17–19', huong: 'Tây', mua: 'Thu' },
+  { ten: 'Tuất', con: 'Chó', hanh: 'Thổ', amduong: 'Dương', net: 'trung thành, chính trực, nghĩa tình', gio: '19–21', huong: 'Tây Bắc', mua: 'Thu' },
+  { ten: 'Hợi', con: 'Lợn', hanh: 'Thủy', amduong: 'Âm', net: 'thật thà, rộng lượng, lạc quan', gio: '21–23', huong: 'Tây Bắc', mua: 'Đông' }
 ]
 
 /* 30 nạp âm Lục Thập Hoa Giáp, bắt đầu từ Giáp Tý (mỗi nạp âm bao 2 năm) */
