@@ -135,7 +135,7 @@ export default function TuongHop() {
       </section>
 
       <section className="wrap py-8">
-        <div className="disclaimer max-w-[900px] mx-auto"><b>Dữ kiện &amp; diễn giải.</b> Can–Chi–nạp âm là lịch pháp; còn tương hợp Can Chi, cung hoàng đạo và Số Chủ Đạo là <b>quan niệm truyền thống</b>, chỉ để tham khảo. Tương hợp Số Chủ Đạo ở đây dựa trên so khớp từ khóa (tham khảo <a href="https://www.numerology.com/articles/your-numerology-chart/core-numbers-numerology/" target="_blank" rel="noopener">Numerology.com</a>), không phải thước đo tuyệt đối. Không khẳng định điều gì về duyên số.</div>
+        <div className="disclaimer max-w-[900px] mx-auto"><b>Dữ kiện &amp; diễn giải.</b> Can–Chi–nạp âm là lịch pháp; còn tương hợp Can Chi, cung hoàng đạo và Số Chủ Đạo là <b>quan niệm truyền thống</b>, chỉ để tham khảo. Tương hợp Số Chủ Đạo ở đây dựa trên so khớp từ khóa (tham khảo <a href="https://www.numerology.com/articles/your-numerology-chart/core-numbers-numerology/" target="_blank" rel="noopener">Numerology.com</a>), không phải thước đo tuyệt đối. Không khẳng định điều gì về duyên số. Muốn đối chiếu thêm theo Tử Vi, xem <Link to="/so-la-so" className="text-gold">So đôi lá số</Link>.</div>
       </section>
     </>
   )

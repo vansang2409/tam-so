@@ -305,6 +305,12 @@ export const CACH_CUC = {
 /* ===== Cách cục / tổ hợp sao nổi tiếng (phát hiện trong tam phương tứ chính của Mệnh) =====
  * tot: true=cát, false=hung, null=trung tính. Điều kiện rõ ràng theo vị trí sao; luận tự biên, tham khảo. */
 const CACH_DEF = [
+  { ten: 'Tam kỳ gia hội', tot: true, test: c => c.hasHoa('Lộc') && c.hasHoa('Quyền') && c.hasHoa('Khoa'),
+    luan: 'Ba Hóa Lộc – Quyền – Khoa cùng hội về Mệnh — cách rất đẹp ("Tam kỳ gia hội"): tài lộc, năng lực và danh tiếng/quý nhân hội đủ; thường chủ thành đạt, được trọng vọng (đẹp nhất khi không bị sát tinh phá).' },
+  { ten: 'Song Lộc triều viên', tot: true, test: c => c.hasHoa('Lộc') && c.inSet('Lộc Tồn'),
+    luan: 'Hóa Lộc gặp Lộc Tồn cùng chiếu Mệnh ("Song Lộc") — tài lộc dồi dào, hậu vận sung túc; hợp tích lũy, kinh doanh, gây dựng cơ nghiệp.' },
+  { ten: 'Phủ Tướng triều viên', tot: true, test: c => c.inSet('Thiên Phủ') && c.inSet('Thiên Tướng'),
+    luan: 'Thiên Phủ và Thiên Tướng cùng chầu Mệnh — cách an ổn, quý hiển: thường có quý nhân, đời sống đủ đầy, làm việc bài bản và được tin cậy.' },
   { ten: 'Tử Phủ đồng cung', tot: true, test: c => c.sameInTp('Tử Vi', 'Thiên Phủ'),
     luan: 'Tử Vi (đế tinh) và Thiên Phủ (khố tinh) cùng tọa — cách quý hiển, vững vàng: có khí chất lãnh đạo lại biết tích lũy, giữ gìn; thuận đường công danh – quản trị nếu được phụ tinh trợ.' },
   { ten: 'Lộc Mã giao trì', tot: true, test: c => c.sameInTp('Lộc Tồn', 'Thiên Mã'),
@@ -335,7 +341,8 @@ function detectCach(stars, menh, tp) {
   const sameInTp = (a, b) => tp.some(c => stars[c].some(s => s.ten === a) && stars[c].some(s => s.ten === b))
   const atMenh = name => stars[menh].some(s => s.ten === name)
   const brightOf = name => { for (const c of tp) { const st = stars[c].find(s => s.ten === name); if (st) return st.sang || null } return null }
-  const ctx = { inSet, sameInTp, atMenh, brightOf, menh }
+  const hasHoa = h => tp.some(c => stars[c].some(s => s.hoa === h))
+  const ctx = { inSet, sameInTp, atMenh, brightOf, hasHoa, menh }
   const out = []
   for (const k of CACH_DEF) { try { if (k.test(ctx)) out.push({ ten: k.ten, tot: typeof k.tot === 'function' ? k.tot(ctx) : k.tot, luan: typeof k.luan === 'function' ? k.luan(ctx) : k.luan }) } catch (_) { } }
   return out

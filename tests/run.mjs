@@ -10,6 +10,7 @@ import * as Z from '../src/data/zodiac.js'
 import * as R from '../src/data/report.js'
 import * as SITE from '../src/data/site.js'
 import * as TV from '../src/data/tuvidauso.js'
+import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 
 let pass = 0, fail = 0
 const ok = (cond, msg) => { if (cond) { pass++ } else { fail++; console.error('  ✗ FAIL: ' + msg) } }
@@ -225,6 +226,13 @@ delete global.window
   ok(luOk, "sweep lịch âm 4 năm: tháng 1–12, ngày 1–30, năm hợp lệ")
   ok(zoOk, "sweep cung hoàng đạo: mọi ngày ra 1 cung hợp lệ")
   ok(nuOk, "sweep thần số học: Life Path ∈ tập chuẩn, Personal Year 1–9")
+}
+{
+  const stars14 = ["Tử Vi","Thiên Cơ","Thái Dương","Vũ Khúc","Thiên Đồng","Liêm Trinh","Thiên Phủ","Thái Âm","Tham Lang","Cự Môn","Thiên Tướng","Thiên Lương","Thất Sát","Phá Quân"]
+  const cung12 = ["Mệnh","Phụ Mẫu","Phúc Đức","Điền Trạch","Quan Lộc","Nô Bộc","Thiên Di","Tật Ách","Tài Bạch","Tử Tức","Phu Thê","Huynh Đệ"]
+  let scOk = true, tot = 0
+  for (const st of stars14) for (const cu of cung12) { const t = TVSC[st] && TVSC[st][cu]; if (!t || t.length < 12) scOk = false; else tot++ }
+  ok(scOk && tot === 168, "SAO_CUNG: đủ 168 luận điểm (14 sao × 12 cung), không rỗng")
 }
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

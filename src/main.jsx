@@ -10,6 +10,7 @@ import Tarot from './pages/Tarot.jsx'
 import Numerology from './pages/Numerology.jsx'
 import TuVi from './pages/TuVi.jsx'
 import LaSoTuVi from './pages/LaSoTuVi.jsx'
+import SoLaSo from './pages/SoLaSo.jsx'
 import Zodiac from './pages/Zodiac.jsx'
 import IChing from './pages/IChing.jsx'
 import TuongHop from './pages/TuongHop.jsx'
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="than-so-hoc" element={<Numerology />} />
           <Route path="tu-vi" element={<TuVi />} />
           <Route path="la-so-tu-vi" element={<LaSoTuVi />} />
+          <Route path="so-la-so" element={<SoLaSo />} />
           <Route path="cung-hoang-dao" element={<Zodiac />} />
           <Route path="kinh-dich" element={<IChing />} />
           <Route path="tuong-hop" element={<TuongHop />} />

@@ -4,6 +4,7 @@ import { shareUrl as routeShareUrl } from '../data/site.js'
 import { toPng } from 'html-to-image'
 import { solar2lunar } from '../data/lunar.js'
 import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI } from '../data/tuvidauso.js'
+import { SAO_CUNG } from '../data/tuvi-saocung.js'
 
 // Vị trí 12 chi trên lá số 4×4 [cột, hàng] (1-indexed)
 const POS = { 5: [1, 1], 6: [2, 1], 7: [3, 1], 8: [4, 1], 4: [1, 2], 9: [4, 2], 3: [1, 3], 10: [4, 3], 2: [1, 4], 1: [2, 4], 0: [3, 4], 11: [4, 4] }
@@ -20,12 +21,12 @@ function StarLine({ s }) {
   )
 }
 
-function Cell({ p, active, onClick, van }) {
+function Cell({ p, active, onClick, van, tp }) {
   const [col, row] = POS[p.chiIdx]
   return (
     <button onClick={onClick} aria-label={'Cung ' + p.cung + ' tại ' + p.chi} style={{ gridColumn: col, gridRow: row }}
       className={'text-left border rounded-lg p-1.5 min-h-[96px] transition ' +
-        (active ? 'border-gold bg-gold/10' : 'border-gold/20 hover:border-gold/50 bg-white/[.03]')}>
+        (active ? 'border-gold bg-gold/10' : 'border-gold/20 hover:border-gold/50 bg-white/[.03]') + (tp && !active ? ' ring-1 ring-gold/40' : '')}>
       <div className="flex items-center justify-between gap-1">
         <span className="text-gold font-semibold text-[.74rem] leading-none">{p.cung}</span>
         <span className="text-muted text-[.62rem] leading-none">{p.chi}</span>
@@ -111,6 +112,7 @@ export default function LaSoTuVi() {
     for (const p of order) {
       const stars = p.sao.map(s => s.ten + (s.mieu ? '(M)' : '') + (s.hoa ? '(Hóa ' + s.hoa + ')' : '') + (s.sang ? '[' + s.sang + ']' : '')).join(', ') || 'vô chính diệu'
       L.push('• ' + p.cung + ' (' + p.chi + ')' + (p.isMenh ? ' ★Mệnh' : '') + (p.isThan ? ' ◆Thân' : '') + ': ' + stars + (p.daihan ? ' | ĐH ' + p.daihan.from + '–' + p.daihan.to + 't' : '') + (p.trangSinh ? ' | ' + p.trangSinh : ''))
+      for (const s of p.sao.filter(x => x.loai === 'chinh')) { const luan = SAO_CUNG[s.ten] && SAO_CUNG[s.ten][p.cung]; if (luan) L.push('    ↳ ' + s.ten + (s.mieu ? ' (M)' : '') + ': ' + luan) }
     }
     if (ls.cachCuc && ls.cachCuc.length) { L.push('', '— CÁCH CỤC NỔI BẬT —'); ls.cachCuc.forEach(c => L.push('• ' + c.ten + ': ' + c.luan)) }
     if (ls.van) L.push('', '— VẬN NĂM ' + ls.van.year + ' (~' + ls.van.age + ' tuổi âm) —', 'Đại hạn: cung ' + ls.palaces[ls.van.daiHanChi].cung + ' (' + ls.palaces[ls.van.daiHanChi].chi + ') · Tiểu hạn: ' + ls.palaces[ls.van.tieuHanChi].chi + ' · Lưu niên: ' + ls.palaces[ls.van.luuNienChi].chi)
@@ -122,6 +124,7 @@ export default function LaSoTuVi() {
   const menhStars = ls ? ls.palaces[ls.menhIdx].sao.filter(s => s.loai === 'chinh').map(s => s.ten).join(', ') || 'Vô chính diệu' : ''
   const resultText = () => ls ? `✦ Lá số Tử Vi — ${ls.nam} (${ls.amDuong}), Cục ${ls.cuc.ten}. Mệnh tại ${ls.menhChi}: ${menhStars}. Thân cư ${ls.thanCu}.\n— Tam Sở ${shareUrl()}` : ''
   const selP = ls ? ls.palaces[sel] : null
+  const tpSet = ls ? new Set([sel, (sel + 4) % 12, (sel + 8) % 12, (sel + 6) % 12]) : new Set()
 
   return (
     <>
@@ -149,7 +152,7 @@ export default function LaSoTuVi() {
             <button className="btn btn-ghost" onClick={demo}>Xem thử lá số mẫu</button>
           </div>
           {err && <div className="disclaimer mt-4">{err}</div>}
-          <p className="note text-center mt-3 mb-0">Giờ sinh ảnh hưởng lớn tới lá số — nếu không chắc, hãy chọn giờ gần đúng nhất. Năm nhập theo <b>dương lịch</b>, hệ thống tự quy đổi âm lịch (Hồ Ngọc Đức).</p>
+          <p className="note text-center mt-3 mb-0">Giờ sinh ảnh hưởng lớn tới lá số — nếu không chắc, hãy chọn giờ gần đúng nhất. Năm nhập theo <b>dương lịch</b>, hệ thống tự quy đổi âm lịch (Hồ Ngọc Đức). Nếu sinh vào <b>tháng nhuận</b>, lá số tính theo số tháng âm lịch — một số phái an sao xử lý tháng nhuận khác, cần chính xác tuyệt đối nên đối chiếu thêm.</p>
           {hist.length > 0 && (
             <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
               <span className="note">Gần đây:</span>
@@ -170,9 +173,20 @@ export default function LaSoTuVi() {
               <span className="badge">Thân cư {ls.thanCu}</span>
               <span className="badge">DL {ls.solar.d}/{ls.solar.m}/{ls.solar.y} · ÂL {ls.lunar.day}/{ls.lunar.month}</span>
             </div>
+            <div className="panel p-[18px] max-w-[820px] mx-auto mb-3 bg-gold/[.05]">
+              <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Tóm tắt lá số</div>
+              <p className="m-0 leading-relaxed">Mệnh an tại <b className="text-cream">{ls.menhChi}</b> — <b className="text-cream">{menhStars}</b>, thuộc nhóm <b className="text-cream">{ls.menhCach.ten}</b>.{' '}
+                {(() => {
+                  const cat = ls.cachCuc.filter(c => c.tot === true).map(c => c.ten)
+                  const xau = ls.cachCuc.filter(c => c.tot === false).map(c => c.ten)
+                  return <>{cat.length > 0 && <>Điểm sáng nổi bật: <span className="text-emerald-800 font-semibold">{cat.join(', ')}</span>. </>}{xau.length > 0 && <>Nên lưu tâm thêm: <span className="text-rose-700">{xau.join(', ')}</span> (đều có cách hóa giải, không phải điềm gở). </>}</>
+                })()}
+                {ls.van && <>Năm {ls.van.year} (~{ls.van.age} tuổi âm), đại hạn đang ở cung <b className="text-cream">{ls.palaces[ls.van.daiHanChi].cung}</b>.</>}</p>
+              <p className="note mt-1.5 mb-0">Bức tranh tổng quan để chiêm nghiệm — không phải lời phán; lá số cần luận tổng hòa, và mọi quyết định vẫn ở bạn.</p>
+            </div>
             <div ref={shotRef} className="panel p-2.5 md:p-3 max-w-[820px] mx-auto overflow-x-auto"><p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem trọn lá số →</p>
               <div className="grid gap-1.5 mx-auto" style={{ gridTemplateColumns: 'repeat(4,1fr)', gridTemplateRows: 'repeat(4, minmax(96px, auto))', minWidth: '468px' }}>
-                {ls.palaces.map(p => <Cell key={p.chiIdx} p={p} active={sel === p.chiIdx} onClick={() => setSel(p.chiIdx)} van={ls.van} />)}
+                {ls.palaces.map(p => <Cell key={p.chiIdx} p={p} active={sel === p.chiIdx} onClick={() => setSel(p.chiIdx)} van={ls.van} tp={tpSet.has(p.chiIdx) && p.chiIdx !== sel} />)}
                 <div style={{ gridColumn: '2 / 4', gridRow: '2 / 4' }} className="border border-gold/25 rounded-lg p-3 bg-gold/[.05] flex flex-col items-center justify-center text-center">
                   <div className="font-serif text-gold text-[1.05rem]">✦ Thiên bàn</div>
                   <div className="text-[.82rem] mt-1.5 leading-relaxed">
@@ -183,7 +197,7 @@ export default function LaSoTuVi() {
                   </div>
                 </div>
               </div>
-              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; <sup className="text-gold">M</sup> = chính tinh nhập Miếu (sáng mạnh).</p>
+              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; <sup className="text-gold">M</sup> = chính tinh nhập Miếu (sáng mạnh). Khi chọn một cung, <span className="text-gold">ba cung hội chiếu</span> (tam phương tứ chính) sẽ sáng nhẹ — nên đọc cùng nhau.</p>
             </div>
           </section>
 
@@ -246,6 +260,7 @@ export default function LaSoTuVi() {
                       {s.hoa && <span className={'text-white text-[.62rem] px-1.5 py-0.5 rounded ' + (HOA_CLS[s.hoa] || 'bg-gray-600')}>Hóa {s.hoa}</span>}
                     </div>
                     <p className="m-0 leading-relaxed">{CHINH_TINH[s.ten] && CHINH_TINH[s.ten].y}</p>
+                    {SAO_CUNG[s.ten] && SAO_CUNG[s.ten][selP.cung] && <p className="mt-1 mb-0 leading-relaxed"><span className="text-gold font-semibold">Tại cung {selP.cung}:</span> {SAO_CUNG[s.ten][selP.cung]}</p>}
                     {s.hoa && <p className="note mt-0.5 mb-0">↳ {TU_HOA_NGHIA[s.hoa]}</p>}
                   </div>
                 ))}
@@ -280,7 +295,7 @@ export default function LaSoTuVi() {
 
       <section className="wrap py-8">
         <div className="disclaimer max-w-[900px] mx-auto">
-          <b>Dữ kiện &amp; diễn giải.</b> Việc <b>an sao</b> (xác định Mệnh/Thân, Cục, vị trí 14 chính tinh, Tứ Hóa, lục cát – lục sát, đại hạn) là <b>thuật toán cổ điển tất định</b>, kiểm chứng được — đã đối chiếu khớp nhiều nguồn và các cách đồng cung kinh điển. Phần <b>ý nghĩa sao và cung</b> là <b>diễn giải truyền thống, mang tính tham khảo</b>, không phải lời tiên đoán chắc chắn; một lá số đầy đủ cần luận tổng hòa cả tam phương tứ chính, không nên đọc rời từng sao. Thuật toán đối chiếu từ <a href="https://tracuutuvi.com/an-sao-tu-vi.html" target="_blank" rel="noopener">Tra Cứu Tử Vi</a>, <a href="https://tuvisaigon.vn/bai-1-an-menh-than-trong-tu-vi-dau-so.html" target="_blank" rel="noopener">Tử Vi Sài Gòn</a>; lịch âm <a href="https://www.informatik.uni-leipzig.de/~duc/amlich/" target="_blank" rel="noopener">Hồ Ngọc Đức</a>.
+          <b>Dữ kiện &amp; diễn giải.</b> Việc <b>an sao</b> (xác định Mệnh/Thân, Cục, vị trí 14 chính tinh, Tứ Hóa, lục cát – lục sát, đại hạn) là <b>thuật toán cổ điển tất định</b>, kiểm chứng được — đã đối chiếu khớp nhiều nguồn và các cách đồng cung kinh điển. Phần <b>ý nghĩa sao và cung</b> là <b>diễn giải truyền thống, mang tính tham khảo</b>, không phải lời tiên đoán chắc chắn; một lá số đầy đủ cần luận tổng hòa cả tam phương tứ chính, không nên đọc rời từng sao. Thuật toán đối chiếu từ <a href="https://tracuutuvi.com/an-sao-tu-vi.html" target="_blank" rel="noopener">Tra Cứu Tử Vi</a>, <a href="https://tuvisaigon.vn/bai-1-an-menh-than-trong-tu-vi-dau-so.html" target="_blank" rel="noopener">Tử Vi Sài Gòn</a>; lịch âm <a href="https://www.informatik.uni-leipzig.de/~duc/amlich/" target="_blank" rel="noopener">Hồ Ngọc Đức</a>. Xem hai người? Thử <a href="#/so-la-so">So đôi lá số</a>.
         </div>
       </section>
     </>

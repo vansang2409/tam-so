@@ -16,6 +16,24 @@
 - **Đổi dương→âm lịch (Hồ Ngọc Đức, UTC+7)**: ô ① Tra Can Chi nhập đủ ngày/tháng → tự tính đúng **năm âm lịch** cho Can Chi & Tam Tai (chuẩn ranh giới Tết), hiện ngày âm; ô Can Chi ngày cũng hiện âm lịch. Đã kiểm chứng mốc Tết 1990/2000/2020/2024/2025.
 - **Hiệu ứng**: sáu hào "rơi" so le khi gieo Kinh Dịch; lá Tarot "chia bài" so le khi rút. Thêm thẻ chia sẻ mạng xã hội (Open Graph).
 
+## ✅ 3.27–3.29 — Tóm tắt lá số · guard · highlight tam phương
+- v3.27 panel **Tóm tắt lá số** (Mệnh+cách+điểm sáng/lưu tâm+vận năm, khung trung tính) trên đầu lá số cho người mới.
+- v3.28 guard phòng thủ star() ở So đôi (audit gợi ý) — audit toàn các bổ sung v3.16→v3.27 SẠCH (stress 1.134 lá số, 0 lỗi).
+- v3.29 chọn 1 cung thì **3 cung hội chiếu (tam phương tứ chính) sáng nhẹ** — dạy nguyên tắc đọc cả tam phương. 123 mốc.
+
+## ✅ 3.26 — Thêm 3 cách cát kinh điển
+- detectCach + helper hasHoa: thêm **Tam kỳ gia hội** (Hóa Lộc+Quyền+Khoa hội Mệnh), **Song Lộc triều viên** (Hóa Lộc + Lộc Tồn), **Phủ Tướng triều viên** (Thiên Phủ + Thiên Tướng) — điều kiện rõ ràng, đã thử phát hiện đúng. Tổng 14 cách cục. 123 mốc.
+
+## ✅ 3.25 — Bản .txt lá số thành bản luận đầy đủ
+- Nút Tải .txt nay kèm **luận sao×cung** cho từng chính tinh trong mỗi cung (dùng SAO_CUNG) — bản tải về thành một bản đọc lá số thật sự, không chỉ liệt kê sao.
+- Mục độ sáng đầy đủ M/V/Đ/B/H: KẾT LUẬN giữ cấp Miếu (nguồn đồng thuận) — không dựng bảng 5 cấp 168 ô vì các phái mâu thuẫn, tránh bịa.
+
+## ✅ 3.24 — Trang "So đôi lá số" (Tử Vi, dữ kiện)
+- Trang mới `/so-la-so`: nhập 2 người → an sao 2 lá số, đối chiếu Mệnh (chi+chính tinh+cách cục), cung Phu Thê mỗi người, và quan hệ địa chi năm sinh (hopTuoiChi đã kiểm chứng). Khung trấn an rõ "KHÔNG phải kết luận hợp/không hợp; cần luận tổng hòa". Route+menu (11 trang)+sitemap+thẻ Home+deep-link+chia sẻ. Dựng trên thuật toán đã test nên an toàn. 123 mốc.
+
+## ✅ 3.22 — Ý nghĩa 14 chính tinh × 12 cung (168 luận điểm)
+- File `src/data/tuvi-saocung.js` (SAO_CUNG): mỗi chính tinh có luận riêng khi tọa mỗi cung — ghép cốt cách sao × lĩnh vực cung, tự biên soạn, gọn, gắn nhãn tham khảo. Panel chi tiết cung hiện "Tại cung X: ...". Test khóa đủ 168 không rỗng → **123 mốc**.
+
 ## ✅ 3.21 — Property sweep toàn engine + tải .txt lá số
 - Thêm nút **Tải .txt** trang Lá số: xuất toàn bộ 12 cung (sao + (M)/Hóa/độ sáng + đại hạn + Tràng Sinh) + cách cục + vận năm — lưu trữ/chia sẻ dạng văn bản.
 - Thêm sweep lịch âm/cung hoàng đạo/thần số học (~670 ngày) khóa bất biến (tháng 1–12, ngày 1–30; mọi ngày ra 1 cung; Life Path ∈ tập chuẩn, Personal Year 1–9). **npm test 122 mốc** — lưới an toàn hồi quy phủ cả 5 hệ.

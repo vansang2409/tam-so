@@ -7,6 +7,7 @@ const features = [
   { ic: '🔢', title: 'Thần số học', to: '/than-so-hoc', cta: 'Tính con số →', desc: 'Số Chủ Đạo, Vận Mệnh, Linh Hồn, Nhân Cách, Trưởng Thành, biểu đồ Lo Shu, nợ nghiệp, Đỉnh cao & Thử thách, năm/tháng/ngày cá nhân.' },
   { ic: '☯', title: 'Tử vi · Can Chi', to: '/tu-vi', cta: 'Tra Can Chi →', desc: 'Can Chi năm/ngày/giờ (tự quy đổi âm lịch), hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi.' },
   { ic: '☆', title: 'Lá số Tử Vi', to: '/la-so-tu-vi', cta: 'Lập lá số →', desc: 'An sao Tử Vi Đẩu Số: 12 cung, 14 chính tinh, Tứ Hóa, lục cát – lục sát, Cục và đại hạn — thuật toán cổ điển tất định.' },
+  { ic: '💞', title: 'So đôi lá số', to: '/so-la-so', cta: 'So hai lá số →', desc: 'Đặt hai lá số Tử Vi cạnh nhau: Mệnh, cung Phu Thê và quan hệ địa chi năm sinh — đối chiếu dữ kiện để cùng chiêm nghiệm.' },
   { ic: '♈', title: 'Cung hoàng đạo', to: '/cung-hoang-dao', cta: 'Xem cung →', desc: '12 cung phương Tây theo ngày sinh, tương hợp hai cung, màu/đá/số may mắn.' },
   { ic: '📖', title: 'Kinh Dịch', to: '/kinh-dich', cta: 'Gieo quẻ →', desc: 'Gieo quẻ ba đồng xu (hào động & quẻ biến), luận hào động, tra cứu đủ 64 quẻ Văn Vương.' },
   { ic: '💞', title: 'Tương hợp', to: '/tuong-hop', cta: 'Xem tương hợp →', desc: 'Ghép hai ngày sinh: tương hợp qua Số Chủ Đạo, Can Chi và cung hoàng đạo trong một trang.' }
