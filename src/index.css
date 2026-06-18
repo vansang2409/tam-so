@@ -133,3 +133,29 @@
   outline: 2px solid #d3a24e;
   outline-offset: 2px;
 }
+
+/* Ẩn các nút tăng/giảm mặc định của ô nhập số để giao diện gọn gàng hơn */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Thanh cuộn (scrollbar) tinh chỉnh theo tông màu vàng nâu của website */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(243, 232, 207, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(211, 162, 78, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(170, 135, 70, 0.7);
+}

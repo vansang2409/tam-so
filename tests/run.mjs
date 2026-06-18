@@ -234,5 +234,25 @@ delete global.window
   for (const st of stars14) for (const cu of cung12) { const t = TVSC[st] && TVSC[st][cu]; if (!t || t.length < 12) scOk = false; else tot++ }
   ok(scOk && tot === 168, "SAO_CUNG: đủ 168 luận điểm (14 sao × 12 cung), không rỗng")
 }
+{
+  const ds = TV.DO_SANG, LV = ['M', 'V', 'Đ', 'B', 'H']
+  const names14 = ["Tử Vi","Thiên Cơ","Thái Dương","Vũ Khúc","Thiên Đồng","Liêm Trinh","Thiên Phủ","Thái Âm","Tham Lang","Cự Môn","Thiên Tướng","Thiên Lương","Thất Sát","Phá Quân"]
+  eq(Object.keys(ds).length, 14, "DO_SANG: đủ 14 chính tinh")
+  let dsOk = true
+  for (const nm of names14) { const a = ds[nm]; if (!a || a.length !== 12 || a.some(x => !LV.includes(x))) dsOk = false }
+  ok(dsOk, "DO_SANG: mỗi sao đủ 12 cung, ký tự ∈ {M,V,Đ,B,H}")
+  ok(!ds['Tử Vi'].includes('H') && !ds['Thiên Phủ'].includes('H'), "Tử Vi & Thiên Phủ không có Hãm địa")
+  eq(ds['Thái Dương'][0], 'H', "Thái Dương tại Tý = Hãm (tracuutuvi)")
+  eq(ds['Thái Dương'][6], 'M', "Thái Dương tại Ngọ = Miếu")
+  eq(ds['Thái Âm'][6], 'H', "Thái Âm tại Ngọ = Hãm")
+  eq(ds['Thái Âm'][9], 'M', "Thái Âm tại Dậu = Miếu")
+  eq(ds['Phá Quân'][0], 'M', "Phá Quân tại Tý = Miếu")
+  eq(ds['Liêm Trinh'][6], 'V', "Liêm Trinh tại Ngọ = Vượng")
+  eq(ds['Tham Lang'][1], 'M', "Tham Lang tại Sửu = Miếu")
+  const ls = TV.anSao({ lunarDay: 15, lunarMonth: 4, year: 1958, hourRank: 6, gender: 'nam', viewYear: 2026 })
+  let hasDo = false
+  for (const p of ls.palaces) for (const st of p.sao) if (st.loai === 'chinh' && st.do) hasDo = true
+  ok(hasDo, "anSao: chính tinh được gắn st.do (độ sáng)")
+}
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

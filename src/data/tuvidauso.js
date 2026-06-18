@@ -183,6 +183,7 @@ export function anSao({ lunarDay, lunarMonth, year, hourRank, gender, viewYear }
   // 9f) Độ sáng Nhật–Nguyệt theo cung (phần rõ ràng & đồng thuận nhất; các sao khác có dị bản nên không gán)
   for (let c = 0; c < 12; c++) for (const st of stars[c]) {
     if (MIEU_POS[st.ten] && MIEU_POS[st.ten].includes(c)) st.mieu = true
+    if (DO_SANG[st.ten]) st.do = DO_SANG[st.ten][c]
     if (st.ten === 'Thái Dương') st.sang = [2, 3, 4, 5, 6, 7].includes(c) ? 'sáng' : 'tối'
     else if (st.ten === 'Thái Âm') st.sang = [9, 10, 11, 0, 1].includes(c) ? 'sáng' : ([3, 4, 5, 6, 7].includes(c) ? 'tối' : 'bình')
   }
@@ -356,4 +357,32 @@ const MIEU_POS = {
   'Thiên Đồng': [2, 8], 'Liêm Trinh': [4, 10], 'Thiên Phủ': [2, 8, 0, 6], 'Thái Âm': [9, 10, 11],
   'Tham Lang': [1, 7], 'Cự Môn': [3, 9], 'Thiên Tướng': [2, 8], 'Thiên Lương': [4, 6, 10],
   'Thất Sát': [2, 8, 0, 6], 'Phá Quân': [0, 6]
+}
+
+// Độ sáng đầy đủ 14 chính tinh × 12 cung (Miếu/Vượng/Đắc/Bình/Hãm) — index theo chi Tý0..Hợi11.
+// Nguồn: tracuutuvi.com (Gia Cát Trường Phong) — phái phổ biến; Miếu khớp 13/14 với MIEU_POS (HOROS),
+// riêng Tử Vi tại Tỵ lấp theo HOROS. CÓ DỊ BẢN giữa các phái → chỉ để tham khảo.
+export const DO_SANG = {
+  'Tử Vi':      ['B','Đ','M','B','V','M','M','Đ','M','B','V','B'],
+  'Thiên Cơ':   ['Đ','Đ','H','M','M','V','Đ','Đ','V','M','M','H'],
+  'Thái Dương': ['H','Đ','V','V','V','M','M','Đ','H','H','H','H'],
+  'Vũ Khúc':    ['V','M','V','Đ','M','H','V','M','V','Đ','M','H'],
+  'Thiên Đồng': ['V','H','M','Đ','H','Đ','H','H','M','H','H','Đ'],
+  'Liêm Trinh': ['V','Đ','V','H','M','H','V','Đ','V','H','M','H'],
+  'Thiên Phủ':  ['M','B','M','B','V','Đ','M','Đ','M','B','V','Đ'],
+  'Thái Âm':    ['V','Đ','H','H','H','H','H','Đ','V','M','M','M'],
+  'Tham Lang':  ['H','M','Đ','H','V','H','H','M','Đ','H','V','H'],
+  'Cự Môn':     ['V','H','V','M','H','H','V','H','Đ','M','H','Đ'],
+  'Thiên Tướng':['V','Đ','M','H','V','Đ','V','Đ','M','H','V','Đ'],
+  'Thiên Lương':['V','Đ','V','V','M','H','M','Đ','V','H','M','H'],
+  'Thất Sát':   ['M','Đ','M','H','H','V','M','Đ','M','H','H','V'],
+  'Phá Quân':   ['M','V','H','H','Đ','H','M','V','H','H','Đ','H']
+}
+export const DO_SANG_LABEL = { M:'Miếu', V:'Vượng', 'Đ':'Đắc', B:'Bình', H:'Hãm' }
+export const DO_SANG_NGHIA = {
+  M:'Miếu địa — sao về đúng nhà, rực rỡ và phát huy mạnh nhất.',
+  V:'Vượng địa — sao thịnh, sức tốt rõ.',
+  'Đ':'Đắc địa — sao hợp cung, phát huy khá.',
+  B:'Bình hòa — sao ở mức trung tính, không tỏ rõ tốt xấu.',
+  H:'Hãm địa — sao lạc nhà, sức yếu, cần cát tinh hỗ trợ (KHÔNG phải điềm xấu tất định).'
 }

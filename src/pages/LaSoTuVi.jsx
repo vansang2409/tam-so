@@ -3,19 +3,20 @@ import { useSearchParams } from 'react-router-dom'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { toPng } from 'html-to-image'
 import { solar2lunar } from '../data/lunar.js'
-import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI } from '../data/tuvidauso.js'
+import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI, DO_SANG_LABEL, DO_SANG_NGHIA } from '../data/tuvidauso.js'
 import { SAO_CUNG } from '../data/tuvi-saocung.js'
 
 // Vị trí 12 chi trên lá số 4×4 [cột, hàng] (1-indexed)
 const POS = { 5: [1, 1], 6: [2, 1], 7: [3, 1], 8: [4, 1], 4: [1, 2], 9: [4, 2], 3: [1, 3], 10: [4, 3], 2: [1, 4], 1: [2, 4], 0: [3, 4], 11: [4, 4] }
 const GIO_LABEL = ['Tý (23–1h)', 'Sửu (1–3h)', 'Dần (3–5h)', 'Mão (5–7h)', 'Thìn (7–9h)', 'Tỵ (9–11h)', 'Ngọ (11–13h)', 'Mùi (13–15h)', 'Thân (15–17h)', 'Dậu (17–19h)', 'Tuất (19–21h)', 'Hợi (21–23h)']
 const SAO_CLS = { chinh: 'text-cream font-semibold', cat: 'text-emerald-800', sat: 'text-rose-700', khac: 'text-muted' }
+const DO_CLS = { M:'bg-amber-300 text-amber-900', V:'bg-emerald-200 text-emerald-900', 'Đ':'bg-sky-200 text-sky-900', B:'bg-gray-200 text-gray-700', H:'bg-rose-100 text-rose-700' }
 const HOA_CLS = { 'Lộc': 'bg-emerald-700', 'Quyền': 'bg-amber-700', 'Khoa': 'bg-sky-700', 'Kỵ': 'bg-rose-700' }
 
 function StarLine({ s }) {
   return (
     <span className={'inline-flex items-center gap-0.5 mr-1.5 leading-tight ' + (SAO_CLS[s.loai] || '')}>
-      {s.ten}{s.mieu && <sup className="text-gold text-[.55rem] ml-0.5" title="Miếu (nhập miếu)">M</sup>}
+      {s.ten}{s.do && <sup className={'text-[.55rem] ml-0.5 px-0.5 rounded ' + (DO_CLS[s.do] || '')} title={(DO_SANG_LABEL[s.do]||'') + ' — ' + (DO_SANG_NGHIA[s.do]||'')}>{s.do}</sup>}
       {s.hoa && <sup className={'text-white text-[.55rem] px-1 rounded ' + (HOA_CLS[s.hoa] || 'bg-gray-600')}>{s.hoa}</sup>}
     </span>
   )
@@ -110,9 +111,9 @@ export default function LaSoTuVi() {
     L.push('', '— 12 CUNG —')
     const order = [...ls.palaces].sort((a, b) => ((a.chiIdx - ls.menhIdx + 12) % 12) - ((b.chiIdx - ls.menhIdx + 12) % 12))
     for (const p of order) {
-      const stars = p.sao.map(s => s.ten + (s.mieu ? '(M)' : '') + (s.hoa ? '(Hóa ' + s.hoa + ')' : '') + (s.sang ? '[' + s.sang + ']' : '')).join(', ') || 'vô chính diệu'
+      const stars = p.sao.map(s => s.ten + (s.do ? '(' + s.do + ')' : '') + (s.hoa ? '(Hóa ' + s.hoa + ')' : '') + (s.sang ? '[' + s.sang + ']' : '')).join(', ') || 'vô chính diệu'
       L.push('• ' + p.cung + ' (' + p.chi + ')' + (p.isMenh ? ' ★Mệnh' : '') + (p.isThan ? ' ◆Thân' : '') + ': ' + stars + (p.daihan ? ' | ĐH ' + p.daihan.from + '–' + p.daihan.to + 't' : '') + (p.trangSinh ? ' | ' + p.trangSinh : ''))
-      for (const s of p.sao.filter(x => x.loai === 'chinh')) { const luan = SAO_CUNG[s.ten] && SAO_CUNG[s.ten][p.cung]; if (luan) L.push('    ↳ ' + s.ten + (s.mieu ? ' (M)' : '') + ': ' + luan) }
+      for (const s of p.sao.filter(x => x.loai === 'chinh')) { const luan = SAO_CUNG[s.ten] && SAO_CUNG[s.ten][p.cung]; if (luan) L.push('    ↳ ' + s.ten + (s.do ? ' (' + DO_SANG_LABEL[s.do] + ')' : '') + ': ' + luan) }
     }
     if (ls.cachCuc && ls.cachCuc.length) { L.push('', '— CÁCH CỤC NỔI BẬT —'); ls.cachCuc.forEach(c => L.push('• ' + c.ten + ': ' + c.luan)) }
     if (ls.van) L.push('', '— VẬN NĂM ' + ls.van.year + ' (~' + ls.van.age + ' tuổi âm) —', 'Đại hạn: cung ' + ls.palaces[ls.van.daiHanChi].cung + ' (' + ls.palaces[ls.van.daiHanChi].chi + ') · Tiểu hạn: ' + ls.palaces[ls.van.tieuHanChi].chi + ' · Lưu niên: ' + ls.palaces[ls.van.luuNienChi].chi)
@@ -197,7 +198,7 @@ export default function LaSoTuVi() {
                   </div>
                 </div>
               </div>
-              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; <sup className="text-gold">M</sup> = chính tinh nhập Miếu (sáng mạnh). Khi chọn một cung, <span className="text-gold">ba cung hội chiếu</span> (tam phương tứ chính) sẽ sáng nhẹ — nên đọc cùng nhau.</p>
+              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; các ký hiệu <sup className="bg-amber-300 text-amber-900 text-[.55rem] px-0.5 rounded">M</sup>, <sup className="bg-emerald-200 text-emerald-900 text-[.55rem] px-0.5 rounded">V</sup>, <sup className="bg-sky-200 text-sky-900 text-[.55rem] px-0.5 rounded">Đ</sup>, <sup className="bg-gray-200 text-gray-700 text-[.55rem] px-0.5 rounded">B</sup>, <sup className="bg-rose-100 text-rose-700 text-[.55rem] px-0.5 rounded">H</sup> = độ sáng chính tinh (Miếu, Vượng, Đắc, Bình, Hãm). Khi chọn một cung, <span className="text-gold">ba cung hội chiếu</span> (tam phương tứ chính) sẽ sáng nhẹ — nên đọc cùng nhau.</p>
             </div>
           </section>
 
@@ -250,12 +251,13 @@ export default function LaSoTuVi() {
                   <span className="text-muted">tại {selP.chi}{selP.isMenh ? ' · cung Mệnh' : ''}{selP.isThan ? ' · cung Thân' : ''}{selP.daihan ? ` · đại hạn ${selP.daihan.from}–${selP.daihan.to} tuổi` : ''}</span>
                 </div>
                 <p className="note mt-1 mb-3">{CUNG_NGHIA[selP.cung]}</p>
+                <p className="note mt-0 mb-3 text-[.7rem]">Độ sáng chính tinh: <b>M</b> Miếu · <b>V</b> Vượng · <b>Đ</b> Đắc · <b>B</b> Bình · <b>H</b> Hãm (sao yếu, cần cát tinh hỗ trợ — không phải điềm xấu tất định). Theo phái phổ biến, có dị bản.</p>
                 {selP.sao.length === 0 && <p className="m-0">Cung này <b>vô chính diệu</b> (không có chính tinh) — theo truyền thống thường mượn sao ở cung đối diện để luận, và tính cách dễ uyển chuyển theo hoàn cảnh.</p>}
                 {selP.sao.filter(s => s.loai === 'chinh').map((s, i) => (
                   <div key={i} className="mb-3">
                     <div className="flex items-center gap-2"><span className="text-cream font-semibold text-[1.05rem]">{s.ten}</span>
                       <span className="note">{CHINH_TINH[s.ten] && CHINH_TINH[s.ten].tom}</span>
-                      {s.mieu && <span className="text-[.62rem] px-1.5 py-0.5 rounded bg-amber-300 text-amber-900 font-semibold" title="Nhập miếu — sao phát huy mạnh nhất">Miếu (M)</span>}
+                      {s.do && <span className={'text-[.62rem] px-1.5 py-0.5 rounded font-semibold ' + (DO_CLS[s.do] || '')} title={DO_SANG_NGHIA[s.do] || ''}>{DO_SANG_LABEL[s.do]} ({s.do})</span>}
                       {s.sang && <span className={'text-[.62rem] px-1.5 py-0.5 rounded ' + (s.sang === 'sáng' ? 'bg-amber-200 text-amber-900' : s.sang === 'tối' ? 'bg-slate-300 text-slate-700' : 'bg-gray-200 text-gray-700')}>{s.sang === 'sáng' ? '☀ Sáng' : s.sang === 'tối' ? '☾ Tối' : 'Bình'}</span>}
                       {s.hoa && <span className={'text-white text-[.62rem] px-1.5 py-0.5 rounded ' + (HOA_CLS[s.hoa] || 'bg-gray-600')}>Hóa {s.hoa}</span>}
                     </div>
