@@ -5,8 +5,9 @@ import { toPng } from 'html-to-image'
 import { computeLifePath, computeNameNumbers, personalYear, PERSONAL_YEAR, NUMEROLOGY, pinnacles } from '../data/numerology.js'
 import { tinhCanChi, cungPhi, dayCanChi, hourCanChi, saoHan, hopTuoiChi, DIA_CHI } from '../data/tuvi.js'
 import { getZodiac, LUCKY, decanOf } from '../data/zodiac.js'
-import { TAROT_CARDS, cardOfDay } from '../data/tarot.js'
+import { TAROT_CARDS, cardOfDay, birthCards } from '../data/tarot.js'
 import { solar2lunar } from '../data/lunar.js'
+import { anSao, hourToRank } from '../data/tuvidauso.js'
 import { buildReport } from '../data/report.js'
 
 const CUR = new Date()
@@ -18,15 +19,6 @@ function hopKhacLine(chi) {
   return `Tuổi hợp/khắc — Tam hợp: ${g['Tam hợp'].join(', ') || '—'}; Lục hợp: ${g['Lục hợp'].join(', ') || '—'}; Lục xung: ${g['Lục xung'].join(', ') || '—'}; Tứ hành xung: ${g['Tứ hành xung'].join(', ') || '—'}.`
 }
 
-function birthCards(d, m, y) {
-  const sd = n => ('' + n).split('').reduce((a, b) => a + +b, 0)
-  let t = d + m + y; while (t > 21) t = sd(t)
-  let t2 = t; while (t2 > 9) t2 = sd(t2)
-  const c1 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t)
-  const c2 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t2)
-  return t === t2 ? [c1] : [c1, c2]
-}
-
 function compute(name, dd, mm, yy, gender, hour, topic, question) {
   const al = solar2lunar(dd, mm, yy)
   const lp = computeLifePath(dd, mm, yy)
@@ -36,6 +28,9 @@ function compute(name, dd, mm, yy, gender, hour, topic, question) {
   const hourCC = (hour !== '' && hour != null && !isNaN(+hour) && +hour >= 0 && +hour <= 23) ? hourCanChi(dayCanChi(yy, mm, dd).canIdx, +hour) : null
   const nowL = solar2lunar(CUR.getDate(), CUR.getMonth() + 1, CUR.getFullYear()).year
   const sao = saoHan(nowL - al.year + 1, gender)
+  const laso = (hour !== '' && hour != null && !isNaN(+hour) && +hour >= 0 && +hour <= 23) ? anSao({ lunarDay: al.day, lunarMonth: al.month, year: al.year, hourRank: hourToRank(+hour), gender }) : null
+  let menhStars = ''
+  if (laso) { const ms = laso.palaces[laso.menhIdx].sao.filter(s => s.loai === 'chinh').map(s => s.ten); menhStars = ms.join(', ') || 'Vô chính diệu' }
   const base = {
     name, lp, nn: name && name.trim() ? computeNameNumbers(name) : null,
     canChi: tinhCanChi(al.year), zodiac: getZodiac(dd, mm), birth: birthCards(dd, mm, yy),
@@ -44,6 +39,7 @@ function compute(name, dd, mm, yy, gender, hour, topic, question) {
     noHour: hour == null || hour === '' || isNaN(+hour), hourCC, sao
   }
   base.report = buildReport(base, cardOfDay())
+  base.laso = laso; base.menhStars = menhStars
   return base
 }
 
@@ -216,6 +212,14 @@ export default function Profile() {
                     <div className="mt-1"><span className="badge badge-gold">{res.cp.menhTrach}</span></div>
                     <div className="note mt-2">Hướng tốt: {res.cp.good.map(x => x.dir).join(', ')}</div>
                   </Card>
+                  {res.laso && (
+                    <Card to={'/la-so-tu-vi?' + new URLSearchParams({ d, m, y, h: String(hourToRank(+res.hour)), g }).toString()} label="Lá số Tử Vi (Mệnh)">
+                      <div className="font-serif text-[1.4rem]">Mệnh tại {res.laso.menhChi}</div>
+                      <div className="mt-1 leading-snug"><b className="text-cream">{res.menhStars}</b></div>
+                      <div className="note mt-1">Cục {res.laso.cuc.ten} · Thân cư {res.laso.thanCu}</div>
+                      <div className="note mt-0.5">Cách cục: <b className="text-cream">{res.laso.menhCach.ten}</b></div>
+                    </Card>
+                  )}
                   <Card to="/tu-vi" label="Tuổi hợp / khắc">
                     {(() => {
                       const me = res.canChi.chi

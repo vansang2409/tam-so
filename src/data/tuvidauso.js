@@ -33,10 +33,12 @@ const CUC_HANH = { 2: 'Thủy', 3: 'Mộc', 4: 'Kim', 5: 'Thổ', 6: 'Hỏa' }
 
 /* Vị trí cố định theo Can (chỉ số chi) */
 const LOC_TON = [2, 3, 5, 6, 5, 6, 8, 9, 11, 0]        // Giáp..Quý
+// Khôi–Việt theo phái "Giáp Mậu thị ngưu dương … Canh Tân phùng mã hổ" (Canh=Ngọ/Dần, khớp nguồn đã dẫn).
+// Có dị bản "Giáp Mậu Canh ngưu dương" cho Canh=Sửu/Mùi — chọn theo nguồn tracuutuvi.
 const THIEN_KHOI = [1, 0, 11, 11, 1, 0, 6, 6, 3, 3]
 const THIEN_VIET = [7, 8, 9, 9, 7, 8, 2, 2, 5, 5]
 
-/* Tứ Hóa theo Can năm: tên chính tinh nhận hóa */
+/* Tứ Hóa theo Can năm: tên chính tinh nhận hóa (khớp bảng tracuutuvi; riêng can Canh có dị bản giữa các phái). */
 const TU_HOA = [
   { Lộc: 'Liêm Trinh', Quyền: 'Phá Quân', Khoa: 'Vũ Khúc', Kỵ: 'Thái Dương' }, // Giáp
   { Lộc: 'Thiên Cơ', Quyền: 'Thiên Lương', Khoa: 'Tử Vi', Kỵ: 'Thái Âm' },     // Ất
@@ -60,7 +62,7 @@ const TAM_HOP_OF = chi => {
 
 /** An sao lá số. d,m,y = ngày/tháng/năm DƯƠNG; giải mã sang âm lịch bên trong.
  * hourRank 1..12 (1=Tý). gender 'nam'|'nu'. solar2lunar truyền từ ngoài để tránh vòng import. */
-export function anSao({ lunarDay, lunarMonth, year, hourRank, gender }) {
+export function anSao({ lunarDay, lunarMonth, year, hourRank, gender, viewYear }) {
   const yc = tinhCanChi(year)
   const canIdx = CAN.indexOf(yc.can)
   const chiIdxYear = CHI.indexOf(yc.chi)
@@ -151,6 +153,43 @@ export function anSao({ lunarDay, lunarMonth, year, hourRank, gender }) {
     daihan[chi] = { from: cucNum + i * 10, to: cucNum + i * 10 + 9 }
   }
 
+  // 9b) Vòng Tràng Sinh (theo Cục + chiều âm dương/giới)
+  const tsStart = { 2: 8, 5: 8, 6: 2, 3: 11, 4: 5 }[cucNum]
+  const tsDir = thuanHL ? 1 : -1
+  const trangSinh = Array(12)
+  for (let i = 0; i < 12; i++) trangSinh[mod(tsStart + tsDir * i, 12)] = TS_NAMES[i]
+
+  // 9c) Vận hạn năm xem (đại hạn / tiểu hạn / lưu niên Thái Tuế)
+  let van = null
+  if (viewYear) {
+    const age = viewYear - year + 1
+    let dhChi = menh
+    for (let c = 0; c < 12; c++) if (daihan[c] && age >= daihan[c].from && age <= daihan[c].to) dhChi = c
+    const thStart = { DAN_NGO_TUAT: 4, THAN_TY_THIN: 10, TY_DAU_SUU: 7, HOI_MAO_MUI: 1 }[grp]
+    const thDir = gender === 'nam' ? 1 : -1
+    van = { year: viewYear, age, daiHanChi: dhChi, tieuHanChi: mod(thStart + thDir * (age - 1), 12), luuNienChi: mod(viewYear - 4, 12) }
+  }
+
+  // 9d) Cách cục cung Mệnh (theo tinh hệ tam hợp)
+  const menhChinh = stars[menh].filter(s => s.loai === 'chinh').map(s => s.ten)
+  let cachKey = menhChinh.length ? CACH_STAR[menhChinh[0]] : null
+  let cachMuon = false
+  if (!cachKey) { const dch = stars[mod(menh + 6, 12)].filter(s => s.loai === 'chinh').map(s => s.ten); if (dch.length) { cachKey = CACH_STAR[dch[0]]; cachMuon = true } }
+  const menhCach = cachKey ? { ten: cachKey, muon: cachMuon, luan: CACH_CUC[cachKey] } : { ten: 'Vô chính diệu', muon: false, luan: CACH_CUC['Vô chính diệu'] }
+
+  // 9e) Tam phương tứ chính của Mệnh: Mệnh + Tài Bạch + Quan Lộc + Thiên Di
+  const tamPhuong = [menh, mod(menh + 8, 12), mod(menh + 4, 12), mod(menh + 6, 12)]
+
+  // 9f) Độ sáng Nhật–Nguyệt theo cung (phần rõ ràng & đồng thuận nhất; các sao khác có dị bản nên không gán)
+  for (let c = 0; c < 12; c++) for (const st of stars[c]) {
+    if (MIEU_POS[st.ten] && MIEU_POS[st.ten].includes(c)) st.mieu = true
+    if (st.ten === 'Thái Dương') st.sang = [2, 3, 4, 5, 6, 7].includes(c) ? 'sáng' : 'tối'
+    else if (st.ten === 'Thái Âm') st.sang = [9, 10, 11, 0, 1].includes(c) ? 'sáng' : ([3, 4, 5, 6, 7].includes(c) ? 'tối' : 'bình')
+  }
+
+  // 9g) Cách cục/tổ hợp nổi tiếng trong tam phương tứ chính của Mệnh
+  const cachCuc = detectCach(stars, menh, tamPhuong)
+
   // 10) Lắp 12 cung
   const palaces = Array.from({ length: 12 }, (_, chi) => {
     const cungIdx = mod(chi - menh, 12) // khoảng cách thuận từ Mệnh
@@ -159,6 +198,7 @@ export function anSao({ lunarDay, lunarMonth, year, hourRank, gender }) {
       cung: CUNG[cungIdx],
       isMenh: chi === menh, isThan: chi === than,
       sao: stars[chi],
+      trangSinh: trangSinh[chi],
       daihan: daihan[chi]
     }
   })
@@ -172,6 +212,7 @@ export function anSao({ lunarDay, lunarMonth, year, hourRank, gender }) {
     menhChi: CHI[menh], thanChi: CHI[than], menhIdx: menh, thanIdx: than,
     thanCu: CUNG[mod(than - menh, 12)],
     tuHoa: hoa,
+    van, menhCach, tamPhuong, cachCuc,
     palaces
   }
 }
@@ -241,4 +282,71 @@ export const CUNG_NGHIA = {
   'Tử Tức': 'Con cái & sáng tạo — con cái, học trò, "đứa con tinh thần", sức sinh sôi.',
   'Phu Thê': 'Hôn nhân — bạn đời, tình cảm lứa đôi, chuyện vợ chồng.',
   'Huynh Đệ': 'Anh chị em — anh em ruột thịt, bạn thân, cộng sự gần gũi.'
+}
+
+/* ===== Vòng Tràng Sinh + Cách cục (tinh hệ) ===== */
+const TS_NAMES = ['Trường Sinh', 'Mộc Dục', 'Quan Đới', 'Lâm Quan', 'Đế Vượng', 'Suy', 'Bệnh', 'Tử', 'Mộ', 'Tuyệt', 'Thai', 'Dưỡng']
+
+export const CACH_STAR = {
+  'Tử Vi': 'Tử Phủ Vũ Tướng', 'Thiên Phủ': 'Tử Phủ Vũ Tướng', 'Vũ Khúc': 'Tử Phủ Vũ Tướng', 'Thiên Tướng': 'Tử Phủ Vũ Tướng',
+  'Thất Sát': 'Sát Phá Lang', 'Phá Quân': 'Sát Phá Lang', 'Tham Lang': 'Sát Phá Lang', 'Liêm Trinh': 'Sát Phá Lang',
+  'Thiên Cơ': 'Cơ Nguyệt Đồng Lương', 'Thái Âm': 'Cơ Nguyệt Đồng Lương', 'Thiên Đồng': 'Cơ Nguyệt Đồng Lương', 'Thiên Lương': 'Cơ Nguyệt Đồng Lương',
+  'Thái Dương': 'Cự Nhật', 'Cự Môn': 'Cự Nhật'
+}
+
+export const CACH_CUC = {
+  'Tử Phủ Vũ Tướng': 'Nhóm sao của sự ỔN ĐỊNH & QUÝ HIỂN (Tử Vi · Thiên Phủ · Vũ Khúc · Thiên Tướng). Thường có tố chất lãnh đạo – quản trị, trọng danh dự và nề nếp; hợp con đường công danh, tổ chức, tài chính bài bản, đi đường dài vững vàng. Cần lưu ý: dễ bảo thủ, cầu toàn, ngại mạo hiểm.',
+  'Sát Phá Lang': 'Nhóm sao của BIẾN ĐỘNG & KHAI PHÁ (Thất Sát · Phá Quân · Tham Lang, cùng Liêm Trinh). Cá tính mạnh, dám nghĩ dám làm, thích chinh phục và đổi mới; đời nhiều thăng trầm rõ rệt. Hợp khởi nghiệp, khai phá, nghề cạnh tranh. Cần lưu ý: tiết chế nóng vội, giữ cho bền thành quả.',
+  'Cơ Nguyệt Đồng Lương': 'Nhóm sao của TRÍ TUỆ & ÔN HÒA (Thiên Cơ · Thái Âm · Thiên Đồng · Thiên Lương). Mềm mỏng, chu đáo, giỏi tính toán – chăm sóc – chuyên môn; hợp nghề tham mưu, giáo dục, y tế, hành chính, kế hoạch. Cần lưu ý: hơi cầu an, ngại va chạm, dễ nghĩ ngợi nhiều.',
+  'Cự Nhật': 'Nhóm sao của NGÔN LUẬN & DANH TIẾNG (Thái Dương · Cự Môn). Giỏi ăn nói, lý luận, lan tỏa và gây ảnh hưởng; hợp nghề dùng lời — giảng dạy, truyền thông, pháp lý, ngoại giao. Cần lưu ý: dễ vướng thị phi, nên giữ khẩu đức.',
+  'Vô chính diệu': 'Cung Mệnh không có chính tinh (vô chính diệu) — theo truyền thống thường mượn sao ở cung Thiên Di (đối diện) để luận. Tính cách dễ uyển chuyển, thích nghi theo hoàn cảnh và người chung quanh; hợp hay không tùy các sao hội họp.'
+}
+
+/* ===== Cách cục / tổ hợp sao nổi tiếng (phát hiện trong tam phương tứ chính của Mệnh) =====
+ * tot: true=cát, false=hung, null=trung tính. Điều kiện rõ ràng theo vị trí sao; luận tự biên, tham khảo. */
+const CACH_DEF = [
+  { ten: 'Tử Phủ đồng cung', tot: true, test: c => c.sameInTp('Tử Vi', 'Thiên Phủ'),
+    luan: 'Tử Vi (đế tinh) và Thiên Phủ (khố tinh) cùng tọa — cách quý hiển, vững vàng: có khí chất lãnh đạo lại biết tích lũy, giữ gìn; thuận đường công danh – quản trị nếu được phụ tinh trợ.' },
+  { ten: 'Lộc Mã giao trì', tot: true, test: c => c.sameInTp('Lộc Tồn', 'Thiên Mã'),
+    luan: 'Lộc Tồn gặp Thiên Mã — "lộc theo ngựa": tài lộc dồi dào và đến từ sự năng động, đi xa, giao thương; người bôn ba mà phát đạt.' },
+  { ten: 'Khôi Việt phụ củng', tot: true, test: c => c.inSet('Thiên Khôi') && c.inSet('Thiên Việt'),
+    luan: 'Thiên Khôi – Thiên Việt cùng chiếu Mệnh — cách quý nhân: hay được người trên nâng đỡ, gặp may đúng lúc, thuận thi cử – công danh.' },
+  { ten: 'Tả Hữu đồng củng', tot: true, test: c => c.inSet('Tả Phù') && c.inSet('Hữu Bật'),
+    luan: 'Tả Phù – Hữu Bật trợ Mệnh — làm việc có vây cánh, được người tin cẩn giúp sức; hợp vai trò tổ chức, lãnh đạo tập thể.' },
+  { ten: 'Xương Khúc hội Mệnh', tot: true, test: c => c.inSet('Văn Xương') && c.inSet('Văn Khúc'),
+    luan: 'Văn Xương – Văn Khúc chiếu Mệnh — văn tài, học hành thi cử thuận, đầu óc tinh tế, khéo chữ nghĩa và nghệ thuật.' },
+  { ten: 'Nhật Nguyệt (âm dương cùng chiếu)', test: c => c.inSet('Thái Dương') && c.inSet('Thái Âm'),
+    tot: c => (c.brightOf('Thái Dương') === 'sáng' && c.brightOf('Thái Âm') === 'sáng') ? true : null,
+    luan: c => { const ds = c.brightOf('Thái Dương') === 'sáng', as = c.brightOf('Thái Âm') === 'sáng'; return 'Thái Dương và Thái Âm cùng hội chiếu Mệnh — âm dương điều hòa. ' + (ds && as ? 'Cả hai đều SÁNG (cách Nhật Nguyệt tịnh minh): tâm tính quang minh, trí tuệ và danh tiếng dễ rạng rỡ.' : (!ds && !as ? 'Cả hai đang ở thế tối (hãm) — ánh sáng bị che, nên trông cậy thêm cát tinh phù trợ và sự bền bỉ.' : 'Một sáng một tối — cương nhu xen kẽ; phát huy tốt hơn khi để sao đang sáng dẫn dắt.')) } },
+  { ten: 'Tham Hỏa / Tham Linh', tot: true, test: c => c.sameInTp('Tham Lang', 'Hỏa Tinh') || c.sameInTp('Tham Lang', 'Linh Tinh'),
+    luan: 'Tham Lang gặp Hỏa Tinh (hoặc Linh Tinh) đồng cung — cách "bạo phát": dễ có cơ hội phát nhanh về tài lộc/danh tiếng, hợp khởi nghiệp, nghề cạnh tranh; song cần giữ cho bền.' },
+  { ten: 'Cơ Cự đồng cung', tot: null, test: c => c.sameInTp('Thiên Cơ', 'Cự Môn'),
+    luan: 'Thiên Cơ – Cự Môn cùng tọa (thường ở Mão/Dậu) — khẩu tài và mưu trí nổi bật; hợp nghề dùng lời, nghiên cứu, phân tích. Lưu ý dễ vướng thị phi, nên giữ lời.' },
+  { ten: 'Mã đầu đới kiếm', tot: null, test: c => c.menh === 6 && c.atMenh('Kình Dương'),
+    luan: 'Kình Dương cư Ngọ ngay tại Mệnh — "đầu ngựa đeo gươm": cương dũng, có uy, dễ lập công nơi gian khó/cạnh tranh; nhưng tính sắc bén, đời nhiều sóng gió, cần tiết chế nóng nảy.' },
+  { ten: 'Khốc Hư hội Mệnh', tot: null, test: c => c.inSet('Thiên Khốc') && c.inSet('Thiên Hư'),
+    luan: 'Thiên Khốc – Thiên Hư cùng chiếu — tâm hồn đa cảm, hay ưu tư; hợp người làm nghề cảm xúc, nghệ thuật, nghiên cứu. Lời nhắc: nuôi tinh thần tích cực, tránh bi quan.' },
+  { ten: 'Linh Xương Đà Vũ', tot: false, test: c => c.inSet('Linh Tinh') && c.inSet('Văn Xương') && c.inSet('Đà La') && c.inSet('Vũ Khúc'),
+    luan: 'Tổ hợp Linh Tinh – Văn Xương – Đà La – Vũ Khúc cùng hội — cổ nhân xem là cách hung, dễ gặp trắc trở bất ngờ. Đây chỉ là lời nhắc thận trọng, KHÔNG phải điềm gở: hãy cẩn trọng quyết định lớn và giữ an toàn.' }
+]
+
+function detectCach(stars, menh, tp) {
+  const inSet = name => tp.some(c => stars[c].some(s => s.ten === name))
+  const sameInTp = (a, b) => tp.some(c => stars[c].some(s => s.ten === a) && stars[c].some(s => s.ten === b))
+  const atMenh = name => stars[menh].some(s => s.ten === name)
+  const brightOf = name => { for (const c of tp) { const st = stars[c].find(s => s.ten === name); if (st) return st.sang || null } return null }
+  const ctx = { inSet, sameInTp, atMenh, brightOf, menh }
+  const out = []
+  for (const k of CACH_DEF) { try { if (k.test(ctx)) out.push({ ten: k.ten, tot: typeof k.tot === 'function' ? k.tot(ctx) : k.tot, luan: typeof k.luan === 'function' ? k.luan(ctx) : k.luan }) } catch (_) { } }
+  return out
+}
+
+/* Vị trí MIẾU (nhập miếu) của 14 chính tinh — chỉ số chi Tý=0..Hợi=11.
+ * Nguồn: HOROS (horos.vn) — phần Miếu rõ ràng & đồng thuận; Thiên Lương đối chiếu thêm.
+ * Chỉ gắn cờ "miếu" (cấp sáng nhất); bảng đủ Miếu/Vượng/Đắc/Bình/Hãm có dị bản nên không suy diễn. */
+const MIEU_POS = {
+  'Tử Vi': [5, 6, 2, 8], 'Thiên Cơ': [4, 10, 3, 9], 'Thái Dương': [5, 6], 'Vũ Khúc': [4, 10, 1, 7],
+  'Thiên Đồng': [2, 8], 'Liêm Trinh': [4, 10], 'Thiên Phủ': [2, 8, 0, 6], 'Thái Âm': [9, 10, 11],
+  'Tham Lang': [1, 7], 'Cự Môn': [3, 9], 'Thiên Tướng': [2, 8], 'Thiên Lương': [4, 6, 10],
+  'Thất Sát': [2, 8, 0, 6], 'Phá Quân': [0, 6]
 }

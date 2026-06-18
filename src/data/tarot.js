@@ -432,3 +432,13 @@ const MINOR_ASTRO = {
   'Tiền 8': 'Mặt Trời (Sun) trong Xử Nữ', 'Tiền 9': 'Kim tinh (Venus) trong Xử Nữ', 'Tiền 10': 'Thủy tinh (Mercury) trong Xử Nữ'
 }
 TAROT_CARDS.forEach(c => { if (c.arcana !== 'major') { const k = MINOR_ASTRO[c.suit + ' ' + c.roman]; if (k) c.astro = k } })
+
+/* Lá Tarot chủ đạo theo ngày sinh (rút gọn tổng ngày+tháng+năm về Ẩn Chính). */
+export function birthCards(d, m, y) {
+  const sd = n => String(n).split('').reduce((a, b) => a + +b, 0)
+  let t = d + m + y; while (t > 21) t = sd(t)
+  let t2 = t; while (t2 > 9) t2 = sd(t2)
+  const c1 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t)
+  const c2 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t2)
+  return t === t2 ? [c1] : [c1, c2]
+}

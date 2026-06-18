@@ -16,6 +16,43 @@
 - **Đổi dương→âm lịch (Hồ Ngọc Đức, UTC+7)**: ô ① Tra Can Chi nhập đủ ngày/tháng → tự tính đúng **năm âm lịch** cho Can Chi & Tam Tai (chuẩn ranh giới Tết), hiện ngày âm; ô Can Chi ngày cũng hiện âm lịch. Đã kiểm chứng mốc Tết 1990/2000/2020/2024/2025.
 - **Hiệu ứng**: sáu hào "rơi" so le khi gieo Kinh Dịch; lá Tarot "chia bài" so le khi rút. Thêm thẻ chia sẻ mạng xã hội (Open Graph).
 
+## ✅ 3.21 — Property sweep toàn engine + tải .txt lá số
+- Thêm nút **Tải .txt** trang Lá số: xuất toàn bộ 12 cung (sao + (M)/Hóa/độ sáng + đại hạn + Tràng Sinh) + cách cục + vận năm — lưu trữ/chia sẻ dạng văn bản.
+- Thêm sweep lịch âm/cung hoàng đạo/thần số học (~670 ngày) khóa bất biến (tháng 1–12, ngày 1–30; mọi ngày ra 1 cung; Life Path ∈ tập chuẩn, Personal Year 1–9). **npm test 122 mốc** — lưới an toàn hồi quy phủ cả 5 hệ.
+
+## ✅ 3.20 — Onboarding: nút "Xem thử lá số mẫu"
+- Trang Lá số thêm nút xem lá số mẫu (15/8/1990 giờ Ngọ) để người mới hình dung ngay, thay vì trang trống. 119 mốc.
+
+## ✅ 3.19 — In/PDF lá số rõ + mở rộng test engine
+- Print CSS: ô cung hiện rõ viền, in đúng màu badge (print-color-adjust), không cắt lưới; .panel tránh ngắt trang.
+- Test engine Tử Vi: **sweep 96 lá số** khóa bất biến (đủ 14 chính tinh mỗi sao 1 lần, 12 cung khác tên, đại hạn phủ 12 cung, cachCuc không ném lỗi, Tứ Hóa gắn đủ) → **119 mốc**. Sửa README còn ghi "83 mốc" + bổ sung tuvidauso.js/LaSoTuVi vào cấu trúc.
+
+## ✅ 3.18 — Cách Nhật Nguyệt luận theo độ sáng
+- detectCach cho luan/tot nhận hàm + helper brightOf; cách Nhật Nguyệt nay luận động: cả hai sáng = tịnh minh (cát), cả hai tối = bị che (cần phù trợ), một sáng một tối = trung tính — bám dữ liệu độ sáng đã kiểm chứng. 114 mốc.
+
+## ✅ 3.17 — Kiểm định toàn app + dọn dẹp (DRY)
+- **Audit độc lập toàn bộ** (subagent): 10 route khớp menu/sitemap/TITLES; deep-link đồng bộ (không còn ghép #/ thủ công); a11y (focus-trap Modal, aria nav, alt ảnh) đạt; tông giọng không phán chắc; **không hồi quy, không lỗi nghiêm trọng**.
+- **DRY**: gom `birthCards` (trùng ở Profile & Tarot) về `src/data/tarot.js` (export), 2 trang import dùng chung — tránh lệch về sau. **npm test 114 mốc**.
+
+## ✅ 3.16 — Tử Vi: nhập Miếu (M) cho 14 chính tinh
+- Cờ **(M) nhập Miếu** cho cả 14 chính tinh theo bảng miếu HOROS (Thiên Lương đối chiếu thêm) — ký hiệu (M) chuẩn trên lá số; bảng đủ M/V/Đ/B/H có dị bản nên CHỈ gắn cấp Miếu, không suy diễn.
+- UI: ô cung hiện (M) cạnh chính tinh; panel chi tiết hiện badge Miếu + sáng/tối Nhật–Nguyệt. Hồ sơ: thẻ Lá số hiện thêm cách cục Mệnh.
+- **npm test 114 mốc** (thêm: Thiên Đồng tại Thân nhập Miếu).
+
+## ✅ 3.14 — Tử Vi: cách cục + độ sáng + lưu/xuất (đợt 18h)
+- **Cách cục nổi tiếng**: engine `detectCach` phát hiện ~11 cách trong tam phương tứ chính (Tử Phủ đồng cung, Lộc Mã giao trì, Khôi Việt, Tả Hữu, Xương Khúc, Nhật Nguyệt, Tham Hỏa/Linh, Cơ Cự, Mã đầu đới kiếm, Khốc Hư, Linh Xương Đà Vũ) + luận tự biên; UI hiện panel cách cục (cát/hung/trung tính).
+- **Độ sáng Nhật/Nguyệt**: Thái Dương sáng Dần–Mùi/tối còn lại; Thái Âm sáng Dậu–Sửu/tối Mão–Mùi — hiện nhãn ☀/☾ ở sao & cung (phần chắc chắn nhất; bảng miếu/hãm 14 sao có dị bản nên không bịa).
+- **Lưu & xuất**: lịch sử lá số (localStorage tamso_laso_hist), tải ảnh PNG (html-to-image), In/Lưu PDF — ngang trang Hồ sơ.
+- **Polish**: ô cung tự giãn (minmax 96px) hết cắt sao; aria-label.
+- **Kiểm định subagent**: chạy thử 7.808 lá số, 0 lỗi; không lỗi nghiêm trọng. **npm test 113 mốc**.
+
+## ✅ 3.12 — Tử Vi sâu hơn + tích hợp + đánh bóng (4 hướng)
+- **Mobile**: lưới lá số 12 cung cuộn ngang/giữ tỉ lệ trên màn hẹp; thêm aria-label cho từng cung.
+- **Tích hợp Hồ sơ**: trang Hồ sơ tổng hợp hiện thẻ "Lá số Tử Vi (Mệnh)" — Mệnh/Thân, Cục, chính tinh tại Mệnh — khi có giờ sinh, link sang trang lá số.
+- **Tử Vi chuyên sâu**: vòng Tràng Sinh (12 sao theo Cục+âm dương), vận hạn năm nay (đại hạn/tiểu hạn/lưu niên Thái Tuế), cách cục Mệnh (4 tinh hệ) + tam phương tứ chính (Mệnh·Tài·Quan·Di).
+- **SEO/a11y**: FAQ Tử Vi (trang Nguồn + JSON-LD), nguồn an sao ở trang Nguồn, meta mô tả nhắc lá số.
+- **Kiểm định độc lập (subagent)**: không lỗi nghiêm trọng; điểm dị bản Khôi–Việt can Canh đã chú thích minh bạch. **npm test 110 mốc**.
+
 ## ✅ 3.10 — Tử Vi Đẩu Số: LÁ SỐ 12 CUNG (an sao đầy đủ)
 - Trang **Lá số Tử Vi** (`/la-so-tu-vi`): nhập ngày–giờ sinh → an sao lá số 12 cung (lưới 4×4).
 - Engine `src/data/tuvidauso.js` (tất định, đối chiếu nhiều nguồn): an Mệnh/Thân, định Cục, an Tử Vi + **14 chính tinh** (chùm Tử Vi nghịch + chùm Thiên Phủ thuận), **Tứ Hóa**, lục cát, lục sát, Lộc Tồn, Thiên Mã, đào hoa, **đại hạn**.

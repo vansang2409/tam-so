@@ -93,11 +93,13 @@
 @media print {
   header, footer, .btn, .field-input, .no-print { display: none !important; }
   body, body::before { background: #fff !important; }
-  body { color: #2a1c08 !important; }
-  .panel { box-shadow: none !important; border-color: #d8c79a !important; background: #fff !important; }
+  body { color: #2a1c08 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .panel { box-shadow: none !important; border-color: #d8c79a !important; background: #fff !important; page-break-inside: avoid; }
   .note, .text-muted { color: #6a5a3a !important; }
   a { color: #8a6a1e !important; text-decoration: none; }
   .gradient-text { color: #8a5a1e !important; -webkit-text-fill-color: #8a5a1e !important; }
+  button { border-color: #c2ad72 !important; }       /* ô cung lá số hiện rõ viền khi in */
+  .overflow-x-auto { overflow: visible !important; }   /* không cắt lưới khi in */
 }
 
 /* Tinh chỉnh mobile (≤520px) */

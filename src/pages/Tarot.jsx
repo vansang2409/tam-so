@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { shareUrl as routeShareUrl } from '../data/site.js'
-import { TAROT_CARDS, TAROT_SPREADS, drawCards } from '../data/tarot.js'
+import { TAROT_CARDS, TAROT_SPREADS, drawCards, birthCards } from '../data/tarot.js'
 import Modal from '../components/Modal.jsx'
 import CardImage from '../components/CardImage.jsx'
 import { Badge } from '../components/Disclaimer.jsx'
@@ -51,15 +51,6 @@ function spreadSummary(picks, positions, q) {
   const up = picks.filter(p => p.up).length
   const lean = up > n - up ? 'nghiêng về hướng thuận, tích cực' : up < n - up ? 'nghiêng về sự thận trọng, cần điều chỉnh' : 'khá cân bằng giữa thuận và nghịch'
   return (q ? 'Về câu hỏi “' + q + '”: ' : 'Cho trải bài này: ') + n + ' lá có ' + up + ' xuôi / ' + (n - up) + ' ngược — ' + lean + '. Đọc “' + positions[0] + '” như điểm khởi đầu và “' + positions[n - 1] + '” như xu hướng đang mở ra; các lá giữa là mạch nối. Đây là gợi ý để bạn tự chiêm nghiệm, không phải lời phán chắc chắn.'
-}
-
-function birthCards(d, m, y) {
-  const sd = n => String(n).split('').reduce((a, b) => a + +b, 0)
-  let t = d + m + y; while (t > 21) t = sd(t)
-  let t2 = t; while (t2 > 9) t2 = sd(t2)
-  const c1 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t)
-  const c2 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t2)
-  return t === t2 ? [c1] : [c1, c2]
 }
 
 const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches

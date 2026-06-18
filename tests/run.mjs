@@ -175,6 +175,56 @@ delete global.window
   ok(all14.every(t=>typeof mp[t]==="number"), "đủ 14 chính tinh, mỗi sao 1 cung")
   const ky=A.palaces.flatMap(p=>p.sao).find(s=>s.hoa==="Kỵ"); ok(ky&&ky.ten==="Thiên Cơ", "Mậu: Hóa Kỵ ở Thiên Cơ")
   ok(A.palaces.length===12 && A.palaces.filter(p=>p.daihan).length===12, "12 cung + đại hạn đủ")
+  const B = TV.anSao({ lunarDay:1, lunarMonth:4, year:2018, hourRank:7, gender:"nam", viewYear:2026 })
+  ok(B.palaces.filter(p=>p.trangSinh).length===12, "vòng Tràng Sinh đủ 12 sao")
+  ok(B.van && typeof B.van.daiHanChi==="number" && typeof B.van.tieuHanChi==="number" && typeof B.van.luuNienChi==="number", "vận hạn: đại/tiểu hạn + lưu niên")
+  ok(B.van.luuNienChi===6, "lưu niên 2026 = Ngọ (Bính Ngọ)")
+  ok(B.menhCach && B.menhCach.luan && B.menhCach.luan.length>20, "cách cục Mệnh có luận")
+  ok(Array.isArray(B.tamPhuong) && B.tamPhuong.length===4, "tam phương tứ chính 4 cung")
+  const C2 = TV.anSao({ lunarDay:10, lunarMonth:5, year:2020, hourRank:3, gender:"nam" })
+  const khoi = C2.palaces.find(p => p.sao.some(s => s.ten==="Thiên Khôi"))
+  ok(khoi && khoi.chiIdx===6, "Canh: Thiên Khôi tại Ngọ (phái Canh-Tân mã hổ)")
+  ok(Array.isArray(A.cachCuc), "cách cục trả mảng")
+  const tdA = A.palaces.flatMap(p => p.sao).find(s => s.ten==="Thái Dương")
+  ok(tdA && tdA.sang==="tối", "Mậu Tuất: Thái Dương (Tuất) = tối")
+  const taA = A.palaces.flatMap(p => p.sao).find(s => s.ten==="Thái Âm")
+  ok(taA && taA.sang==="tối", "Mậu Tuất: Thái Âm (Thìn) = tối")
+  const tdong = A.palaces.flatMap(p => p.sao).find(s => s.ten==="Thiên Đồng")
+  ok(tdong && tdong.mieu===true, "Mậu Tuất: Thiên Đồng (Thân) nhập Miếu")
+}
+{
+  let chinhOk = true, cungOk = true, dhOk = true, cachOk = true, hoaOk = true
+  const CT14 = ["Tử Vi","Thiên Cơ","Thái Dương","Vũ Khúc","Thiên Đồng","Liêm Trinh","Thiên Phủ","Thái Âm","Tham Lang","Cự Môn","Thiên Tướng","Thiên Lương","Thất Sát","Phá Quân"]
+  for (const yy of [1960,1972,1985,1990,1995,2000,2008,2018]) for (const mm of [1,4,7,11]) for (const dd of [3,17,29]) {
+    const a = TV.anSao({ lunarDay: dd, lunarMonth: mm, year: yy, hourRank: ((dd+mm)%12)+1, gender: dd%2?"nam":"nu", viewYear: 2026 })
+    const flat = a.palaces.flatMap(p => p.sao.filter(s=>s.loai==="chinh").map(s=>s.ten))
+    for (const t of CT14) if (flat.filter(x=>x===t).length !== 1) chinhOk = false
+    if (a.palaces.length !== 12 || new Set(a.palaces.map(p=>p.cung)).size !== 12) cungOk = false
+    if (a.palaces.filter(p=>p.daihan).length !== 12) dhOk = false
+    if (!Array.isArray(a.cachCuc) || !a.menhCach || !a.menhCach.luan) cachOk = false
+    const hoas = a.palaces.flatMap(p=>p.sao).filter(s=>s.hoa).map(s=>s.hoa)
+    if (!(hoas.includes("Lộc") && hoas.includes("Quyền") && hoas.includes("Khoa") && hoas.includes("Kỵ"))) hoaOk = false
+  }
+  ok(chinhOk, "sweep 96 lá số: đủ 14 chính tinh, mỗi sao đúng 1 lần")
+  ok(cungOk, "sweep: 12 cung khác tên, đủ bộ")
+  ok(dhOk, "sweep: đại hạn phủ 12 cung")
+  ok(cachOk, "sweep: cachCuc là mảng + menhCach có luận (không ném lỗi)")
+  ok(hoaOk, "sweep: Tứ Hóa Lộc/Quyền/Khoa/Kỵ đều gắn được vào sao đã an")
+}
+
+// === Property sweep các engine khác (chống hồi quy) ===
+{
+  let luOk = true, zoOk = true, nuOk = true
+  for (let y = 1990; y <= 1993; y++) for (let mo = 1; mo <= 12; mo++) for (let d = 1; d <= 28; d++) {
+    const al = L.solar2lunar(d, mo, y)
+    if (!(al.month >= 1 && al.month <= 12 && al.day >= 1 && al.day <= 30 && al.year >= 1989 && al.year <= 1993)) luOk = false
+    const z = Z.getZodiac(d, mo); if (!z || !z.ten) zoOk = false
+    const lp = N.computeLifePath(d, mo, y); if (![1,2,3,4,5,6,7,8,9,11,22,33].includes(lp.lp)) nuOk = false
+    const py = N.personalYear(d, mo, 2026); if (!(py >= 1 && py <= 9)) nuOk = false
+  }
+  ok(luOk, "sweep lịch âm 4 năm: tháng 1–12, ngày 1–30, năm hợp lệ")
+  ok(zoOk, "sweep cung hoàng đạo: mọi ngày ra 1 cung hợp lệ")
+  ok(nuOk, "sweep thần số học: Life Path ∈ tập chuẩn, Personal Year 1–9")
 }
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

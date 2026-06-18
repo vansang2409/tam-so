@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { shareUrl as routeShareUrl } from '../data/site.js'
+import { toPng } from 'html-to-image'
 import { solar2lunar } from '../data/lunar.js'
 import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI } from '../data/tuvidauso.js'
 
@@ -13,17 +14,17 @@ const HOA_CLS = { 'Lộc': 'bg-emerald-700', 'Quyền': 'bg-amber-700', 'Khoa': 
 function StarLine({ s }) {
   return (
     <span className={'inline-flex items-center gap-0.5 mr-1.5 leading-tight ' + (SAO_CLS[s.loai] || '')}>
-      {s.ten}
+      {s.ten}{s.mieu && <sup className="text-gold text-[.55rem] ml-0.5" title="Miếu (nhập miếu)">M</sup>}
       {s.hoa && <sup className={'text-white text-[.55rem] px-1 rounded ' + (HOA_CLS[s.hoa] || 'bg-gray-600')}>{s.hoa}</sup>}
     </span>
   )
 }
 
-function Cell({ p, active, onClick }) {
+function Cell({ p, active, onClick, van }) {
   const [col, row] = POS[p.chiIdx]
   return (
-    <button onClick={onClick} style={{ gridColumn: col, gridRow: row }}
-      className={'text-left border rounded-lg p-1.5 min-h-[92px] overflow-hidden transition ' +
+    <button onClick={onClick} aria-label={'Cung ' + p.cung + ' tại ' + p.chi} style={{ gridColumn: col, gridRow: row }}
+      className={'text-left border rounded-lg p-1.5 min-h-[96px] transition ' +
         (active ? 'border-gold bg-gold/10' : 'border-gold/20 hover:border-gold/50 bg-white/[.03]')}>
       <div className="flex items-center justify-between gap-1">
         <span className="text-gold font-semibold text-[.74rem] leading-none">{p.cung}</span>
@@ -32,11 +33,14 @@ function Cell({ p, active, onClick }) {
       <div className="flex gap-1 mt-0.5 flex-wrap">
         {p.isMenh && <span className="text-[.55rem] bg-gold text-[#211606] px-1 rounded font-bold">MỆNH</span>}
         {p.isThan && <span className="text-[.55rem] border border-gold text-gold px-1 rounded font-bold">THÂN</span>}
+        {van && van.daiHanChi === p.chiIdx && <span className="text-[.5rem] bg-amber-700 text-white px-1 rounded">ĐH</span>}
+        {van && van.tieuHanChi === p.chiIdx && <span className="text-[.5rem] bg-sky-700 text-white px-1 rounded">TH</span>}
+        {van && van.luuNienChi === p.chiIdx && <span className="text-[.5rem] bg-rose-700 text-white px-1 rounded">LN</span>}
       </div>
       <div className="text-[.72rem] mt-1 leading-snug">
         {p.sao.length ? p.sao.map((s, i) => <StarLine key={i} s={s} />) : <span className="text-muted/60 italic">(vô chính diệu)</span>}
       </div>
-      {p.daihan && <div className="text-[.58rem] text-muted mt-1">ĐH {p.daihan.from}–{p.daihan.to}t</div>}
+      <div className="text-[.56rem] text-muted mt-1 leading-tight">{p.daihan && <span>ĐH {p.daihan.from}–{p.daihan.to}t</span>}{p.trangSinh && <span>{p.daihan ? ' · ' : ''}{p.trangSinh}</span>}</div>
     </button>
   )
 }
@@ -45,20 +49,21 @@ export default function LaSoTuVi() {
   const [params, setParams] = useSearchParams()
   const [d, setD] = useState(''); const [m, setM] = useState(''); const [y, setY] = useState('')
   const [h, setH] = useState('7'); const [g, setG] = useState('nam')
-  const [ls, setLs] = useState(null); const [err, setErr] = useState(''); const [sel, setSel] = useState(0); const [copied, setCopied] = useState('')
+  const [ls, setLs] = useState(null); const [err, setErr] = useState(''); const [sel, setSel] = useState(0); const [copied, setCopied] = useState(''); const [saving, setSaving] = useState(false); const [hist, setHist] = useState([]); const shotRef = useRef(null)
 
   const compute = (dd, mm, yy, hh, gg) => {
     if (!(dd >= 1 && dd <= 31 && mm >= 1 && mm <= 12 && yy >= 1900 && yy <= 2100)) return null
     const al = solar2lunar(dd, mm, yy)
-    const r = anSao({ lunarDay: al.day, lunarMonth: al.month, year: al.year, hourRank: +hh, gender: gg })
+    const r = anSao({ lunarDay: al.day, lunarMonth: al.month, year: al.year, hourRank: +hh, gender: gg, viewYear: new Date().getFullYear() })
     return { ...r, solar: { d: dd, m: mm, y: yy }, lunar: al }
   }
   useEffect(() => {
+    try { setHist(JSON.parse(localStorage.getItem('tamso_laso_hist') || '[]')) } catch (_) { }
     const dd = +(params.get('d') || 0), mm = +(params.get('m') || 0), yy = +(params.get('y') || 0)
     const hh = +(params.get('h') || 0), gg = params.get('g') === 'nu' ? 'nu' : 'nam'
     if (dd && mm && yy) {
       setD(String(dd)); setM(String(mm)); setY(String(yy)); if (hh) setH(String(hh)); setG(gg)
-      const r = compute(dd, mm, yy, hh || 7, gg); if (r) { setLs(r); setSel(r.menhIdx) }
+      const r = compute(dd, mm, yy, hh || 7, gg); if (r) { setLs(r); setSel(r.menhIdx); saveHist({ d: String(dd), m: String(mm), y: String(yy), h: String(hh || 7), g: gg }) }
     } // eslint-disable-next-line
   }, [])
   const qs = () => new URLSearchParams({ d, m, y, h, g }).toString()
@@ -66,7 +71,52 @@ export default function LaSoTuVi() {
   const lap = () => {
     const r = compute(+d, +m, +y, +h, g)
     if (!r) { setErr('Nhập ngày/tháng/năm dương lịch hợp lệ (1900–2100).'); setLs(null); return }
-    setErr(''); setLs(r); setSel(r.menhIdx); setParams(new URLSearchParams(qs()))
+    setErr(''); setLs(r); setSel(r.menhIdx); setParams(new URLSearchParams(qs())); saveHist({ d, m, y, h, g })
+  }
+  const demo = () => {
+    setD('15'); setM('8'); setY('1990'); setH('7'); setG('nam')
+    const r = compute(15, 8, 1990, 7, 'nam')
+    if (r) { setErr(''); setLs(r); setSel(r.menhIdx); setParams(new URLSearchParams({ d: '15', m: '8', y: '1990', h: '7', g: 'nam' })); saveHist({ d: '15', m: '8', y: '1990', h: '7', g: 'nam' }) }
+  }
+  const saveHist = (e) => {
+    setHist(prev => {
+      const key = x => x.d + '-' + x.m + '-' + x.y + '-' + x.h + '-' + x.g
+      const next = [e, ...prev.filter(x => key(x) !== key(e))].slice(0, 6)
+      try { localStorage.setItem('tamso_laso_hist', JSON.stringify(next)) } catch (_) { }
+      return next
+    })
+  }
+  const loadLaso = (e) => {
+    setD(e.d); setM(e.m); setY(e.y); setH(e.h); setG(e.g)
+    const r = compute(+e.d, +e.m, +e.y, +e.h, e.g)
+    if (r) { setErr(''); setLs(r); setSel(r.menhIdx); setParams(new URLSearchParams({ d: e.d, m: e.m, y: e.y, h: e.h, g: e.g })) }
+    window.scrollTo(0, 0)
+  }
+  const savePng = () => {
+    if (!shotRef.current) return
+    setSaving(true)
+    toPng(shotRef.current, { pixelRatio: 2, backgroundColor: '#f5ecd6', cacheBust: true })
+      .then(u => { const a = document.createElement('a'); a.download = 'la-so-tu-vi-' + d + '-' + m + '-' + y + '.png'; a.href = u; a.click() })
+      .catch(() => alert('Không tạo được ảnh trên trình duyệt này. Bạn có thể dùng In / Lưu PDF.'))
+      .finally(() => setSaving(false))
+  }
+  const downloadTxt = () => {
+    if (!ls) return
+    const L = ['LÁ SỐ TỬ VI ĐẨU SỐ — TAM SỞ', '']
+    L.push(ls.nam + ' · ' + ls.amDuong + ' · Cục ' + ls.cuc.ten + ' · Bản mệnh ' + ls.menhHanh)
+    L.push('Sinh: DL ' + ls.solar.d + '/' + ls.solar.m + '/' + ls.solar.y + ' · ÂL ' + ls.lunar.day + '/' + ls.lunar.month + '/' + ls.lunar.year + ' · giờ ' + ls.gioChi)
+    L.push('Mệnh tại ' + ls.menhChi + ' · Thân cư ' + ls.thanCu + ' · Cách cục Mệnh: ' + ls.menhCach.ten)
+    L.push('', '— 12 CUNG —')
+    const order = [...ls.palaces].sort((a, b) => ((a.chiIdx - ls.menhIdx + 12) % 12) - ((b.chiIdx - ls.menhIdx + 12) % 12))
+    for (const p of order) {
+      const stars = p.sao.map(s => s.ten + (s.mieu ? '(M)' : '') + (s.hoa ? '(Hóa ' + s.hoa + ')' : '') + (s.sang ? '[' + s.sang + ']' : '')).join(', ') || 'vô chính diệu'
+      L.push('• ' + p.cung + ' (' + p.chi + ')' + (p.isMenh ? ' ★Mệnh' : '') + (p.isThan ? ' ◆Thân' : '') + ': ' + stars + (p.daihan ? ' | ĐH ' + p.daihan.from + '–' + p.daihan.to + 't' : '') + (p.trangSinh ? ' | ' + p.trangSinh : ''))
+    }
+    if (ls.cachCuc && ls.cachCuc.length) { L.push('', '— CÁCH CỤC NỔI BẬT —'); ls.cachCuc.forEach(c => L.push('• ' + c.ten + ': ' + c.luan)) }
+    if (ls.van) L.push('', '— VẬN NĂM ' + ls.van.year + ' (~' + ls.van.age + ' tuổi âm) —', 'Đại hạn: cung ' + ls.palaces[ls.van.daiHanChi].cung + ' (' + ls.palaces[ls.van.daiHanChi].chi + ') · Tiểu hạn: ' + ls.palaces[ls.van.tieuHanChi].chi + ' · Lưu niên: ' + ls.palaces[ls.van.luuNienChi].chi)
+    L.push('', 'An sao là thuật toán cổ điển tất định; phần luận ý nghĩa chỉ mang tính tham khảo, không phải lời tiên đoán. — Tam Sở')
+    const blob = new Blob([L.join('\n')], { type: 'text/plain;charset=utf-8' })
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'la-so-tu-vi-' + d + '-' + m + '-' + y + '.txt'; a.click(); URL.revokeObjectURL(a.href)
   }
   const doCopy = (txt, tag) => navigator.clipboard?.writeText(txt).then(() => { setCopied(tag); setTimeout(() => setCopied(''), 2000) })
   const menhStars = ls ? ls.palaces[ls.menhIdx].sao.filter(s => s.loai === 'chinh').map(s => s.ten).join(', ') || 'Vô chính diệu' : ''
@@ -96,9 +146,16 @@ export default function LaSoTuVi() {
                 <option value="nam">Nam</option><option value="nu">Nữ</option>
               </select></div>
             <button className="btn btn-primary" onClick={lap}>☆ Lập lá số</button>
+            <button className="btn btn-ghost" onClick={demo}>Xem thử lá số mẫu</button>
           </div>
           {err && <div className="disclaimer mt-4">{err}</div>}
           <p className="note text-center mt-3 mb-0">Giờ sinh ảnh hưởng lớn tới lá số — nếu không chắc, hãy chọn giờ gần đúng nhất. Năm nhập theo <b>dương lịch</b>, hệ thống tự quy đổi âm lịch (Hồ Ngọc Đức).</p>
+          {hist.length > 0 && (
+            <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
+              <span className="note">Gần đây:</span>
+              {hist.map((e, i) => <button key={i} onClick={() => loadLaso(e)} className="badge cursor-pointer hover:text-gold">{e.d}/{e.m}/{e.y}</button>)}
+            </div>
+          )}
         </div>
       </section>
 
@@ -113,9 +170,9 @@ export default function LaSoTuVi() {
               <span className="badge">Thân cư {ls.thanCu}</span>
               <span className="badge">DL {ls.solar.d}/{ls.solar.m}/{ls.solar.y} · ÂL {ls.lunar.day}/{ls.lunar.month}</span>
             </div>
-            <div className="panel p-2.5 md:p-3 max-w-[820px] mx-auto">
-              <div className="grid gap-1.5" style={{ gridTemplateColumns: 'repeat(4,1fr)', gridTemplateRows: 'repeat(4,1fr)' }}>
-                {ls.palaces.map(p => <Cell key={p.chiIdx} p={p} active={sel === p.chiIdx} onClick={() => setSel(p.chiIdx)} />)}
+            <div ref={shotRef} className="panel p-2.5 md:p-3 max-w-[820px] mx-auto overflow-x-auto"><p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem trọn lá số →</p>
+              <div className="grid gap-1.5 mx-auto" style={{ gridTemplateColumns: 'repeat(4,1fr)', gridTemplateRows: 'repeat(4, minmax(96px, auto))', minWidth: '468px' }}>
+                {ls.palaces.map(p => <Cell key={p.chiIdx} p={p} active={sel === p.chiIdx} onClick={() => setSel(p.chiIdx)} van={ls.van} />)}
                 <div style={{ gridColumn: '2 / 4', gridRow: '2 / 4' }} className="border border-gold/25 rounded-lg p-3 bg-gold/[.05] flex flex-col items-center justify-center text-center">
                   <div className="font-serif text-gold text-[1.05rem]">✦ Thiên bàn</div>
                   <div className="text-[.82rem] mt-1.5 leading-relaxed">
@@ -126,9 +183,50 @@ export default function LaSoTuVi() {
                   </div>
                 </div>
               </div>
-              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa.</p>
+              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; <sup className="text-gold">M</sup> = chính tinh nhập Miếu (sáng mạnh).</p>
             </div>
           </section>
+
+          <section className="wrap py-3">
+            <div className="grid md:grid-cols-2 gap-4 max-w-[820px] mx-auto">
+              <div className="panel p-[22px]">
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Cách cục cung Mệnh — {ls.menhCach.ten}</div>
+                <p className="m-0 leading-relaxed">{ls.menhCach.luan}</p>
+                {ls.menhCach.muon && <p className="note mt-1.5 mb-0">Mệnh vô chính diệu nên mượn sao cung Thiên Di (đối diện) để luận.</p>}
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mt-3 mb-1.5">Tam phương tứ chính của Mệnh</div>
+                <ul className="m-0 pl-0 list-none text-[.92rem] flex flex-col gap-0.5">
+                  {ls.tamPhuong.map((ci, i) => { const pp = ls.palaces[ci]; const ch = pp.sao.filter(s => s.loai === 'chinh').map(s => s.ten).join(', ') || 'vô chính diệu'; return <li key={i}><b className="text-cream">{pp.cung}</b> ({pp.chi}): {ch}</li> })}
+                </ul>
+                <p className="note mt-1.5 mb-0">Bốn cung này (Mệnh · Tài Bạch · Quan Lộc · Thiên Di) hội chiếu nhau, cùng quyết định cốt cách — nên luận tổng hòa, đừng đọc rời từng sao.</p>
+              </div>
+              {ls.van && (
+                <div className="panel p-[22px]">
+                  <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Vận hạn năm {ls.van.year} (~{ls.van.age} tuổi âm)</div>
+                  <VanRow label="Đại hạn (10 năm)" chi={ls.van.daiHanChi} ls={ls} cls="text-amber-800" />
+                  <VanRow label="Tiểu hạn (năm)" chi={ls.van.tieuHanChi} ls={ls} cls="text-sky-800" />
+                  <VanRow label="Lưu niên (Thái Tuế)" chi={ls.van.luuNienChi} ls={ls} cls="text-rose-700" />
+                  <p className="note mt-2 mb-0">Vận hạn cho biết "sân khấu" của giai đoạn — cung nào được chiếu thì lĩnh vực đó nổi lên. Chỉ để chiêm nghiệm, không phải điều chắc chắn.</p>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {ls.cachCuc && ls.cachCuc.length > 0 && (
+            <section className="wrap py-3">
+              <div className="panel p-[22px] max-w-[820px] mx-auto">
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-2">Cách cục / tổ hợp sao nổi bật</div>
+                <ul className="m-0 pl-0 list-none flex flex-col gap-2">
+                  {ls.cachCuc.map((c, i) => (
+                    <li key={i} className="leading-relaxed">
+                      <span className={'font-semibold ' + (c.tot === true ? 'text-emerald-800' : c.tot === false ? 'text-rose-700' : 'text-gold')}>{c.tot === true ? '✦ ' : c.tot === false ? '⚠ ' : '◇ '}{c.ten}</span>
+                      <span className="note"> — {c.luan}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="note mt-2 mb-0">Cách cục chỉ "thành" trọn vẹn khi xét cả độ sáng sao và toàn cục — đây là gợi ý tham khảo, không phải phán quyết.</p>
+              </div>
+            </section>
+          )}
 
           {selP && (
             <section className="wrap py-3">
@@ -143,6 +241,8 @@ export default function LaSoTuVi() {
                   <div key={i} className="mb-3">
                     <div className="flex items-center gap-2"><span className="text-cream font-semibold text-[1.05rem]">{s.ten}</span>
                       <span className="note">{CHINH_TINH[s.ten] && CHINH_TINH[s.ten].tom}</span>
+                      {s.mieu && <span className="text-[.62rem] px-1.5 py-0.5 rounded bg-amber-300 text-amber-900 font-semibold" title="Nhập miếu — sao phát huy mạnh nhất">Miếu (M)</span>}
+                      {s.sang && <span className={'text-[.62rem] px-1.5 py-0.5 rounded ' + (s.sang === 'sáng' ? 'bg-amber-200 text-amber-900' : s.sang === 'tối' ? 'bg-slate-300 text-slate-700' : 'bg-gray-200 text-gray-700')}>{s.sang === 'sáng' ? '☀ Sáng' : s.sang === 'tối' ? '☾ Tối' : 'Bình'}</span>}
                       {s.hoa && <span className={'text-white text-[.62rem] px-1.5 py-0.5 rounded ' + (HOA_CLS[s.hoa] || 'bg-gray-600')}>Hóa {s.hoa}</span>}
                     </div>
                     <p className="m-0 leading-relaxed">{CHINH_TINH[s.ten] && CHINH_TINH[s.ten].y}</p>
@@ -169,6 +269,9 @@ export default function LaSoTuVi() {
             <div className="flex gap-2 justify-center flex-wrap no-print">
               <button className="btn btn-ghost" onClick={() => doCopy(shareUrl(), 'link')}>{copied === 'link' ? '✓ Đã chép!' : '🔗 Sao chép liên kết'}</button>
               <button className="btn btn-ghost" onClick={() => doCopy(resultText(), 'text')}>{copied === 'text' ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <button className="btn btn-ghost" onClick={savePng} disabled={saving}>{saving ? '⏳ Đang tạo ảnh…' : '🖼️ Tải ảnh PNG'}</button>
+              <button className="btn btn-ghost" onClick={() => window.print()}>🖨️ In / Lưu PDF</button>
+              <button className="btn btn-ghost" onClick={downloadTxt}>📄 Tải .txt</button>
               <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl())} target="_blank" rel="noopener">📘 Chia sẻ</a>
             </div>
           </section>
@@ -182,6 +285,12 @@ export default function LaSoTuVi() {
       </section>
     </>
   )
+}
+
+function VanRow({ label, chi, ls, cls }) {
+  const p = ls.palaces[chi]
+  const ch = p.sao.filter(s => s.loai === 'chinh').map(s => s.ten).join(', ') || 'vô chính diệu'
+  return <div className="mb-1.5 leading-snug"><span className={'font-semibold ' + cls}>{label}:</span> cung <b className="text-cream">{p.cung}</b> tại {p.chi} — {ch}</div>
 }
 
 function Field({ label, value, set, ph, w = '120px' }) {
