@@ -55,9 +55,9 @@ export default function Home() {
             {streak > 1 && <> · <span className="text-gold font-semibold">đã ghé {streak} ngày liền ✦</span></>}
           </div>
         )}
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
-        <h1 className="gradient-text text-[clamp(2.3rem,5vw,3.7rem)] my-2.5">Năm ngả chiêm nghiệm,<br />một chốn dừng chân</h1>
-        <p className="text-muted text-[1.12rem] max-w-[700px] mx-auto mb-7">
+        <div className="text-gold text-kicker uppercase">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
+        <h1 className="gradient-text text-display my-3">Năm ngả chiêm nghiệm,<br />một chốn dừng chân</h1>
+        <p className="text-muted text-lead max-w-[700px] mx-auto mb-7">
           Tam Sở gom các hệ thống biểu tượng cổ xưa về cùng một nơi: lá bài Tarot, con số định mệnh, vòng Can Chi, cung hoàng đạo và quẻ Dịch.
           Công cụ để bạn soi chiếu bản thân — với nguồn dẫn rõ ràng và sự thành thật về ranh giới giữa <em>dữ kiện</em> và <em>diễn giải</em>.
         </p>
@@ -68,12 +68,12 @@ export default function Home() {
       </section>
 
       <section className="wrap pt-4 pb-2">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.22em] mb-3">Bạn muốn xem gì hôm nay?</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Bạn muốn xem gì hôm nay?</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[820px] mx-auto">
           {pillars.map(p => (
-            <Link key={p.to} to={p.to} className="panel p-6 text-center no-underline block transition hover:-translate-y-1 hover:border-gold/40">
+            <Link key={p.to} to={p.to} className="panel hover-lift p-6 text-center no-underline block hover:border-gold/40">
               <span className="block text-[2.4rem] mb-1">{p.ic}</span>
-              <h3 className="text-cream text-[1.15rem] mb-1">{p.title}</h3>
+              <h3 className="text-cream text-h3 mb-1">{p.title}</h3>
               <p className="text-muted text-[.9rem] m-0">{p.desc}</p>
             </Link>
           ))}
@@ -88,7 +88,7 @@ export default function Home() {
                 <div className="text-gold text-[.72rem] uppercase tracking-[.18em]">Tử vi hôm nay · {cungObj.sym} {cungObj.ten}</div>
                 <div className="text-amber-700 text-[.95rem]" title="Mức năng lượng (tham khảo)">{'★'.repeat(dh.nangLuong)}<span className="text-gray-300">{'★'.repeat(5 - dh.nangLuong)}</span></div>
               </div>
-              <p className="m-0 leading-relaxed">{dh.tongQuan}</p>
+              <p className="pull m-0">{dh.tongQuan}</p>
               <p className="note m-0 mt-1.5">💡 {dh.loiKhuyen}</p>
               <Link to={'/cung-hoang-dao/' + ZODIAC_SLUG[cungObj.en]} className="font-semibold inline-block mt-2">Xem đầy đủ tình cảm · công việc · tài chính →</Link>
             </>
@@ -109,14 +109,16 @@ export default function Home() {
         <p className="note text-center max-w-[640px] mx-auto m-0">✦ Lá bài, quẻ Dịch và con số của ngày làm mới mỗi sáng — ghé lại ngày mai để nhận điều mới, và giữ chuỗi ngày của bạn.</p>
       </section>
 
-      <section className="wrap py-9">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <section className="wrap py-12">
+        <p className="text-center text-gold text-kicker uppercase mb-8">Công cụ của Tam Sở</p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-9">
           {features.map(f => (
-            <div key={f.to} className="panel p-7 text-center transition hover:-translate-y-1.5 hover:border-gold/40">
-              <span className="block text-[2.6rem] mb-1.5">{f.ic}</span>
-              <h3 className="text-[1.3rem] mb-1.5">{f.title}</h3>
-              <p className="text-muted text-[.96rem]">{f.desc}</p>
-              <Link to={f.to} className="font-semibold">{f.cta}</Link>
+            <div key={f.to} className="group flex flex-col">
+              <span className="block text-[2rem] mb-2">{f.ic}</span>
+              <h3 className="text-h3 mb-1.5">{f.title}</h3>
+              <p className="text-muted text-[.95rem] mb-3">{f.desc}</p>
+              <Link to={f.to} className="font-semibold mt-auto inline-flex items-center gap-1 hover:gap-1.5 transition-all">{f.cta}</Link>
+              <hr className="rule mt-4" />
             </div>
           ))}
         </div>

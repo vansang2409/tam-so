@@ -163,9 +163,9 @@ ok(V.tinhCanChi(1984).tenCanChi === V.tinhCanChi(2044).tenCanChi, 'Can Chi lap l
 }
 
 // === site.js shareUrl (2 chế độ) ===
-global.window = { location: { protocol: 'https:', origin: 'https://vansang2409.github.io', pathname: '/tam-so/' } }
-eq(SITE.shareUrl('/tarot'), 'https://vansang2409.github.io/tam-so/tarot', 'shareUrl path-mode (http)')
-eq(SITE.shareUrl('/than-so-hoc', 'd=1&m=2'), 'https://vansang2409.github.io/tam-so/than-so-hoc?d=1&m=2', 'shareUrl path-mode co query')
+global.window = { location: { protocol: 'https:', origin: 'https://tam-so.vercel.app', pathname: '/' } }
+eq(SITE.shareUrl('/tarot'), 'https://tam-so.vercel.app/tarot', 'shareUrl path-mode (http)')
+eq(SITE.shareUrl('/than-so-hoc', 'd=1&m=2'), 'https://tam-so.vercel.app/than-so-hoc?d=1&m=2', 'shareUrl path-mode co query')
 global.window = { location: { protocol: 'file:', origin: 'null', pathname: '/C:/x/tam-so-test.html' } }
 ok(SITE.shareUrl('/tarot').includes('#/tarot') && !SITE.shareUrl('/tarot').includes('/tam-so/tarot'), 'shareUrl hash-mode khi file://')
 delete global.window
@@ -364,15 +364,15 @@ delete global.window
 
 // === SEO meta (seo.js builder + wiring usePageSeo trên 3 trang sâu) ===
 {
-  eq(SEO.absUrl('/'), 'https://vansang2409.github.io/tam-so/', 'absUrl / → gốc có dấu /')
-  eq(SEO.absUrl('/tarot/the-fool'), 'https://vansang2409.github.io/tam-so/tarot/the-fool', 'absUrl ghép path tuyệt đối')
-  eq(SEO.absUrl('tarot/x'), 'https://vansang2409.github.io/tam-so/tarot/x', 'absUrl tự thêm / khi thiếu')
-  eq(SEO.OG_IMAGE, 'https://vansang2409.github.io/tam-so/og.png', 'OG_IMAGE đúng')
+  eq(SEO.absUrl('/'), 'https://tam-so.vercel.app/', 'absUrl / → gốc có dấu /')
+  eq(SEO.absUrl('/tarot/the-fool'), 'https://tam-so.vercel.app/tarot/the-fool', 'absUrl ghép path tuyệt đối')
+  eq(SEO.absUrl('tarot/x'), 'https://tam-so.vercel.app/tarot/x', 'absUrl tự thêm / khi thiếu')
+  eq(SEO.OG_IMAGE, 'https://tam-so.vercel.app/og.png', 'OG_IMAGE đúng')
   const ld = SEO.breadcrumbLd([{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: 'The Fool' }])
   eq(ld['@type'], 'BreadcrumbList', 'breadcrumbLd loại BreadcrumbList')
   eq(ld.itemListElement.length, 3, 'breadcrumb 3 mục')
   eq(ld.itemListElement[0].position, 1, 'mục đầu position=1')
-  eq(ld.itemListElement[1].item, 'https://vansang2409.github.io/tam-so/tarot', 'mục có path → item URL tuyệt đối')
+  eq(ld.itemListElement[1].item, 'https://tam-so.vercel.app/tarot', 'mục có path → item URL tuyệt đối')
   ok(ld.itemListElement[2].item === undefined, 'mục cuối (trang hiện tại) KHÔNG có item')
   ok(JSON.stringify(SEO.breadcrumbLd(null)).includes('BreadcrumbList'), 'breadcrumbLd null không vỡ')
   const readSeo = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
@@ -571,7 +571,7 @@ delete global.window
 // === A02: og:image động (lá Tarot dùng ảnh RWS riêng) ===
 {
   ok(T.TAROT_CARDS.every(c => typeof T.cardImageFile(c) === 'string' && /\.(jpg|jpeg|png)$/i.test(T.cardImageFile(c))), 'cardImageFile: cả 78 lá có tên file ảnh hợp lệ')
-  eq(SEO.absUrl('/cards/Cups01.jpg'), 'https://vansang2409.github.io/tam-so/cards/Cups01.jpg', 'absUrl ghép /cards/ → URL tuyệt đối')
+  eq(SEO.absUrl('/cards/Cups01.jpg'), 'https://tam-so.vercel.app/cards/Cups01.jpg', 'absUrl ghép /cards/ → URL tuyệt đối')
   const useSeoSrc = readFileSync(new URL('../src/components/useSeo.js', import.meta.url), 'utf8')
   ok(useSeoSrc.includes('image || OG_IMAGE'), 'useSeo: dùng tham số image (fallback OG_IMAGE)')
   const tsrc = readFileSync(new URL('../src/pages/Tarot.jsx', import.meta.url), 'utf8')

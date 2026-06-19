@@ -76,6 +76,12 @@
   .disclaimer { background: rgba(196,118,72,.10); border: 1px solid rgba(196,118,72,.32); border-radius: 14px; padding: 18px 22px; color: theme('colors.muted'); font-size: .92rem; line-height: 1.7; }
   .disclaimer b { color: #7a4420; }
   .note { font-size: .9rem; color: #4d3c20; font-style: normal; line-height: 1.6; }
+
+  /* Hệ biên tập: đường kẻ mảnh, nhấc thẻ nhẹ & trích dẫn in nghiêng (thang chữ ở tailwind.config) */
+  .rule { height: 1px; background: rgba(60,46,24,.16); border: 0; margin: 0; }
+  .hover-lift { transition: transform .3s ease, box-shadow .3s ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: theme('boxShadow.lift'); }
+  .pull { font-family: theme('fontFamily.serif'); font-style: italic; font-size: 1.45rem; line-height: 1.42; color: #4a3a1e; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -111,6 +117,7 @@
   .panel { padding-left: 18px; padding-right: 18px; }
   .btn { padding: 12px 20px; }
   .big-number { font-size: 3.4rem; }
+  .pull { font-size: 1.2rem; }
   table.data { min-width: 420px; }
 }
 

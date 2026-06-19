@@ -2,7 +2,7 @@
 // Tách riêng để test bằng node. Dùng cho các trang nội dung sâu (cung hoàng đạo, lá
 // Tarot, số chủ đạo) giúp Google hiểu thứ bậc trang + có thể hiện breadcrumb rich result.
 
-export const SITE_ORIGIN = 'https://vansang2409.github.io/tam-so'
+export const SITE_ORIGIN = 'https://tam-so.vercel.app'
 export const OG_IMAGE = SITE_ORIGIN + '/og.png'
 
 // routePath kiểu '/cung-hoang-dao/bach-duong'; '/' (hoặc rỗng) → trang gốc có dấu '/'.
