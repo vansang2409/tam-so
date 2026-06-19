@@ -3,6 +3,7 @@
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
 ## Changelog theo version
+- **v3.55** — **A02** og:image động (CardPage dùng ảnh RWS của lá qua `absUrl`; `usePageSeo` nhận `image`) · **M05** Skeleton tải thống nhất (`Skeleton.jsx` + CardImage shimmer khi tải ảnh, object-contain không méo, giảm layout shift) · **C05** rà giọng: test quét >800 luận điểm chặn over-claim ("chắc chắn sẽ/nhất định sẽ/100% đúng"…) + mọi trang hệ có khung "tham khảo/chiêm nghiệm". **281 test pass** (+9).
 - **v3.54** — **C04**: trang Hợp tuổi `/hop-tuoi` + 12 trang `/hop-tuoi/:slug` (xếp 12 con giáp theo Tam hợp/Lục hợp/Lục xung/Tứ hành xung dùng `hopTuoiChi`; giọng tham khảo, không định đoạt quan hệ) + `HopTuoi.jsx`; meta+breadcrumb+sitemap (+13 URL ⇒ 139). **272 test pass** (+5).
 - **v3.53** — **C06 đợt 3**: làm dày 12 Số Chủ Đạo — thêm `src/data/numerologyDeep.js` (`NUM_DEEP`: tinhYeu/suNghiep/taiChinh/loiKhuyen cho 1–9, 11, 22, 33; giọng tham khảo) + render trên SoChuDaoPage. **267 test pass** (+7). Còn lại C06: đợt 4 — 168 sao×cung.
 - **v3.52** — **C06 đợt 2b**: làm dày 56 lá Tarot Ẩn Phụ — thêm `src/data/tarotDeepMinor.js` (ids 22–77: love/work/finance/advice, bám từ khóa sẵn có + chất tố) gộp vào `TAROT_DEEP`; bỏ guard arcana ở CardPage vì id toàn cục 0–77 duy nhất. **TRỌN 78 lá Tarot đã dày**. **260 test pass**. Còn lại C06: 12 Số Chủ Đạo → 168 sao×cung.

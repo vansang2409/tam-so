@@ -567,5 +567,38 @@ delete global.window
   ok(V.hopTuoiChi('Tý', 'Thân') === 'Tam hợp' && V.hopTuoiChi('Tý', 'Ngọ') === 'Lục xung', 'hopTuoiChi: Tý–Thân tam hợp, Tý–Ngọ lục xung (nền cho trang)')
 }
 
+// === A02: og:image động (lá Tarot dùng ảnh RWS riêng) ===
+{
+  ok(T.TAROT_CARDS.every(c => typeof T.cardImageFile(c) === 'string' && /\.(jpg|jpeg|png)$/i.test(T.cardImageFile(c))), 'cardImageFile: cả 78 lá có tên file ảnh hợp lệ')
+  eq(SEO.absUrl('/cards/Cups01.jpg'), 'https://vansang2409.github.io/tam-so/cards/Cups01.jpg', 'absUrl ghép /cards/ → URL tuyệt đối')
+  const useSeoSrc = readFileSync(new URL('../src/components/useSeo.js', import.meta.url), 'utf8')
+  ok(useSeoSrc.includes('image || OG_IMAGE'), 'useSeo: dùng tham số image (fallback OG_IMAGE)')
+  const tsrc = readFileSync(new URL('../src/pages/Tarot.jsx', import.meta.url), 'utf8')
+  ok(tsrc.includes("from '../data/seo.js'") && tsrc.includes("absUrl('/cards/' + cardImageFile(card))"), 'Tarot.jsx CardPage: og:image động từ ảnh lá')
+}
+
+// === M05: loading skeleton thống nhất ===
+{
+  ok(/export default function Skeleton/.test(readFileSync(new URL('../src/components/Skeleton.jsx', import.meta.url), 'utf8')), 'Skeleton.jsx: có export default')
+  const ci = readFileSync(new URL('../src/components/CardImage.jsx', import.meta.url), 'utf8')
+  ok(ci.includes("from './Skeleton.jsx'") && ci.includes('onLoad') && ci.includes('<Skeleton'), 'CardImage: dùng Skeleton + onLoad làm placeholder khi tải ảnh')
+}
+
+// === C05: rà giọng toàn site — không over-claim, luôn có khung tham khảo ===
+{
+  const texts = []
+  const eat = v => { if (typeof v === 'string') texts.push(v); else if (v && typeof v === 'object') Object.values(v).forEach(eat) }
+  eat(Z.ZODIAC_DEEP); eat(ZD.ZODIAC_EXTRA); eat(TD.TAROT_DEEP); eat(NDP.NUM_DEEP); eat(V.CONGIAP_LUAN); eat(TVSC)
+  for (const c of T.TAROT_CARDS) { eat(c.up); eat(c.rev) }
+  for (const k of Object.keys(N.NUMEROLOGY)) { const n = N.NUMEROLOGY[k]; eat(n.desc); eat(n.strengths); eat(n.watch) }
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|bảo đảm.{0,8}(đúng|trúng|chính xác)|chính xác 100|100%\s*(đúng|chính xác)|cam kết.{0,12}(đúng|chính xác)/i
+  const bad = texts.filter(t => overclaim.test(t))
+  ok(texts.length > 300, 'C05: gom đủ nhiều luận điểm để rà (' + texts.length + ')')
+  ok(bad.length === 0, 'C05: KHÔNG có câu over-claim/giật tít trong nội dung tự biên (' + (bad[0] || '') + ')')
+  const rd = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const framePages = ['pages/Tarot.jsx', 'pages/Zodiac.jsx', 'pages/Numerology.jsx', 'pages/ConGiap.jsx', 'pages/HopTuoi.jsx', 'pages/IChing.jsx', 'pages/LaSoTuVi.jsx']
+  ok(framePages.every(f => /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/.test(rd(f))), 'C05: mọi trang hệ đều có khung "tham khảo/chiêm nghiệm"')
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

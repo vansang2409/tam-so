@@ -1,10 +1,11 @@
 # SUMMARY — Tam Sở (cập nhật 19/06/2026)
 
-**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (272 mốc), build `npm run build`. Không backend/auth/db.
+**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (281 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.54.0, 272 test pass.** Giao diện tông giấy-cổ/kem.
+**Hiện trạng: v3.55.0, 281 test pass.** Giao diện tông giấy-cổ/kem.
 
 **Đã xong gần đây (phiên này):**
+- A02 + M05 + C05 (v3.55): **og:image động** (lá Tarot dùng ảnh RWS riêng khi share) · **Skeleton tải thống nhất** (`Skeleton.jsx` + CardImage shimmer khi tải ảnh, giảm giật layout) · **rà giọng C05** (test quét >800 luận điểm chặn câu over-claim + đảm bảo mọi trang hệ có khung "tham khảo").
 - C04 (v3.54): **trang Hợp tuổi** `/hop-tuoi` + 12 trang `/hop-tuoi/:slug` — xếp 12 con giáp theo Tam/Lục hợp – Lục/Tứ hành xung (dùng `hopTuoiChi`), giọng tham khảo; meta+breadcrumb+sitemap (+13 URL ⇒ 139); link công cụ năm-sinh.
 - C06 đợt 3 (v3.53): **làm dày 12 Số Chủ Đạo** — thêm `src/data/numerologyDeep.js` (tinhYeu/suNghiep/taiChinh/loiKhuyen cho 1–9, 11, 22, 33) render trên trang Số. Còn lại C06: đợt 4 — 168 sao×cung.
 - C06 đợt 2 (v3.51–3.52): **làm dày TRỌN 78 lá Tarot** — `src/data/tarotDeep.js` (22 Ẩn Chính) + `src/data/tarotDeepMinor.js` (56 Ẩn Phụ) gộp thành `TAROT_DEEP` key theo id (toàn cục duy nhất 0–77); mỗi lá có love/work/finance/advice, render trên CardPage (thêm mục 💰 Tài chính). Còn lại C06: 12 Số Chủ Đạo → 168 sao×cung.

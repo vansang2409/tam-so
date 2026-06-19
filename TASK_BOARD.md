@@ -21,7 +21,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | M02 | Trang giải thích các chỉ số Thần số học | Content | Done |
 | M03 | Trải bài "Tài chính" riêng | Tarot | Done |
 | M04 | Bộ sưu tập kết quả (lưu reading yêu thích) | Retention | Done |
-| M05 | Loading skeleton thống nhất | UX | Todo |
+| M05 | Loading skeleton thống nhất | UX | Done (v3.55) — Skeleton.jsx + CardImage shimmer khi tải ảnh |
 | M06 | doSangSummary vào Hồ sơ (report.js) | Tử vi | Done |
 | M07 | SEO meta: canonical + OG/Twitter động + JSON-LD BreadcrumbList (102 trang sâu) | SEO | Done |
 
@@ -29,7 +29,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
 |---|---|---|---|---|---|
 | A01 | Mở rộng `usePageSeo` cho TRANG INDEX từng hệ (Tarot/Numerology/Zodiac/IChing/LaSoTuVi/TuVi/Profile/Sources) | SEO | Med | Done | mỗi route chính có canonical + og:url + breadcrumb ≥2 cấp; +test wiring; build sạch |
-| A02 | og:image động cho trang sâu: lá Tarot dùng ảnh RWS của lá, cung dùng biểu tượng/ảnh cung | SEO/Social | Med | Todo | CardPage/CungPage set og:image riêng (fallback og.png); kiểm bằng OG debugger; +test |
+| A02 | og:image động cho trang sâu: lá Tarot dùng ảnh RWS của lá, cung dùng biểu tượng/ảnh cung | SEO/Social | Med | Done (v3.55) | CardPage set og:image = ảnh RWS của lá (absUrl); cung/số/con giáp fallback og.png; usePageSeo nhận tham số image; +test |
 | A03 | Khối "Nội dung liên quan" (internal-link ngữ cảnh) cuối CungPage/CardPage/SoChuDaoPage → liên kết chéo sang hệ khác | SEO/Retention | Med | Done | mỗi trang sâu ≥3 link nội bộ đúng ngữ cảnh; không trùng; build sạch |
 
 ## LOW (tương lai)
@@ -44,7 +44,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | C02 | Trang "Tử vi hôm nay" cho 12 con giáp + 12 cung (tự đổi theo ngày) | SEO/Retention | High | Done (v3.49) | route /con-giap + 12 trang /con-giap/:slug; dailyConGiap (tất định) + hợp/khắc tuổi; meta+breadcrumb; sitemap +13 URL; link trên Home; phần 12 cung daily đã có sẵn từ H04/H05 |
 | C03 | Long-tail "Sinh năm X: mệnh gì · hợp tuổi nào · sao chiếu" (programmatic theo năm) | SEO/Content | Med | Todo | dùng Can Chi/nạp âm/saoHan; meta riêng; KHÔNG phán chắc; nội dung tự sinh từ engine |
 | C04 | Trang "Tuổi A và B có hợp không" (cặp con giáp/năm sinh) | SEO/Content | Med | Done (v3.54) | route /hop-tuoi + 12 trang /hop-tuoi/:slug (xếp 12 con giáp theo Tam/Lục hợp–Lục/Tứ hành xung, dùng hopTuoiChi); meta+breadcrumb+sitemap; link công cụ năm-sinh ở /tu-vi |
-| C05 | Định vị nội dung: rà toàn site đảm bảo KHÔNG giật tít/khẳng định chắc (khác biệt vs đối thủ) | Content/Brand | Med | Todo | không có câu "chính xác 100%/chắc chắn"; mọi trang có khung "tham khảo" |
+| C05 | Định vị nội dung: rà toàn site đảm bảo KHÔNG giật tít/khẳng định chắc (khác biệt vs đối thủ) | Content/Brand | Med | Done (v3.55) | test quét >800 luận điểm chặn over-claim (chắc chắn sẽ/nhất định sẽ/100% đúng…); mọi trang hệ có khung "tham khảo/chiêm nghiệm" |
 | C06 | LÀM DÀY phần diễn giải các trang cốt lõi (deep cung hoàng đạo · 78 lá Tarot · Số Chủ Đạo · sao×cung) — nhiều đoạn, cấu trúc: tóm tắt → tính cách/ý nghĩa chi tiết → tình yêu → công việc → tài chính → sức khỏe → điểm mạnh/cần lưu ý → hợp-khắc → lời khuyên thực tế | Content | High | Doing (đợt 1: 12 cung v3.50 · đợt 2: 78 lá Tarot v3.51–3.52 · đợt 3: 12 Số v3.53 · còn đợt 4 sao×cung) | mỗi trang deep nhiều mục & nhiều đoạn; DÀI bằng chiều sâu thật, KHÔNG độn khẳng định chắc/giật tít; giữ khung "tham khảo, chiêm nghiệm"; làm theo đợt (12 cung → 78 lá → 12 số → 168 sao×cung) + thêm test độ dài tối thiểu |
 
 ## MONETIZATION (plan, chưa code thanh toán)

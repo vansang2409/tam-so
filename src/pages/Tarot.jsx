@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { usePageSeo } from '../components/useSeo.js'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useParams, Link } from 'react-router-dom'
-import { TAROT_CARDS, TAROT_SPREADS, drawCards, birthCards, cardSlug, cardBySlug } from '../data/tarot.js'
+import { TAROT_CARDS, TAROT_SPREADS, drawCards, birthCards, cardSlug, cardBySlug, cardImageFile } from '../data/tarot.js'
+import { absUrl } from '../data/seo.js'
 import { addItem } from '../data/collection.js'
 import Modal from '../components/Modal.jsx'
 import CardImage from '../components/CardImage.jsx'
@@ -96,7 +97,8 @@ function CardPage({ card }) {
     title: card.nameVi + ' (' + card.name + ') — ý nghĩa xuôi, ngược, tình yêu & công việc | Tam Sở',
     description: card.nameVi + ' (' + card.name + '): ' + (card.desc || '') + ' Ý nghĩa khi xuôi, khi ngược, trong tình yêu và công việc — Tam Sở.',
     path: '/tarot/' + cardSlug(card),
-    breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: card.nameVi }]
+    breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: card.nameVi }],
+    image: cardImageFile(card) ? absUrl('/cards/' + cardImageFile(card)) : undefined
   })
   const d = TAROT_DEEP[card.id] || {}
   return (
