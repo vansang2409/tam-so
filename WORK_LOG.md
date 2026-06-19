@@ -3,6 +3,7 @@
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
 ## Changelog theo version
+- **v3.54** — **C04**: trang Hợp tuổi `/hop-tuoi` + 12 trang `/hop-tuoi/:slug` (xếp 12 con giáp theo Tam hợp/Lục hợp/Lục xung/Tứ hành xung dùng `hopTuoiChi`; giọng tham khảo, không định đoạt quan hệ) + `HopTuoi.jsx`; meta+breadcrumb+sitemap (+13 URL ⇒ 139). **272 test pass** (+5).
 - **v3.53** — **C06 đợt 3**: làm dày 12 Số Chủ Đạo — thêm `src/data/numerologyDeep.js` (`NUM_DEEP`: tinhYeu/suNghiep/taiChinh/loiKhuyen cho 1–9, 11, 22, 33; giọng tham khảo) + render trên SoChuDaoPage. **267 test pass** (+7). Còn lại C06: đợt 4 — 168 sao×cung.
 - **v3.52** — **C06 đợt 2b**: làm dày 56 lá Tarot Ẩn Phụ — thêm `src/data/tarotDeepMinor.js` (ids 22–77: love/work/finance/advice, bám từ khóa sẵn có + chất tố) gộp vào `TAROT_DEEP`; bỏ guard arcana ở CardPage vì id toàn cục 0–77 duy nhất. **TRỌN 78 lá Tarot đã dày**. **260 test pass**. Còn lại C06: 12 Số Chủ Đạo → 168 sao×cung.
 - **v3.51** — **C06 đợt 2a**: làm dày 22 lá Tarot Ẩn Chính — thêm `src/data/tarotDeep.js` (`TAROT_DEEP` key id 0–21: love/work/finance/advice; giọng tham khảo, KHÔNG phán cứng) + render trên CardPage (thêm mục 💰 Tài chính; guard `arcana==='major'` để 56 lá Ẩn Phụ không lấy nhầm nội dung major). **259 test pass** (+8). Còn lại: 56 lá Ẩn Phụ → 12 Số Chủ Đạo → 168 sao×cung.

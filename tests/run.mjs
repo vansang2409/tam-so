@@ -554,5 +554,18 @@ delete global.window
   ok(nsrc.includes('Sự nghiệp') && nsrc.includes('nd.taiChinh'), 'Numerology.jsx: render Sự nghiệp + Tài chính')
 }
 
+// === C04: trang hợp tuổi (/hop-tuoi) ===
+{
+  const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const main = read('main.jsx')
+  ok(main.includes('import HopTuoi') && main.includes('path="hop-tuoi"') && main.includes('path="hop-tuoi/:slug"'), 'main.jsx: import + route /hop-tuoi (+:slug)')
+  ok(/export default function HopTuoi/.test(read('pages/HopTuoi.jsx')), 'HopTuoi.jsx: export default')
+  const h = read('pages/HopTuoi.jsx')
+  ok(h.includes('hopTuoiChi') && h.includes('usePageSeo(') && h.includes('breadcrumb:'), 'HopTuoi: dùng hopTuoiChi + SEO meta')
+  const sm = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')
+  ok(sm.includes('/hop-tuoi/ty') && sm.includes('/hop-tuoi/hoi'), 'sitemap: có URL hợp tuổi')
+  ok(V.hopTuoiChi('Tý', 'Thân') === 'Tam hợp' && V.hopTuoiChi('Tý', 'Ngọ') === 'Lục xung', 'hopTuoiChi: Tý–Thân tam hợp, Tý–Ngọ lục xung (nền cho trang)')
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)
