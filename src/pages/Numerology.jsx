@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { usePageSeo } from '../components/useSeo.js'
+import { NUM_DEEP } from '../data/numerologyDeep.js'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams, useParams, Link } from 'react-router-dom'
 import {
@@ -16,6 +17,7 @@ const CUR = new Date()
 
 function SoChuDaoPage({ k }) {
   const n = NUMEROLOGY[k]
+  const nd = NUM_DEEP[k]
   usePageSeo({
     title: n.title + ' — ý nghĩa Số Chủ Đạo trong Thần số học | Tam Sở',
     description: n.title + ': ' + n.desc,
@@ -33,6 +35,12 @@ function SoChuDaoPage({ k }) {
       <section className="wrap pb-3"><div className="panel p-[26px] max-w-[680px] mx-auto leading-relaxed">
         <p>{n.desc}</p>
         {(n.strengths || n.watch) && <p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>}
+        {nd && <>
+          <p className="m-0 mt-3"><b className="text-cream">❤ Tình yêu:</b> {nd.tinhYeu}</p>
+          <p className="m-0"><b className="text-cream">💼 Sự nghiệp:</b> {nd.suNghiep}</p>
+          <p className="m-0"><b className="text-cream">💰 Tài chính:</b> {nd.taiChinh}</p>
+          <p className="m-0 mt-1 note"><b className="text-cream">✦ Lời khuyên:</b> {nd.loiKhuyen}</p>
+        </>}
         {NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, tham khảo)</span></p>}
         <p className="note mt-4 mb-0 text-[.78rem]">Con số gợi thiên hướng để chiêm nghiệm — không định đoạt con người bạn.</p>
         <p className="text-center mt-4 mb-0 no-print"><Link to="/than-so-hoc" className="font-semibold">Tính Số Chủ Đạo của bạn theo ngày sinh →</Link></p>

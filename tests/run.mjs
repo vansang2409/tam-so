@@ -15,6 +15,7 @@ import * as REL from '../src/data/related.js'
 import * as CG from '../src/data/congiap.js'
 import * as ZD from '../src/data/zodiacDeep.js'
 import * as TD from '../src/data/tarotDeep.js'
+import * as NDP from '../src/data/numerologyDeep.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { readFileSync } from 'node:fs'
@@ -529,6 +530,28 @@ delete global.window
   const tsrc = readFileSync(new URL('../src/pages/Tarot.jsx', import.meta.url), 'utf8')
   ok(tsrc.includes("from '../data/tarotDeep.js'") && tsrc.includes('TAROT_DEEP[card.id]'), 'Tarot.jsx: CardPage dùng TAROT_DEEP[card.id] cho mọi lá')
   ok(tsrc.includes('Tài chính') && tsrc.includes('d.finance'), 'Tarot.jsx: render mục Tài chính')
+}
+
+// === C06 đợt 3: nội dung DÀY 12 Số Chủ Đạo (numerologyDeep.js) ===
+{
+  const nums = Object.keys(N.NUMEROLOGY)
+  eq(Object.keys(NDP.NUM_DEEP).length, 12, 'NUM_DEEP: đủ 12 số chủ đạo')
+  let allFields = true, minLen = true, noAbsolute = true, cover = true
+  const banned = /(chắc chắn|chính xác 100|tuyệt đối|bảo đảm|nhất định sẽ|100%)/i
+  for (const k of nums) {
+    const x = NDP.NUM_DEEP[k]
+    if (!x) { cover = false; continue }
+    if (!x.tinhYeu || !x.suNghiep || !x.taiChinh || !x.loiKhuyen) { allFields = false; continue }
+    if (x.tinhYeu.length < 25 || x.suNghiep.length < 25 || x.taiChinh.length < 25 || x.loiKhuyen.length < 25) minLen = false
+    if (banned.test(x.tinhYeu + ' ' + x.suNghiep + ' ' + x.taiChinh + ' ' + x.loiKhuyen)) noAbsolute = false
+  }
+  ok(cover, 'NUM_DEEP: phủ đủ 12 số (1–9, 11, 22, 33)')
+  ok(allFields, 'NUM_DEEP: mỗi số đủ 4 mục (tinhYeu/suNghiep/taiChinh/loiKhuyen)')
+  ok(minLen, 'NUM_DEEP: mỗi mục đạt độ dài tối thiểu')
+  ok(noAbsolute, 'NUM_DEEP: KHÔNG dùng từ phán tuyệt đối/giật tít')
+  const nsrc = readFileSync(new URL('../src/pages/Numerology.jsx', import.meta.url), 'utf8')
+  ok(nsrc.includes("from '../data/numerologyDeep.js'") && nsrc.includes('NUM_DEEP[k]'), 'Numerology.jsx: import + dùng NUM_DEEP[k]')
+  ok(nsrc.includes('Sự nghiệp') && nsrc.includes('nd.taiChinh'), 'Numerology.jsx: render Sự nghiệp + Tài chính')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
