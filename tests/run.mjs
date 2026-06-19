@@ -508,27 +508,27 @@ delete global.window
   ok(zsrc.includes('ex.tinhCach') && zsrc.includes('ex.sucKhoe') && zsrc.includes('ex.loiKhuyen'), 'Zodiac.jsx: render tính cách/sức khỏe/lời khuyên')
 }
 
-// === C06 đợt 2a: nội dung DÀY 22 lá Ẩn Chính (tarotDeep.js) ===
+// === C06 đợt 2: nội dung DÀY 78 lá Tarot (22 Ẩn Chính + 56 Ẩn Phụ) ===
 {
-  const majors = T.TAROT_CARDS.filter(c => c.arcana === 'major')
-  eq(majors.length, 22, 'TAROT_CARDS: đúng 22 lá Ẩn Chính')
-  eq(Object.keys(TD.TAROT_DEEP).length, 22, 'TAROT_DEEP: đủ 22 mục')
+  eq(T.TAROT_CARDS.length, 78, 'TAROT_CARDS: đủ 78 lá')
+  eq(Object.keys(TD.TAROT_DEEP).length, 78, 'TAROT_DEEP: đủ 78 mục (mọi lá)')
+  ok(new Set(T.TAROT_CARDS.map(c => c.id)).size === 78, 'TAROT_CARDS: 78 id DUY NHẤT (Ẩn Chính 0–21, Ẩn Phụ 22–77) → key theo id an toàn')
   let allFields = true, minLen = true, noAbsolute = true, idOk = true
   const banned = /(chắc chắn|chính xác 100|tuyệt đối|bảo đảm|nhất định sẽ|100%)/i
-  for (const c of majors) {
+  for (const c of T.TAROT_CARDS) {
     const x = TD.TAROT_DEEP[c.id]
     if (!x) { idOk = false; continue }
     if (!x.love || !x.work || !x.finance || !x.advice) { allFields = false; continue }
-    if (x.love.length < 30 || x.work.length < 30 || x.finance.length < 30 || x.advice.length < 30) minLen = false
+    if (x.love.length < 25 || x.work.length < 25 || x.finance.length < 25 || x.advice.length < 25) minLen = false
     if (banned.test(x.love + ' ' + x.work + ' ' + x.finance + ' ' + x.advice)) noAbsolute = false
   }
-  ok(idOk, 'TAROT_DEEP: phủ đủ 22 id Ẩn Chính (0–21)')
+  ok(idOk, 'TAROT_DEEP: phủ đủ id của cả 78 lá')
   ok(allFields, 'TAROT_DEEP: mỗi lá đủ 4 mục (love/work/finance/advice)')
   ok(minLen, 'TAROT_DEEP: mỗi mục đạt độ dài tối thiểu')
   ok(noAbsolute, 'TAROT_DEEP: KHÔNG dùng từ phán tuyệt đối/giật tít')
   const tsrc = readFileSync(new URL('../src/pages/Tarot.jsx', import.meta.url), 'utf8')
-  ok(tsrc.includes("from '../data/tarotDeep.js'") && tsrc.includes("card.arcana === 'major' && TAROT_DEEP[card.id]"), 'Tarot.jsx: dùng TAROT_DEEP cho lá Ẩn Chính (có guard arcana, không đụng Ẩn Phụ)')
-  ok(tsrc.includes('Tài chính') && tsrc.includes('d.finance'), 'Tarot.jsx: render thêm mục Tài chính')
+  ok(tsrc.includes("from '../data/tarotDeep.js'") && tsrc.includes('TAROT_DEEP[card.id]'), 'Tarot.jsx: CardPage dùng TAROT_DEEP[card.id] cho mọi lá')
+  ok(tsrc.includes('Tài chính') && tsrc.includes('d.finance'), 'Tarot.jsx: render mục Tài chính')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)

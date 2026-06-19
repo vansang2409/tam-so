@@ -1,7 +1,9 @@
 /* Nội dung DÀY cho 22 lá Ẩn Chính (Tarot) — C06 đợt 2a. Luận theo tình yêu / công việc /
  * tài chính / lời khuyên, bám archetype Rider–Waite–Smith. GIỌNG: tham khảo, chiêm nghiệm;
  * KHÔNG phán cứng nhắc, KHÔNG giật tít. Key = id lá Ẩn Chính (0–21). 56 lá Ẩn Phụ: đợt 2b. */
-export const TAROT_DEEP = {
+import { TAROT_DEEP_MINOR } from './tarotDeepMinor.js'
+
+const TAROT_MAJOR_DEEP = {
   0: { // The Fool
     love: 'Một khởi đầu tình cảm mới mẻ, đầy hứng khởi; hãy mở lòng nhưng vẫn lắng nghe trực giác.',
     work: 'Thời điểm hợp để thử hướng đi mới hay dự án táo bạo; cứ bước rồi học dần trên đường.',
@@ -135,4 +137,7 @@ export const TAROT_DEEP = {
     advice: 'Ghi nhận chặng đường đã đi trọn, rồi mở ra hành trình kế tiếp.'
   }
 }
-/* === end tarotDeep.js (22 lá Ẩn Chính) === */
+
+// Gộp 22 Ẩn Chính + 56 Ẩn Phụ → đủ 78 lá. Key = id lá (toàn cục duy nhất: 0–21 & 22–77).
+export const TAROT_DEEP = { ...TAROT_MAJOR_DEEP, ...TAROT_DEEP_MINOR }
+/* === end tarotDeep.js (78 lá: 22 Ẩn Chính + 56 Ẩn Phụ) === */

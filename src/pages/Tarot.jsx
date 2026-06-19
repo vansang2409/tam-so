@@ -98,7 +98,7 @@ function CardPage({ card }) {
     path: '/tarot/' + cardSlug(card),
     breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: card.nameVi }]
   })
-  const d = (card.arcana === 'major' && TAROT_DEEP[card.id]) || {}
+  const d = TAROT_DEEP[card.id] || {}
   return (
     <>
       <section className="wrap pt-[58px] pb-1 text-center">
