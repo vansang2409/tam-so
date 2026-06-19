@@ -1,19 +1,62 @@
 import { useState, useEffect } from 'react'
+import { usePageSeo } from '../components/useSeo.js'
 import { shareUrl as routeShareUrl } from '../data/site.js'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useParams, Link } from 'react-router-dom'
 import {
   NUMEROLOGY, NUM_SAO, computeLifePath, reduceKeep, computeNameNumbers, personalYear, NUMBER_TYPE, PERSONAL_YEAR,
   loShu, LO_SHU_LAYOUT, LO_SHU_MISSING, maturity, karmicOf, KARMIC_DEBT, personalMonth, personalDay, PERSONAL_DAY_HINT, pinnacles, letterStats, birthdayNumber, lifePathCompat
 } from '../data/numerology.js'
 import { Badge } from '../components/Disclaimer.jsx'
+import NotFound from '../components/NotFound.jsx'
+import SeoTag from '../components/SeoTag.jsx'
+import RelatedLinks from '../components/RelatedLinks.jsx'
+import { relatedForNumber } from '../data/related.js'
 
 const CUR = new Date()
 
+function SoChuDaoPage({ k }) {
+  const n = NUMEROLOGY[k]
+  usePageSeo({
+    title: n.title + ' — ý nghĩa Số Chủ Đạo trong Thần số học | Tam Sở',
+    description: n.title + ': ' + n.desc,
+    path: '/than-so-hoc/so/' + k,
+    breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Thần số học', path: '/than-so-hoc' }, { name: 'Số ' + k }]
+  })
+  return (
+    <>
+      <section className="wrap pt-[58px] pb-1 text-center">
+        <p className="note mb-1"><Link to="/than-so-hoc" className="text-gold">Thần số học</Link> / {n.title}</p>
+        <div className="text-[3.6rem] leading-none gradient-text font-serif">{k}</div>
+        <h1 className="text-[clamp(1.6rem,4vw,2.4rem)] my-1">{n.title}</h1>
+        <div className="flex gap-2 flex-wrap justify-center my-2">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div>
+      </section>
+      <section className="wrap pb-3"><div className="panel p-[26px] max-w-[680px] mx-auto leading-relaxed">
+        <p>{n.desc}</p>
+        {(n.strengths || n.watch) && <p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>}
+        {NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, tham khảo)</span></p>}
+        <p className="note mt-4 mb-0 text-[.78rem]">Con số gợi thiên hướng để chiêm nghiệm — không định đoạt con người bạn.</p>
+        <p className="text-center mt-4 mb-0 no-print"><Link to="/than-so-hoc" className="font-semibold">Tính Số Chủ Đạo của bạn theo ngày sinh →</Link></p>
+      </div></section>
+      <RelatedLinks items={relatedForNumber(k)} />
+      <section className="wrap pb-9">
+        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Các con số khác</p>
+        <div className="flex flex-wrap gap-2 justify-center max-w-[620px] mx-auto">
+          {Object.keys(NUMEROLOGY).map(o => <Link key={o} to={'/than-so-hoc/so/' + o} className={'badge ' + (o === String(k) ? 'badge-gold' : '')}>{o}</Link>)}
+        </div>
+      </section>
+    </>
+  )
+}
+
 export default function Numerology() {
+  const { n } = useParams()
+  if (n) return NUMEROLOGY[n]
+    ? <SoChuDaoPage k={n} />
+    : <NotFound title="Không có Số Chủ Đạo này" msg="Số Chủ Đạo chỉ gồm 1–9 và các số bậc thầy 11, 22, 33. Mời bạn xem một số hợp lệ hoặc tính Số Chủ Đạo theo ngày sinh." />
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Numerology · Hệ Pythagorean</div>
+        <SeoTag title='Thần số học — tính Số Chủ Đạo & Đường Đời từ ngày sinh | Tam Sở' description='Tính Số Chủ Đạo, Đường Đời, Linh Hồn, Sứ Mệnh cùng nhiều chỉ số Thần số học (hệ Pythagorean) từ ngày sinh và họ tên. Gợi ý thiên hướng để tham khảo.' path='/than-so-hoc' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Thần số học' }]} /><div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Numerology · Hệ Pythagorean</div>
         <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Thần Số Học</h1>
         <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Từ ngày sinh và họ tên, rút ra những con số cốt lõi gợi ý thiên hướng, động lực và bài học của bạn.</p>
       </section>
@@ -30,7 +73,7 @@ export default function Numerology() {
             return (
               <details key={k} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
                 <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.12rem] font-semibold marker:content-none flex items-center gap-3"><span className="text-gold text-[.9rem]">✦</span>{n.title}</summary>
-                <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}</div>
+                <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}<p className="mt-2 mb-0"><Link to={'/than-so-hoc/so/' + k} className="font-semibold text-[.9rem]">Xem trang riêng của số {k} →</Link></p></div>
               </details>
             )
           })}
@@ -257,5 +300,5 @@ function NumBlock({ label, n, note }) {
 
 function Field({ label, value, set, ph }) {
   return (<div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">{label}</label>
-    <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={ph} className="field-input w-[100px]" /></div>)
+    <input type="number" value={value} onChange={e => set(e.target.value)} placeholder={ph} className="field-input w-[90px]" /></div>)
 }

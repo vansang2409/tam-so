@@ -1,3 +1,4 @@
+import { usePageSeo } from '../components/useSeo.js'
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { shareUrl as routeShareUrl } from '../data/site.js'
@@ -48,6 +49,8 @@ function Cell({ p, active, onClick, van, tp }) {
 }
 
 export default function LaSoTuVi() {
+  usePageSeo({ title: 'Lập lá số Tử Vi Đẩu Số online — an sao, Tứ Hóa, đại hạn | Tam Sở', description: 'Lập lá số Tử Vi Đẩu Số từ ngày giờ sinh: an 12 cung, chính tinh – phụ tinh, Tứ Hóa, độ sáng sao và dòng đại hạn. Diễn giải truyền thống để tham khảo.', path: '/la-so-tu-vi', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Lá số Tử Vi' }] })
+
   const [params, setParams] = useSearchParams()
   const [d, setD] = useState(''); const [m, setM] = useState(''); const [y, setY] = useState('')
   const [h, setH] = useState('7'); const [g, setG] = useState('nam')
@@ -154,6 +157,19 @@ export default function LaSoTuVi() {
           </div>
           {err && <div className="disclaimer mt-4">{err}</div>}
           <p className="note text-center mt-3 mb-0">Giờ sinh ảnh hưởng lớn tới lá số — nếu không chắc, hãy chọn giờ gần đúng nhất. Năm nhập theo <b>dương lịch</b>, hệ thống tự quy đổi âm lịch (Hồ Ngọc Đức). Nếu sinh vào <b>tháng nhuận</b>, lá số tính theo số tháng âm lịch — một số phái an sao xử lý tháng nhuận khác, cần chính xác tuyệt đối nên đối chiếu thêm.</p>
+          <details className="mt-3 max-w-[760px] mx-auto no-print">
+            <summary className="cursor-pointer text-gold text-[.9rem] font-semibold select-none">📖 Cách đọc lá số — chú giải nhanh</summary>
+            <div className="note mt-2 leading-relaxed flex flex-col gap-1.5">
+              <p className="m-0"><b className="text-cream">Mệnh / Thân:</b> Mệnh là bản chất gốc; Thân là phần thể hiện ra ngoài, nặng dần về hậu vận (trung niên trở đi).</p>
+              <p className="m-0"><b className="text-cream">Cục:</b> ngũ hành cục (Thủy nhị → Hỏa lục) — quyết định cách an sao Tử Vi và mốc khởi đại hạn.</p>
+              <p className="m-0"><b className="text-cream">Chính tinh / phụ tinh:</b> 14 chính tinh là "vai chính"; lục cát – lục sát, Lộc Tồn, Thiên Mã… là phụ tinh bổ trợ.</p>
+              <p className="m-0"><b className="text-cream">Độ sáng:</b> <b>M</b> Miếu (sáng nhất) › <b>V</b> Vượng › <b>Đ</b> Đắc › <b>B</b> Bình (trung tính) › <b>H</b> Hãm (sao yếu, cần cát tinh hỗ trợ — không phải điềm xấu).</p>
+              <p className="m-0"><b className="text-cream">Tứ Hóa:</b> bốn biến hóa theo can năm — <b>Lộc</b> (tài lộc), <b>Quyền</b> (quyền lực), <b>Khoa</b> (danh tiếng, thi cử), <b>Kỵ</b> (vướng mắc, nên lưu tâm).</p>
+              <p className="m-0"><b className="text-cream">Tam phương tứ chính:</b> bốn cung soi chiếu nhau (Mệnh – Tài Bạch – Quan Lộc + cung đối) — luôn xét chung, không xem lẻ một cung.</p>
+              <p className="m-0"><b className="text-cream">Đại hạn / tiểu hạn / lưu niên:</b> vận 10 năm / vận 1 năm / năm hiện tại (theo Thái Tuế).</p>
+              <p className="m-0 text-muted">Lá số cần luận <b>tổng hòa</b> — là công cụ để chiêm nghiệm, không phải lời phán; mọi quyết định vẫn ở bạn.</p>
+            </div>
+          </details>
           {hist.length > 0 && (
             <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
               <span className="note">Gần đây:</span>
@@ -224,6 +240,20 @@ export default function LaSoTuVi() {
                   <p className="note mt-2 mb-0">Vận hạn cho biết "sân khấu" của giai đoạn — cung nào được chiếu thì lĩnh vực đó nổi lên. Chỉ để chiêm nghiệm, không phải điều chắc chắn.</p>
                 </div>
               )}
+            </div>
+          </section>
+
+          <section className="wrap py-3">
+            <div className="panel p-[22px] max-w-[820px] mx-auto">
+              <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-2">Dòng đại hạn cả đời (mỗi vận 10 năm)</div>
+              <ul className="m-0 pl-0 list-none grid sm:grid-cols-2 gap-x-5 gap-y-1 text-[.9rem]">
+                {[...ls.palaces].sort((a, b) => a.daihan.from - b.daihan.from).map((p, i) => {
+                  const ch = p.sao.filter(s => s.loai === 'chinh').map(s => s.ten + (s.do ? '(' + s.do + ')' : '')).join(', ') || 'vô chính diệu'
+                  const cur = ls.van && ls.van.daiHanChi === p.chiIdx
+                  return <li key={i} className={cur ? 'bg-amber-200/60 rounded px-1.5 -mx-1.5 font-semibold' : ''}><b className="text-cream">{p.daihan.from}–{p.daihan.to}</b> tuổi · {p.cung} ({p.chi}): {ch}{cur ? ' ← hiện tại' : ''}</li>
+                })}
+              </ul>
+              <p className="note mt-2 mb-0">Đại hạn là "chương" 10 năm của đời, đi lần lượt qua 12 cung. Vận đang tô đậm là đại hạn hiện tại. Cốt cách vẫn do Mệnh và tam phương quyết định — đại hạn chỉ tô màu cho từng giai đoạn, không phải định mệnh cứng.</p>
             </div>
           </section>
 

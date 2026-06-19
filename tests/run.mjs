@@ -9,8 +9,12 @@ import * as I from '../src/data/iching.js'
 import * as Z from '../src/data/zodiac.js'
 import * as R from '../src/data/report.js'
 import * as SITE from '../src/data/site.js'
+import * as COLL from '../src/data/collection.js'
+import * as SEO from '../src/data/seo.js'
+import * as REL from '../src/data/related.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
+import { readFileSync } from 'node:fs'
 
 let pass = 0, fail = 0
 const ok = (cond, msg) => { if (cond) { pass++ } else { fail++; console.error('  ✗ FAIL: ' + msg) } }
@@ -276,5 +280,173 @@ delete global.window
   }
   ok(sOk && n === 800, "stress " + n + " lá số: an sao không lỗi, st.do hợp lệ, doSangSummary chạy")
 }
+{
+  // Zodiac: nội dung sâu + tử vi hôm nay (tất định)
+  const ens = Z.ZODIAC.map(z => z.en)
+  ok(Object.keys(Z.ZODIAC_DEEP).length === 12 && ens.every(e => Z.ZODIAC_DEEP[e] && Z.ZODIAC_DEEP[e].tinhYeu && Array.isArray(Z.ZODIAC_DEEP[e].hopVoi)), "ZODIAC_DEEP: đủ 12 cung + tình yêu + hợp với")
+  ok(Z.zodiacBySlug('bach-duong') && Z.zodiacBySlug('bach-duong').en === 'Aries', "zodiacBySlug('bach-duong') = Aries")
+  ok(Z.zodiacBySlug('khong-co') === null, "zodiacBySlug slug sai → null")
+  const d1 = Z.dailyHoroscope('Leo', '2026-06-19'), d2 = Z.dailyHoroscope('Leo', '2026-06-19'), d3 = Z.dailyHoroscope('Leo', '2026-06-20')
+  ok(JSON.stringify(d1) === JSON.stringify(d2), "dailyHoroscope TẤT ĐỊNH (cùng cung+ngày)")
+  ok(JSON.stringify(d1) !== JSON.stringify(d3), "dailyHoroscope đổi theo ngày")
+  ok([d1.tongQuan, d1.tinhCam, d1.congViec, d1.taiChinh, d1.loiKhuyen].every(x => typeof x === 'string' && x.length > 8) && d1.nangLuong >= 2 && d1.nangLuong <= 5, "dailyHoroscope: 5 mục text + năng lượng 2..5")
+  let aOk = true; for (const e of ens) { const h = Z.dailyHoroscope(e, '2026-06-19'); if (!h.tongQuan || h.nangLuong < 2 || h.nangLuong > 5) aOk = false }
+  ok(aOk, "dailyHoroscope hợp lệ cho cả 12 cung")
+}
+{
+  // Tarot slug
+  const slugs = T.TAROT_CARDS.map(T.cardSlug)
+  ok(new Set(slugs).size === 78, "cardSlug: 78 slug DUY NHẤT")
+  ok(T.cardBySlug('the-fool') && T.cardBySlug('the-fool').nameVi === 'Gã Khờ', "cardBySlug('the-fool') = Gã Khờ")
+  ok(T.cardBySlug('khong-ton-tai') === null, "cardBySlug slug sai → null")
+  ok(T.TAROT_CARDS.every(c => T.cardBySlug(T.cardSlug(c)) === c), "cardSlug↔cardBySlug roundtrip cho cả 78 lá")
+  ok(T.TAROT_SPREADS.money && T.TAROT_SPREADS.money.positions.length === 5, "trải Tài chính 5 lá")
+}
+{
+  // — H07: route 404 + slug sai → NotFound (chống hồi quy wiring) —
+  const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const main = read('main.jsx')
+  ok(main.includes('path="*"') && main.includes('import NotFound'), 'main.jsx: có route catch-all 404 + import NotFound')
+  ok(/export default function NotFound/.test(read('components/NotFound.jsx')), 'NotFound.jsx: có export default')
+  const tarot = read('pages/Tarot.jsx')
+  ok(/function TarotIndex\(\)/.test(tarot), 'Tarot: tách TarotIndex khỏi wrapper')
+  ok(/export default function Tarot\(\)/.test(tarot) && /cardBySlug\(slug\)/.test(tarot) && /<CardPage card=/.test(tarot), 'Tarot: default export nhánh theo slug → CardPage (chống hồi quy H06)')
+  ok(/<NotFound /.test(tarot), 'Tarot: slug lá sai → NotFound')
+  ok(/import NotFound/.test(read('pages/Numerology.jsx')) && /<NotFound /.test(read('pages/Numerology.jsx')), 'Numerology: slug số sai → NotFound')
+  ok(/import NotFound/.test(read('pages/Zodiac.jsx')) && /<NotFound /.test(read('pages/Zodiac.jsx')), 'Zodiac: slug cung sai → NotFound')
+}
+
+// === M04: Bộ sưu tập (collection.js) — lưu reading yêu thích ===
+{
+  ok(COLL.KIND_META.tarot && COLL.KIND_META.iching && COLL.kindMeta('tarot').label === 'Tarot', 'KIND_META có tarot+iching; kindMeta trả nhãn')
+  ok(COLL.kindMeta('khong-co').label === 'Khác', 'kindMeta fallback → Khác')
+  ok(COLL.makeId() !== COLL.makeId(), 'makeId sinh id khác nhau')
+  let a = []
+  a = COLL.addItem({ kind: 'tarot', sig: 't1', title: 'Ba lá', lines: ['Quá khứ: X'] }, a)
+  a = COLL.addItem({ kind: 'iching', sig: 'i1', title: 'Quẻ 1' }, a)
+  eq(a.length, 2, 'addItem: 2 mục khác sig')
+  ok(a[0].id && typeof a[0].t === 'number', 'mục có id + mốc thời gian')
+  a = COLL.addItem({ kind: 'tarot', sig: 't1', title: 'Ba lá (lại)' }, a)
+  eq(a.length, 2, 'addItem trùng sig → KHÔNG nhân đôi')
+  eq(a[0].sig, 't1', 'mục trùng được đưa lên đầu (làm tươi)')
+  ok(COLL.hasSig('i1', a) && !COLL.hasSig('zzz', a), 'hasSig nhận đúng')
+  a = COLL.removeItem(a[0].id, a)
+  eq(a.length, 1, 'removeItem bỏ đúng 1 mục')
+  let big = []
+  for (let i = 0; i < COLL.MAX_ITEMS + 15; i++) big = COLL.addItem({ kind: 'tarot', sig: 's' + i, title: '#' + i }, big)
+  eq(big.length, COLL.MAX_ITEMS, 'addItem giới hạn ' + COLL.MAX_ITEMS + ' mục (cap)')
+  ok(big[0].title === '#' + (COLL.MAX_ITEMS + 14), 'mục mới nhất nằm đầu sau khi cap')
+  eq(COLL.clearCollection().length, 0, 'clearCollection → rỗng')
+  const txt = COLL.collectionToText(a)
+  ok(txt.includes('BỘ SƯU TẬP') && txt.includes('Tam Sở'), 'collectionToText có tiêu đề')
+  ok(COLL.collectionToText([]) === 'Bộ sưu tập trống.', 'collectionToText rỗng → câu báo trống')
+  const it1 = COLL.itemToText({ kind: 'tarot', title: 'X', lines: ['a', 'b'], t: Date.now() })
+  ok(it1.includes('[Tarot]') && it1.includes('X') && it1.includes('a'), 'itemToText gồm nhãn+tiêu đề+dòng')
+}
+{
+  // M04 wiring: route + trang + nút Lưu (Tarot/Kinh Dịch) + nav bookmark
+  const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const main = read('main.jsx')
+  ok(main.includes('import Collection') && main.includes('path="bo-suu-tap"'), 'main.jsx: import + route /bo-suu-tap')
+  ok(/export default function Collection/.test(read('pages/Collection.jsx')), 'Collection.jsx: có export default')
+  const lay = read('components/Layout.jsx')
+  ok(lay.includes('countCollection') && lay.includes('/bo-suu-tap') && /function CollBtn/.test(lay), 'Layout: nút bookmark + countCollection + link')
+  const tarot = read('pages/Tarot.jsx')
+  ok(/saveReading/.test(tarot) && tarot.includes("from '../data/collection.js'") && tarot.includes('Lưu vào bộ sưu tập'), 'Tarot: nút Lưu vào bộ sưu tập')
+  const ich = read('pages/IChing.jsx')
+  ok(ich.includes("from '../data/collection.js'") && /savedCast/.test(ich) && ich.includes('Lưu vào bộ sưu tập'), 'Kinh Dịch: nút Lưu vào bộ sưu tập')
+}
+
+// === SEO meta (seo.js builder + wiring usePageSeo trên 3 trang sâu) ===
+{
+  eq(SEO.absUrl('/'), 'https://vansang2409.github.io/tam-so/', 'absUrl / → gốc có dấu /')
+  eq(SEO.absUrl('/tarot/the-fool'), 'https://vansang2409.github.io/tam-so/tarot/the-fool', 'absUrl ghép path tuyệt đối')
+  eq(SEO.absUrl('tarot/x'), 'https://vansang2409.github.io/tam-so/tarot/x', 'absUrl tự thêm / khi thiếu')
+  eq(SEO.OG_IMAGE, 'https://vansang2409.github.io/tam-so/og.png', 'OG_IMAGE đúng')
+  const ld = SEO.breadcrumbLd([{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: 'The Fool' }])
+  eq(ld['@type'], 'BreadcrumbList', 'breadcrumbLd loại BreadcrumbList')
+  eq(ld.itemListElement.length, 3, 'breadcrumb 3 mục')
+  eq(ld.itemListElement[0].position, 1, 'mục đầu position=1')
+  eq(ld.itemListElement[1].item, 'https://vansang2409.github.io/tam-so/tarot', 'mục có path → item URL tuyệt đối')
+  ok(ld.itemListElement[2].item === undefined, 'mục cuối (trang hiện tại) KHÔNG có item')
+  ok(JSON.stringify(SEO.breadcrumbLd(null)).includes('BreadcrumbList'), 'breadcrumbLd null không vỡ')
+  const readSeo = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const useSeo = readSeo('components/useSeo.js')
+  ok(/export function usePageSeo/.test(useSeo) && useSeo.includes('canonical') && useSeo.includes('application/ld+json') && useSeo.includes('og:url'), 'useSeo: canonical + JSON-LD + og:url')
+  for (const [f, needle] of [['pages/Zodiac.jsx', 'ZODIAC_SLUG'], ['pages/Tarot.jsx', 'cardSlug('], ['pages/Numerology.jsx', '/than-so-hoc/so/']]) {
+    const src = readSeo(f)
+    ok(src.includes("from '../components/useSeo.js'") && src.includes('usePageSeo({') && src.includes('breadcrumb:') && src.includes(needle), 'wiring SEO trong ' + f)
+  }
+}
+
+
+// === Nội dung liên quan (related.js — internal-link chéo đa hệ) ===
+{
+  const sign = REL.relatedForSign('Aries')
+  eq(sign.length, 3, 'relatedForSign(Aries) trả đúng 3 link')
+  eq(sign[0].to, '/tarot/the-emperor', 'Aries → Tarot Hoàng Đế (Golden Dawn)')
+  eq(REL.relatedForSign('Scorpio')[0].to, '/tarot/death', 'Scorpio → Tarot Cái Chết (Golden Dawn)')
+  ok(REL.relatedForSign('Aries').some(x => x.to === '/than-so-hoc/so/1'), 'Aries có link số may mắn 1')
+  { const sys = new Set(REL.relatedForSign('Leo').map(x => x.sys)); eq(sys.size, 3, 'relatedForSign(Leo): 3 hệ khác nhau, không trùng hệ') }
+
+  const emp = T.TAROT_CARDS.find(c => c.name === 'The Emperor')
+  const star = T.TAROT_CARDS.find(c => c.name === 'The Star')
+  const w5 = T.TAROT_CARDS.find(c => c.suit === 'Gậy' && c.roman === '5')
+  eq(REL.relatedForCard(emp)[0].to, '/cung-hoang-dao/bach-duong', 'The Emperor → cung Bạch Dương')
+  ok(REL.relatedForCard(emp).some(x => x.to === '/than-so-hoc/so/4'), 'The Emperor (IV) → số 4')
+  eq(REL.relatedForCard(star)[0].to, '/cung-hoang-dao/bao-binh', 'The Star → cung Bảo Bình')
+  ok(REL.relatedForCard(star).some(x => x.to === '/than-so-hoc/so/8'), 'The Star (XVII) → số 8 (1+7)')
+  eq(REL.relatedForCard(w5)[0].to, '/cung-hoang-dao/su-tu', 'Gậy 5 (Thổ tinh trong Sư Tử) → cung Sư Tử')
+  ok(REL.relatedForCard(emp).every(x => x.sys !== 'Tarot'), 'trang LÁ không tự link về chính hệ Tarot')
+  { const court = T.TAROT_CARDS.find(c => c.arcana !== 'major' && !(c.roman === 'Át' || /^\d+$/.test(String(c.roman)))); ok(REL.relatedForCard(court).length >= 3, 'lá hình người vẫn đủ ≥3 link (dự phòng đa hệ)') }
+
+  eq(REL.relatedForNumber('1')[0].to, '/cung-hoang-dao/bach-duong', 'Số 1 → cung Bạch Dương (số may mắn)')
+  ok(REL.relatedForNumber('1').some(x => x.to === '/tarot/the-magician'), 'Số 1 → Tarot Nhà Ảo Thuật (lá 1)')
+  ok(REL.relatedForNumber('8').some(x => x.to === '/tarot/strength'), 'Số 8 → Tarot Sức Mạnh (lá 8)')
+  ok(REL.relatedForNumber('11').some(x => x.to === '/tarot/justice'), 'Số 11 → Tarot Công Lý (lá 11)')
+  eq(REL.relatedForNumber('33').length, 3, 'Số 33 (không có lá trực tiếp) vẫn đủ 3 link')
+  eq(REL.relatedForNumber('99').length, 0, 'số không hợp lệ → rỗng')
+
+  const validTop = new Set(['/tarot', '/than-so-hoc', '/cung-hoang-dao', '/kinh-dich', '/ho-so'])
+  const linkOk = x => {
+    if (validTop.has(x.to)) return true
+    let m = x.to.match(/^\/tarot\/(.+)$/); if (m) return !!T.cardBySlug(m[1])
+    m = x.to.match(/^\/cung-hoang-dao\/(.+)$/); if (m) return !!Z.zodiacBySlug(m[1])
+    m = x.to.match(/^\/than-so-hoc\/so\/(.+)$/); if (m) return !!N.NUMEROLOGY[m[1]]
+    return false
+  }
+  const allOk = arr => arr.length >= 3 && arr.every(linkOk)
+  ok(Z.ZODIAC.every(z => allOk(REL.relatedForSign(z.en))), '12 cung: mỗi trang ≥3 link & route/slug hợp lệ')
+  ok(T.TAROT_CARDS.every(c => allOk(REL.relatedForCard(c))), '78 lá: mỗi trang ≥3 link & route/slug hợp lệ')
+  ok(Object.keys(N.NUMEROLOGY).every(k => allOk(REL.relatedForNumber(k))), '12 số: mỗi trang ≥3 link & route/slug hợp lệ')
+
+  const rd = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  for (const [f, call] of [['pages/Zodiac.jsx', 'relatedForSign(z.en)'], ['pages/Tarot.jsx', 'relatedForCard(card)'], ['pages/Numerology.jsx', 'relatedForNumber(k)']]) {
+    const src = rd(f)
+    ok(src.includes("from '../components/RelatedLinks.jsx'") && src.includes('<RelatedLinks items={' + call + '}'), 'wiring RelatedLinks trong ' + f)
+  }
+}
+
+
+// === A01: SEO meta cho TRANG INDEX từng hệ (canonical + og:url + breadcrumb) ===
+{
+  const rd = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const idx = [
+    ['pages/Tarot.jsx', "path: '/tarot'"],
+    ['pages/Numerology.jsx', "path='/than-so-hoc'"],
+    ['pages/Zodiac.jsx', "path='/cung-hoang-dao'"],
+    ['pages/IChing.jsx', "path: '/kinh-dich'"],
+    ['pages/LaSoTuVi.jsx', "path: '/la-so-tu-vi'"],
+    ['pages/TuVi.jsx', "path: '/tu-vi'"],
+    ['pages/Profile.jsx', "path: '/ho-so'"],
+    ['pages/Sources.jsx', "path: '/nguon'"]
+  ]
+  for (const [f, pathMarker] of idx) {
+    const src = rd(f)
+    const hasHook = src.includes('usePageSeo(') || src.includes('<SeoTag ')
+    ok(hasHook && src.includes(pathMarker) && src.includes("name: 'Trang chủ', path: '/'"), 'A01 wiring SEO index trong ' + f + ' (' + pathMarker + ')')
+  }
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

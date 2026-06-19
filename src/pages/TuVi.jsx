@@ -1,3 +1,4 @@
+import { usePageSeo } from '../components/useSeo.js'
 import { useState, useEffect } from 'react'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams } from 'react-router-dom'
@@ -7,6 +8,8 @@ import { solar2lunar } from '../data/lunar.js'
 const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Bình hòa': 'text-amber-800', 'Cần lưu ý': 'text-rose-700', 'Khá xung khắc': 'text-rose-700' }
 
 export default function TuVi() {
+  usePageSeo({ title: 'Tử vi & Can Chi — tuổi, âm lịch, hợp tuổi, sao hạn | Tam Sở', description: 'Tra Can Chi tuổi, ngày âm lịch, hợp tuổi – xung khắc, Tam Tai, Bát Trạch và sao hạn theo năm. Dữ kiện lịch pháp kèm diễn giải để tham khảo.', path: '/tu-vi', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tử vi & Can Chi' }] })
+
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">

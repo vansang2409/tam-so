@@ -28,7 +28,10 @@ const GLOSSARY = [
   ['Decan (thập phân)', 'Mỗi cung hoàng đạo chia 3 đoạn 10°, mỗi đoạn nhuốm thêm sắc thái một cung cùng nguyên tố.']
 ]
 
+import { usePageSeo } from '../components/useSeo.js'
 export default function Sources() {
+  usePageSeo({ title: 'Nguồn & lưu ý — tài liệu tham khảo và bản quyền | Tam Sở', description: 'Danh sách nguồn tài liệu và tài nguyên hợp pháp (Rider–Waite, Legge 1899, font OFL/MIT) cùng quan điểm trung thực: tách dữ kiện với diễn giải tham khảo.', path: '/nguon', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Nguồn & lưu ý' }] })
+
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-4">

@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react'
+import { usePageSeo } from '../components/useSeo.js'
 import { shareUrl as routeShareUrl } from '../data/site.js'
-import { TAROT_CARDS, TAROT_SPREADS, drawCards, birthCards } from '../data/tarot.js'
+import { useParams, Link } from 'react-router-dom'
+import { TAROT_CARDS, TAROT_SPREADS, drawCards, birthCards, cardSlug, cardBySlug } from '../data/tarot.js'
+import { addItem } from '../data/collection.js'
 import Modal from '../components/Modal.jsx'
 import CardImage from '../components/CardImage.jsx'
 import { Badge } from '../components/Disclaimer.jsx'
+import NotFound from '../components/NotFound.jsx'
+import RelatedLinks from '../components/RelatedLinks.jsx'
+import { relatedForCard } from '../data/related.js'
 
 const meaningOf = (c, up) => up ? (c.up || 'Từ khóa: ' + c.upKeys.join(', ')) : (c.rev || 'Từ khóa: ' + c.revKeys.join(', '))
 const FILTERS = [
@@ -84,7 +90,51 @@ function DrawnCard({ card, up, pos, delay = 0 }) {
   )
 }
 
-export default function Tarot() {
+function CardPage({ card }) {
+  usePageSeo({
+    title: card.nameVi + ' (' + card.name + ') — ý nghĩa xuôi, ngược, tình yêu & công việc | Tam Sở',
+    description: card.nameVi + ' (' + card.name + '): ' + (card.desc || '') + ' Ý nghĩa khi xuôi, khi ngược, trong tình yêu và công việc — Tam Sở.',
+    path: '/tarot/' + cardSlug(card),
+    breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: card.nameVi }]
+  })
+  return (
+    <>
+      <section className="wrap pt-[58px] pb-1 text-center">
+        <p className="note mb-1"><Link to="/tarot" className="text-gold">Tarot</Link> / {card.nameVi}</p>
+        <div className="flex justify-center"><CardImage card={card} w={300} imgClass="rounded-lg w-[200px] h-auto mb-3" fallbackClass="text-[3.4rem] my-4" /></div>
+        <h1 className="text-[clamp(1.7rem,4vw,2.5rem)] my-1">{card.nameVi} <span className="note text-[1rem]">({card.name}{card.roman ? ' · ' + card.roman : ''})</span></h1>
+        {(card.astro || card.element) && <p className="note m-0">✦ Tương ứng: {card.arcana === 'major' ? card.astro : ((card.astro ? card.astro + ' · ' : '') + 'chất ' + card.suit + ' · nguyên tố ' + card.element)}</p>}
+      </section>
+      <section className="wrap pb-3"><div className="panel p-[26px] max-w-[680px] mx-auto leading-relaxed">
+        {card.desc && <p className="note mb-3 text-center">{card.desc}</p>}
+        <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">Khi xuôi (upright)</div>
+        <div className="flex gap-2 flex-wrap my-1.5">{card.upKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
+        <p className="mt-1">{card.up}</p>
+        <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1 mt-4">Khi ngược (reversed)</div>
+        <div className="flex gap-2 flex-wrap my-1.5">{card.revKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
+        <p className="mt-1">{card.rev}</p>
+        {card.advice && <p className="mt-4 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {card.advice}</p>}
+        {card.love && <p className="mt-2 mb-0"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {card.love}</p>}
+        {card.work && <p className="mt-1 mb-0"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {card.work}</p>}
+        <p className="note mt-4 mb-0 text-[.78rem]">Ý nghĩa mang tính biểu tượng – tham khảo để chiêm nghiệm, không phải lời tiên đoán chắc chắn.</p>
+      </div></section>
+      <RelatedLinks items={relatedForCard(card)} />
+      <section className="wrap pb-9">
+        <div className="flex items-center justify-between gap-2 max-w-[680px] mx-auto flex-wrap">
+          {(() => { const i = TAROT_CARDS.indexOf(card); const prev = TAROT_CARDS[(i - 1 + TAROT_CARDS.length) % TAROT_CARDS.length]; const next = TAROT_CARDS[(i + 1) % TAROT_CARDS.length]; return (<>
+            <Link to={'/tarot/' + cardSlug(prev)} className="btn btn-ghost text-[.82rem]">← {prev.nameVi}</Link>
+            <Link to="/tarot" className="font-semibold text-[.9rem]">Thư viện 78 lá</Link>
+            <Link to={'/tarot/' + cardSlug(next)} className="btn btn-ghost text-[.82rem]">{next.nameVi} →</Link>
+          </>) })()}
+        </div>
+      </section>
+    </>
+  )
+}
+
+function TarotIndex() {
+  usePageSeo({ title: 'Tarot online — trải bài & ý nghĩa 78 lá (Rider–Waite) | Tam Sở', description: 'Rút Tarot online nhiều kiểu trải và tra ý nghĩa 78 lá xuôi/ngược theo bộ Rider–Waite. Gợi mở để chiêm nghiệm, không phải lời tiên đoán chắc chắn.', path: '/tarot', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot' }] })
+
   const [spread, setSpread] = useState('one')
   const [picks, setPicks] = useState([])
   const [drawId, setDrawId] = useState(0)
@@ -96,6 +146,7 @@ export default function Tarot() {
   const [question, setQuestion] = useState('')
   const [dayCopied, setDayCopied] = useState(false)
   const [readCopied, setReadCopied] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [quick, setQuick] = useState(null)
   const drawQuick = () => { const p = drawCards(1)[0]; setQuick({ card: p.card, up: p.up }) }
   const positions = TAROT_SPREADS[spread].positions
@@ -113,6 +164,7 @@ export default function Tarot() {
     const entry = { t: Date.now(), q: (q || '').trim(), spread: TAROT_SPREADS[sp].label, cards: p.map((x, i) => `${pos[i]}: ${x.card.nameVi} (${x.up ? 'xuôi' : 'ngược'})`) }
     const next = [entry, ...history].slice(0, 8)
     setHistory(next); try { localStorage.setItem(HKEY, JSON.stringify(next)) } catch { }
+    setSaved(false)
   }
   const handleDraw = () => runDraw(spread, question)
   const askPreset = (q, sp) => {
@@ -128,6 +180,16 @@ export default function Tarot() {
       ? `Trả lời: ${picks[0].up ? 'CÓ' : 'KHÔNG'} — ${picks[0].card.nameVi} (${picks[0].up ? 'xuôi' : 'ngược'})`
       : picks.map((pk, i) => `${positions[i]}: ${pk.card.nameVi} (${pk.up ? 'xuôi' : 'ngược'})`).join('\n')
     navigator.clipboard?.writeText(`${head}\n${body}\n— Tam Sở ${u}`).then(() => { setReadCopied(true); setTimeout(() => setReadCopied(false), 2000) })
+  }
+  const saveReading = () => {
+    if (!picks.length) return
+    const q = question.trim()
+    const lines = isYesNo
+      ? ['Trả lời: ' + (picks[0].up ? 'CÓ' : 'KHÔNG') + ' — ' + picks[0].card.nameVi + ' (' + (picks[0].up ? 'xuôi' : 'ngược') + ')']
+      : picks.map((pk, i) => positions[i] + ': ' + pk.card.nameVi + ' (' + (pk.up ? 'xuôi' : 'ngược') + ')')
+    const sig = 'tarot:' + spread + '|' + picks.map(p => p.card.id + (p.up ? 'u' : 'r')).join(',') + '|' + q
+    addItem({ kind: 'tarot', sig, title: TAROT_SPREADS[spread].label + (q ? ' — “' + q + '”' : ''), lines, url: routeShareUrl('/tarot') })
+    setSaved(true)
   }
   const cards = TAROT_CARDS.filter(c => filter === 'all' ? true : filter === 'major' ? c.arcana === 'major' : filter === 'fav' ? favs.includes(c.id) : c.suit === filter)
 
@@ -207,6 +269,7 @@ export default function Tarot() {
           {picks.length > 0 && (
             <div className="flex gap-2 justify-center flex-wrap mt-4 no-print">
               <button className="btn btn-ghost" onClick={copyReading}>{readCopied ? '✓ Đã chép!' : '📋 Chép kết quả'}</button>
+              <button className="btn btn-ghost" onClick={saveReading} disabled={saved}>{saved ? '🔖 Đã lưu' : '🔖 Lưu vào bộ sưu tập'}</button>
               <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/tarot'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
             </div>
           )}
@@ -282,6 +345,7 @@ export default function Tarot() {
           {sel.advice && <p className="mt-3 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {sel.advice}</p>}
           {sel.love && <p className="mt-2 mb-0 text-[.92rem]"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {sel.love}</p>}
           {sel.work && <p className="mt-1 mb-0 text-[.92rem]"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {sel.work}</p>}
+          <div className="text-center mt-3 no-print"><Link to={'/tarot/' + cardSlug(sel)} onClick={() => setSel(null)} className="font-semibold">Mở trang riêng của lá này →</Link></div>
         </>)}
       </Modal>
     </>
@@ -316,4 +380,15 @@ function BirthCardsTool() {
       </div>
     </section>
   )
+}
+
+export default function Tarot() {
+  const { slug } = useParams()
+  if (slug) {
+    const c = cardBySlug(slug)
+    return c
+      ? <CardPage card={c} />
+      : <NotFound title="Không tìm thấy lá bài" msg="Lá Tarot bạn tìm không có trong bộ 78 lá (có thể đường dẫn bị gõ sai). Mời bạn quay lại thư viện để chọn lá khác." />
+  }
+  return <TarotIndex />
 }

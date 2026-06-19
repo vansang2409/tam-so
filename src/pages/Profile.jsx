@@ -1,3 +1,4 @@
+import { usePageSeo } from '../components/useSeo.js'
 import { useState, useEffect, useRef } from 'react'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -38,8 +39,8 @@ function compute(name, dd, mm, yy, gender, hour, topic, question) {
     hour: hour == null ? '' : ('' + hour), topic: topic || 'Tổng quan', question: (question || '').trim(),
     noHour: hour == null || hour === '' || isNaN(+hour), hourCC, sao
   }
-  base.report = buildReport(base, cardOfDay())
   base.laso = laso; base.menhStars = menhStars
+  base.report = buildReport(base, cardOfDay())
   return base
 }
 
@@ -53,6 +54,8 @@ function Card({ to, label, children }) {
 }
 
 export default function Profile() {
+  usePageSeo({ title: 'Hồ sơ huyền học tổng hợp — gộp mọi hệ vào một trang | Tam Sở', description: 'Nhập một lần ngày sinh để xem tổng hợp lá Tarot chủ đạo, Thần số học, Can Chi, lá số Tử Vi và cung hoàng đạo trong một báo cáo, xuất PDF/PNG.', path: '/ho-so', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Hồ sơ tổng hợp' }] })
+
   const [params, setParams] = useSearchParams()
   const [name, setName] = useState(''); const [d, setD] = useState(''); const [m, setM] = useState(''); const [y, setY] = useState(''); const [g, setG] = useState('nam')
   const [hour, setHour] = useState(''); const [topic, setTopic] = useState('Tổng quan'); const [question, setQuestion] = useState('')
@@ -100,13 +103,13 @@ export default function Profile() {
   const copyReport = () => {
     if (!res || !res.report) return
     const r = res.report
-    const txt = [r.intro, r.focus, r.topicNote, r.saoNote, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
+    const txt = [r.intro, r.focus, r.topicNote, r.saoNote, r.tuVi, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
     navigator.clipboard?.writeText(txt).then(() => { setRepCopied(true); setTimeout(() => setRepCopied(false), 2000) })
   }
   const downloadReport = () => {
     if (!res || !res.report) return
     const r = res.report
-    const txt = ['TAM SỞ — BÁO CÁO TỔNG HỢP', res.name ? 'Tên: ' + res.name : '', d + '/' + m + '/' + y, '', r.intro, r.focus, r.topicNote, r.saoNote, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
+    const txt = ['TAM SỞ — BÁO CÁO TỔNG HỢP', res.name ? 'Tên: ' + res.name : '', d + '/' + m + '/' + y, '', r.intro, r.focus, r.topicNote, r.saoNote, r.tuVi, hopKhacLine(res.canChi.chi), 'Gợi ý 7 ngày tới:', ...r.week].filter(Boolean).join('\n\n')
     const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' })
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bao-cao-tam-so' + (res.name ? '-' + res.name.replace(/\s+/g, '_') : '') + '.txt'; a.click(); URL.revokeObjectURL(a.href)
   }
@@ -261,6 +264,7 @@ export default function Profile() {
                   <p className="m-0 mb-3 leading-relaxed">{res.report.focus}</p>
                   {res.report.topicNote && <p className="m-0 mb-3 leading-relaxed text-cream">{res.report.topicNote}</p>}
                   {res.report.saoNote && <p className="m-0 mb-3 leading-relaxed note">{res.report.saoNote}</p>}
+                  {res.report.tuVi && <p className="m-0 mb-3 leading-relaxed note">{res.report.tuVi}</p>}
                   <div className="text-gold text-[.9rem] font-semibold mb-1">Gợi ý 7 ngày tới</div>
                   <ol className="m-0 pl-5">{res.report.week.map((w, i) => <li key={i} className="text-[.95rem] mb-1">{w}</li>)}</ol>
                   <p className="note mt-3 mb-0">Tổng hợp tự động từ hồ sơ để bạn chiêm nghiệm — không phải lời tiên tri, không thay tư vấn chuyên môn.</p>

@@ -29,7 +29,7 @@ export default function Modal({ open, onClose, children }) {
       className="fixed inset-0 z-[60] flex items-start sm:items-center justify-center p-3 sm:p-5 overflow-y-auto bg-[#0d0803]/75 backdrop-blur-sm animate-fade">
       <div ref={dialogRef} role="dialog" aria-modal="true" tabIndex={-1}
         className="relative w-full max-w-[520px] my-auto p-5 sm:p-[30px] rounded-[18px] shadow-soft border border-gold/30 max-h-[92vh] overflow-y-auto focus:outline-none"
-        style={{ background: 'linear-gradient(160deg,#2a1d0d,#34230f)' }}>
+        style={{ background: 'linear-gradient(160deg,#fbf5e6,#f0e4c6)' }}>
         <button onClick={onClose} aria-label="Đóng"
           className="sticky top-0 float-right -mt-1 bg-transparent border-0 text-muted text-[1.6rem] leading-none cursor-pointer">×</button>
         {children}

@@ -1,3 +1,4 @@
+import { doSangSummary } from './tuvidauso.js'
 /* Báo cáo tổng hợp TẤT ĐỊNH (mock) — ghép thần số học + Can Chi + Tarot + chủ đề.
  * KHÔNG gọi AI API. Giọng nhẹ nhàng, không hù dọa, không khẳng định tương lai. */
 import { PERSONAL_YEAR, NUMEROLOGY } from './numerology.js'
@@ -47,5 +48,7 @@ export function buildReport(res, today) {
   const seed = (res.lp.lp || 0) + (res.py || 0)
   const week = []
   for (let i = 0; i < 7; i++) week.push(`Ngày ${i + 1}: ${WEEK_POOL[(seed + i * 5) % WEEK_POOL.length]}`)
-  return { intro, focus, topicNote, saoNote, week }
+  let tuVi = ''
+  if (res.laso) { const ds = doSangSummary(res.laso); tuVi = 'Lá số Tử Vi: Mệnh tại ' + res.laso.menhChi + ', Cục ' + res.laso.cuc.ten + ', cách cục ' + res.laso.menhCach.ten + '. ' + (ds ? ds.text : '') }
+  return { intro, focus, topicNote, saoNote, week, tuVi }
 }

@@ -152,6 +152,7 @@ export const TAROT_SPREADS = {
   three: { label: '3 lá — Quá khứ · Hiện tại · Tương lai', positions: ['Quá khứ', 'Hiện tại', 'Tương lai'] },
   love: { label: '5 lá — Tình yêu', positions: ['Bạn', 'Đối phương', 'Mối quan hệ', 'Thử thách', 'Kết quả'] },
   career: { label: '4 lá — Sự nghiệp', positions: ['Hiện trạng', 'Trở ngại', 'Lời khuyên', 'Kết quả'] },
+  money: { label: '5 lá — Tài chính', positions: ['Tình hình tiền bạc', 'Nguồn thu', 'Khoản chi / rò rỉ', 'Lời khuyên', 'Hướng tới'] },
   celtic: { label: '10 lá — Celtic Cross', positions: ['Hiện tại', 'Thách thức', 'Nền tảng', 'Quá khứ', 'Mục tiêu', 'Tương lai gần', 'Bản thân', 'Môi trường', 'Hy vọng / Nỗi sợ', 'Kết quả'] },
   yesno: { label: 'Có / Không', positions: ['Trả lời'] }
 }
@@ -442,3 +443,7 @@ export function birthCards(d, m, y) {
   const c2 = TAROT_CARDS.find(c => c.arcana === 'major' && c.id === t2)
   return t === t2 ? [c1] : [c1, c2]
 }
+
+/* ===== Slug cho URL/SEO từng lá ===== */
+export function cardSlug(card) { return card.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') }
+export function cardBySlug(slug) { return TAROT_CARDS.find(c => cardSlug(c) === slug) || null }

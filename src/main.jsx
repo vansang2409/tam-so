@@ -15,6 +15,8 @@ import Zodiac from './pages/Zodiac.jsx'
 import IChing from './pages/IChing.jsx'
 import TuongHop from './pages/TuongHop.jsx'
 import Sources from './pages/Sources.jsx'
+import Collection from './pages/Collection.jsx'
+import NotFound from './components/NotFound.jsx'
 
 const Router = USE_PATH ? BrowserRouter : HashRouter
 const routerProps = USE_PATH ? { basename: BASENAME } : {}
@@ -27,14 +29,19 @@ createRoot(document.getElementById('root')).render(
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />
           <Route path="tarot" element={<Tarot />} />
+          <Route path="tarot/:slug" element={<Tarot />} />
           <Route path="than-so-hoc" element={<Numerology />} />
+          <Route path="than-so-hoc/so/:n" element={<Numerology />} />
           <Route path="tu-vi" element={<TuVi />} />
           <Route path="la-so-tu-vi" element={<LaSoTuVi />} />
           <Route path="so-la-so" element={<SoLaSo />} />
           <Route path="cung-hoang-dao" element={<Zodiac />} />
+          <Route path="cung-hoang-dao/:slug" element={<Zodiac />} />
           <Route path="kinh-dich" element={<IChing />} />
           <Route path="tuong-hop" element={<TuongHop />} />
+          <Route path="bo-suu-tap" element={<Collection />} />
           <Route path="nguon" element={<Sources />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </Router>

@@ -1,5 +1,13 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Today from '../components/Today.jsx'
+import { ZODIAC, ZODIAC_SLUG, dailyHoroscope } from '../data/zodiac.js'
+
+const pillars = [
+  { ic: '🃏', title: 'Rút bài Tarot', to: '/tarot', desc: 'Một câu hỏi trong lòng — để lá bài gợi mở.' },
+  { ic: '🔢', title: 'Thần số học', to: '/than-so-hoc', desc: 'Ngày sinh & họ tên ẩn chứa con số của bạn.' },
+  { ic: '☆', title: 'Lá số Tử Vi', to: '/la-so-tu-vi', desc: 'An sao 12 cung theo giờ sinh của bạn.' }
+]
 
 const features = [
   { ic: '📜', title: 'Hồ sơ tổng hợp', to: '/ho-so', cta: 'Lập hồ sơ →', desc: 'Nhập một lần — xem ngay Số Chủ Đạo, Can Chi, cung hoàng đạo, lá Tarot chủ đạo và năm cá nhân trong một bức chân dung.' },
@@ -14,9 +22,39 @@ const features = [
 ]
 
 export default function Home() {
+  const [streak, setStreak] = useState(0)
+  const [greet, setGreet] = useState('')
+  const [cung, setCung] = useState(null)
+  useEffect(() => {
+    try {
+      const key = new Date().toISOString().slice(0, 10)
+      let d = JSON.parse(localStorage.getItem('tamso_streak') || 'null')
+      if (!d || !d.last) d = { last: key, count: 1 }
+      else if (d.last !== key) {
+        const diff = Math.round((new Date(key) - new Date(d.last)) / 86400000)
+        d = { last: key, count: diff === 1 ? (d.count || 1) + 1 : 1 }
+      }
+      localStorage.setItem('tamso_streak', JSON.stringify(d))
+      setStreak(d.count || 1)
+    } catch (e) { /* localStorage có thể bị chặn — bỏ qua */ }
+    try { const c = localStorage.getItem('tamso_cung'); if (c) setCung(c) } catch (e2) {}
+    const h = new Date().getHours()
+    setGreet(h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối')
+  }, [])
+  let dateStr = ''
+  try { dateStr = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' }) } catch (e) { dateStr = '' }
+  const cungObj = cung ? ZODIAC.find(z => z.en === cung) : null
+  const dh = cungObj ? dailyHoroscope(cungObj.en, new Date().toISOString().slice(0, 10)) : null
+
   return (
     <>
-      <section className="wrap text-center pt-[78px] pb-[54px]">
+      <section className="wrap text-center pt-[58px] pb-2">
+        {greet && (
+          <div className="text-muted text-[.92rem] mb-2.5">
+            {greet}{dateStr ? ' · ' + dateStr : ''}
+            {streak > 1 && <> · <span className="text-gold font-semibold">đã ghé {streak} ngày liền ✦</span></>}
+          </div>
+        )}
         <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
         <h1 className="gradient-text text-[clamp(2.3rem,5vw,3.7rem)] my-2.5">Năm ngả chiêm nghiệm,<br />một chốn dừng chân</h1>
         <p className="text-muted text-[1.12rem] max-w-[700px] mx-auto mb-7">
@@ -29,9 +67,48 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="wrap pt-4 pb-2">
+        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.22em] mb-3">Bạn muốn xem gì hôm nay?</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[820px] mx-auto">
+          {pillars.map(p => (
+            <Link key={p.to} to={p.to} className="panel p-6 text-center no-underline block transition hover:-translate-y-1 hover:border-gold/40">
+              <span className="block text-[2.4rem] mb-1">{p.ic}</span>
+              <h3 className="text-cream text-[1.15rem] mb-1">{p.title}</h3>
+              <p className="text-muted text-[.9rem] m-0">{p.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="wrap py-2">
+        <div className="panel p-5 max-w-[680px] mx-auto bg-gold/[.05]">
+          {cungObj && dh ? (
+            <>
+              <div className="flex items-center justify-between flex-wrap gap-2 mb-1">
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em]">Tử vi hôm nay · {cungObj.sym} {cungObj.ten}</div>
+                <div className="text-amber-700 text-[.95rem]" title="Mức năng lượng (tham khảo)">{'★'.repeat(dh.nangLuong)}<span className="text-gray-300">{'★'.repeat(5 - dh.nangLuong)}</span></div>
+              </div>
+              <p className="m-0 leading-relaxed">{dh.tongQuan}</p>
+              <p className="note m-0 mt-1.5">💡 {dh.loiKhuyen}</p>
+              <Link to={'/cung-hoang-dao/' + ZODIAC_SLUG[cungObj.en]} className="font-semibold inline-block mt-2">Xem đầy đủ tình cảm · công việc · tài chính →</Link>
+            </>
+          ) : (
+            <div className="text-center">
+              <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">Tử vi hôm nay</div>
+              <p className="m-0 text-muted">Chọn cung hoàng đạo của bạn để nhận một gợi ý chiêm nghiệm mới mỗi ngày.</p>
+              <Link to="/cung-hoang-dao" className="btn btn-ghost mt-3">♈ Xem cung của tôi</Link>
+            </div>
+          )}
+        </div>
+      </section>
+
       <Today />
 
-      <section className="wrap py-10">
+      <section className="wrap pt-1 pb-3">
+        <p className="note text-center max-w-[640px] mx-auto m-0">✦ Lá bài, quẻ Dịch và con số của ngày làm mới mỗi sáng — ghé lại ngày mai để nhận điều mới, và giữ chuỗi ngày của bạn.</p>
+      </section>
+
+      <section className="wrap py-9">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map(f => (
             <div key={f.to} className="panel p-7 text-center transition hover:-translate-y-1.5 hover:border-gold/40">
@@ -44,7 +121,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="wrap py-10">
+      <section className="wrap pb-10">
         <div className="disclaimer max-w-[900px] mx-auto">
           <b>Một lời thành thật.</b> Tarot, Thần số học, Tử vi, Chiêm tinh và Kinh Dịch là những hệ thống <b>tín ngưỡng – văn hóa</b>, không phải khoa học
           và không có giá trị tiên đoán đã được kiểm chứng. Tam Sở phân biệt rạch ròi phần <em>tính toán</em> (kiểm chứng được) với phần <em>luận giải</em> (truyền thống, tham khảo).

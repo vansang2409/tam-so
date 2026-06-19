@@ -1,7 +1,9 @@
+import { usePageSeo } from '../components/useSeo.js'
 import { useState } from 'react'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide, maiHoa } from '../data/iching.js'
 import { solar2lunar } from '../data/lunar.js'
+import { addItem } from '../data/collection.js'
 import Modal from '../components/Modal.jsx'
 import Hexagram from '../components/Hexagram.jsx'
 
@@ -81,9 +83,12 @@ function MaiHoaTool() {
   )
 }
 export default function IChing() {
+  usePageSeo({ title: 'Kinh Dịch — gieo quẻ online & tra 64 quẻ (Thoán, hào) | Tam Sở', description: 'Gieo quẻ Kinh Dịch và tra ý nghĩa 64 quẻ với lời Thoán cùng 384 hào (bản Legge 1899). Tham khảo để chiêm nghiệm, không phải lời phán chắc chắn.', path: '/kinh-dich', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Kinh Dịch' }] })
+
   const [cast, setCast] = useState(null)
   const [sel, setSel] = useState(null)
   const [castCopied, setCastCopied] = useState(false)
+  const [savedCast, setSavedCast] = useState(null)
 
   return (
     <>
@@ -116,6 +121,7 @@ export default function IChing() {
               )}
               <div className="flex gap-2 justify-center flex-wrap mt-5 no-print">
                 <button className="btn btn-ghost" onClick={() => { const u = routeShareUrl('/kinh-dich'); let t = `✦ Quẻ Dịch: ${cast.present.n} · ${cast.present.ten}`; if (cast.changed) t += ` → biến ${cast.changed.n} · ${cast.changed.ten} (hào động ${cast.changingPos.join(', ')})`; t += `\n${cast.present.y || ''}\n— Tam Sở ${u}`; navigator.clipboard?.writeText(t).then(() => { setCastCopied(true); setTimeout(() => setCastCopied(false), 2000) }) }}>{castCopied ? '✓ Đã chép!' : '📋 Chép quẻ'}</button>
+                <button className="btn btn-ghost" onClick={() => { if (!cast) return; const lines = ['Quẻ chính: ' + cast.present.n + ' · ' + cast.present.ten]; if (cast.changed) lines.push('Quẻ biến: ' + cast.changed.n + ' · ' + cast.changed.ten + ' (hào động ' + cast.changingPos.join(', ') + ')'); else lines.push('Không có hào động.'); addItem({ kind: 'iching', sig: 'iching:' + cast._id, title: 'Quẻ ' + cast.present.n + ' · ' + cast.present.ten + (cast.changed ? ' → ' + cast.changed.n + ' · ' + cast.changed.ten : ''), lines, note: cast.present.y || '', url: routeShareUrl('/kinh-dich') }); setSavedCast(cast._id) }} disabled={savedCast === cast._id}>{savedCast === cast._id ? '🔖 Đã lưu' : '🔖 Lưu vào bộ sưu tập'}</button>
                 <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(routeShareUrl('/kinh-dich'))} target="_blank" rel="noopener">📘 Chia sẻ</a>
               </div>
             </div>
