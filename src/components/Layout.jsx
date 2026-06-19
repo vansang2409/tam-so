@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import ErrorBoundary from './ErrorBoundary.jsx'
+import Logo from './Logo.jsx'
 import { countCollection } from '../data/collection.js'
 
 const links = [
@@ -52,7 +53,7 @@ function Navbar() {
     <header className="sticky top-0 z-40 backdrop-blur-md bg-[#f3e8cf]/88 border-b border-gold/20">
       <nav className="flex items-center justify-between gap-3 px-[22px] py-3.5 max-w-content mx-auto">
         <Link to="/" className="flex items-center gap-2.5 font-serif text-[1.3rem] font-bold text-cream whitespace-nowrap no-underline hover:no-underline">
-          ✦ Tam Sở<span className="text-gold">.</span>
+          <Logo size={30} className="shrink-0" /> Tam Sở<span className="text-gold">.</span>
         </Link>
         <div className="flex items-center gap-1.5">
           <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:flex flex-col md:flex-row md:flex-wrap md:justify-end gap-1.5 absolute md:static top-[62px] right-3.5 left-3.5 md:inset-auto bg-ink2 md:bg-transparent border md:border-0 border-gold/20 rounded-2xl md:rounded-none p-2.5 md:p-0 shadow-soft md:shadow-none z-50`}>
@@ -71,7 +72,7 @@ function Footer() {
   return (
     <footer className="border-t border-gold/20 mt-10 py-[30px] text-muted text-[.9rem]">
       <div className="wrap flex justify-between gap-4 flex-wrap items-center">
-        <span>✦ Tam Sở — © {new Date().getFullYear()} · Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</span>
+        <span className="inline-flex items-center gap-1.5"><Logo size={18} className="shrink-0" /> Tam Sở — © {new Date().getFullYear()} · Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</span>
         <span className="flex gap-4 flex-wrap">
           <Link to="/bo-suu-tap" className="text-muted hover:text-gold">🔖 Bộ sưu tập</Link>
           <Link to="/nguon" className="text-muted hover:text-gold">Nguồn &amp; Lưu ý</Link>

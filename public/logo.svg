@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Tam Sở">
+  <title>Tam Sở</title>
+  <circle cx="50" cy="50" r="46" fill="#f7eedb" stroke="#d3a24e" stroke-width="4"/>
+  <circle cx="50" cy="50" r="39" fill="none" stroke="#d3a24e" stroke-opacity="0.4" stroke-width="1.5"/>
+  <circle cx="45" cy="53" r="25" fill="#d3a24e"/>
+  <circle cx="57" cy="45" r="22" fill="#f7eedb"/>
+  <polygon points="0,-1 0.24,-0.24 1,0 0.24,0.24 0,1 -0.24,0.24 -1,0 -0.24,-0.24" fill="#9a6b28" transform="translate(66,48) scale(10.5)"/>
+</svg>

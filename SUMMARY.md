@@ -2,9 +2,10 @@
 
 **Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (296 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.59.0, 296 test pass.** Giao diện tông giấy-cổ/kem. **Toàn bộ backlog actionable (H/M/A/C) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
+**Hiện trạng: v3.61.0, 296 test pass.** Giao diện tông giấy-cổ/kem. **Toàn bộ backlog actionable (H/M/A/C) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
 
 **Đã xong gần đây (phiên này):**
+- LOGO (v3.61): emblem **"Trăng & sao"** — vầng trăng khuyết vàng ôm sao ✦ trên đĩa giấy-cổ. `src/components/Logo.jsx` + `public/logo.svg`; gắn nav + footer (thay ✦ cũ), favicon đổi sang trăng-sao nền đậm. (v3.60: đồng bộ design-system toàn trang.)
 - DOMAIN (v3.59): đặt `SITE_ORIGIN` = `https://tam-so.vercel.app` (tạm, bỏ subpath /tam-so vì Vercel chạy ở root) — cập nhật seo.js + sitemap (216 URL) + index.html (og/canonical) + robots.txt + test; prerender & shareUrl tự khớp. Đổi domain lần sau: sửa `SITE_ORIGIN` + bulk-replace sitemap.
 - C01 (v3.58): **prerender meta tĩnh** — `scripts/prerender.mjs` sinh 211 file route landing với title/description/canonical/og + JSON-LD breadcrumb riêng (crawler "view source" thấy meta đúng từng trang). An toàn: chỉ thêm file, KHÔNG sửa `index.html` (file:// nguyên vẹn); GUARD chỉ chạy khi base `/` (Vercel), skip base `./` (Pages); try/catch không chặn build. Nghiệm thu serving khi Vercel live.
 - C06 đợt 4 ⇒ **C06 XONG** (v3.57): thêm `saoKhuyen.js` — lời khuyên cho 14 chính tinh, render trên Lá Số (SAO_CUNG vốn đã dày 168 luận điểm). Trọn C06: 12 cung · 78 lá Tarot · 12 Số · sao×cung.
