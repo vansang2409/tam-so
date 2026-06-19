@@ -10,6 +10,7 @@ import { Badge } from '../components/Disclaimer.jsx'
 import NotFound from '../components/NotFound.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
 import { relatedForCard } from '../data/related.js'
+import { TAROT_DEEP } from '../data/tarotDeep.js'
 
 const meaningOf = (c, up) => up ? (c.up || 'Từ khóa: ' + c.upKeys.join(', ')) : (c.rev || 'Từ khóa: ' + c.revKeys.join(', '))
 const FILTERS = [
@@ -97,6 +98,7 @@ function CardPage({ card }) {
     path: '/tarot/' + cardSlug(card),
     breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tarot', path: '/tarot' }, { name: card.nameVi }]
   })
+  const d = (card.arcana === 'major' && TAROT_DEEP[card.id]) || {}
   return (
     <>
       <section className="wrap pt-[58px] pb-1 text-center">
@@ -113,9 +115,10 @@ function CardPage({ card }) {
         <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1 mt-4">Khi ngược (reversed)</div>
         <div className="flex gap-2 flex-wrap my-1.5">{card.revKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
         <p className="mt-1">{card.rev}</p>
-        {card.advice && <p className="mt-4 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {card.advice}</p>}
-        {card.love && <p className="mt-2 mb-0"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {card.love}</p>}
-        {card.work && <p className="mt-1 mb-0"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {card.work}</p>}
+        {(card.love || d.love) && <p className="mt-4 mb-0"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {card.love || d.love}</p>}
+        {(card.work || d.work) && <p className="mt-1 mb-0"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {card.work || d.work}</p>}
+        {(card.finance || d.finance) && <p className="mt-1 mb-0"><span className="text-amber-700 font-semibold">💰 Tài chính:</span> {card.finance || d.finance}</p>}
+        {(card.advice || d.advice) && <p className="mt-2 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {card.advice || d.advice}</p>}
         <p className="note mt-4 mb-0 text-[.78rem]">Ý nghĩa mang tính biểu tượng – tham khảo để chiêm nghiệm, không phải lời tiên đoán chắc chắn.</p>
       </div></section>
       <RelatedLinks items={relatedForCard(card)} />
