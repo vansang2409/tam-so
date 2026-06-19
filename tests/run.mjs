@@ -600,5 +600,19 @@ delete global.window
   ok(framePages.every(f => /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/.test(rd(f))), 'C05: mọi trang hệ đều có khung "tham khảo/chiêm nghiệm"')
 }
 
+// === C03: trang Sinh năm (/sinh-nam programmatic) ===
+{
+  eq(V.tinhCanChi(1990).tenCanChi, 'Canh Ngọ', 'tinhCanChi 1990 = Canh Ngọ (nền /sinh-nam)')
+  eq(V.tinhCanChi(2000).conGiap, 'Rồng', 'tinhCanChi 2000 cầm tinh Rồng')
+  const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const main = read('main.jsx')
+  ok(main.includes('import SinhNam') && main.includes('path="sinh-nam"') && main.includes('path="sinh-nam/:year"'), 'main.jsx: import + route /sinh-nam (+:year)')
+  ok(/export default function SinhNam/.test(read('pages/SinhNam.jsx')), 'SinhNam.jsx: export default')
+  const s = read('pages/SinhNam.jsx')
+  ok(s.includes('tinhCanChi') && s.includes('usePageSeo(') && s.includes('breadcrumb:'), 'SinhNam: dùng tinhCanChi + SEO meta')
+  const sm = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')
+  ok(sm.includes('/sinh-nam/1990') && sm.includes('/sinh-nam/2000'), 'sitemap: có URL sinh năm')
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

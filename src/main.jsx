@@ -18,6 +18,7 @@ import Sources from './pages/Sources.jsx'
 import Collection from './pages/Collection.jsx'
 import ConGiap from './pages/ConGiap.jsx'
 import HopTuoi from './pages/HopTuoi.jsx'
+import SinhNam from './pages/SinhNam.jsx'
 import NotFound from './components/NotFound.jsx'
 
 const Router = USE_PATH ? BrowserRouter : HashRouter
@@ -43,6 +44,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="con-giap/:slug" element={<ConGiap />} />
           <Route path="hop-tuoi" element={<HopTuoi />} />
           <Route path="hop-tuoi/:slug" element={<HopTuoi />} />
+          <Route path="sinh-nam" element={<SinhNam />} />
+          <Route path="sinh-nam/:year" element={<SinhNam />} />
           <Route path="kinh-dich" element={<IChing />} />
           <Route path="tuong-hop" element={<TuongHop />} />
           <Route path="bo-suu-tap" element={<Collection />} />
