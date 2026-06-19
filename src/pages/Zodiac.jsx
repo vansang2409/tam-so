@@ -7,6 +7,7 @@ import NotFound from '../components/NotFound.jsx'
 import SeoTag from '../components/SeoTag.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
 import { relatedForSign } from '../data/related.js'
+import { ZODIAC_EXTRA } from '../data/zodiacDeep.js'
 
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
 const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Cần dung hòa': 'text-rose-700', 'Trung bình': 'text-amber-800' }
@@ -58,6 +59,7 @@ function CompatMatrix() {
 
 function CungReading({ z }) {
   const deep = ZODIAC_DEEP[z.en]
+  const ex = ZODIAC_EXTRA[z.en]
   const today = new Date().toISOString().slice(0, 10)
   const dh = dailyHoroscope(z.en, today)
   return (
@@ -65,12 +67,16 @@ function CungReading({ z }) {
       {deep && (
         <div className="text-left max-w-[600px] mx-auto mt-2 flex flex-col gap-1.5 leading-relaxed">
           <div className="text-gold text-[.72rem] uppercase tracking-[.18em]">Chân dung {z.ten}</div>
-          <p className="m-0"><b className="text-cream">Điểm mạnh:</b> {deep.diemManh}</p>
-          <p className="m-0"><b className="text-cream">Nên lưu ý:</b> {deep.luuY}</p>
+          {ex && <p className="m-0">{ex.tomTat}</p>}
+          {ex && <p className="m-0"><b className="text-cream">Tính cách:</b> {ex.tinhCach}</p>}
           <p className="m-0"><b className="text-cream">Tình yêu:</b> {deep.tinhYeu}</p>
           <p className="m-0"><b className="text-cream">Công việc:</b> {deep.congViec}</p>
           <p className="m-0"><b className="text-cream">Tài chính:</b> {deep.taiChinh}</p>
+          {ex && <p className="m-0"><b className="text-cream">Sức khỏe:</b> {ex.sucKhoe}</p>}
+          <p className="m-0"><b className="text-cream">Điểm mạnh:</b> {deep.diemManh}</p>
+          <p className="m-0"><b className="text-cream">Nên lưu ý:</b> {deep.luuY}</p>
           <p className="m-0"><b className="text-cream">Hợp với:</b> {deep.hopVoi.join(' · ')}</p>
+          {ex && <p className="m-0 note"><b className="text-cream">Lời khuyên:</b> {ex.loiKhuyen}</p>}
         </div>
       )}
       <div className="text-left max-w-[600px] mx-auto mt-5 panel bg-gold/[.05] p-4">

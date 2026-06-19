@@ -1,10 +1,12 @@
 # SUMMARY — Tam Sở (cập nhật 19/06/2026)
 
-**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (244 mốc), build `npm run build`. Không backend/auth/db.
+**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (251 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.49.0, 244 test pass.** Giao diện tông giấy-cổ/kem.
+**Hiện trạng: v3.50.0, 251 test pass.** Giao diện tông giấy-cổ/kem.
 
 **Đã xong gần đây (phiên này):**
+- C06 đợt 1 (v3.50): **làm dày 12 cung hoàng đạo** — thêm `src/data/zodiacDeep.js` (tomTat/tinhCach/sucKhoe/loiKhuyen; giọng tham khảo + caveat "không thay tư vấn y tế"), render thêm mục trên trang cung; +7 test (độ dài tối thiểu + chặn từ phán tuyệt đối). Còn lại 78 lá → 12 số → sao×cung.
+- **DEPLOY**: GitHub Pages (Actions) đang **fail vì tài khoản bị khoá billing** (KHÔNG phải lỗi code — job "not started due to billing"). Đã thêm đường deploy thay thế **Vercel**: `vercel.json` (SPA rewrite) + `vite.config` base '/' khi env `VERCEL`. Repo cũng đã đổi nhánh main→master (sửa `deploy.yml` trigger `master`). SEO URL còn trỏ github.io/tam-so — chờ domain Vercel để cập nhật.
 - C02 (v3.49): **Tử vi hôm nay theo 12 con giáp** — route `/con-giap` + 12 trang `/con-giap/:slug`; `src/data/congiap.js` (CONGIAP_SLUG phân biệt Tý↔Tỵ, dailyConGiap tất định dùng chung engine `dailyReading` tách từ zodiac.js, hopKhacChi tam/lục hợp + lục xung, recentYears) + `src/pages/ConGiap.jsx`; meta động + breadcrumb + sitemap (+13 URL, tổng 126); link trên Home. Phần 12 cung daily đã có sẵn (H04/H05) ⇒ C02 xong.
 - A01 (v3.48): SEO meta cho 8 TRANG INDEX hệ — canonical + og:url + breadcrumb 2 cấp (thêm `SeoTag.jsx`; wire usePageSeo/SeoTag).
 - A03 (v3.48): khối **"Nội dung liên quan"** (internal-link chéo đa hệ) trên 102 trang sâu — `src/data/related.js` (thuần) + `RelatedLinks.jsx`; ánh xạ Golden Dawn (cung↔Ẩn Chính) + số may mắn, ≥3 link/trang (tối đa 1/hệ), route 100% hợp lệ.

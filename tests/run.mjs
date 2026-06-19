@@ -13,6 +13,7 @@ import * as COLL from '../src/data/collection.js'
 import * as SEO from '../src/data/seo.js'
 import * as REL from '../src/data/related.js'
 import * as CG from '../src/data/congiap.js'
+import * as ZD from '../src/data/zodiacDeep.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { readFileSync } from 'node:fs'
@@ -482,6 +483,28 @@ delete global.window
   ok(read('pages/Home.jsx').includes('/con-giap'), 'Home: có link sang /con-giap')
   const sm = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')
   ok(sm.includes('/con-giap/ty') && sm.includes('/con-giap/ti') && sm.includes('/con-giap/hoi'), 'sitemap: có URL con giáp (ty, ti, hoi)')
+}
+
+// === C06 đợt 1: nội dung DÀY 12 cung (zodiacDeep.js) ===
+{
+  const ens = Z.ZODIAC.map(z => z.en)
+  eq(Object.keys(ZD.ZODIAC_EXTRA).length, 12, 'ZODIAC_EXTRA: đủ 12 cung')
+  let allFields = true, minLen = true, hasCaveat = true, noAbsolute = true
+  const banned = /(chắc chắn|chính xác 100|tuyệt đối|bảo đảm|nhất định sẽ|100%)/i
+  for (const en of ens) {
+    const x = ZD.ZODIAC_EXTRA[en]
+    if (!x || !x.tomTat || !x.tinhCach || !x.sucKhoe || !x.loiKhuyen) { allFields = false; continue }
+    if (x.tomTat.length < 40 || x.tinhCach.length < 120 || x.sucKhoe.length < 80 || x.loiKhuyen.length < 40) minLen = false
+    if (!/tham khảo/.test(x.sucKhoe) || !/y tế/.test(x.sucKhoe)) hasCaveat = false
+    if (banned.test(x.tomTat + ' ' + x.tinhCach + ' ' + x.sucKhoe + ' ' + x.loiKhuyen)) noAbsolute = false
+  }
+  ok(allFields, 'ZODIAC_EXTRA: mỗi cung đủ 4 mục (tomTat/tinhCach/sucKhoe/loiKhuyen)')
+  ok(minLen, 'ZODIAC_EXTRA: mỗi mục đạt độ dài tối thiểu (nội dung dày)')
+  ok(hasCaveat, 'ZODIAC_EXTRA: phần sức khỏe luôn có caveat tham khảo + y tế')
+  ok(noAbsolute, 'ZODIAC_EXTRA: KHÔNG dùng từ phán tuyệt đối/giật tít')
+  const zsrc = readFileSync(new URL('../src/pages/Zodiac.jsx', import.meta.url), 'utf8')
+  ok(zsrc.includes("from '../data/zodiacDeep.js'") && zsrc.includes('ZODIAC_EXTRA'), 'Zodiac.jsx: import ZODIAC_EXTRA')
+  ok(zsrc.includes('ex.tinhCach') && zsrc.includes('ex.sucKhoe') && zsrc.includes('ex.loiKhuyen'), 'Zodiac.jsx: render tính cách/sức khỏe/lời khuyên')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
