@@ -52,7 +52,7 @@ function SinhNamDetail({ y }) {
         { sys: 'Lá số', to: '/la-so-tu-vi', title: 'Lập lá số Tử Vi', note: 'Từ giờ – ngày – tháng – năm sinh' }
       ]} />
       <section className="wrap pb-9 text-center">
-        <p className="text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Năm sinh lân cận</p>
+        <p className="text-gold text-kicker uppercase mb-3">Năm sinh lân cận</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[640px] mx-auto">
           {[y - 2, y - 1, y + 1, y + 2].map(o => <Link key={o} to={'/sinh-nam/' + o} className="badge">{o} · {tinhCanChi(o).tenCanChi}</Link>)}
         </div>
@@ -75,16 +75,16 @@ export default function SinhNam() {
     <>
       <section className="wrap text-center pt-[78px] pb-6">
         <SeoTag title='Sinh năm bao nhiêu mệnh gì? Tra Can Chi – nạp âm – hợp tuổi theo năm | Tam Sở' description='Nhập năm sinh để biết cầm tinh con gì, Can Chi, ngũ hành nạp âm (mệnh), tính cách và hợp – khắc tuổi. Dữ kiện lịch pháp Can Chi, phần luận mang tính tham khảo.' path='/sinh-nam' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Sinh năm' }]} />
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Can Chi · nạp âm theo năm</div>
-        <h1 className="text-[clamp(2.2rem,5vw,3.2rem)] my-2.5">Sinh năm bao nhiêu, mệnh gì?</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Nhập năm sinh (dương lịch) để xem con giáp, Can Chi, ngũ hành nạp âm và hợp – khắc tuổi.</p>
+        <div className="text-gold text-kicker uppercase">Can Chi · nạp âm theo năm</div>
+        <h1 className="text-display my-3">Sinh năm bao nhiêu, mệnh gì?</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Nhập năm sinh (dương lịch) để xem con giáp, Can Chi, ngũ hành nạp âm và hợp – khắc tuổi.</p>
         <div className="flex gap-2 justify-center items-center mt-4 flex-wrap">
           <input type="number" value={y} onChange={e => setY(e.target.value)} onKeyDown={e => e.key === 'Enter' && go()} placeholder="1990" className="field-input w-[140px]" />
           <button className="btn btn-primary" onClick={go}>Xem</button>
         </div>
       </section>
       <section className="wrap pb-10">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Năm hay tra</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Năm hay tra</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[820px] mx-auto">
           {POPULAR.map(o => <Link key={o} to={'/sinh-nam/' + o} className="badge">{o} · {tinhCanChi(o).tenCanChi}</Link>)}
         </div>

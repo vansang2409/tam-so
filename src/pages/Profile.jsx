@@ -130,9 +130,9 @@ export default function Profile() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tất cả trong một</div>
-        <h1 className="gradient-text text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Hồ Sơ Tổng Hợp</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Nhập họ tên &amp; ngày sinh một lần — xem bức chân dung từ cả năm hệ thống, kèm cung phi hợp hướng. Chia sẻ, tải ảnh hoặc lưu PDF.</p>
+        <div className="text-gold text-kicker uppercase">Tất cả trong một</div>
+        <h1 className="gradient-text text-display my-3">Hồ Sơ Tổng Hợp</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Nhập họ tên &amp; ngày sinh một lần — xem bức chân dung từ cả năm hệ thống, kèm cung phi hợp hướng. Chia sẻ, tải ảnh hoặc lưu PDF.</p>
       </section>
 
       <section className="wrap py-6">

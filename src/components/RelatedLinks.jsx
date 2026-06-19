@@ -6,7 +6,7 @@ export default function RelatedLinks({ items, title = 'Nội dung liên quan' })
   if (!items || !items.length) return null
   return (
     <section className="wrap pb-10">
-      <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">{title}</p>
+      <p className="text-center text-gold text-kicker uppercase mb-3">{title}</p>
       <div className="grid gap-3 max-w-[760px] mx-auto" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))' }}>
         {items.map(it => (
           <Link key={it.to} to={it.to} className="panel p-4 no-underline block transition hover:-translate-y-1 hover:border-gold/40">

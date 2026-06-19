@@ -13,9 +13,9 @@ export default function TuVi() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Can Chi · Lục Thập Hoa Giáp · Bát Trạch</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tử Vi · Can Chi</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Tra Can Chi năm/ngày/giờ, ngũ hành nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai và cung phi – hướng hợp tuổi.</p>
+        <div className="text-gold text-kicker uppercase">Can Chi · Lục Thập Hoa Giáp · Bát Trạch</div>
+        <h1 className="text-display my-3">Tử Vi · Can Chi</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Tra Can Chi năm/ngày/giờ, ngũ hành nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai và cung phi – hướng hợp tuổi.</p>
       </section>
 
       <CanChiTool /><CompatTool /><DayTool /><CungPhiTool /><SaoHanTool />

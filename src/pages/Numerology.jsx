@@ -47,7 +47,7 @@ function SoChuDaoPage({ k }) {
       </div></section>
       <RelatedLinks items={relatedForNumber(k)} />
       <section className="wrap pb-9">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Các con số khác</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Các con số khác</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[620px] mx-auto">
           {Object.keys(NUMEROLOGY).map(o => <Link key={o} to={'/than-so-hoc/so/' + o} className={'badge ' + (o === String(k) ? 'badge-gold' : '')}>{o}</Link>)}
         </div>
@@ -64,9 +64,9 @@ export default function Numerology() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <SeoTag title='Thần số học — tính Số Chủ Đạo & Đường Đời từ ngày sinh | Tam Sở' description='Tính Số Chủ Đạo, Đường Đời, Linh Hồn, Sứ Mệnh cùng nhiều chỉ số Thần số học (hệ Pythagorean) từ ngày sinh và họ tên. Gợi ý thiên hướng để tham khảo.' path='/than-so-hoc' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Thần số học' }]} /><div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Numerology · Hệ Pythagorean</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Thần Số Học</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Từ ngày sinh và họ tên, rút ra những con số cốt lõi gợi ý thiên hướng, động lực và bài học của bạn.</p>
+        <SeoTag title='Thần số học — tính Số Chủ Đạo & Đường Đời từ ngày sinh | Tam Sở' description='Tính Số Chủ Đạo, Đường Đời, Linh Hồn, Sứ Mệnh cùng nhiều chỉ số Thần số học (hệ Pythagorean) từ ngày sinh và họ tên. Gợi ý thiên hướng để tham khảo.' path='/than-so-hoc' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Thần số học' }]} /><div className="text-gold text-kicker uppercase">Numerology · Hệ Pythagorean</div>
+        <h1 className="text-display my-3">Thần Số Học</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Từ ngày sinh và họ tên, rút ra những con số cốt lõi gợi ý thiên hướng, động lực và bài học của bạn.</p>
       </section>
 
       <LifePathTool />

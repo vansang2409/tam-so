@@ -44,9 +44,9 @@ export default function Collection() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Của riêng bạn · Lưu cục bộ</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">🔖 Bộ sưu tập</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Nơi cất những lá bài, quẻ Dịch… bạn muốn ngẫm lại. Tất cả nằm trong trình duyệt máy bạn — không gửi đi đâu cả.</p>
+        <div className="text-gold text-kicker uppercase">Của riêng bạn · Lưu cục bộ</div>
+        <h1 className="text-display my-3">🔖 Bộ sưu tập</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Nơi cất những lá bài, quẻ Dịch… bạn muốn ngẫm lại. Tất cả nằm trong trình duyệt máy bạn — không gửi đi đâu cả.</p>
       </section>
 
       <section className="wrap pb-16">

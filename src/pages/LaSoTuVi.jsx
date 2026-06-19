@@ -134,9 +134,9 @@ export default function LaSoTuVi() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tử Vi Đẩu Số · An sao lá số 12 cung</div>
-        <h1 className="text-[clamp(2.2rem,5vw,3.4rem)] my-2.5">Lá số Tử Vi</h1>
-        <p className="text-muted text-[1.1rem] max-w-[700px] mx-auto">Nhập ngày–giờ sinh để <b>an sao</b> 14 chính tinh, Tứ Hóa, lục cát – lục sát vào 12 cung, kèm Cục và đại hạn. Phần an sao là <b>thuật toán cổ điển tất định</b>; phần luận là tham khảo.</p>
+        <div className="text-gold text-kicker uppercase">Tử Vi Đẩu Số · An sao lá số 12 cung</div>
+        <h1 className="text-display my-3">Lá số Tử Vi</h1>
+        <p className="text-muted text-lead max-w-[700px] mx-auto">Nhập ngày–giờ sinh để <b>an sao</b> 14 chính tinh, Tứ Hóa, lục cát – lục sát vào 12 cung, kèm Cục và đại hạn. Phần an sao là <b>thuật toán cổ điển tất định</b>; phần luận là tham khảo.</p>
       </section>
 
       <section className="wrap pb-4">

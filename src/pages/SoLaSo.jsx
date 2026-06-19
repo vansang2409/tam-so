@@ -64,9 +64,9 @@ export default function SoLaSo() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tử Vi Đẩu Số · Đối chiếu hai lá số</div>
-        <h1 className="text-[clamp(2.2rem,5vw,3.2rem)] my-2.5">So đôi lá số</h1>
-        <p className="text-muted text-[1.08rem] max-w-[720px] mx-auto">Đặt hai lá số cạnh nhau để cùng nhìn — Mệnh, cung Phu Thê và quan hệ địa chi năm sinh. Đây là <b>đối chiếu dữ kiện để tham khảo</b>, không phải lời phán hợp hay không hợp.</p>
+        <div className="text-gold text-kicker uppercase">Tử Vi Đẩu Số · Đối chiếu hai lá số</div>
+        <h1 className="text-display my-3">So đôi lá số</h1>
+        <p className="text-muted text-lead max-w-[720px] mx-auto">Đặt hai lá số cạnh nhau để cùng nhìn — Mệnh, cung Phu Thê và quan hệ địa chi năm sinh. Đây là <b>đối chiếu dữ kiện để tham khảo</b>, không phải lời phán hợp hay không hợp.</p>
       </section>
 
       <section className="wrap pb-4">

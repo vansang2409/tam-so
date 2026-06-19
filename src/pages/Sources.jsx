@@ -35,9 +35,9 @@ export default function Sources() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-4">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Minh bạch · Có căn cứ</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Nguồn &amp; Lưu ý</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Tam Sở phân biệt rõ điều gì <em>kiểm chứng được</em> và điều gì là <em>diễn giải truyền thống</em>.</p>
+        <div className="text-gold text-kicker uppercase">Minh bạch · Có căn cứ</div>
+        <h1 className="text-display my-3">Nguồn &amp; Lưu ý</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Tam Sở phân biệt rõ điều gì <em>kiểm chứng được</em> và điều gì là <em>diễn giải truyền thống</em>.</p>
       </section>
 
       <section className="wrap py-8">

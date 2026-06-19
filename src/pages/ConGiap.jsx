@@ -75,7 +75,7 @@ function ConGiapPage({ c }) {
       <section className="wrap pb-3"><div className="panel p-[26px] max-w-[680px] mx-auto"><ConGiapReading c={c} /></div></section>
       <RelatedLinks items={relatedForConGiap(c.ten)} />
       <section className="wrap pb-9">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Xem con giáp khác</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Xem con giáp khác</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[760px] mx-auto">
           {CONGIAP.map(o => <Link key={o.ten} to={'/con-giap/' + o.slug} className={'badge ' + (o.ten === c.ten ? 'badge-gold' : '')}>{EMOJI[o.ten]} {o.ten}</Link>)}
         </div>
@@ -98,9 +98,9 @@ export default function ConGiap() {
     <>
       <section className="wrap text-center pt-[78px] pb-6">
         <SeoTag title='Tử vi hôm nay 12 con giáp — Tý, Sửu, Dần… | Tam Sở' description='Xem tử vi hôm nay theo 12 con giáp, tính cách từng tuổi và hợp – khắc tuổi theo Can Chi. Quan niệm dân gian, mang tính tham khảo, làm mới mỗi ngày.' path='/con-giap' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: '12 con giáp' }]} />
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Tử vi Á Đông · Can Chi</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tử vi hôm nay theo 12 con giáp</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">12 con giáp theo địa chi (Tý, Sửu, Dần…), mỗi tuổi một chân dung và một gợi ý chiêm nghiệm cho hôm nay — làm mới mỗi ngày.</p>
+        <div className="text-gold text-kicker uppercase">Tử vi Á Đông · Can Chi</div>
+        <h1 className="text-display my-3">Tử vi hôm nay theo 12 con giáp</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">12 con giáp theo địa chi (Tý, Sửu, Dần…), mỗi tuổi một chân dung và một gợi ý chiêm nghiệm cho hôm nay — làm mới mỗi ngày.</p>
         <p className="note mt-2">Chưa biết mình tuổi gì? <Link to="/tu-vi" className="text-gold">Nhập năm sinh để tính Can Chi →</Link></p>
       </section>
 

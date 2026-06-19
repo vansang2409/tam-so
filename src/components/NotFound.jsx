@@ -31,7 +31,7 @@ export default function NotFound({
           <Link className="btn btn-primary" to="/">↩ Về trang chủ</Link>
           <Link className="btn btn-ghost" to="/nguon">Nguồn &amp; Lưu ý</Link>
         </div>
-        <p className="note mt-6 mb-2 text-gold text-[.72rem] uppercase tracking-[.2em]">Hoặc thử một hệ:</p>
+        <p className="note mt-6 mb-2 text-gold text-kicker uppercase">Hoặc thử một hệ:</p>
         <div className="flex flex-wrap gap-2 justify-center">
           {LINKS.map(([to, label]) => (
             <Link key={to} to={to} className="border border-gold/30 rounded-lg px-3 py-1.5 text-[.88rem] text-cream no-underline hover:border-gold/60 hover:bg-black/5 transition">{label}</Link>

@@ -201,9 +201,9 @@ function TarotIndex() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Bộ bài đầy đủ 78 lá · Rider–Waite–Smith</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tarot</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">22 lá Ẩn Chính kể "Hành trình của Gã Khờ", 56 lá Ẩn Phụ soi rọi đời thường. Tĩnh tâm, nghĩ câu hỏi, rồi rút bài.</p>
+        <div className="text-gold text-kicker uppercase">Bộ bài đầy đủ 78 lá · Rider–Waite–Smith</div>
+        <h1 className="text-display my-3">Tarot</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">22 lá Ẩn Chính kể "Hành trình của Gã Khờ", 56 lá Ẩn Phụ soi rọi đời thường. Tĩnh tâm, nghĩ câu hỏi, rồi rút bài.</p>
       </section>
 
       <section className="wrap pb-2">

@@ -80,9 +80,9 @@ export default function TuongHop() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Hai người · Ba hệ chiêm nghiệm</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Tương Hợp</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Nhập ngày sinh hai người để soi tương hợp qua <b>Số Chủ Đạo</b>, <b>Can Chi</b> và <b>Cung hoàng đạo</b> — rồi chia sẻ cho người ấy hoặc bạn bè. Một góc để hiểu nhau hơn, không phải phán xét duyên số.</p>
+        <div className="text-gold text-kicker uppercase">Hai người · Ba hệ chiêm nghiệm</div>
+        <h1 className="text-display my-3">Tương Hợp</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Nhập ngày sinh hai người để soi tương hợp qua <b>Số Chủ Đạo</b>, <b>Can Chi</b> và <b>Cung hoàng đạo</b> — rồi chia sẻ cho người ấy hoặc bạn bè. Một góc để hiểu nhau hơn, không phải phán xét duyên số.</p>
       </section>
 
       <section className="wrap py-6">

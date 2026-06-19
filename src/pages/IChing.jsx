@@ -93,9 +93,9 @@ export default function IChing() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Kinh Dịch · I Ching</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Gieo Quẻ Dịch</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">
+        <div className="text-gold text-kicker uppercase">Kinh Dịch · I Ching</div>
+        <h1 className="text-display my-3">Gieo Quẻ Dịch</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">
           Tĩnh tâm, nghĩ về câu hỏi của bạn rồi gieo quẻ bằng ba đồng xu. Sáu hào dựng từ dưới lên; hào động sẽ sinh ra "quẻ biến".
         </p>
       </section>

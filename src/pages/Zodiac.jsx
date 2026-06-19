@@ -115,7 +115,7 @@ function CungPage({ z }) {
       <section className="wrap pb-3"><div className="panel p-[26px] max-w-[680px] mx-auto"><CungReading z={z} /></div></section>
       <RelatedLinks items={relatedForSign(z.en)} />
       <section className="wrap pb-9">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Khám phá cung khác</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Khám phá cung khác</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[760px] mx-auto">
           {ZODIAC.map(o => <Link key={o.en} to={'/cung-hoang-dao/' + ZODIAC_SLUG[o.en]} className={'badge ' + (o.en === z.en ? 'badge-gold' : '')}>{o.sym} {o.ten}</Link>)}
         </div>
@@ -136,9 +136,9 @@ export default function Zodiac() {
   return (
     <>
       <section className="wrap text-center pt-[78px] pb-6">
-        <SeoTag title='12 cung hoàng đạo — xem cung theo ngày sinh & tử vi hôm nay | Tam Sở' description='Xác định cung hoàng đạo theo ngày sinh, xem nét tính cách 12 cung, tương hợp nguyên tố và tử vi hôm nay. Chiêm tinh phương Tây mang tính tham khảo.' path='/cung-hoang-dao' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Cung hoàng đạo' }]} /><div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Chiêm tinh phương Tây</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Cung Hoàng Đạo</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">12 cung theo vị trí Mặt Trời lúc bạn sinh, gom thành 4 nguyên tố Lửa – Đất – Khí – Nước.</p>
+        <SeoTag title='12 cung hoàng đạo — xem cung theo ngày sinh & tử vi hôm nay | Tam Sở' description='Xác định cung hoàng đạo theo ngày sinh, xem nét tính cách 12 cung, tương hợp nguyên tố và tử vi hôm nay. Chiêm tinh phương Tây mang tính tham khảo.' path='/cung-hoang-dao' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Cung hoàng đạo' }]} /><div className="text-gold text-kicker uppercase">Chiêm tinh phương Tây</div>
+        <h1 className="text-display my-3">Cung Hoàng Đạo</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">12 cung theo vị trí Mặt Trời lúc bạn sinh, gom thành 4 nguyên tố Lửa – Đất – Khí – Nước.</p>
       </section>
 
       <SignTool />

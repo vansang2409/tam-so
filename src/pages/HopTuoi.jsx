@@ -60,7 +60,7 @@ function HopTuoiDetail({ c }) {
         { sys: 'Tương hợp', to: '/tuong-hop', title: 'Ghép đôi đa hệ', note: 'Thần số + cung + Can Chi' }
       ]} />
       <section className="wrap pb-9">
-        <p className="text-center text-gold text-[.72rem] uppercase tracking-[.2em] mb-3">Xem tuổi khác</p>
+        <p className="text-center text-gold text-kicker uppercase mb-3">Xem tuổi khác</p>
         <div className="flex flex-wrap gap-2 justify-center max-w-[760px] mx-auto">
           {CONGIAP.map(o => <Link key={o.ten} to={'/hop-tuoi/' + o.slug} className={'badge ' + (o.ten === c.ten ? 'badge-gold' : '')}>{EMOJI[o.ten]} {o.ten}</Link>)}
         </div>
@@ -79,9 +79,9 @@ export default function HopTuoi() {
     <>
       <section className="wrap text-center pt-[78px] pb-6">
         <SeoTag title='Hợp tuổi 12 con giáp — tuổi nào hợp tuổi nào? | Tam Sở' description='Tra hợp – khắc tuổi 12 con giáp theo Tam hợp, Lục hợp, Lục xung (Can Chi). Chọn tuổi để xem hợp với tuổi nào; hoặc xem theo 2 năm sinh. Quan niệm dân gian, mang tính tham khảo.' path='/hop-tuoi' breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Hợp tuổi' }]} />
-        <div className="text-gold tracking-[.32em] uppercase text-[.78rem] font-semibold">Can Chi · hợp – khắc tuổi</div>
-        <h1 className="text-[clamp(2.3rem,5vw,3.4rem)] my-2.5">Hợp tuổi 12 con giáp</h1>
-        <p className="text-muted text-[1.12rem] max-w-[680px] mx-auto">Chọn một tuổi để xem hợp với tuổi nào, cần dung hòa với tuổi nào — theo Tam hợp, Lục hợp, Lục xung.</p>
+        <div className="text-gold text-kicker uppercase">Can Chi · hợp – khắc tuổi</div>
+        <h1 className="text-display my-3">Hợp tuổi 12 con giáp</h1>
+        <p className="text-muted text-lead max-w-[680px] mx-auto">Chọn một tuổi để xem hợp với tuổi nào, cần dung hòa với tuổi nào — theo Tam hợp, Lục hợp, Lục xung.</p>
         <p className="note mt-2">Muốn xét cả năm sinh? <Link to="/tu-vi" className="text-gold">Xem hợp tuổi theo 2 năm sinh →</Link></p>
       </section>
       <section className="wrap pb-10">
