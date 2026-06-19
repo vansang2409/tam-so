@@ -1,10 +1,11 @@
 # SUMMARY — Tam Sở (cập nhật 19/06/2026)
 
-**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (292 mốc), build `npm run build`. Không backend/auth/db.
+**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (296 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.57.0, 292 test pass.** Giao diện tông giấy-cổ/kem.
+**Hiện trạng: v3.58.0, 296 test pass.** Giao diện tông giấy-cổ/kem. **Toàn bộ backlog actionable (H/M/A/C) đã XONG; chỉ còn nhóm LOW cần backend.**
 
 **Đã xong gần đây (phiên này):**
+- C01 (v3.58): **prerender meta tĩnh** — `scripts/prerender.mjs` sinh 211 file route landing với title/description/canonical/og + JSON-LD breadcrumb riêng (crawler "view source" thấy meta đúng từng trang). An toàn: chỉ thêm file, KHÔNG sửa `index.html` (file:// nguyên vẹn); GUARD chỉ chạy khi base `/` (Vercel), skip base `./` (Pages); try/catch không chặn build. Nghiệm thu serving khi Vercel live.
 - C06 đợt 4 ⇒ **C06 XONG** (v3.57): thêm `saoKhuyen.js` — lời khuyên cho 14 chính tinh, render trên Lá Số (SAO_CUNG vốn đã dày 168 luận điểm). Trọn C06: 12 cung · 78 lá Tarot · 12 Số · sao×cung.
 - C03 (v3.56): **trang Sinh năm** `/sinh-nam` + `/sinh-nam/:year` (1900–2100) — tự sinh từ `tinhCanChi`: con giáp, Can Chi, ngũ hành nạp âm + mệnh, tính cách, hợp/khắc tuổi; meta riêng + sitemap 1950–2025 (+77 URL ⇒ 216). Giọng tham khảo.
 - A02 + M05 + C05 (v3.55): **og:image động** (lá Tarot dùng ảnh RWS riêng khi share) · **Skeleton tải thống nhất** (`Skeleton.jsx` + CardImage shimmer khi tải ảnh, giảm giật layout) · **rà giọng C05** (test quét >800 luận điểm chặn câu over-claim + đảm bảo mọi trang hệ có khung "tham khảo").

@@ -628,5 +628,15 @@ delete global.window
   ok(ls.includes("from '../data/saoKhuyen.js'") && ls.includes('SAO_KHUYEN[s.ten]'), 'LaSoTuVi: render lời khuyên sao')
 }
 
+// === C01: prerender meta tĩnh cho route landing (an toàn + có guard) ===
+{
+  const ps = readFileSync(new URL('../scripts/prerender.mjs', import.meta.url), 'utf8')
+  ok(ps.includes('.test(tpl)') && ps.includes('không phải Vercel'), 'prerender: có GUARD base tuyệt đối (skip khi base ./)')
+  ok(ps.includes('writeFileSync') && /catch\s*\(/.test(ps) && !ps.includes("writeFileSync(DIST + '/index.html'"), 'prerender: chỉ GHI THÊM file route + bọc try/catch (không sửa index.html)')
+  ok(ps.includes('og:image') && ps.includes('canonical') && ps.includes('BreadcrumbList'), 'prerender: set title/description/canonical/og + JSON-LD breadcrumb')
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  ok(pkg.scripts.build.includes('prerender'), 'package.json: build chạy prerender sau vite build')
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)

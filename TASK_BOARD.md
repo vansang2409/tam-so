@@ -40,7 +40,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 
 | ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
 |---|---|---|---|---|---|
-| C01 | SSG/prerender toàn site cho SEO (hiện là SPA → bot khó index sâu) | SEO/Tech | High | Todo | các route chính + landing cung/lá/số có HTML tĩnh + meta khi "view source"; không phá HashRouter file:// |
+| C01 | SSG/prerender toàn site cho SEO (hiện là SPA → bot khó index sâu) | SEO/Tech | High | Done (v3.58) — prerender META | scripts/prerender.mjs sinh 211 file route landing (title/desc/canonical/og + JSON-LD) khi build Vercel (base /); GUARD skip khi base ./ (Pages/file://); KHÔNG sửa index.html; try/catch không chặn build. Nghiệm thu serving khi Vercel live |
 | C02 | Trang "Tử vi hôm nay" cho 12 con giáp + 12 cung (tự đổi theo ngày) | SEO/Retention | High | Done (v3.49) | route /con-giap + 12 trang /con-giap/:slug; dailyConGiap (tất định) + hợp/khắc tuổi; meta+breadcrumb; sitemap +13 URL; link trên Home; phần 12 cung daily đã có sẵn từ H04/H05 |
 | C03 | Long-tail "Sinh năm X: mệnh gì · hợp tuổi nào · sao chiếu" (programmatic theo năm) | SEO/Content | Med | Done (v3.56) | route /sinh-nam + /sinh-nam/:year (1900–2100); tinhCanChi + nạp âm/mệnh + con giáp + hợp/khắc tuổi; meta riêng; sitemap 1950–2025; KHÔNG phán chắc |
 | C04 | Trang "Tuổi A và B có hợp không" (cặp con giáp/năm sinh) | SEO/Content | Med | Done (v3.54) | route /hop-tuoi + 12 trang /hop-tuoi/:slug (xếp 12 con giáp theo Tam/Lục hợp–Lục/Tứ hành xung, dùng hopTuoiChi); meta+breadcrumb+sitemap; link công cụ năm-sinh ở /tu-vi |
