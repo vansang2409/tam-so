@@ -141,10 +141,12 @@ const _DP = {
   ]
 }
 function _hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) } return Math.abs(h | 0) }
-export function dailyHoroscope(en, dateStr) {
-  const pick = (arr, salt) => arr[_hash(en + '|' + dateStr + '|' + salt) % arr.length]
+// Engine TẤT ĐỊNH dùng chung cho mọi "tử vi hôm nay" (cung hoàng đạo, con giáp…).
+// Cùng (key, ngày) → cùng kết quả; đổi ngày → đổi nội dung. Chỉ là gợi ý chiêm nghiệm.
+export function dailyReading(key, dateStr) {
+  const pick = (arr, salt) => arr[_hash(key + '|' + dateStr + '|' + salt) % arr.length]
   return {
-    nangLuong: 2 + (_hash(en + '|' + dateStr + '|nl') % 4), // 2..5
+    nangLuong: 2 + (_hash(key + '|' + dateStr + '|nl') % 4), // 2..5
     tongQuan: pick(_DP.tongQuan, 'tq'),
     tinhCam: pick(_DP.tinhCam, 'tc'),
     congViec: pick(_DP.congViec, 'cv'),
@@ -152,3 +154,4 @@ export function dailyHoroscope(en, dateStr) {
     loiKhuyen: pick(_DP.loiKhuyen, 'lk')
   }
 }
+export function dailyHoroscope(en, dateStr) { return dailyReading(en, dateStr) }

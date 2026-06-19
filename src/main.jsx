@@ -16,6 +16,7 @@ import IChing from './pages/IChing.jsx'
 import TuongHop from './pages/TuongHop.jsx'
 import Sources from './pages/Sources.jsx'
 import Collection from './pages/Collection.jsx'
+import ConGiap from './pages/ConGiap.jsx'
 import NotFound from './components/NotFound.jsx'
 
 const Router = USE_PATH ? BrowserRouter : HashRouter
@@ -37,6 +38,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="so-la-so" element={<SoLaSo />} />
           <Route path="cung-hoang-dao" element={<Zodiac />} />
           <Route path="cung-hoang-dao/:slug" element={<Zodiac />} />
+          <Route path="con-giap" element={<ConGiap />} />
+          <Route path="con-giap/:slug" element={<ConGiap />} />
           <Route path="kinh-dich" element={<IChing />} />
           <Route path="tuong-hop" element={<TuongHop />} />
           <Route path="bo-suu-tap" element={<Collection />} />

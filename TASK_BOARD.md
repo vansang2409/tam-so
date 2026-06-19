@@ -41,7 +41,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
 |---|---|---|---|---|---|
 | C01 | SSG/prerender toàn site cho SEO (hiện là SPA → bot khó index sâu) | SEO/Tech | High | Todo | các route chính + landing cung/lá/số có HTML tĩnh + meta khi "view source"; không phá HashRouter file:// |
-| C02 | Trang "Tử vi hôm nay" cho 12 con giáp + 12 cung (tự đổi theo ngày) | SEO/Retention | High | Todo | route + meta + sitemap; tái dùng dailyHoroscope/Can Chi; giọng tham khảo, không phán; có trên Home |
+| C02 | Trang "Tử vi hôm nay" cho 12 con giáp + 12 cung (tự đổi theo ngày) | SEO/Retention | High | Done (v3.49) | route /con-giap + 12 trang /con-giap/:slug; dailyConGiap (tất định) + hợp/khắc tuổi; meta+breadcrumb; sitemap +13 URL; link trên Home; phần 12 cung daily đã có sẵn từ H04/H05 |
 | C03 | Long-tail "Sinh năm X: mệnh gì · hợp tuổi nào · sao chiếu" (programmatic theo năm) | SEO/Content | Med | Todo | dùng Can Chi/nạp âm/saoHan; meta riêng; KHÔNG phán chắc; nội dung tự sinh từ engine |
 | C04 | Trang "Tuổi A và B có hợp không" (cặp con giáp/năm sinh) | SEO/Content | Med | Todo | dùng hopTuoiChi; trình bày dữ kiện + trấn an; meta + internal link |
 | C05 | Định vị nội dung: rà toàn site đảm bảo KHÔNG giật tít/khẳng định chắc (khác biệt vs đối thủ) | Content/Brand | Med | Todo | không có câu "chính xác 100%/chắc chắn"; mọi trang có khung "tham khảo" |

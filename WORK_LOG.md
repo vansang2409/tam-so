@@ -3,6 +3,7 @@
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
 ## Changelog theo version
+- **v3.49** — **C02**: "Tử vi hôm nay theo 12 con giáp" — route `/con-giap` + 12 trang `/con-giap/:slug`; thêm `src/data/congiap.js` (CONGIAP_SLUG phân biệt Tý↔Tỵ & Thìn↔Thân, `dailyConGiap` tất định dùng chung engine `dailyReading` tách ra từ zodiac.js, `hopKhacChi` tam/lục hợp + lục xung, `recentYears`) + `src/pages/ConGiap.jsx` (chân dung + tử vi hôm nay + hợp/khắc, giọng tham khảo); meta động + breadcrumb + sitemap (+13 URL ⇒ 126); link trên Home. Phần 12 cung daily đã có sẵn (H04/H05). **244 test pass** (+20). Build /tmp không cần — build native Windows + inline dist→`tam-so-test.html`.
 - **v3.46→3.48** — Auto-task tự làm M04/M05 + **A03**: thêm `src/data/related.js` + `RelatedLinks.jsx` ⇒ 102 trang sâu có khối **"Nội dung liên quan"** (liên kết chéo Tarot–Cung–Số, nhãn tham khảo). **216 test pass**.
 - **v3.46.1** — FIX bug: `Modal.jsx` nền tối cũ → **kem sáng** (mọi popup quẻ/lá đọc được).
 - **v3.41–3.43** — **M02**: 12 trang Số Chủ Đạo `/than-so-hoc/so/:n`. **H02**: trải bài "Tài chính". **M06**: lá số Tử Vi + độ sáng vào báo cáo Hồ sơ. CardPage prev/next.

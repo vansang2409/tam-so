@@ -12,6 +12,7 @@ import * as SITE from '../src/data/site.js'
 import * as COLL from '../src/data/collection.js'
 import * as SEO from '../src/data/seo.js'
 import * as REL from '../src/data/related.js'
+import * as CG from '../src/data/congiap.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { readFileSync } from 'node:fs'
@@ -446,6 +447,41 @@ delete global.window
     const hasHook = src.includes('usePageSeo(') || src.includes('<SeoTag ')
     ok(hasHook && src.includes(pathMarker) && src.includes("name: 'Trang chủ', path: '/'"), 'A01 wiring SEO index trong ' + f + ' (' + pathMarker + ')')
   }
+}
+
+// === C02: Tử vi hôm nay 12 con giáp (congiap.js) ===
+{
+  const slugs = CG.CONGIAP.map(c => c.slug)
+  eq(CG.CONGIAP.length, 12, 'CONGIAP: đủ 12 con giáp')
+  eq(new Set(slugs).size, 12, 'CONGIAP_SLUG: 12 slug DUY NHẤT (phân biệt Tý↔Tỵ, Thìn↔Thân)')
+  ok(CG.conGiapBySlug('ty') && CG.conGiapBySlug('ty').ten === 'Tý', "conGiapBySlug('ty') = Tý")
+  ok(CG.conGiapBySlug('ti') && CG.conGiapBySlug('ti').ten === 'Tỵ', "conGiapBySlug('ti') = Tỵ (không lẫn Tý)")
+  ok(CG.conGiapBySlug('khong-co') === null, 'conGiapBySlug slug sai → null')
+  ok(CG.CONGIAP.every(c => CG.conGiapBySlug(c.slug) === c), 'slug ↔ conGiapBySlug roundtrip cả 12')
+  const a = CG.dailyConGiap('Tý', '2026-06-19'), b = CG.dailyConGiap('Tý', '2026-06-19'), c = CG.dailyConGiap('Tý', '2026-06-20')
+  ok(JSON.stringify(a) === JSON.stringify(b), 'dailyConGiap TẤT ĐỊNH (cùng tuổi+ngày)')
+  ok(JSON.stringify(a) !== JSON.stringify(c), 'dailyConGiap đổi theo ngày')
+  ok([a.tongQuan, a.tinhCam, a.congViec, a.taiChinh, a.loiKhuyen].every(x => typeof x === 'string' && x.length > 8) && a.nangLuong >= 2 && a.nangLuong <= 5, 'dailyConGiap: 5 mục text + năng lượng 2..5')
+  let allDayOk = true; for (const c2 of CG.CONGIAP) { const h = CG.dailyConGiap(c2.ten, '2026-06-19'); if (!h.tongQuan || h.nangLuong < 2 || h.nangLuong > 5) allDayOk = false }
+  ok(allDayOk, 'dailyConGiap hợp lệ cho cả 12 con giáp')
+  const hk = CG.hopKhacChi('Tý')
+  ok(hk.tamHop.includes('Thân') && hk.tamHop.includes('Thìn') && hk.tamHop.length === 2, 'hopKhacChi(Tý): tam hợp Thân–Thìn')
+  eq(hk.lucHop, 'Sửu', 'hopKhacChi(Tý): lục hợp Sửu')
+  eq(hk.lucXung, 'Ngọ', 'hopKhacChi(Tý): lục xung Ngọ')
+  ok(CG.CONGIAP.every(c2 => { const r = CG.relatedForConGiap(c2.ten); return r.length >= 3 && new Set(r.map(x => x.sys)).size === r.length && r.every(x => x.to.startsWith('/')) }), 'relatedForConGiap: ≥3 link nội bộ, không trùng hệ, route nội bộ')
+  ok(CG.recentYears('Tý').includes(2008) && CG.recentYears('Tý').every(y => (2008 - y) % 12 === 0), 'recentYears(Tý): năm cách nhau 12, gồm 2008')
+}
+{
+  // C02 wiring: route /con-giap + import + Home link + sitemap
+  const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
+  const main = read('main.jsx')
+  ok(main.includes('import ConGiap') && main.includes('path="con-giap"') && main.includes('path="con-giap/:slug"'), 'main.jsx: import + route /con-giap (+:slug)')
+  ok(/export default function ConGiap/.test(read('pages/ConGiap.jsx')), 'ConGiap.jsx: có export default')
+  const cg = read('pages/ConGiap.jsx')
+  ok(cg.includes("from '../components/useSeo.js'") && cg.includes('usePageSeo({') && cg.includes('breadcrumb:'), 'ConGiap: SEO meta động + breadcrumb')
+  ok(read('pages/Home.jsx').includes('/con-giap'), 'Home: có link sang /con-giap')
+  const sm = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')
+  ok(sm.includes('/con-giap/ty') && sm.includes('/con-giap/ti') && sm.includes('/con-giap/hoi'), 'sitemap: có URL con giáp (ty, ti, hoi)')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)

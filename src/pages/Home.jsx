@@ -99,6 +99,7 @@ export default function Home() {
               <Link to="/cung-hoang-dao" className="btn btn-ghost mt-3">♈ Xem cung của tôi</Link>
             </div>
           )}
+          <p className="note text-center m-0 mt-3 pt-3 border-t border-gold/15">Hoặc xem <Link to="/con-giap" className="text-gold font-semibold">tử vi hôm nay theo 12 con giáp</Link> (tuổi Tý, Sửu, Dần…)</p>
         </div>
       </section>
 
