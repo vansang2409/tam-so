@@ -6,6 +6,7 @@ import { toPng } from 'html-to-image'
 import { solar2lunar } from '../data/lunar.js'
 import { anSao, CHINH_TINH, PHU_TINH, TU_HOA_NGHIA, CUNG_NGHIA, GIO_CHI, DO_SANG_LABEL, DO_SANG_NGHIA, doSangSummary } from '../data/tuvidauso.js'
 import { SAO_CUNG } from '../data/tuvi-saocung.js'
+import { SAO_KHUYEN } from '../data/saoKhuyen.js'
 
 // Vị trí 12 chi trên lá số 4×4 [cột, hàng] (1-indexed)
 const POS = { 5: [1, 1], 6: [2, 1], 7: [3, 1], 8: [4, 1], 4: [1, 2], 9: [4, 2], 3: [1, 3], 10: [4, 3], 2: [1, 4], 1: [2, 4], 0: [3, 4], 11: [4, 4] }
@@ -294,6 +295,7 @@ export default function LaSoTuVi() {
                     </div>
                     <p className="m-0 leading-relaxed">{CHINH_TINH[s.ten] && CHINH_TINH[s.ten].y}</p>
                     {SAO_CUNG[s.ten] && SAO_CUNG[s.ten][selP.cung] && <p className="mt-1 mb-0 leading-relaxed"><span className="text-gold font-semibold">Tại cung {selP.cung}:</span> {SAO_CUNG[s.ten][selP.cung]}</p>}
+                    {SAO_KHUYEN[s.ten] && <p className="note mt-1 mb-0">✦ Lời khuyên (sao {s.ten}): {SAO_KHUYEN[s.ten]}</p>}
                     {s.hoa && <p className="note mt-0.5 mb-0">↳ {TU_HOA_NGHIA[s.hoa]}</p>}
                   </div>
                 ))}

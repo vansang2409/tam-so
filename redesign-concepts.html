@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tam Sở — 3 hướng tái thiết kế (concept)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Playfair+Display:wght@600;700&family=Lora:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{ --pg:#e9e7e1; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--pg); font-family:"Be Vietnam Pro",system-ui,sans-serif; color:#23211c; line-height:1.6; }
+  .page{ max-width:1080px; margin:0 auto; padding:40px 24px 80px; }
+  .intro h1{ font-family:"Cormorant Garamond",serif; font-size:2.4rem; margin:0 0 6px; letter-spacing:-.01em; }
+  .intro p{ max-width:760px; color:#4f4b42; margin:0 0 4px; }
+  .intro .meta{ font-size:.84rem; color:#7a756a; margin-top:10px; }
+  .dir{ background:#fff; border:1px solid #d7d3c8; border-radius:18px; overflow:hidden; margin-top:34px; box-shadow:0 18px 40px rgba(60,50,30,.10); }
+  .dir-head{ padding:20px 24px 16px; border-bottom:1px solid #ece8de; }
+  .dir-head .tag{ font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:#9a7c3e; font-weight:600; }
+  .dir-head h2{ margin:4px 0 4px; font-size:1.55rem; font-family:"Cormorant Garamond",serif; }
+  .dir-head .concept{ color:#5a554a; margin:0; font-size:.96rem; }
+  .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ font-size:.74rem; padding:4px 11px; border-radius:999px; background:#f0ece1; color:#6b5e45; border:1px solid #e0d9c8; }
+  .chip.warn{ background:#faece7; color:#8a3c1d; border-color:#f0cdbf; }
+
+  /* ===== shared mockup frame ===== */
+  .frame{ margin:0; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:14px 26px; }
+  .brand{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:1.15rem; }
+  .nav{ display:flex; gap:16px; font-size:.82rem; opacity:.78; }
+  .nav .on{ font-weight:600; opacity:1; }
+  .hero{ text-align:center; padding:26px 26px 10px; }
+  .kicker{ font-size:.7rem; letter-spacing:.3em; text-transform:uppercase; font-weight:600; }
+  .hero h3{ margin:10px 0 12px; font-size:clamp(1.8rem,3.4vw,2.7rem); line-height:1.12; letter-spacing:-.01em; }
+  .hero p{ max-width:560px; margin:0 auto 20px; font-size:.98rem; }
+  .cta{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn{ display:inline-flex; align-items:center; gap:8px; font-weight:600; padding:12px 24px; border-radius:999px; font-size:.92rem; border:1px solid transparent; cursor:pointer; }
+  .pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:26px; }
+  .pcard{ border-radius:14px; padding:18px; text-align:center; }
+  .pcard .ic{ display:flex; justify-content:center; margin-bottom:8px; }
+  .pcard h4{ margin:0 0 5px; font-size:1.02rem; }
+  .pcard p{ margin:0; font-size:.82rem; opacity:.78; }
+  .daily{ margin:0 26px 28px; border-radius:14px; padding:16px 18px; }
+  .daily .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .daily .lab{ font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; }
+  .daily p{ margin:8px 0 0; font-size:.9rem; }
+  .daily a{ font-weight:600; font-size:.86rem; text-decoration:none; display:inline-block; margin-top:8px; }
+  svg.icn{ width:30px; height:30px; fill:none; stroke-width:1.6; }
+
+  /* ===== specs footer ===== */
+  .specs{ display:grid; grid-template-columns:1.1fr 1fr 1.3fr; gap:20px; padding:18px 24px 22px; border-top:1px solid #ece8de; background:#fbfaf6; }
+  .specs h5{ margin:0 0 8px; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:#8a8475; }
+  .sw{ display:flex; gap:7px; flex-wrap:wrap; }
+  .sw span{ width:30px; height:30px; border-radius:7px; border:1px solid rgba(0,0,0,.12); display:block; }
+  .specs .ty1{ font-size:1.45rem; line-height:1.1; }
+  .specs .ty2{ font-size:.9rem; color:#5a554a; }
+  .specs ul{ margin:0; padding-left:16px; font-size:.84rem; color:#5a554a; }
+  .specs li{ margin-bottom:3px; }
+  @media(max-width:760px){
+    .pillars{ grid-template-columns:1fr; }
+    .nav{ display:none; }
+    .specs{ grid-template-columns:1fr; }
+  }
+
+  /* =========================================================
+     DIRECTION 1 — MỰC & VÀNG (Editorial Heritage)
+     ========================================================= */
+  .d1 .frame{ background:radial-gradient(900px 360px at 80% -8%, rgba(201,150,86,.14), transparent 62%), linear-gradient(180deg,#f8f3e7,#f3ecdb); color:#2a2317; }
+  .d1 .brand{ font-family:"Cormorant Garamond",serif; color:#2a2317; }
+  .d1 .brand b{ color:#b08a3e; }
+  .d1 .kicker{ color:#b08a3e; }
+  .d1 .hero h3{ font-family:"Cormorant Garamond",serif; font-weight:700; color:#23200f; }
+  .d1 .hero p{ color:#5b5440; }
+  .d1 .btn-primary{ background:linear-gradient(135deg,#d9b45a,#b08a3e); color:#2a1f06; }
+  .d1 .btn-ghost{ background:rgba(255,255,255,.6); color:#5b4a22; border-color:rgba(150,110,40,.32); }
+  .d1 .pcard{ background:linear-gradient(160deg,#fffdf6,#f5ecd6); border:1px solid rgba(150,110,40,.24); }
+  .d1 .pcard .ic{ color:#b08a3e; }
+  .d1 .pcard h4{ font-family:"Cormorant Garamond",serif; color:#2a2317; }
+  .d1 .daily{ background:rgba(176,138,62,.08); border:1px solid rgba(176,138,62,.28); }
+  .d1 .daily .lab{ color:#b08a3e; }
+  .d1 .daily a{ color:#9a6a1e; }
+  .d1 .nav{ color:#5b5440; }
+
+  /* =========================================================
+     DIRECTION 2 — ĐÊM SAO (Celestial Modern, dark)
+     ========================================================= */
+  .d2 .frame{ background:radial-gradient(680px 320px at 78% -6%, rgba(155,131,230,.26), transparent 60%), radial-gradient(560px 300px at 10% 4%, rgba(231,188,107,.12), transparent 58%), linear-gradient(180deg,#0d1124,#141a33); color:#ece9f5; position:relative; }
+  .d2 .frame::before{ content:""; position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(1.4px 1.4px at 18% 24%,rgba(255,255,255,.7),transparent),radial-gradient(1.2px 1.2px at 72% 36%,rgba(231,188,107,.7),transparent),radial-gradient(1.4px 1.4px at 46% 14%,rgba(255,255,255,.55),transparent),radial-gradient(1px 1px at 86% 20%,rgba(155,131,230,.8),transparent),radial-gradient(1px 1px at 30% 60%,rgba(255,255,255,.45),transparent); }
+  .d2 .frame > *{ position:relative; z-index:1; }
+  .d2 .brand{ font-family:"Playfair Display",serif; color:#f3f0fb; }
+  .d2 .brand b{ color:#e7bc6b; }
+  .d2 .kicker{ color:#e7bc6b; }
+  .d2 .hero h3{ font-family:"Playfair Display",serif; color:#f5f2fc; }
+  .d2 .hero p{ color:#bdbbd6; }
+  .d2 .btn-primary{ background:linear-gradient(135deg,#e7bc6b,#caa24f); color:#241a06; box-shadow:0 8px 26px rgba(231,188,107,.28); }
+  .d2 .btn-ghost{ background:rgba(255,255,255,.06); color:#ece9f5; border-color:rgba(155,131,230,.4); }
+  .d2 .pcard{ background:rgba(27,34,64,.7); border:1px solid #2c3457; }
+  .d2 .pcard .ic{ color:#e7bc6b; }
+  .d2 .pcard h4{ font-family:"Playfair Display",serif; color:#f3f0fb; }
+  .d2 .pcard p{ color:#a7a6c4; }
+  .d2 .daily{ background:rgba(155,131,230,.12); border:1px solid rgba(155,131,230,.32); }
+  .d2 .daily .lab{ color:#e7bc6b; }
+  .d2 .daily a{ color:#bca6ff; }
+  .d2 .nav{ color:#bdbbd6; }
+  .d2 .nav .on{ color:#e7bc6b; }
+
+  /* =========================================================
+     DIRECTION 3 — TỊNH (Zen Minimal, light)
+     ========================================================= */
+  .d3 .frame{ background:#fcfbf8; color:#1c1b18; }
+  .d3 .topbar{ border-bottom:1px solid #ece9e2; }
+  .d3 .brand{ font-family:"Lora",serif; color:#1c1b18; font-weight:600; }
+  .d3 .brand b{ color:#3f6b5c; }
+  .d3 .kicker{ color:#3f6b5c; letter-spacing:.26em; }
+  .d3 .hero h3{ font-family:"Lora",serif; font-weight:600; color:#1c1b18; }
+  .d3 .hero p{ color:#6c685f; }
+  .d3 .btn-primary{ background:#3f6b5c; color:#fff; }
+  .d3 .btn-ghost{ background:#fff; color:#3f5b50; border-color:#d9d4c9; }
+  .d3 .pcard{ background:#fff; border:1px solid #e9e5dc; }
+  .d3 .pcard .ic{ color:#3f6b5c; }
+  .d3 .pcard h4{ font-family:"Lora",serif; color:#1c1b18; }
+  .d3 .pcard p{ color:#76726a; }
+  .d3 .daily{ background:#f4f1ea; border:1px solid #e6e2d8; }
+  .d3 .daily .lab{ color:#3f6b5c; }
+  .d3 .daily a{ color:#3f6b5c; }
+  .d3 .nav{ color:#6c685f; }
+  .d3 .nav .on{ color:#3f6b5c; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <h1>Tam Sở — ba hướng tái thiết kế</h1>
+    <p>Ba hướng nhận diện hoàn chỉnh cho cùng một màn hình trang chủ, để so sánh trực tiếp. Mỗi hướng giữ nguyên nội dung &amp; giọng văn hiện tại (tách dữ kiện / diễn giải) nhưng đổi bảng màu, kiểu chữ và cảm giác tổng thể.</p>
+    <p class="meta">Đây chỉ là <b>bản phác concept</b> — chưa nối vào ứng dụng, chưa đụng vào code dự án. Mở rộng cửa sổ để xem 3 cột bố cục đầy đủ; trên điện thoại các thẻ sẽ tự xếp dọc.</p>
+  </div>
+
+  <!-- ============ DIRECTION 1 ============ -->
+  <section class="dir d1">
+    <div class="dir-head">
+      <div class="tag">Hướng 1 · tiến hoá từ bản hiện tại</div>
+      <h2>Mực &amp; Vàng — Di sản biên tập</h2>
+      <p class="concept">Giấy ngà ấm, chữ serif sang trọng, vàng lá điểm xuyết tiết chế. Cảm giác như một tạp chí văn hoá đáng tin — gần với bản hiện tại nên ít rủi ro nhất.</p>
+      <div class="chips"><span class="chip">Thương hiệu trưởng thành</span><span class="chip">Hợp nội dung &amp; SEO</span><span class="chip">Giữ được "linh hồn"</span><span class="chip warn">Đổi mới ít táo bạo</span></div>
+    </div>
+    <div class="frame">
+      <div class="topbar">
+        <div class="brand">✦ Tam Sở<b>.</b></div>
+        <div class="nav"><span class="on">Trang chủ</span><span>Hồ sơ</span><span>Tarot</span><span>Thần số học</span><span>Tử vi</span></div>
+      </div>
+      <div class="hero">
+        <div class="kicker">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
+        <h3>Năm ngả chiêm nghiệm,<br/>một chốn dừng chân</h3>
+        <p>Tam Sở gom các hệ thống biểu tượng cổ xưa về một nơi — với nguồn dẫn rõ ràng và sự thành thật giữa <em>dữ kiện</em> và <em>diễn giải</em>.</p>
+        <div class="cta">
+          <button class="btn btn-primary">Lập hồ sơ tổng hợp</button>
+          <button class="btn btn-ghost">Rút một lá bài</button>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-8 8 12)"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15 12)"/></svg></div><h4>Rút bài Tarot</h4><p>Một câu hỏi trong lòng — để lá bài gợi mở.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 4 7 20M17 4l-2 16M4 9h16M3 15h16"/></svg></div><h4>Thần số học</h4><p>Ngày sinh &amp; họ tên ẩn chứa con số của bạn.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.8 1.3 5.9L12 16l-5 3 1.3-5.9L4 9.3l5.6-.7z"/></svg></div><h4>Lá số Tử Vi</h4><p>An sao 12 cung theo giờ sinh của bạn.</p></div>
+      </div>
+      <div class="daily">
+        <div class="row"><span class="lab">Tử vi hôm nay · ♈ Bạch Dương</span><span style="color:#b08a3e;letter-spacing:2px">★★★★<span style="opacity:.3">★</span></span></div>
+        <p>Một ngày thuận để mở lời và bắt đầu việc đã ấp ủ — giữ nhịp vừa phải, đừng vội.</p>
+        <a href="#">Xem đầy đủ tình cảm · công việc · tài chính →</a>
+      </div>
+    </div>
+    <div class="specs">
+      <div><h5>Bảng màu</h5><div class="sw"><span style="background:#f5ecd6"></span><span style="background:#d9b45a"></span><span style="background:#b08a3e"></span><span style="background:#b6502e"></span><span style="background:#2a2317"></span></div></div>
+      <div><h5>Kiểu chữ</h5><div class="ty1" style="font-family:'Cormorant Garamond',serif">Cormorant</div><div class="ty2">Tiêu đề · Cormorant Garamond<br/>Nội dung · Be Vietnam Pro</div></div>
+      <div><h5>Hợp nhất với</h5><ul><li>Mục tiêu thương hiệu &amp; SEO (giọng nội dung không đổi)</li><li>Chuyển đổi êm: di trú nhẹ nhàng từ bản hiện tại</li><li>Rủi ro thấp nhất — nhưng "wow" cũng vừa phải</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ============ DIRECTION 2 ============ -->
+  <section class="dir d2">
+    <div class="dir-head">
+      <div class="tag">Hướng 2 · táo bạo, khác biệt</div>
+      <h2>Đêm Sao — Huyền học hiện đại</h2>
+      <p class="concept">Nền đêm xanh thẳm, dải sao &amp; quầng tím, điểm vàng phát sáng. Đắm chìm, dễ "chia sẻ", và là chế độ tối mặc định. Tím–vàng dùng tiết chế nên sang chứ không sến.</p>
+      <div class="chips"><span class="chip">Giữ chân &amp; chuyển đổi</span><span class="chip">Dễ lan toả mạng xã hội</span><span class="chip">Dark mode mặc định</span><span class="chip warn">Cần kỷ luật tương phản (AA)</span></div>
+    </div>
+    <div class="frame">
+      <div class="topbar">
+        <div class="brand">✦ Tam Sở<b>.</b></div>
+        <div class="nav"><span class="on">Trang chủ</span><span>Hồ sơ</span><span>Tarot</span><span>Thần số học</span><span>Tử vi</span></div>
+      </div>
+      <div class="hero">
+        <div class="kicker">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
+        <h3>Năm ngả chiêm nghiệm,<br/>một chốn dừng chân</h3>
+        <p>Tam Sở gom các hệ thống biểu tượng cổ xưa về một nơi — với nguồn dẫn rõ ràng và sự thành thật giữa <em>dữ kiện</em> và <em>diễn giải</em>.</p>
+        <div class="cta">
+          <button class="btn btn-primary">Lập hồ sơ tổng hợp</button>
+          <button class="btn btn-ghost">Rút một lá bài</button>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-8 8 12)"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15 12)"/></svg></div><h4>Rút bài Tarot</h4><p>Một câu hỏi trong lòng — để lá bài gợi mở.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 4 7 20M17 4l-2 16M4 9h16M3 15h16"/></svg></div><h4>Thần số học</h4><p>Ngày sinh &amp; họ tên ẩn chứa con số của bạn.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.8 1.3 5.9L12 16l-5 3 1.3-5.9L4 9.3l5.6-.7z"/></svg></div><h4>Lá số Tử Vi</h4><p>An sao 12 cung theo giờ sinh của bạn.</p></div>
+      </div>
+      <div class="daily">
+        <div class="row"><span class="lab">Tử vi hôm nay · ♈ Bạch Dương</span><span style="color:#e7bc6b;letter-spacing:2px">★★★★<span style="opacity:.3">★</span></span></div>
+        <p>Một ngày thuận để mở lời và bắt đầu việc đã ấp ủ — giữ nhịp vừa phải, đừng vội.</p>
+        <a href="#">Xem đầy đủ tình cảm · công việc · tài chính →</a>
+      </div>
+    </div>
+    <div class="specs">
+      <div><h5>Bảng màu</h5><div class="sw"><span style="background:#0d1124"></span><span style="background:#1b2240"></span><span style="background:#9b83e6"></span><span style="background:#e7bc6b"></span><span style="background:#ece9f5"></span></div></div>
+      <div><h5>Kiểu chữ</h5><div class="ty1" style="font-family:'Playfair Display',serif">Playfair</div><div class="ty2">Tiêu đề · Playfair Display<br/>Nội dung · Be Vietnam Pro</div></div>
+      <div><h5>Hợp nhất với</h5><ul><li>Tạo cảm giác "wow" để giữ chân &amp; chia sẻ</li><li>Nhận diện khác biệt rõ trên thị trường VN</li><li>Cần làm kỹ tương phản chữ trên nền tối</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ============ DIRECTION 3 ============ -->
+  <section class="dir d3">
+    <div class="dir-head">
+      <div class="tag">Hướng 3 · sạch, hiện đại, cấp sản phẩm</div>
+      <h2>Tịnh — Tối giản</h2>
+      <p class="concept">Trắng ngà, nhiều khoảng thở, một điểm nhấn ngọc bích duy nhất. Nhẹ, nhanh, dễ đọc trên di động — như một app sống chậm hiện đại. (Có thể đổi nhấn sang vàng trầm nếu muốn giữ hơi ấm.)</p>
+      <div class="chips"><span class="chip">Di động xuất sắc</span><span class="chip">Tiếp cận (A11y) tốt</span><span class="chip">Tải nhanh, hiện đại</span><span class="chip warn">Dễ mất chất "huyền bí"</span></div>
+    </div>
+    <div class="frame">
+      <div class="topbar">
+        <div class="brand">✦ Tam Sở<b>.</b></div>
+        <div class="nav"><span class="on">Trang chủ</span><span>Hồ sơ</span><span>Tarot</span><span>Thần số học</span><span>Tử vi</span></div>
+      </div>
+      <div class="hero">
+        <div class="kicker">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
+        <h3>Năm ngả chiêm nghiệm,<br/>một chốn dừng chân</h3>
+        <p>Tam Sở gom các hệ thống biểu tượng cổ xưa về một nơi — với nguồn dẫn rõ ràng và sự thành thật giữa <em>dữ kiện</em> và <em>diễn giải</em>.</p>
+        <div class="cta">
+          <button class="btn btn-primary">Lập hồ sơ tổng hợp</button>
+          <button class="btn btn-ghost">Rút một lá bài</button>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="5" width="11" height="15" rx="2" transform="rotate(-8 8 12)"/><rect x="10" y="4" width="11" height="15" rx="2" transform="rotate(8 15 12)"/></svg></div><h4>Rút bài Tarot</h4><p>Một câu hỏi trong lòng — để lá bài gợi mở.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 4 7 20M17 4l-2 16M4 9h16M3 15h16"/></svg></div><h4>Thần số học</h4><p>Ngày sinh &amp; họ tên ẩn chứa con số của bạn.</p></div>
+        <div class="pcard"><div class="ic"><svg class="icn" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.8 1.3 5.9L12 16l-5 3 1.3-5.9L4 9.3l5.6-.7z"/></svg></div><h4>Lá số Tử Vi</h4><p>An sao 12 cung theo giờ sinh của bạn.</p></div>
+      </div>
+      <div class="daily">
+        <div class="row"><span class="lab">Tử vi hôm nay · ♈ Bạch Dương</span><span style="color:#3f6b5c;letter-spacing:2px">★★★★<span style="opacity:.3">★</span></span></div>
+        <p>Một ngày thuận để mở lời và bắt đầu việc đã ấp ủ — giữ nhịp vừa phải, đừng vội.</p>
+        <a href="#">Xem đầy đủ tình cảm · công việc · tài chính →</a>
+      </div>
+    </div>
+    <div class="specs">
+      <div><h5>Bảng màu</h5><div class="sw"><span style="background:#fcfbf8"></span><span style="background:#f4f1ea"></span><span style="background:#3f6b5c"></span><span style="background:#9a7c3e"></span><span style="background:#1c1b18"></span></div></div>
+      <div><h5>Kiểu chữ</h5><div class="ty1" style="font-family:'Lora',serif">Lora</div><div class="ty2">Tiêu đề · Lora (serif nhẹ)<br/>Nội dung · Be Vietnam Pro</div></div>
+      <div><h5>Hợp nhất với</h5><ul><li>Trải nghiệm di động &amp; tốc độ là ưu tiên</li><li>Tiếp cận (A11y) và độ rõ tối đa</li><li>Đánh đổi: cần thêm chi tiết để không "lạnh"</li></ul></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

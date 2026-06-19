@@ -18,6 +18,7 @@ import * as TD from '../src/data/tarotDeep.js'
 import * as NDP from '../src/data/numerologyDeep.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
+import { SAO_KHUYEN } from '../src/data/saoKhuyen.js'
 import { readFileSync } from 'node:fs'
 
 let pass = 0, fail = 0
@@ -612,6 +613,19 @@ delete global.window
   ok(s.includes('tinhCanChi') && s.includes('usePageSeo(') && s.includes('breadcrumb:'), 'SinhNam: dùng tinhCanChi + SEO meta')
   const sm = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')
   ok(sm.includes('/sinh-nam/1990') && sm.includes('/sinh-nam/2000'), 'sitemap: có URL sinh năm')
+}
+
+// === C06 đợt 4: lời khuyên 14 chính tinh (saoKhuyen.js) — làm dày sao×cung ===
+{
+  const stars14 = ["Tử Vi", "Thiên Cơ", "Thái Dương", "Vũ Khúc", "Thiên Đồng", "Liêm Trinh", "Thiên Phủ", "Thái Âm", "Tham Lang", "Cự Môn", "Thiên Tướng", "Thiên Lương", "Thất Sát", "Phá Quân"]
+  eq(Object.keys(SAO_KHUYEN).length, 14, 'SAO_KHUYEN: đủ 14 chính tinh')
+  ok(stars14.every(s => typeof SAO_KHUYEN[s] === 'string' && SAO_KHUYEN[s].length >= 30), 'SAO_KHUYEN: mỗi sao có lời khuyên ≥30 ký tự')
+  const banned = /(chắc chắn sẽ|nhất định sẽ|tuyệt đối|100%|bảo đảm)/i
+  ok(stars14.every(s => !banned.test(SAO_KHUYEN[s])), 'SAO_KHUYEN: KHÔNG over-claim')
+  // SAO_CUNG vốn đã dày: 168 luận điểm, mỗi điểm là câu hoàn chỉnh
+  ok(stars14.every(s => Object.values(TVSC[s]).every(t => t.length >= 30)), 'SAO_CUNG: 168 luận điểm đều là câu đủ dày (≥30 ký tự)')
+  const ls = readFileSync(new URL('../src/pages/LaSoTuVi.jsx', import.meta.url), 'utf8')
+  ok(ls.includes("from '../data/saoKhuyen.js'") && ls.includes('SAO_KHUYEN[s.ten]'), 'LaSoTuVi: render lời khuyên sao')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
