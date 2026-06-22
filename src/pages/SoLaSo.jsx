@@ -4,6 +4,7 @@ import { shareUrl as routeShareUrl } from '../data/site.js'
 import { solar2lunar } from '../data/lunar.js'
 import { anSao } from '../data/tuvidauso.js'
 import { hopTuoiChi } from '../data/tuvi.js'
+import { weavePair } from '../data/soLaSoSynth.js'
 
 const GIO_LABEL = ['Tý (23–1h)', 'Sửu (1–3h)', 'Dần (3–5h)', 'Mão (5–7h)', 'Thìn (7–9h)', 'Tỵ (9–11h)', 'Ngọ (11–13h)', 'Mùi (13–15h)', 'Thân (15–17h)', 'Dậu (17–19h)', 'Tuất (19–21h)', 'Hợi (21–23h)']
 const REL_CLS = { 'Tam hợp': 'text-emerald-800', 'Lục hợp': 'text-emerald-800', 'Lục xung': 'text-rose-700', 'Tứ hành xung': 'text-rose-700', 'Cùng tuổi': 'text-amber-800', 'Bình thường': 'text-muted' }
@@ -97,6 +98,12 @@ export default function SoLaSo() {
                 <button className="btn btn-ghost" onClick={copy}>{copied ? '✓ Đã chép!' : '🔗 Sao chép liên kết'}</button>
                 <a className="btn btn-ghost" href={'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl())} target="_blank" rel="noopener">📘 Chia sẻ</a>
               </div>
+            </div>
+          </section>
+          <section className="wrap py-3">
+            <div className="panel p-[22px] max-w-[900px] mx-auto">
+              <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Đối chiếu để chiêm nghiệm <span className="note">(tham khảo)</span></div>
+              <p className="m-0 leading-relaxed">{weavePair({ menhA: res.pa.menh, menhB: res.pb.menh, phuTheA: res.pa.phuThe, phuTheB: res.pb.phuThe, rel: res.rel })}</p>
             </div>
           </section>
         </>

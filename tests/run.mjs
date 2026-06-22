@@ -5,9 +5,15 @@ import * as N from '../src/data/numerology.js'
 import * as V from '../src/data/tuvi.js'
 import * as L from '../src/data/lunar.js'
 import * as T from '../src/data/tarot.js'
+import { spreadSynthesis } from '../src/data/tarotSynth.js'
 import * as I from '../src/data/iching.js'
 import * as Z from '../src/data/zodiac.js'
 import * as R from '../src/data/report.js'
+import * as SLS from '../src/data/soLaSoSynth.js'
+import { weaveCast } from '../src/data/ichingSynth.js'
+import { weaveNumbers } from '../src/data/numerologySynth.js'
+import { weaveDay } from '../src/data/dayWeave.js'
+import { drawCards } from '../src/data/tarot.js'
 import * as SITE from '../src/data/site.js'
 import * as COLL from '../src/data/collection.js'
 import * as SEO from '../src/data/seo.js'
@@ -636,6 +642,184 @@ delete global.window
   ok(ps.includes('og:image') && ps.includes('canonical') && ps.includes('BreadcrumbList'), 'prerender: set title/description/canonical/og + JSON-LD breadcrumb')
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   ok(pkg.scripts.build.includes('prerender'), 'package.json: build chạy prerender sau vite build')
+}
+
+// === Tổng hợp trải bài Tarot (tarotSynth) — diễn giải dệt, giữ giọng tham khảo ===
+{
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|tuyệt đối|bảo đảm|chính xác 100|100%/i
+  const frame = /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/
+  let allOk = true, frameOk = true, posOk = true, qOk = true, badEx = ''
+  for (const sp of Object.keys(T.TAROT_SPREADS)) {
+    const pos = T.TAROT_SPREADS[sp].positions
+    for (let r = 0; r < 60; r++) {
+      const picks = T.drawCards(pos.length)
+      const q = r % 2 ? 'Mình nên tập trung vào điều gì?' : ''
+      const out = spreadSynthesis(picks, pos, q)
+      if (typeof out !== 'string' || out.length < 40) allOk = false
+      if (overclaim.test(out)) { allOk = false; badEx = out }
+      if (!frame.test(out)) { frameOk = false; badEx = out }
+      if (pos.length > 1 && (!out.includes(pos[0]) || !out.includes(pos[pos.length - 1]))) posOk = false
+      if (q && !out.includes(q)) qOk = false
+    }
+  }
+  ok(allOk, 'tarotSynth: luôn ra chuỗi đủ dài & KHÔNG over-claim (mọi kiểu trải × 60) ' + (badEx ? '[' + badEx.slice(0, 60) + ']' : ''))
+  ok(frameOk, 'tarotSynth: luôn có khung tham khảo/chiêm nghiệm/không phải lời tiên đoán')
+  ok(posOk, 'tarotSynth: trải nhiều lá luôn nhắc vị trí đầu & cuối')
+  ok(qOk, 'tarotSynth: nhắc lại câu hỏi khi người dùng nhập')
+  const cups = T.TAROT_CARDS.filter(c => c.suit === 'Cốc').slice(0, 3).map(card => ({ card, up: true }))
+  const synC = spreadSynthesis(cups, ['Quá khứ', 'Hiện tại', 'Tương lai'], '')
+  ok(/Cốc nổi trội/.test(synC) && /cảm xúc/.test(synC), 'tarotSynth: nhận diện chất nổi trội & nêu trọng tâm tương ứng')
+  const majors = T.TAROT_CARDS.filter(c => c.arcana === 'major').slice(0, 3).map(card => ({ card, up: true }))
+  ok(/Ẩn Chính/.test(spreadSynthesis(majors, ['Quá khứ', 'Hiện tại', 'Tương lai'], '')), 'tarotSynth: nêu sức nặng Ẩn Chính khi nhiều lá lớn')
+}
+
+
+// === U05: hiệu ứng mở rộng (CountUp + stagger lưới) — wiring ===
+{
+  const rd = p => readFileSync(new URL('../src/' + p, import.meta.url), 'utf8')
+  const cu = rd('components/CountUp.jsx')
+  ok(/IntersectionObserver/.test(cu) && /prefers-reduced-motion/.test(cu) && /requestAnimationFrame/.test(cu), 'CountUp: có IO + reduced-motion + rAF')
+  ok(/base = .reveal./.test(rd('components/Reveal.jsx')), 'Reveal: có prop base (tái dùng cho stagger)')
+  const num = rd('pages/Numerology.jsx')
+  ok(/import CountUp/.test(num) && num.includes('<CountUp end={res.lp}'), 'Numerology: CountUp gắn Số Chủ Đạo')
+  ok(/import CountUp/.test(rd('components/Today.jsx')), 'Today: import CountUp cho số ngày')
+  for (const p of ['pages/Tarot.jsx', 'pages/IChing.jsx', 'pages/Zodiac.jsx']) {
+    const s = rd(p)
+    ok(s.includes('base="stagger-parent"') && s.includes('--i'), p + ': lưới có stagger-parent + biến --i')
+  }
+  const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
+  ok(css.includes('.stagger-parent.in > *') && /prefers-reduced-motion/.test(css), 'CSS: stagger-parent + guard reduced-motion')
+}
+
+
+// === U06: stagger lan toả các lưới còn lại ===
+ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.jsx'].every(p => readFileSync(new URL('../src/'+p, import.meta.url),'utf8').includes('stagger-parent')), 'U06: stagger gắn Home/Numerology/ConGiap/HopTuoi')
+
+// === Diễn giải tổng hợp: weaveProfile (Hồ sơ) & weavePair (So đôi lá số) ===
+{
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|tuyệt đối|bảo đảm|chính xác 100|100%/i
+  const frame = /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/
+  const mk = (lp, exp, py) => ({ lp: { lp, info: { title: 'Số ' + lp + ' — X', keys: ['kw'] }, master: false }, nn: exp == null ? null : { expression: exp }, py, curPin: { p: 4, c: 0 }, canChi: { conGiap: 'Ngọ', menhHanh: 'Thủy', napAm: 'Thiên Hà Thủy', chi: 'Ngọ' }, zodiac: { ten: 'Bạch Dương', nguyenTo: 'Lửa', en: 'Aries' } })
+  let wpOk = true, wpFrame = true
+  for (const [lp, exp, py] of [[8, 2, 5], [6, null, 1], [1, 1, 9], [11, 33, 3], [7, 4, 7]]) {
+    const out = R.weaveProfile(mk(lp, exp, py))
+    if (typeof out !== 'string' || out.length < 80 || overclaim.test(out)) wpOk = false
+    if (!frame.test(out)) wpFrame = false
+    if (exp !== lp && !out.includes('Số Chủ Đạo ' + lp)) wpOk = false
+  }
+  ok(wpOk, 'weaveProfile: chuỗi đủ dày, nhắc Số Chủ Đạo, KHÔNG over-claim')
+  ok(wpFrame, 'weaveProfile: luôn có khung tham khảo/chiêm nghiệm')
+  ok(R.weaveProfile(mk(5, 5, 5)).includes('cộng hưởng'), 'weaveProfile: nhận diện cộng hưởng khi Số Chủ Đạo = Vận Mệnh')
+
+  const mp = (ma, mb, rel) => SLS.weavePair({ menhA: { chi: 'Hợi', ten: ma }, menhB: { chi: 'Tỵ', ten: mb }, phuTheA: { chi: 'Sửu', ten: 'Thiên Đồng' }, phuTheB: { chi: 'Mùi', ten: 'Thái Dương' }, rel })
+  let wpairOk = true, noVerdict = true
+  for (const rel of ['Tam hợp', 'Lục hợp', 'Lục xung', 'Tứ hành xung', 'Cùng tuổi', 'Bình thường']) {
+    const out = mp('Tử Vi', 'vô chính diệu', rel)
+    if (typeof out !== 'string' || out.length < 100 || overclaim.test(out) || !frame.test(out)) wpairOk = false
+    if (!out.includes('KHÔNG phải kết luận hợp hay không hợp')) noVerdict = false
+  }
+  ok(wpairOk, 'weavePair: chuỗi đủ dày + khung tham khảo + KHÔNG over-claim (mọi quan hệ địa chi)')
+  ok(noVerdict, 'weavePair: LUÔN nói rõ KHÔNG kết luận hợp/không hợp (đúng ràng buộc trang)')
+  ok(/bổ khuyết/.test(mp('A', 'vô chính diệu', 'Tam hợp')), 'weavePair: nhận diện Mệnh vô chính diệu để gợi bổ khuyết')
+}
+// === Tổng hợp quẻ Dịch (ichingSynth.weaveCast) — dệt present→hào động→quẻ biến ===
+{
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|tuyệt đối|bảo đảm|chính xác 100|100%/i
+  const frame = /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/
+  let allOk = true, frameOk = true, presOk = true, changedOk = true, badEx = ''
+  for (let r = 0; r < 400; r++) {
+    const c = I.castHexagram()
+    const out = weaveCast(c)
+    if (typeof out !== 'string' || out.length < 80 || overclaim.test(out)) { allOk = false; badEx = out }
+    if (!frame.test(out)) { frameOk = false; badEx = out }
+    if (!out.includes('' + c.present.n) || !out.includes(c.present.ten)) presOk = false
+    if (c.changed && (!out.includes('' + c.changed.n) || !out.includes(c.changed.ten))) changedOk = false
+  }
+  ok(allOk, 'weaveCast: luôn ra chuỗi đủ dày & KHÔNG over-claim (×400) ' + (badEx ? '[' + badEx.slice(0, 60) + ']' : ''))
+  ok(frameOk, 'weaveCast: luôn có khung tham khảo/chiêm nghiệm')
+  ok(presOk, 'weaveCast: luôn nêu quẻ chính (số + tên)')
+  ok(changedOk, 'weaveCast: nêu quẻ biến (số + tên) khi có hào động')
+  const stat = weaveCast({ present: I.HEXAGRAMS[0], changed: null, changingPos: [] })
+  ok(/không có hào động/.test(stat) && !/quẻ biến/.test(stat), 'weaveCast: không hào động → nêu tình thế ổn định, không nhắc quẻ biến')
+  const one = weaveCast({ present: I.HEXAGRAMS[0], changed: I.HEXAGRAMS[42], changingPos: [5] })
+  ok(/hào 5/.test(one) && /chủ quẻ/.test(one), 'weaveCast: một hào động nêu đúng ngôi hào (hào 5 = chủ quẻ)')
+  const many = weaveCast({ present: I.HEXAGRAMS[0], changed: I.HEXAGRAMS[42], changingPos: [2, 4, 6] })
+  ok(/hào 2/.test(many) && /hào 6/.test(many), 'weaveCast: nhiều hào động nêu hào thấp & cao nhất làm trọng tâm')
+  const ij = readFileSync(new URL('../src/pages/IChing.jsx', import.meta.url), 'utf8')
+  ok(ij.includes("from '../data/ichingSynth.js'") && ij.includes('weaveCast(cast)') && ij.includes('res.mh.present'), 'IChing.jsx: render weaveCast cho gieo xu + Mai Hoa')
+}
+
+// === Tổng hợp bộ số Thần số học (numerologySynth.weaveNumbers) ===
+{
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|tuyệt đối|bảo đảm|chính xác 100|100%/i
+  const frame = /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/
+  const nums = [1,2,3,4,5,6,7,8,9,11,22,33]
+  let allOk = true, frameOk = true, lpOk = true, badEx = ''
+  for (let r = 0; r < 300; r++) {
+    const pick = () => nums[Math.floor(Math.random()*nums.length)]
+    const lp = pick(), expr = pick(), su = pick(), pe = pick(), ma = pick()
+    const missing = [1,2,3,4,5,6,7,8,9].filter(() => Math.random() < 0.4)
+    const out = weaveNumbers({ lp, expression: expr, soulUrge: su, personality: pe, maturity: ma, missing })
+    if (typeof out !== 'string' || out.length < 120 || overclaim.test(out)) { allOk = false; badEx = out }
+    if (!frame.test(out)) { frameOk = false; badEx = out }
+    if (!out.includes('Số Chủ Đạo ' + lp) || !out.includes('Số Vận Mệnh ' + expr)) lpOk = false
+  }
+  ok(allOk, 'weaveNumbers: luôn ra chuỗi đủ dày & KHÔNG over-claim (×300) ' + (badEx ? '[' + badEx.slice(0,60) + ']' : ''))
+  ok(frameOk, 'weaveNumbers: luôn có khung tham khảo/chiêm nghiệm')
+  ok(lpOk, 'weaveNumbers: luôn nêu Số Chủ Đạo + Số Vận Mệnh')
+  ok(/cộng hưởng/.test(weaveNumbers({ lp: 5, expression: 5, soulUrge: 2, personality: 7, maturity: 1, missing: [] })), 'weaveNumbers: nhận diện cộng hưởng khi Chủ Đạo = Vận Mệnh')
+  ok(/khuyết số/.test(weaveNumbers({ lp: 1, expression: 2, soulUrge: 3, personality: 4, maturity: 5, missing: [7,9] })), 'weaveNumbers: nêu số Lo Shu còn khuyết')
+  ok(/đủ cả chín số/.test(weaveNumbers({ lp: 1, expression: 2, soulUrge: 3, personality: 4, maturity: 5, missing: [] })), 'weaveNumbers: nhận diện Lo Shu đủ 9 số')
+  const nj = readFileSync(new URL('../src/pages/Numerology.jsx', import.meta.url), 'utf8')
+  ok(nj.includes("from '../data/numerologySynth.js'") && nj.includes('weaveNumbers({'), 'Numerology.jsx: render weaveNumbers trong Bộ số đầy đủ')
+}
+
+// === Dệt "quẻ hôm nay" (dayWeave.weaveDay) — nối lá Tarot + quẻ Dịch, bắc cầu ngũ hành ===
+{
+  const overclaim = /chắc chắn sẽ|nhất định sẽ|tuyệt đối|bảo đảm|chính xác 100|100%/i
+  const frame = /tham khảo|chiêm nghiệm|không phải lời (phán|tiên)/
+  let allOk = true, frameOk = true, nameOk = true, hexOk = true, sawSuit = false, sawMajor = false, badEx = ''
+  for (let r = 0; r < 500; r++) {
+    const p = drawCards(1)[0]
+    const h = I.castHexagram().present
+    const out = weaveDay({ card: p.card, up: p.up, hex: h, dayNum: 1 + (r % 9) })
+    if (typeof out !== 'string' || out.length < 120 || overclaim.test(out)) { allOk = false; badEx = out }
+    if (!frame.test(out)) { frameOk = false; badEx = out }
+    if (!out.includes(p.card.nameVi)) nameOk = false
+    if (!out.includes('' + h.n) || !out.includes(h.ten)) hexOk = false
+    if (p.card.suit) { sawSuit = true; if (!/cây cầu Đông–Tây/.test(out)) allOk = false } else { sawMajor = true; if (!/hai lăng kính/.test(out)) allOk = false }
+  }
+  ok(allOk, 'weaveDay: chuỗi đủ dày + KHÔNG over-claim + đúng nhánh chất/Ẩn Chính (×500) ' + (badEx ? '[' + badEx.slice(0,60) + ']' : ''))
+  ok(frameOk, 'weaveDay: luôn có khung tham khảo/không phải lời phán')
+  ok(nameOk, 'weaveDay: luôn nêu tên lá bài')
+  ok(hexOk, 'weaveDay: luôn nêu quẻ (số + tên)')
+  ok(sawSuit && sawMajor, 'weaveDay: bộ test có chạm cả lá có chất lẫn Ẩn Chính')
+  // ngũ hành: Gậy (Lửa→Hỏa) × quái Càn (Kim) = tương khắc
+  const wands = T.TAROT_CARDS.find(c => c.suit === 'Gậy')
+  const canHex = I.HEXAGRAMS.find(h => h.up === 'Càn')
+  ok(/tương khắc/.test(weaveDay({ card: wands, up: true, hex: canHex, dayNum: 3 })), 'weaveDay: nhận diện ngũ hành tương khắc (Lửa×Kim)')
+  // Cốc (Nước→Thủy) × quái Tốn (Mộc) = tương sinh
+  const cups = T.TAROT_CARDS.find(c => c.suit === 'Cốc')
+  const tonHex = I.HEXAGRAMS.find(h => h.up === 'Tốn')
+  ok(/tương sinh/.test(weaveDay({ card: cups, up: true, hex: tonHex, dayNum: 3 })), 'weaveDay: nhận diện ngũ hành tương sinh (Thủy×Mộc)')
+  const tj = readFileSync(new URL('../src/components/Today.jsx', import.meta.url), 'utf8')
+  ok(tj.includes("from '../data/dayWeave.js'") && tj.includes('weaveDay({'), 'Today.jsx: render weaveDay trong khối Hôm nay')
+}
+
+// === Lịch vạn niên: can chi tháng âm lịch (monthCanChi, Ngũ Hổ Độn) ===
+{
+  eq(V.monthCanChi(2026, 5).tenCanChi, 'Giáp Ngọ', 'monthCanChi: tháng 5 ÂL/2026 = Giáp Ngọ (khớp ảnh)')
+  eq(V.monthCanChi(2026, 1).tenCanChi, 'Canh Dần', 'monthCanChi: tháng Giêng 2026 (Bính Ngọ) = Canh Dần')
+  eq(V.monthCanChi(2024, 1).tenCanChi, 'Bính Dần', 'monthCanChi: tháng Giêng 2024 (Giáp Thìn) = Bính Dần')
+  // chi tháng: Giêng=Dần ... tháng m → chi (m+1)%12; tháng 11 = Tý, tháng 12 = Sửu
+  eq(V.monthCanChi(2026, 11).chi, 'Tý', 'monthCanChi: tháng 11 ÂL = chi Tý')
+  eq(V.monthCanChi(2026, 12).chi, 'Sửu', 'monthCanChi: tháng Chạp = chi Sửu')
+  // can quay vòng 10: hai năm cùng can cho cùng can tháng
+  eq(V.monthCanChi(2025, 3).can, V.monthCanChi(2025, 3).can, 'monthCanChi: tất định')
+  const hj = readFileSync(new URL('../src/pages/Home.jsx', import.meta.url), 'utf8')
+  ok(hj.includes("import LichVanNien") && hj.includes('<LichVanNien />'), 'Home.jsx: có gắn LichVanNien')
+  const lj = readFileSync(new URL('../src/components/LichVanNien.jsx', import.meta.url), 'utf8')
+  ok(lj.includes('monthCanChi') && lj.includes('gioHoangDao') && lj.includes('solar2lunar') && /không phải lời phán/.test(lj), 'LichVanNien: dùng can chi + giờ hoàng đạo + khung tham khảo')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)

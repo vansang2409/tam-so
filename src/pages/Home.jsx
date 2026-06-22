@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Today from '../components/Today.jsx'
+import LichVanNien from '../components/LichVanNien.jsx'
+import Reveal from '../components/Reveal.jsx'
 import { ZODIAC, ZODIAC_SLUG, dailyHoroscope } from '../data/zodiac.js'
 
 const pillars = [
@@ -56,7 +58,7 @@ export default function Home() {
           </div>
         )}
         <div className="text-gold text-kicker uppercase">Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</div>
-        <h1 className="gradient-text text-display my-3">Năm ngả chiêm nghiệm,<br />một chốn dừng chân</h1>
+        <h1 className="gradient-text shimmer-text text-display my-3">Năm ngả chiêm nghiệm,<br />một chốn dừng chân</h1>
         <p className="text-muted text-lead max-w-[700px] mx-auto mb-7">
           Tam Sở gom các hệ thống biểu tượng cổ xưa về cùng một nơi: lá bài Tarot, con số định mệnh, vòng Can Chi, cung hoàng đạo và quẻ Dịch.
           Công cụ để bạn soi chiếu bản thân — với nguồn dẫn rõ ràng và sự thành thật về ranh giới giữa <em>dữ kiện</em> và <em>diễn giải</em>.
@@ -67,17 +69,19 @@ export default function Home() {
         </div>
       </section>
 
+      <Reveal><LichVanNien /></Reveal>
+
       <section className="wrap pt-4 pb-2">
         <p className="text-center text-gold text-kicker uppercase mb-3">Bạn muốn xem gì hôm nay?</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[820px] mx-auto">
-          {pillars.map(p => (
-            <Link key={p.to} to={p.to} className="panel hover-lift p-6 text-center no-underline block hover:border-gold/40">
+        <Reveal base="stagger-parent" className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[820px] mx-auto">
+          {pillars.map((p, i) => (
+            <Link key={p.to} style={{ '--i': i }} to={p.to} className="panel hover-lift p-6 text-center no-underline block hover:border-gold/40">
               <span className="block text-[2.4rem] mb-1">{p.ic}</span>
               <h3 className="text-cream text-h3 mb-1">{p.title}</h3>
               <p className="text-muted text-[.9rem] m-0">{p.desc}</p>
             </Link>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <section className="wrap py-2">
@@ -103,13 +107,13 @@ export default function Home() {
         </div>
       </section>
 
-      <Today />
+      <Reveal><Today /></Reveal>
 
       <section className="wrap pt-1 pb-3">
         <p className="note text-center max-w-[640px] mx-auto m-0">✦ Lá bài, quẻ Dịch và con số của ngày làm mới mỗi sáng — ghé lại ngày mai để nhận điều mới, và giữ chuỗi ngày của bạn.</p>
       </section>
 
-      <section className="wrap py-12">
+      <Reveal as="section" className="wrap py-12">
         <p className="text-center text-gold text-kicker uppercase mb-8">Công cụ của Tam Sở</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-9">
           {features.map(f => (
@@ -122,7 +126,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </Reveal>
 
       <section className="wrap pb-10">
         <div className="disclaimer max-w-[900px] mx-auto">

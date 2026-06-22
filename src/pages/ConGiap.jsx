@@ -4,6 +4,7 @@ import { CONGIAP, CONGIAP_SLUG, conGiapBySlug, dailyConGiap, hopKhacChi, related
 import NotFound from '../components/NotFound.jsx'
 import SeoTag from '../components/SeoTag.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
+import Reveal from '../components/Reveal.jsx'
 
 const EMOJI = { 'Tý': '🐭', 'Sửu': '🐂', 'Dần': '🐯', 'Mão': '🐱', 'Thìn': '🐲', 'Tỵ': '🐍', 'Ngọ': '🐴', 'Mùi': '🐐', 'Thân': '🐵', 'Dậu': '🐓', 'Tuất': '🐶', 'Hợi': '🐷' }
 const hClass = { 'Kim': 'h-Kim', 'Mộc': 'h-Mộc', 'Thủy': 'h-Thủy', 'Hỏa': 'h-Hỏa', 'Thổ': 'h-Thổ' }
@@ -105,11 +106,11 @@ export default function ConGiap() {
       </section>
 
       <section className="wrap pb-10">
-        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>
-          {CONGIAP.map(c => {
+        <Reveal base="stagger-parent" className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>
+          {CONGIAP.map((c, i) => {
             const dc = dailyConGiap(c.ten, today)
             return (
-              <Link key={c.ten} to={'/con-giap/' + c.slug} className="panel p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
+              <Link key={c.ten} style={{ '--i': Math.min(i, 14) }} to={'/con-giap/' + c.slug} className="panel p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
                 <div className="flex items-center gap-3 mb-1">
                   <span className="text-[2rem]">{EMOJI[c.ten]}</span>
                   <div><div className="font-serif text-[1.2rem] text-cream">Tuổi {c.ten}</div><div className="note">con {c.con} · hành {c.hanh}</div></div>
@@ -121,7 +122,7 @@ export default function ConGiap() {
               </Link>
             )
           })}
-        </div>
+        </Reveal>
       </section>
 
       <section className="wrap pb-10">

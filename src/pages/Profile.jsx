@@ -260,6 +260,7 @@ export default function Profile() {
                     <div className="text-gold text-[.72rem] uppercase tracking-[.18em]">Báo cáo tổng hợp <span className="note">(tự động · tham khảo)</span></div>
                     <div className="flex gap-1.5"><button onClick={downloadReport} className="btn btn-ghost text-[.78rem] py-1 px-2.5 no-print">📄 .txt</button><button onClick={copyReport} className="btn btn-ghost text-[.78rem] py-1 px-2.5 no-print">{repCopied ? '✓ Đã chép' : '📋 Chép'}</button></div>
                   </div>
+                  {res.report.weave && <p className="m-0 mb-3 leading-relaxed text-cream border-l-2 border-gold/50 pl-3 italic">{res.report.weave}</p>}
                   <p className="m-0 mb-2 leading-relaxed">{res.report.intro}</p>
                   <p className="m-0 mb-3 leading-relaxed">{res.report.focus}</p>
                   {res.report.topicNote && <p className="m-0 mb-3 leading-relaxed text-cream">{res.report.topicNote}</p>}

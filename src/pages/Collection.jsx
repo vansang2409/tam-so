@@ -8,7 +8,7 @@ const fmt = t => { try { return new Date(t).toLocaleString('vi-VN') } catch (e) 
 function FilterChip({ active, onClick, children }) {
   return (
     <button onClick={onClick} className={'text-[.8rem] py-1.5 px-3 rounded-full border transition ' + (active
-      ? 'bg-gradient-to-br from-[#d3a24e] to-[#a9772f] text-[#211606] border-transparent font-semibold'
+      ? 'bg-[#b45309] text-white border-transparent font-semibold'
       : 'text-muted border-gold/25 hover:text-cream')}>{children}</button>
   )
 }

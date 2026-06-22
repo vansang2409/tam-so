@@ -1,7 +1,7 @@
 {
   "name": "tam-so",
   "private": true,
-  "version": "3.61.0",
+  "version": "3.72.0",
   "type": "module",
   "description": "Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch (Vite + React + Tailwind)",
   "scripts": {
@@ -15,7 +15,8 @@
     "html-to-image": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^6.26.2",
+    "framer-motion": "^11.18.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",

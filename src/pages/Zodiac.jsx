@@ -5,6 +5,7 @@ import { useSearchParams, useParams, Link } from 'react-router-dom'
 import { ZODIAC, getZodiac, zodiacCompat, LUCKY, decanOf, ZODIAC_DEEP, dailyHoroscope, ZODIAC_SLUG, zodiacBySlug } from '../data/zodiac.js'
 import NotFound from '../components/NotFound.jsx'
 import SeoTag from '../components/SeoTag.jsx'
+import Reveal from '../components/Reveal.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
 import { relatedForSign } from '../data/related.js'
 import { ZODIAC_EXTRA } from '../data/zodiacDeep.js'
@@ -21,7 +22,7 @@ function CompatMatrix() {
     'Cần dung hòa': { background: 'rgba(235,120,120,.20)', color: '#f3aaaa' }
   }
   return (
-    <section className="wrap py-8">
+    <Reveal as="section" className="wrap py-8">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng tương hợp nhanh 12 cung</h2>
       <p className="note text-center max-w-[640px] mx-auto mb-4">Tra nhanh mức hợp giữa hai cung (theo nguyên tố &amp; góc chiếu). Di chuột/chạm vào ô để xem chi tiết — chỉ mang tính tham khảo.</p>
       <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
@@ -53,7 +54,7 @@ function CompatMatrix() {
           {Object.keys(mark).map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
         </div>
       </div>
-    </section>
+    </Reveal>
   )
 }
 
@@ -148,9 +149,9 @@ export default function Zodiac() {
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Toàn bộ 12 cung</h2>
         <p className="text-muted text-center max-w-[680px] mx-auto mb-7">Mốc ngày theo hệ phổ biến; người sinh sát ranh giới nên kiểm chứng theo năm cụ thể.</p>
-        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>
-          {ZODIAC.map(z => (
-            <Link key={z.en} to={'/cung-hoang-dao/' + ZODIAC_SLUG[z.en]} className="panel p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
+        <Reveal base="stagger-parent" className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>
+          {ZODIAC.map((z, i) => (
+            <Link key={z.en} style={{ '--i': i }} to={'/cung-hoang-dao/' + ZODIAC_SLUG[z.en]} className="panel p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
               <div className="flex items-center gap-3 mb-1">
                 <span className="text-[2rem]">{z.sym}</span>
                 <div><div className="font-serif text-[1.2rem] text-cream">{z.ten}</div><div className="note">{z.from[1]}/{z.from[0]} – {z.to[1]}/{z.to[0]}</div></div>
@@ -162,7 +163,7 @@ export default function Zodiac() {
               <p className="text-gold font-semibold text-[.85rem] mt-2 mb-0">Xem chi tiết →</p>
             </Link>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <section className="wrap py-10">

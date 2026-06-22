@@ -4,6 +4,7 @@ import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams } from 'react-router-dom'
 import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi, dayCanChi, hourCanChi, gioHoangDao, tamTai, cungPhi, STAR_MEANING, CONGIAP_LUAN, NAP_AM_NGHIA, saoHan, SAO_HAN, hopTuoiChi } from '../data/tuvi.js'
 import { solar2lunar } from '../data/lunar.js'
+import Reveal from '../components/Reveal.jsx'
 
 const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Bình hòa': 'text-amber-800', 'Cần lưu ý': 'text-rose-700', 'Khá xung khắc': 'text-rose-700' }
 
@@ -53,7 +54,7 @@ function CongiapMatrix() {
     'Bình thường': { background: 'rgba(255,255,255,.03)', color: '#9b8e72' }
   }
   return (
-    <section className="wrap py-8">
+    <Reveal as="section" className="wrap py-8">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng hợp tuổi 12 con giáp</h2>
       <p className="note text-center max-w-[660px] mx-auto mb-4">Tra nhanh quan hệ <b>Tam hợp · Lục hợp · Lục xung · Tứ hành xung</b> giữa các tuổi (theo địa chi). Di chuột/chạm vào ô để xem chi tiết — quan niệm dân gian, mang tính tham khảo.</p>
       <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
@@ -85,7 +86,7 @@ function CongiapMatrix() {
           {['Tam hợp', 'Lục hợp', 'Lục xung', 'Tứ hành xung'].map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
         </div>
       </div>
-    </section>
+    </Reveal>
   )
 }
 

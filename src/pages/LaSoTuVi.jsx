@@ -35,7 +35,7 @@ function Cell({ p, active, onClick, van, tp }) {
         <span className="text-muted text-[.62rem] leading-none">{p.chi}</span>
       </div>
       <div className="flex gap-1 mt-0.5 flex-wrap">
-        {p.isMenh && <span className="text-[.55rem] bg-gold text-[#211606] px-1 rounded font-bold">MỆNH</span>}
+        {p.isMenh && <span className="text-[.55rem] bg-gold text-white px-1 rounded font-bold">MỆNH</span>}
         {p.isThan && <span className="text-[.55rem] border border-gold text-gold px-1 rounded font-bold">THÂN</span>}
         {van && van.daiHanChi === p.chiIdx && <span className="text-[.5rem] bg-amber-700 text-white px-1 rounded">ĐH</span>}
         {van && van.tieuHanChi === p.chiIdx && <span className="text-[.5rem] bg-sky-700 text-white px-1 rounded">TH</span>}

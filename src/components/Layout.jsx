@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import ErrorBoundary from './ErrorBoundary.jsx'
+import { motion } from 'framer-motion'
+const _reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const pageInit = _reduce ? false : { opacity: 0, y: 12 }
+const pageAnim = { opacity: 1, y: 0 }
+const pageTr = { duration: 0.34, ease: [0.22, 0.7, 0.3, 1] }
 import Logo from './Logo.jsx'
 import { countCollection } from '../data/collection.js'
 
@@ -17,6 +22,8 @@ const links = [
   { to: '/kinh-dich', label: 'Kinh Dịch' },
   { to: '/nguon', label: 'Nguồn' }
 ]
+const PRIMARY = ['/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
+const MORE = ['/ho-so', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
 
 function CollBtn() {
   const [n, setN] = useState(0)
@@ -33,7 +40,7 @@ function CollBtn() {
   return (
     <NavLink to="/bo-suu-tap" aria-label={'Bộ sưu tập đã lưu' + (n ? ', ' + n + ' mục' : '')} title="Bộ sưu tập đã lưu"
       className={({ isActive }) => isActive
-        ? base + ' text-[#211606] bg-gradient-to-br from-[#d3a24e] to-[#a9772f]'
+        ? base + ' text-gold bg-gold/10'
         : base + ' text-muted hover:text-cream hover:bg-black/5'}>
       <span aria-hidden="true">🔖</span>
       {n > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-600 text-white text-[.62rem] font-bold flex items-center justify-center">{n}</span>}
@@ -41,27 +48,57 @@ function CollBtn() {
   )
 }
 
+function MoreDropdown({ items }) {
+  const [open, setOpen] = useState(false)
+  const loc = useLocation()
+  const ref = useRef(null)
+  useEffect(() => { setOpen(false) }, [loc])
+  useEffect(() => {
+    if (!open) return
+    const onDoc = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const onKey = e => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDoc); document.removeEventListener('keydown', onKey) }
+  }, [open])
+  const active = items.some(i => loc.pathname === i.to || loc.pathname.startsWith(i.to + '/'))
+  return (
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={() => setOpen(o => !o)} aria-haspopup="true" aria-expanded={open}
+        className={'navlink' + (active ? ' is-active' : '')} style={{ background: 'transparent', border: 0, cursor: 'pointer', font: 'inherit' }}>
+        Thêm <span aria-hidden="true" className={'inline-block text-[.7em] transition-transform duration-200 ' + (open ? 'rotate-180' : '')}>▾</span>
+      </button>
+      {open && (
+        <div role="menu" className="absolute right-0 top-[calc(100%+12px)] min-w-[196px] flex flex-col gap-0.5 bg-white border border-slate-200 rounded-2xl p-2 shadow-lift z-50 animate-fade">
+          {items.map(i => (<NavLink key={i.to} to={i.to} role="menuitem" className={({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')}>{i.label}</NavLink>))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Navbar() {
   const [open, setOpen] = useState(false)
   const loc = useLocation()
   useEffect(() => { setOpen(false) }, [loc])
-  const base = 'px-3 py-2 rounded-full text-[.9rem] font-medium transition'
-  const cls = ({ isActive }) => isActive
-    ? `${base} text-[#211606] bg-gradient-to-br from-[#d3a24e] to-[#a9772f] font-semibold`
-    : `${base} text-muted hover:text-cream hover:bg-black/5`
+  const cls = ({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-[#f3e8cf]/88 border-b border-gold/20">
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 border-b border-slate-200/80">
       <nav className="flex items-center justify-between gap-3 px-[22px] py-3.5 max-w-content mx-auto">
         <Link to="/" className="flex items-center gap-2.5 font-serif text-[1.3rem] font-bold text-cream whitespace-nowrap no-underline hover:no-underline">
           <Logo size={30} className="shrink-0" /> Tam Sở<span className="text-gold">.</span>
         </Link>
         <div className="flex items-center gap-1.5">
-          <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:flex flex-col md:flex-row md:flex-wrap md:justify-end gap-1.5 absolute md:static top-[62px] right-3.5 left-3.5 md:inset-auto bg-ink2 md:bg-transparent border md:border-0 border-gold/20 rounded-2xl md:rounded-none p-2.5 md:p-0 shadow-soft md:shadow-none z-50`}>
+          <div className="hidden md:flex md:items-center md:gap-x-[18px]">
+            {PRIMARY.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
+            <MoreDropdown items={MORE} />
+          </div>
+          <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:hidden flex-col gap-0.5 absolute top-[64px] right-3.5 left-3.5 bg-white border border-slate-200 rounded-2xl p-2 shadow-lift z-50`}>
             {links.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
           </div>
           <CollBtn />
           <button onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open} aria-controls="navmenu"
-            className="md:hidden bg-transparent border border-gold/25 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
+            className="md:hidden bg-transparent border border-slate-300 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
         </div>
       </nav>
     </header>
@@ -70,7 +107,7 @@ function Navbar() {
 
 function Footer() {
   return (
-    <footer className="border-t border-gold/20 mt-10 py-[30px] text-muted text-[.9rem]">
+    <footer className="border-t border-slate-200 mt-10 py-[30px] text-muted text-[.9rem]">
       <div className="wrap flex justify-between gap-4 flex-wrap items-center">
         <span className="inline-flex items-center gap-1.5"><Logo size={18} className="shrink-0" /> Tam Sở — © {new Date().getFullYear()} · Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</span>
         <span className="flex gap-4 flex-wrap">
@@ -120,5 +157,5 @@ function ScrollToTop() {
 
 export default function Layout() {
   const { pathname } = useLocation()
-  return (<><ScrollToTop /><Navbar /><main><ErrorBoundary key={pathname}><Outlet /></ErrorBoundary></main><Footer /><BackToTop /></>)
+  return (<><ScrollToTop /><Navbar /><main><motion.div key={pathname} initial={pageInit} animate={pageAnim} transition={pageTr}><ErrorBoundary><Outlet /></ErrorBoundary></motion.div></main><Footer /><BackToTop /></>)
 }

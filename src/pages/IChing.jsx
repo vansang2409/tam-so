@@ -2,10 +2,12 @@ import { usePageSeo } from '../components/useSeo.js'
 import { useState } from 'react'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { HEXAGRAMS, TRIGRAMS, castHexagram, HAO_VITRI, readingGuide, maiHoa } from '../data/iching.js'
+import { weaveCast } from '../data/ichingSynth.js'
 import { solar2lunar } from '../data/lunar.js'
 import { addItem } from '../data/collection.js'
 import Modal from '../components/Modal.jsx'
 import Hexagram from '../components/Hexagram.jsx'
+import Reveal from '../components/Reveal.jsx'
 
 function Line({ yang, changing, delay = 0 }) {
   return (
@@ -75,6 +77,10 @@ function MaiHoaTool() {
               <div className="panel p-5"><div className="text-gold text-[.8rem] uppercase tracking-wider mb-1">Quẻ biến (hào động {res.mh.dong})</div><HexView hex={res.mh.changed} /></div>
             </div>
             <p className="note text-left mt-3 mb-0"><b className="text-cream">{HAO_VITRI[res.mh.dong - 1].ten}:</b> {HAO_VITRI[res.mh.dong - 1].y}</p>
+            <div className="panel p-5 mt-4 text-left">
+              <div className="text-gold text-[.8rem] uppercase tracking-wider mb-2 text-center">Dệt lại — một đoạn để chiêm nghiệm</div>
+              <p className="m-0 leading-relaxed">{weaveCast({ present: res.mh.present, changed: res.mh.changed, changingPos: [res.mh.dong] })}</p>
+            </div>
             <p className="note text-center mt-2 mb-0">Phép Mai Hoa (Thiệu Khang Tiết) — <a href="https://vi.wikipedia.org/wiki/Mai_Hoa_D%E1%BB%8Bch_s%E1%BB%91" target="_blank" rel="noopener">tham khảo</a>. Chỉ để chiêm nghiệm.</p>
           </div>
         )}
@@ -119,6 +125,10 @@ export default function IChing() {
                   {cast.changingPos.map(p => { const v = HAO_VITRI[p - 1]; const ht = cast.present.hao && cast.present.hao[p - 1]; return <div key={p} className="mb-2"><p className="note m-0"><b className="text-cream">{v.ten}:</b> {v.y}</p>{ht && <p className="m-0 leading-relaxed">📜 {ht}</p>}</div> })}
                 </div>
               )}
+              <div className="panel p-5 mt-5 text-left">
+                <div className="text-gold text-[.8rem] uppercase tracking-wider mb-2 text-center">Dệt lại — một đoạn để chiêm nghiệm</div>
+                <p className="m-0 leading-relaxed">{weaveCast(cast)}</p>
+              </div>
               <div className="flex gap-2 justify-center flex-wrap mt-5 no-print">
                 <button className="btn btn-ghost" onClick={() => { const u = routeShareUrl('/kinh-dich'); let t = `✦ Quẻ Dịch: ${cast.present.n} · ${cast.present.ten}`; if (cast.changed) t += ` → biến ${cast.changed.n} · ${cast.changed.ten} (hào động ${cast.changingPos.join(', ')})`; t += `\n${cast.present.y || ''}\n— Tam Sở ${u}`; navigator.clipboard?.writeText(t).then(() => { setCastCopied(true); setTimeout(() => setCastCopied(false), 2000) }) }}>{castCopied ? '✓ Đã chép!' : '📋 Chép quẻ'}</button>
                 <button className="btn btn-ghost" onClick={() => { if (!cast) return; const lines = ['Quẻ chính: ' + cast.present.n + ' · ' + cast.present.ten]; if (cast.changed) lines.push('Quẻ biến: ' + cast.changed.n + ' · ' + cast.changed.ten + ' (hào động ' + cast.changingPos.join(', ') + ')'); else lines.push('Không có hào động.'); addItem({ kind: 'iching', sig: 'iching:' + cast._id, title: 'Quẻ ' + cast.present.n + ' · ' + cast.present.ten + (cast.changed ? ' → ' + cast.changed.n + ' · ' + cast.changed.ten : ''), lines, note: cast.present.y || '', url: routeShareUrl('/kinh-dich') }); setSavedCast(cast._id) }} disabled={savedCast === cast._id}>{savedCast === cast._id ? '🔖 Đã lưu' : '🔖 Lưu vào bộ sưu tập'}</button>
@@ -159,16 +169,16 @@ export default function IChing() {
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Tra cứu 64 quẻ</h2>
         <p className="text-muted text-center max-w-[680px] mx-auto mb-6">Nhấp vào một quẻ để xem bát quái và ý nghĩa.</p>
-        <div className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))' }}>
-          {HEXAGRAMS.map(h => (
-            <button key={h.n} onClick={() => setSel(h)}
+        <Reveal base="stagger-parent" className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))' }}>
+          {HEXAGRAMS.map((h, i) => (
+            <button key={h.n} style={{ '--i': Math.min(i, 18) }} onClick={() => setSel(h)}
               className="bg-white/[.045] border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <div className="flex justify-center mb-1"><Hexagram up={h.up} lo={h.lo} w={38} /></div>
               <div className="text-muted text-[.72rem] mt-1">Quẻ {h.n}</div>
               <div className="text-[.86rem] font-semibold text-cream leading-tight">{h.ten}</div>
             </button>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <section className="wrap py-10">

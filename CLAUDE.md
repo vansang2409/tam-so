@@ -1,7 +1,7 @@
 # CLAUDE.md — Hướng dẫn AI làm việc trên Tam Sở
 
 ## Dự án
-Web huyền học tiếng Việt (Tarot/Thần số học/Tử vi/Chiêm tinh/Kinh Dịch). Vite 5 + React 18 + Tailwind 3 + react-router-dom. Web TĨNH, mọi tính toán client-side, không backend/db/auth. PWA.
+Web huyền học tiếng Việt (Tarot/Thần số học/Tử vi/Chiêm tinh/Kinh Dịch). Vite 5 + React 18 + Tailwind 3 + react-router-dom + framer-motion (animation). Tông UI: clean-SaaS sáng (nền trắng/slate, nhấn hổ phách amber, bóng mềm). Token màu ở tailwind.config (cream=chữ slate-900, ink/ink2=bề mặt trắng, gold=amber). Heading dùng sans. Web TĨNH, mọi tính toán client-side, không backend/db/auth. PWA.
 
 ## Lệnh
 - Dev: `npm run dev` · Build: `npm run build` · Test: `npm test` (= `node tests/run.mjs`, hiện 139 mốc) · Ảnh Tarot: `npm run fetch-cards`.
@@ -15,7 +15,7 @@ Web huyền học tiếng Việt (Tarot/Thần số học/Tử vi/Chiêm tinh/Ki
 Tách **dữ kiện** (tính toán, kiểm chứng được) vs **diễn giải** (truyền thống, "tham khảo"). KHÔNG phán tuyệt đối, không hù dọa, giọng trấn an. Có nguồn mới khẳng định; chưa chắc thì nói "cần kiểm chứng thêm". Tiếng Việt, dí dỏm nhẹ. Bản quyền: tài nguyên hợp pháp (RWS PD, OFL, MIT, Legge 1899) + ghi công; nội dung tự biên soạn.
 
 ## Gotcha kỹ thuật
-- Ổ D: cắt cụt file khi Write/Edit lớn → ghi bằng bash `cat >`/node fs, rồi đếm ngoặc + chạy test.
+- **QUY TẮC BẮT BUỘC — KHÔNG dùng Edit/Write tool cho repo này.** Edit/Write tool ghi qua mount ổ D: hay CẮT CỤT file khi nội dung phình → vỡ app. Mọi sửa đổi đi qua **`node scripts/safe-edit.mjs <spec.json>`** (find/replace duy nhất + append + ghi đè; tự đọc lại so độ dài chống cắt cụt + đếm ngoặc) HOẶC `node fs.writeFileSync` trực tiếp. Sau khi sửa: xem 3 dòng cuối + cân ngoặc + chạy test. Spec đặt ở /tmp (heredoc 'EOF' quoted để khỏi escape). Khi thử nghiệm helper, dùng file ABSOLUTE dưới /tmp (mount D: CHẶN xoá → đừng tạo file rác trong repo).
 - KHÔNG build trên mount (node_modules Windows) → dựng `/tmp/b`: copy src+config, `npm install`, `npm i -D vite-plugin-singlefile`, tạo `vite.config.single.js`; build chính + single; copy `dist/`+`dist-single/index.html`→`tam-so-test.html`. `/tmp` có thể bị xoá giữa phiên → dựng lại. Verify `dist IDENTICAL` + single `NUL=0`. Bump `public/sw.js` cache.
 - Không push từ sandbox → user chạy `push-to-github.bat` (commit message luôn ghi "v2.11" nhưng chứa code hiện tại). git LOCAL (checkout/reset/show) chạy được.
 - Agent ngoài có thể sửa cùng repo → nếu hỏng, `git checkout HEAD -- <file>` để hoàn nguyên.

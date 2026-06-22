@@ -10,8 +10,10 @@ import CardImage from '../components/CardImage.jsx'
 import { Badge } from '../components/Disclaimer.jsx'
 import NotFound from '../components/NotFound.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
+import Reveal from '../components/Reveal.jsx'
 import { relatedForCard } from '../data/related.js'
 import { TAROT_DEEP } from '../data/tarotDeep.js'
+import { spreadSynthesis } from '../data/tarotSynth.js'
 
 const meaningOf = (c, up) => up ? (c.up || 'Từ khóa: ' + c.upKeys.join(', ')) : (c.rev || 'Từ khóa: ' + c.revKeys.join(', '))
 const FILTERS = [
@@ -54,12 +56,6 @@ const TOPICS = [
 ]
 const HKEY = 'tamso_tarot_history'
 const FKEY = 'tamso_tarot_favs'
-function spreadSummary(picks, positions, q) {
-  const n = picks.length
-  const up = picks.filter(p => p.up).length
-  const lean = up > n - up ? 'nghiêng về hướng thuận, tích cực' : up < n - up ? 'nghiêng về sự thận trọng, cần điều chỉnh' : 'khá cân bằng giữa thuận và nghịch'
-  return (q ? 'Về câu hỏi “' + q + '”: ' : 'Cho trải bài này: ') + n + ' lá có ' + up + ' xuôi / ' + (n - up) + ' ngược — ' + lean + '. Đọc “' + positions[0] + '” như điểm khởi đầu và “' + positions[n - 1] + '” như xu hướng đang mở ra; các lá giữa là mạch nối. Đây là gợi ý để bạn tự chiêm nghiệm, không phải lời phán chắc chắn.'
-}
 
 const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -81,7 +77,7 @@ function DrawnCard({ card, up, pos, delay = 0 }) {
             <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-800' : 'text-rose-700')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
           </div>
         </div>
-        <div className="flip3d-back" style={{ borderRadius: 16, background: 'linear-gradient(160deg,#2a1d0d,#3a2912)', border: '1px solid rgba(211,162,78,.4)', boxShadow: 'inset 0 0 0 4px rgba(211,162,78,.10), inset 0 0 0 5px rgba(211,162,78,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="flip3d-back cardback-sheen" style={{ borderRadius: 16, overflow: 'hidden', background: 'linear-gradient(160deg,#2a1d0d,#3a2912)', border: '1px solid rgba(211,162,78,.4)', boxShadow: 'inset 0 0 0 4px rgba(211,162,78,.10), inset 0 0 0 5px rgba(211,162,78,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ textAlign: 'center', color: '#d3a24e' }}>
             <div style={{ fontSize: '2.4rem', lineHeight: 1 }}>✦</div>
             <div style={{ fontFamily: 'serif', letterSpacing: '.22em', fontSize: '.68rem', marginTop: 6, opacity: .82 }}>TAM SỞ</div>
@@ -267,7 +263,7 @@ function TarotIndex() {
               </div>
               <div className="panel p-5 mt-4 text-left max-w-[760px] mx-auto">
                 <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">Tổng hợp quẻ bài <span className="note">(tham khảo)</span></div>
-                <p className="m-0 leading-relaxed">{spreadSummary(picks, positions, question.trim())}</p>
+                <p className="m-0 leading-relaxed">{spreadSynthesis(picks, positions, question.trim())}</p>
               </div>
             </>
           )}
@@ -315,18 +311,18 @@ function TarotIndex() {
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thư viện 78 lá</h2>
         <div className="flex gap-2 flex-wrap justify-center mb-6 mt-4">
           {FILTERS.map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gradient-to-br from-[#d3a24e] to-[#a9772f] text-[#211606] border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
+            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-[#b45309] text-white border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
           ))}
         </div>
-        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
-          {cards.map(c => (
-            <div key={c.id} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+        <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
+          {cards.map((c, i) => (
+            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
             </div>
           ))}
-        </div>
+        </Reveal>
         {filter === 'fav' && cards.length === 0 && <p className="note text-center mt-4">Chưa có lá yêu thích — mở một lá bất kỳ rồi bấm "☆ Lưu yêu thích".</p>}
       </section>
 

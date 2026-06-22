@@ -3,6 +3,7 @@ import { usePageSeo } from '../components/useSeo.js'
 import SeoTag from '../components/SeoTag.jsx'
 import NotFound from '../components/NotFound.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
+import Reveal from '../components/Reveal.jsx'
 import { CONGIAP, conGiapBySlug } from '../data/congiap.js'
 import { hopTuoiChi } from '../data/tuvi.js'
 
@@ -85,16 +86,16 @@ export default function HopTuoi() {
         <p className="note mt-2">Muốn xét cả năm sinh? <Link to="/tu-vi" className="text-gold">Xem hợp tuổi theo 2 năm sinh →</Link></p>
       </section>
       <section className="wrap pb-10">
-        <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))' }}>
-          {CONGIAP.map(c => (
-            <Link key={c.ten} to={'/hop-tuoi/' + c.slug} className="panel p-4 no-underline block text-center transition hover:-translate-y-1 hover:border-gold/40">
+        <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))' }}>
+          {CONGIAP.map((c, i) => (
+            <Link key={c.ten} style={{ '--i': Math.min(i, 14) }} to={'/hop-tuoi/' + c.slug} className="panel p-4 no-underline block text-center transition hover:-translate-y-1 hover:border-gold/40">
               <div className="text-[2rem]">{EMOJI[c.ten]}</div>
               <div className="font-serif text-[1.1rem] text-cream">Tuổi {c.ten}</div>
               <div className="note">con {c.con}</div>
               <div className="text-gold font-semibold text-[.82rem] mt-1">hợp tuổi nào? →</div>
             </Link>
           ))}
-        </div>
+        </Reveal>
       </section>
       <section className="wrap pb-10">
         <div className="disclaimer max-w-[900px] mx-auto"><b>Lưu ý.</b> Hợp – khắc tuổi là <b>quan niệm dân gian – văn hóa</b>, không phải khoa học. Đây là dữ kiện Can Chi để chiêm nghiệm; một mối quan hệ bền dựa trên thấu hiểu và vun đắp, <span className="note">không bị tuổi quyết định</span>.</div>

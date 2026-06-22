@@ -296,3 +296,12 @@ export function saoHan(tuoiAm, gioiTinh) {
   const ten = (gioiTinh === 'nu' ? _SAO_NU : _SAO_NAM)[idx]
   return { ten, ...SAO_HAN[ten] }
 }
+/* Can Chi của THÁNG ÂM LỊCH (luật Ngũ Hổ Độn). lunarMonth 1..12 (Giêng = Dần). */
+export function monthCanChi(lunarYear, lunarMonth) {
+  const yc = tinhCanChi(lunarYear)
+  const yearCanIdx = THIEN_CAN.findIndex(c => c.ten === yc.can)
+  const base = [2, 4, 6, 8, 0][yearCanIdx % 5]   // Giáp/Kỷ→Bính · Ất/Canh→Mậu · Bính/Tân→Canh · Đinh/Nhâm→Nhâm · Mậu/Quý→Giáp
+  const canIdx = (((base + (lunarMonth - 1)) % 10) + 10) % 10
+  const chiIdx = (((lunarMonth + 1) % 12) + 12) % 12
+  return { can: THIEN_CAN[canIdx].ten, chi: DIA_CHI[chiIdx].ten, tenCanChi: THIEN_CAN[canIdx].ten + ' ' + DIA_CHI[chiIdx].ten }
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { usePageSeo } from '../components/useSeo.js'
 import { NUM_DEEP } from '../data/numerologyDeep.js'
+import { weaveNumbers } from '../data/numerologySynth.js'
 import { shareUrl as routeShareUrl } from '../data/site.js'
 import { useSearchParams, useParams, Link } from 'react-router-dom'
 import {
@@ -10,6 +11,8 @@ import {
 import { Badge } from '../components/Disclaimer.jsx'
 import NotFound from '../components/NotFound.jsx'
 import SeoTag from '../components/SeoTag.jsx'
+import CountUp from '../components/CountUp.jsx'
+import Reveal from '../components/Reveal.jsx'
 import RelatedLinks from '../components/RelatedLinks.jsx'
 import { relatedForNumber } from '../data/related.js'
 
@@ -75,17 +78,17 @@ export default function Numerology() {
 
       <section className="wrap py-10">
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Ý nghĩa 12 con số</h2>
-        <div className="max-w-[820px] mx-auto mt-5">
-          {Object.keys(NUMEROLOGY).map(k => {
+        <Reveal base="stagger-parent" className="max-w-[820px] mx-auto mt-5">
+          {Object.keys(NUMEROLOGY).map((k, i) => {
             const n = NUMEROLOGY[k]
             return (
-              <details key={k} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
+              <details key={k} style={{ '--i': i }} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
                 <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.12rem] font-semibold marker:content-none flex items-center gap-3"><span className="text-gold text-[.9rem]">✦</span>{n.title}</summary>
                 <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}<p className="mt-2 mb-0"><Link to={'/than-so-hoc/so/' + k} className="font-semibold text-[.9rem]">Xem trang riêng của số {k} →</Link></p></div>
               </details>
             )
           })}
-        </div>
+        </Reveal>
       </section>
 
       <section className="wrap py-10">
@@ -107,7 +110,7 @@ function LifePathMatrix() {
     'Bổ sung cho nhau': { background: 'rgba(211,162,78,.18)', color: '#ecd198' }
   }
   return (
-    <section className="wrap py-8">
+    <Reveal as="section" className="wrap py-8">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Bảng hợp Số Chủ Đạo</h2>
       <p className="note text-center max-w-[640px] mx-auto mb-4">Tra nhanh sự cộng hưởng giữa hai Số Chủ Đạo (kể cả số bậc thầy 11/22/33). Di chuột/chạm vào ô để xem chi tiết — chỉ mang tính tham khảo.</p>
       <p className="note text-center mb-2 sm:hidden">← vuốt ngang để xem đủ bảng →</p>
@@ -139,7 +142,7 @@ function LifePathMatrix() {
           {Object.keys(mark).map(v => <span key={v} className="inline-flex items-center gap-1.5"><span className="rounded inline-flex items-center justify-center" style={{ width: 22, height: 22, ...sty[v] }}>{mark[v]}</span>{v}</span>)}
         </div>
       </div>
-    </section>
+    </Reveal>
   )
 }
 
@@ -159,7 +162,7 @@ function LifePathTool() {
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
           <div className="panel p-[26px] mt-6 animate-fade">
-            <div className="big-number">{res.lp}</div>
+            <div className="big-number"><CountUp end={res.lp} /></div>
             <p className="note text-center not-italic text-muted">Tháng {m}→{res.rm} · Ngày {d}→{res.rd} · Năm {y}→{res.ry} ⇒ {res.rm}+{res.rd}+{res.ry}={res.sum} → <b className="text-gold">{res.lp}</b>{res.info.master ? ' (bậc thầy)' : ''}</p>
             <h3 className="text-center mt-1.5">{res.info.title}</h3>
             <div className="flex gap-2 flex-wrap justify-center mb-3">{res.info.keys.map(k => <Badge key={k}>{k}</Badge>)}</div>
@@ -241,6 +244,10 @@ function NameTool() {
               <NumBlock label="Số Thái Độ (Attitude)" n={res.attitude} note="Ngày + tháng sinh — ấn tượng ban đầu &amp; cách bạn phản ứng tức thì với đời." />
               <NumBlock label="Số Ngày Sinh (Birthday)" n={res.bday} note="Rút gọn ngày sinh — tài năng bẩm sinh, món quà tự nhiên của bạn." />
             </div>
+            <div className="panel p-5 mt-4">
+              <div className="text-[.9rem] text-muted font-semibold mb-2 text-center">Dệt lại — bộ số nói gì khi đặt cạnh nhau</div>
+              <p className="m-0 leading-relaxed">{weaveNumbers({ lp: res.lp, expression: res.expression, soulUrge: res.soulUrge, personality: res.personality, maturity: res.maturity, missing: res.lo.missing })}</p>
+            </div>
             <div className="grid md:grid-cols-2 gap-4 mt-4">
               <div className="panel p-5">
                 <div className="text-[.9rem] text-muted font-semibold mb-2">Biểu đồ Lo Shu (cửu cung)</div>
@@ -298,7 +305,7 @@ function NumBlock({ label, n, note }) {
   const info = NUMEROLOGY[n]
   return (
     <div className="panel p-5">
-      <div className="flex items-center justify-between gap-2"><span className="text-[.9rem] text-muted font-semibold">{label}</span><span className="font-serif text-[2rem] text-gold leading-none">{n}</span></div>
+      <div className="flex items-center justify-between gap-2"><span className="text-[.9rem] text-muted font-semibold">{label}</span><span className="font-serif text-[2rem] text-gold leading-none"><CountUp end={n} /></span></div>
       <p className="note mt-1">{note}</p>
       <div className="flex gap-2 flex-wrap my-2">{info.keys.map(k => <Badge key={k}>{k}</Badge>)}</div>
       <p className="m-0 text-[.9rem] leading-relaxed"><b>{info.title.replace(/^(Số|Năm) \d+ — /, '')}.</b> {info.desc}</p>

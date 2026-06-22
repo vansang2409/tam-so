@@ -7,7 +7,9 @@ import { dayCanChi, gioHoangDao } from '../data/tuvi.js'
 import { solar2lunar } from '../data/lunar.js'
 import { castHexagram } from '../data/iching.js'
 import Hexagram from './Hexagram.jsx'
+import CountUp from './CountUp.jsx'
 import { PERSONAL_DAY_HINT } from '../data/numerology.js'
+import { weaveDay } from '../data/dayWeave.js'
 
 const WD = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
 const tile = 'bg-white/[.04] border border-gold/20 rounded-xl p-4 text-center transition hover:-translate-y-1 hover:border-gold/40 block'
@@ -90,12 +92,16 @@ export default function Today() {
               </Link>
               <Link to="/than-so-hoc" className={tile}>
                 <div className={cap}>Con số ngày</div>
-                <div className="font-serif text-[2rem] text-gold leading-none">{nday}</div>
+                <div className="font-serif text-[2rem] text-gold leading-none"><CountUp end={nday} /></div>
                 <div className="note mt-2 leading-snug">{PERSONAL_DAY_HINT[nday]}</div>
               </Link>
             </div>
             <div className="panel p-5 mt-4 text-left max-w-[820px] mx-auto animate-fade">
               <p className="note mt-0 mb-3 leading-relaxed">Hãy đọc nhẹ nhàng như một lời gợi mở để soi chiếu tâm trạng hôm nay — <b className="text-cream">không phải lời phán về số phận</b>. Mọi quyết định vẫn nằm ở bạn.</p>
+              <div className="panel p-4 mb-3 bg-gold/[.05]">
+                <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">✦ Dệt lại — lá &amp; quẻ nói gì cùng nhau</div>
+                <p className="m-0 leading-relaxed">{weaveDay({ card: drawn.card, up: drawn.up, hex: drawn.hex, dayNum: nday })}</p>
+              </div>
               <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">🃏 Lá bài · {drawn.card.nameVi} ({drawn.up ? 'xuôi' : 'ngược'})</div>
               <p className="m-0 leading-relaxed">{drawn.up ? drawn.card.up : drawn.card.rev}</p>
               {drawn.card.advice && <p className="mt-2 mb-0"><span className="text-gold font-semibold">✦ Bạn có thể làm gì:</span> {drawn.card.advice}</p>}

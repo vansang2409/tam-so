@@ -1,10 +1,21 @@
-# SUMMARY — Tam Sở (cập nhật 19/06/2026)
+# SUMMARY — Tam Sở (cập nhật 22/06/2026)
 
-**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (296 mốc), build `npm run build`. Không backend/auth/db.
+**Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (348 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.61.0, 296 test pass.** Giao diện tông giấy-cổ/kem. **Toàn bộ backlog actionable (H/M/A/C) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
+**Hiện trạng: v3.72.0, 348 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
 
 **Đã xong gần đây (phiên này):**
+- **ĐẠI TU UI clean-SaaS + Framer Motion (v3.72)**: đổi design tokens (tailwind.config + index.css) sang nền trắng/slate + nhấn amber, heading sans, bóng mềm; thêm framer-motion chuyển trang toàn site + header trắng + nút nhấn lún. Giữ tên token cũ (cream/ink/gold) nên cả site đổi theo. Đợt nền tảng — chờ duyệt rồi tinh chỉnh từng trang. 348 test.
+- **LỊCH VẠN NIÊN (v3.71)**: `LichVanNien.jsx` trên Home — khối Dương|Âm lịch + can chi Ngày/Tháng/Năm + giờ hoàng đạo + nút ‹ › đổi ngày. Thêm `monthCanChi` (Ngũ Hổ Độn) vào tuvi.js, verify khớp ảnh (22/6/2026 = Đinh Mão · Giáp Ngọ · Bính Ngọ). 348 test (+8).
+- **NAV DROPDOWN (v3.70)**: desktop còn 4 mục chính (Tarot · Thần số học · Tử vi · Kinh Dịch) + nút "Thêm ▾" chứa 6 mục phụ; Trang chủ ở logo. `MoreDropdown` (đóng khi click-ngoài/Escape/đổi route). Mobile ☰ vẫn đủ 11 mục. Thuần markup, 340 test.
+- **NAV ĐẸP LẠI (v3.69)**: theo yêu cầu — giữ đủ 11 mục, bỏ "viên thuốc gradient" của mục active → gạch chân vàng tối giản (kiểu biên tập), spacing thoáng, nút Bộ sưu tập đồng bộ, mobile active nền vàng nhạt. Class `.navlink` trong index.css. Thuần CSS/markup, 340 test.
+- **DỆT "QUẺ HÔM NAY" (v3.68)**: `dayWeave.js` (`weaveDay`) nối lá Tarot + quẻ Dịch trên thẻ Hôm nay (Home), bắc cầu Đông–Tây bằng ngũ hành (nguyên tố lá ↔ hành quái trên → sinh/khắc/tỉ hòa); Ẩn Chính → hai lăng kính; giọng tham khảo. Sửa file qua `safe-edit.mjs` (KHÔNG còn cắt cụt). 340 test (+8).
+- **DỆT BỘ SỐ THẦN SỐ HỌC (v3.67)**: `numerologySynth.js` (`weaveNumbers`) nối Số Chủ Đạo/Vận Mệnh/Linh Hồn/Nhân Cách/Trưởng Thành + Lo Shu khuyết → đoạn chiêm nghiệm ở công cụ "Bộ số đầy đủ"; nhận diện cộng hưởng & Lo Shu đủ/khuyết; giọng tham khảo. 332 test (+7).
+- **DIỄN GIẢI TỔNG HỢP KINH DỊCH (v3.66)**: thêm `ichingSynth.js` (`weaveCast`) dệt **quẻ chính → hào động (ngôi hào) → quẻ biến** thành đoạn chiêm nghiệm (khung tình thế→trọng tâm→chiều đi tới); 3 nhánh: không hào động (KHÔNG bịa quẻ biến)/một hào/nhiều hào (lấy hào thấp-cao nhất). Render trên IChing.jsx (gieo xu + Mai Hoa). Giọng tham khảo. 325 test (+8). ⚠ Edit TOOL ổ D: cắt cụt CẢ run.mjs LẪN IChing.jsx khi append → vá bằng node fs.
+- **DIỄN GIẢI TỔNG HỢP (v3.65)**: Hồ sơ có "Sợi chỉ chung" (`weaveProfile`) nối Số Chủ Đạo↔Vận Mệnh + năm cá nhân + Đông–Tây; So đôi lá số có `weavePair` (Mệnh/Phu Thê/địa chi, KHÔNG kết luận hợp). Tinh chỉnh stagger + mobile. 317 test.
+- **U06 — LAN TOẢ HIỆU ỨNG (v3.64)**: stagger lưới ConGiap/HopTuoi/pillars Home/12-số Numerology; reveal 3 bảng tương hợp. Bỏ qua Hồ sơ/Tương hợp/Lá số (lưới nằm trong vùng xuất PNG → animation hỏng ảnh). 311 test.
+- **U05 — MỞ RỘNG HIỆU ỨNG (v3.63)**: đếm số `CountUp` (Số Chủ Đạo · bộ số · số ngày), stagger lưới khi cuộn (Tarot 78 lá · 64 quẻ · 12 cung) qua `Reveal base="stagger-parent"` + biến `--i`; reduced-motion an toàn. 310 test (+8).
+- **UI/ANIMATION + DIỄN GIẢI (v3.62)**: engine tổng hợp trải bài Tarot `tarotSynth.js` (dệt theo cán cân xuôi/ngược · Ẩn Chính · chất nổi trội · lá hoàng gia/Át · khung đầu→cuối, giọng tham khảo) thay tóm tắt cũ; hiệu ứng hiện-dần-khi-cuộn (`Reveal.jsx`), chuyển trang fade-up, ánh quét mặt sau lá Tarot, hero shimmer, vệt sáng nút. 302 test (+6). Gotcha: ổ D: Edit TOOL cắt cụt khi file phình → vá bằng `git show`+`node fs`.
 - LOGO (v3.61): emblem **"Trăng & sao"** — vầng trăng khuyết vàng ôm sao ✦ trên đĩa giấy-cổ. `src/components/Logo.jsx` + `public/logo.svg`; gắn nav + footer (thay ✦ cũ), favicon đổi sang trăng-sao nền đậm. (v3.60: đồng bộ design-system toàn trang.)
 - DOMAIN (v3.59): đặt `SITE_ORIGIN` = `https://tam-so.vercel.app` (tạm, bỏ subpath /tam-so vì Vercel chạy ở root) — cập nhật seo.js + sitemap (216 URL) + index.html (og/canonical) + robots.txt + test; prerender & shareUrl tự khớp. Đổi domain lần sau: sửa `SITE_ORIGIN` + bulk-replace sitemap.
 - C01 (v3.58): **prerender meta tĩnh** — `scripts/prerender.mjs` sinh 211 file route landing với title/description/canonical/og + JSON-LD breadcrumb riêng (crawler "view source" thấy meta đúng từng trang). An toàn: chỉ thêm file, KHÔNG sửa `index.html` (file:// nguyên vẹn); GUARD chỉ chạy khi base `/` (Vercel), skip base `./` (Pages); try/catch không chặn build. Nghiệm thu serving khi Vercel live.
@@ -29,7 +40,5 @@
 **Tác vụ TỰ ĐỘNG đang chạy:** 'tam-so-ai-employee' (hiển thị 'ABC XYZ'), mỗi 10 phút, chạy đến khi user nhắn 'dừng'. Tự đọc CLAUDE/TASK_BOARD/SUMMARY/WORK_LOG → chọn task cao nhất (hoặc TỰ lên task khi backlog mỏng) → sửa (node fs) → test → build /tmp/b → present → log. Khóa chống chồng: `.tamso-run.lock` (epoch nội dung; giữ=date+%s, nhả=echo 0; KHÔNG rm vì mount D: chặn).
 
 **Backlog ưu tiên (TASK_BOARD.md):** C01 SSG/prerender (High) · C06 LÀM DÀY diễn giải (High, theo đợt 12 cung→78 lá→12 số→168 sao×cung) · C03/C04 long-tail sinh-năm/hợp-tuổi · C05 giữ giọng không giật tít · M04/M05 (agent đang làm).
-
-**Gotcha (CỐT YẾU):** ổ D: cắt cụt file khi Write/Edit/cat>> → CHỈ ghi nguồn bằng `node fs.writeFileSync` + verify ngoặc/tail + chạy test. Build /tmp/b (dựng lại nếu /tmp bị xoá). KHÔNG push từ sandbox; user tự chạy push-to-github.bat cuối ngày — KHÔNG nhắc. git local ok. Đối thủ tham khảo: thientue.vn (SEO programmatic lớn + tử vi ngày; mình hơn về trung thực/chính xác).
 
 **Tiếp tục:** tác vụ tự chạy mỗi 10 phút (giữ app mở); hoặc nhắn 'tiếp tục'.

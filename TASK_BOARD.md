@@ -47,5 +47,32 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | C05 | Định vị nội dung: rà toàn site đảm bảo KHÔNG giật tít/khẳng định chắc (khác biệt vs đối thủ) | Content/Brand | Med | Done (v3.55) | test quét >800 luận điểm chặn over-claim (chắc chắn sẽ/nhất định sẽ/100% đúng…); mọi trang hệ có khung "tham khảo/chiêm nghiệm" |
 | C06 | LÀM DÀY phần diễn giải các trang cốt lõi (deep cung hoàng đạo · 78 lá Tarot · Số Chủ Đạo · sao×cung) — nhiều đoạn, cấu trúc: tóm tắt → tính cách/ý nghĩa chi tiết → tình yêu → công việc → tài chính → sức khỏe → điểm mạnh/cần lưu ý → hợp-khắc → lời khuyên thực tế | Content | High | Done (v3.50–3.57): đợt 1 12 cung · đợt 2 78 lá Tarot · đợt 3 12 Số · đợt 4 lời khuyên 14 chính tinh (SAO_CUNG vốn đã dày 168) | mỗi trang deep nhiều mục & nhiều đoạn; DÀI bằng chiều sâu thật, KHÔNG độn khẳng định chắc/giật tít; giữ khung "tham khảo, chiêm nghiệm"; làm theo đợt (12 cung → 78 lá → 12 số → 168 sao×cung) + thêm test độ dài tối thiểu |
 
+
+## PHIÊN 22/06/2026 — UI/ANIMATION + CHẤT LƯỢNG DIỄN GIẢI (Done)
+Chủ dự án yêu cầu tập trung **UI/hiệu ứng animation** & **chất lượng đầu ra của diễn giải**.
+
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| U01 | Engine tổng hợp trải bài Tarot (`tarotSynth.js`) — dệt diễn giải có căn cứ (xuôi/ngược, Ẩn Chính, chất nổi trội, lá hoàng gia/Át, khung đầu→cuối) | Content/Diễn giải | High | Done (v3.62) | thuần & kiểm thử; thay `spreadSummary`; +6 test rà over-claim/khung tham khảo/nhắc vị trí & câu hỏi; 302 pass |
+| U02 | Hiện-dần-khi-cuộn `Reveal.jsx` (IntersectionObserver) + reduced-motion | UI/Animation | High | Done (v3.62) | gắn Home; tự hiện khi reduced-motion/không hỗ trợ IO |
+| U03 | Chuyển trang fade-up `.page-enter` (Layout) | UI/Animation | Med | Done (v3.62) | mỗi route trồi lên nhẹ; tắt khi reduced-motion |
+| U04 | Vi tương tác: ánh quét mặt sau lá Tarot, hero shimmer, vệt sáng nút chính | UI/Animation | Med | Done (v3.62) | CSS-only; reduced-motion an toàn |
+| U05 | Áp đếm-số (CountUp) + stagger lưới thư viện | UI/Animation | Med | Done (v3.63) | CountUp gắn Số Chủ Đạo/bộ số/số ngày; stagger lưới Tarot 78 · IChing 64 · Zodiac 12 qua `Reveal base="stagger-parent"` + `--i`; reduced-motion an toàn; +8 test |
+| U06 | Stagger lưới còn lại + reveal bảng tương hợp | UI/Animation | Low | Done (v3.64) | stagger ConGiap/HopTuoi/pillars/12-số; reveal 3 ma trận tương hợp; BỎ QUA Hồ sơ/Tương hợp/Lá số (vùng xuất PNG) |
+
+## PHIÊN 22/06/2026 (tiếp) — DIỄN GIẢI TỔNG HỢP + TINH CHỈNH MOTION (Done)
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| U07 | "Sợi chỉ chung" cho Hồ sơ (`weaveProfile`) — nối các hệ | Content/Diễn giải | High | Done (v3.65) | thuần & test; render đầu báo cáo; +3 test |
+| U08 | "Đối chiếu để chiêm nghiệm" cho So đôi lá số (`weavePair`) | Content/Diễn giải | High | Done (v3.65) | Mệnh/Phu Thê/địa chi; KHÔNG kết luận hợp; +3 test |
+| U09 | Tinh chỉnh tốc độ stagger + mobile media query | UI/Animation | Med | Done (v3.65) | desktop 32ms/.5s; ≤520px 24ms/.42s; reduced-motion vẫn thắng |
+
+## PHIÊN 22/06/2026 (tiếp 2) — DIỄN GIẢI TỔNG HỢP KINH DỊCH (Done)
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| U12 | Engine dệt "quẻ hôm nay" (`dayWeave.weaveDay`) — nối lá Tarot + quẻ Dịch, bắc cầu ngũ hành Đông–Tây | Content/Diễn giải | High | Done (v3.68) | thuần & test (+8); render thẻ Hôm nay (Home); tương sinh/khắc/tỉ hòa; Ẩn Chính→hai lăng kính; khung tham khảo; 340 pass |
+| U11 | Engine tổng hợp bộ số (`numerologySynth.weaveNumbers`) — nối Chủ Đạo/Vận Mệnh/Linh Hồn/Nhân Cách/Trưởng Thành + Lo Shu | Content/Diễn giải | High | Done (v3.67) | thuần & test (+7); render Bộ số đầy đủ; nhận diện cộng hưởng + Lo Shu khuyết/đủ; khung tham khảo; 332 pass |
+| U10 | Engine tổng hợp quẻ Dịch (`ichingSynth.weaveCast`) — dệt quẻ chính→hào động→quẻ biến | Content/Diễn giải | High | Done (v3.66) | thuần & test (+8); render IChing.jsx (gieo xu + Mai Hoa); 3 nhánh hào động; KHÔNG bịa quẻ biến khi tĩnh; giữ khung tham khảo; 325 pass |
+
 ## MONETIZATION (plan, chưa code thanh toán)
 Freemium markers · gói premium report · lịch sử không giới hạn · trải nâng cao · PDF cá nhân hóa. Xem MONETIZATION_PLAN.md.
