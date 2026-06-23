@@ -5,3 +5,4 @@ dist
 .vite
 .tamso-run.lock
 .setest/
+.claude/settings.local.json

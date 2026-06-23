@@ -172,7 +172,7 @@ export default function IChing() {
         <Reveal base="stagger-parent" className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))' }}>
           {HEXAGRAMS.map((h, i) => (
             <button key={h.n} style={{ '--i': Math.min(i, 18) }} onClick={() => setSel(h)}
-              className="bg-white/[.045] border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+              className="bg-gold/5 border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <div className="flex justify-center mb-1"><Hexagram up={h.up} lo={h.lo} w={38} /></div>
               <div className="text-muted text-[.72rem] mt-1">Quẻ {h.n}</div>
               <div className="text-[.86rem] font-semibold text-cream leading-tight">{h.ten}</div>

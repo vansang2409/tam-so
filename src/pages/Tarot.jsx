@@ -259,7 +259,7 @@ function TarotIndex() {
                 {picks.map((p, i) => <DrawnCard key={i} card={p.card} up={p.up} pos={positions[i]} delay={i * 0.08} />)}
               </div>
               <div className="max-w-[760px] mx-auto mt-5">
-                {picks.map((p, i) => <div key={i} className="bg-white/[.045] border border-gold/20 rounded-xl px-[18px] py-3.5 mb-2.5"><b className="text-gold">{positions[i]} — {p.card.nameVi} ({p.up ? 'xuôi' : 'ngược'}):</b> {meaningOf(p.card, p.up)}</div>)}
+                {picks.map((p, i) => <div key={i} className="bg-gold/5 border border-gold/20 rounded-xl px-[18px] py-3.5 mb-2.5"><b className="text-gold">{positions[i]} — {p.card.nameVi} ({p.up ? 'xuôi' : 'ngược'}):</b> {meaningOf(p.card, p.up)}</div>)}
               </div>
               <div className="panel p-5 mt-4 text-left max-w-[760px] mx-auto">
                 <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1">Tổng hợp quẻ bài <span className="note">(tham khảo)</span></div>
@@ -277,7 +277,7 @@ function TarotIndex() {
           <p className="note text-center mt-[18px]">Rút ngẫu nhiên trên máy bạn. Lịch sử lưu cục bộ trong trình duyệt.</p>
 
           {history.length > 0 && (
-            <details className="mt-4 max-w-[760px] mx-auto bg-white/[.04] border border-gold/15 rounded-xl overflow-hidden">
+            <details className="mt-4 max-w-[760px] mx-auto bg-gold/5 border border-gold/15 rounded-xl overflow-hidden">
               <summary className="cursor-pointer px-4 py-2.5 text-[.9rem] font-semibold">🕘 Lịch sử rút ({history.length})</summary>
               <div className="px-4 pb-3">
                 {history.map((h, i) => <div key={i} className="text-[.85rem] text-muted border-b border-white/5 py-2"><b className="text-cream">{new Date(h.t).toLocaleString('vi-VN')}</b> · {h.spread}{h.q ? ' · “' + h.q + '”' : ''}<br />{h.cards.join(' · ')}</div>)}
@@ -316,7 +316,7 @@ function TarotIndex() {
         </div>
         <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map((c, i) => (
-            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-white/[.04] border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-gold/5 border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>

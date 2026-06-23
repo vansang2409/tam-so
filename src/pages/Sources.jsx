@@ -101,7 +101,7 @@ export default function Sources() {
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Câu hỏi thường gặp</h2>
         <div className="max-w-[820px] mx-auto mt-5">
           {FAQ.map((it, i) => (
-            <details key={i} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
+            <details key={i} className="bg-gold/5 border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
               <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.08rem] font-semibold marker:content-none flex items-start gap-3"><span className="text-gold">?</span>{it.q}</summary>
               <div className="px-[18px] pb-[18px] pt-1 text-muted leading-relaxed">{it.a}</div>
             </details>

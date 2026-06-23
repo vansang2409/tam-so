@@ -29,7 +29,7 @@ function Cell({ p, active, onClick, van, tp }) {
   return (
     <button onClick={onClick} aria-label={'Cung ' + p.cung + ' tại ' + p.chi} style={{ gridColumn: col, gridRow: row }}
       className={'text-left border rounded-lg p-1.5 min-h-[96px] transition ' +
-        (active ? 'border-gold bg-gold/10' : 'border-gold/20 hover:border-gold/50 bg-white/[.03]') + (tp && !active ? ' ring-1 ring-gold/40' : '')}>
+        (active ? 'border-gold bg-gold/10' : 'border-gold/20 hover:border-gold/50 bg-gold/5') + (tp && !active ? ' ring-1 ring-gold/40' : '')}>
       <div className="flex items-center justify-between gap-1">
         <span className="text-gold font-semibold text-[.74rem] leading-none">{p.cung}</span>
         <span className="text-muted text-[.62rem] leading-none">{p.chi}</span>

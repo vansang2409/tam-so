@@ -82,7 +82,7 @@ export default function Numerology() {
           {Object.keys(NUMEROLOGY).map((k, i) => {
             const n = NUMEROLOGY[k]
             return (
-              <details key={k} style={{ '--i': i }} className="bg-white/[.045] border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
+              <details key={k} style={{ '--i': i }} className="bg-gold/5 border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
                 <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.12rem] font-semibold marker:content-none flex items-center gap-3"><span className="text-gold text-[.9rem]">✦</span>{n.title}</summary>
                 <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}<p className="mt-2 mb-0"><Link to={'/than-so-hoc/so/' + k} className="font-semibold text-[.9rem]">Xem trang riêng của số {k} →</Link></p></div>
               </details>
@@ -254,7 +254,7 @@ function NameTool() {
                 <div className="grid grid-cols-3 gap-1.5 max-w-[220px] mx-auto">
                   {LO_SHU_LAYOUT.flat().map(num => {
                     const c = res.lo.counts[num]
-                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-white/[.05]' : 'border-black/10 text-black/30'}`}>{c ? String(num).repeat(c) : num}</div>
+                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-gold/5' : 'border-black/10 text-black/30'}`}>{c ? String(num).repeat(c) : num}</div>
                   })}
                 </div>
                 <p className="note mt-3 mb-0">{res.lo.missing.length ? 'Số còn thiếu: ' + res.lo.missing.join(', ') + '.' : 'Đủ cả 9 số — hiếm gặp!'}</p>
