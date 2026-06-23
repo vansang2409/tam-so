@@ -420,3 +420,72 @@ input[type=number] {
   font-size: .82rem; padding: 5px 16px; border-radius: 8px; white-space: nowrap; pointer-events: none;
   box-shadow: 0 6px 16px -6px rgba(0,0,0,.6); max-width: 86%; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 760px) { .dc-sign { font-size: .68rem; padding: 4px 10px; } }
+
+/* =========================================================================
+ * ĐI CHÙA v3.79 — nâng cấp ống xăm + lư hương cho nhìn thật hơn (vẫn động)
+ * ========================================================================= */
+
+/* — Ống xăm: ống gỗ + que tre đầu sơn đỏ — */
+.xam-sticks { position: absolute; left: 0; right: 0; bottom: 58px; z-index: 1; height: 96px;
+  display: flex; justify-content: center; align-items: flex-end; gap: 3px; }
+.xam-stick { position: relative; width: 6px; border-radius: 3px 3px 1px 1px; transform-origin: bottom center;
+  background: linear-gradient(90deg, #7d5a24 0%, #c2a052 30%, #ecd596 48%, #c2a052 64%, #6e4d1e 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.xam-stick::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 9px; border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #df3a2c, #9e1f17); box-shadow: inset 0 -1px 0 rgba(0,0,0,.2); }
+
+.xam-tube { position: absolute; bottom: 0; left: 0; width: 96px; height: 116px; z-index: 2;
+  border-radius: 12px 12px 22px 22px; overflow: hidden;
+  background: linear-gradient(90deg, #321a0c 0%, #6e4220 15%, #a9743c 38%, #c89556 50%, #8a5630 66%, #4e2c14 86%, #2c160a 100%);
+  box-shadow: inset 0 12px 20px rgba(0,0,0,.4), inset 0 -10px 16px rgba(0,0,0,.35), 0 10px 22px -6px rgba(0,0,0,.55); }
+.xam-tube::before { content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: .4; pointer-events: none;
+  background: repeating-linear-gradient(90deg, rgba(0,0,0,.16) 0 1px, transparent 1px 7px); }
+.xam-tube::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 24px; height: 13px;
+  background: linear-gradient(180deg, #f4dc96, #c9a23c 52%, #8a6018);
+  box-shadow: 0 1px 1px rgba(0,0,0,.3), 0 -1px 0 rgba(255,255,255,.18); }
+.xam-mouth { position: absolute; top: -9px; left: -4px; width: 104px; height: 24px; z-index: 4; border-radius: 50%;
+  background: radial-gradient(closest-side, #25140a 56%, #b98a32 59%, #f4dc96 74%, #9a6e22 100%);
+  box-shadow: 0 3px 7px rgba(0,0,0,.45); }
+
+.xam-falling { position: absolute; left: 50%; top: 26px; width: 6px; height: 72px; z-index: 6;
+  transform: translateX(-50%); border-radius: 3px;
+  background: linear-gradient(90deg, #7d5a24, #ecd596 48%, #6e4d1e);
+  animation: xamFall .9s cubic-bezier(.4,0,.7,1) forwards; }
+.xam-falling::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px; border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #df3a2c, #9e1f17); }
+
+/* — Lư hương: đỉnh đồng có quai + chân + khói — */
+.dc-censer { position: relative; height: 80px; margin-bottom: 10px; display: block; }
+.dc-censer.is-lit::after { content: none; }     /* bỏ khói cũ (dùng .dc-smoke mới) */
+.dc-incense { position: absolute; left: 50%; bottom: 32px; width: 3px; height: 44px; transform-origin: bottom center;
+  background: linear-gradient(180deg, #d8b462 0%, #b98a32 72%, #7a5614 100%); }
+.dc-incense::before { content: ''; position: absolute; top: -2px; left: -1px; width: 5px; height: 6px; border-radius: 50%;
+  background: #5a3a14; }
+.dc-censer.is-lit .dc-incense::before { background: #ff7a3c; box-shadow: 0 0 9px 3px rgba(251,146,60,.9); }
+.dc-censer > .dc-incense:nth-child(4) { transform: translateX(-50%) rotate(-13deg); }
+.dc-censer > .dc-incense:nth-child(5) { transform: translateX(-50%) rotate(1deg); }
+.dc-censer > .dc-incense:nth-child(6) { transform: translateX(-50%) rotate(13deg); }
+
+.dc-pot { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 66px; height: 34px;
+  border-radius: 14px 14px 18px 18px;
+  background: linear-gradient(180deg, #f4dc96 0%, #cda646 32%, #9a6e22 78%, #7a5418 100%);
+  box-shadow: inset 0 4px 7px rgba(255,255,255,.3), inset 0 -7px 9px rgba(0,0,0,.32); }
+.dc-pot::before { content: ''; position: absolute; top: -6px; left: -4px; width: 74px; height: 14px; border-radius: 50%;
+  background: linear-gradient(180deg, #f8e2a4, #b98a32); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
+.dc-pot::after { content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); width: 52px; height: 8px;
+  border-radius: 50%; background: rgba(0,0,0,.28); filter: blur(2px); }
+.dc-pot-h { position: absolute; top: 7px; width: 13px; height: 17px; border: 3px solid #b3851f; border-radius: 50%; background: transparent; }
+.dc-pot-h-l { left: -9px; }
+.dc-pot-h-r { right: -9px; }
+/* chân đỉnh */
+.dc-pot-leg { position: absolute; bottom: -7px; width: 5px; height: 9px; background: linear-gradient(180deg,#b3851f,#6e4d12); border-radius: 0 0 2px 2px; }
+
+.dc-smoke { position: absolute; bottom: 66px; left: 50%; width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(226,232,240,.5); filter: blur(3px); opacity: 0; }
+.dc-censer.is-lit > .dc-smoke:nth-child(1) { animation: dcSmoke 2.8s ease-in infinite; }
+.dc-censer.is-lit > .dc-smoke:nth-child(2) { left: 44%; animation: dcSmoke 2.8s ease-in .9s infinite; }
+.dc-censer.is-lit > .dc-smoke:nth-child(3) { left: 56%; animation: dcSmoke 2.8s ease-in 1.7s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dc-censer.is-lit > .dc-smoke { animation: none !important; opacity: 0 !important; }
+}

@@ -154,8 +154,9 @@ export default function DiChua() {
           <div className="dc-card">
             <div className="dc-card-title">Thắp Hương Online</div>
             <div className={'dc-censer' + (litCount > 0 ? ' is-lit' : '')} aria-hidden="true">
-              <span className="dc-censer-stick" /><span className="dc-censer-stick" /><span className="dc-censer-stick" />
-              <div className="dc-censer-bowl" />
+              <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
+              <span className="dc-incense" /><span className="dc-incense" /><span className="dc-incense" />
+              <div className="dc-pot"><i className="dc-pot-h dc-pot-h-l" /><i className="dc-pot-h dc-pot-h-r" /><i className="dc-pot-leg" style={{ left: "14px" }} /><i className="dc-pot-leg" style={{ right: "14px" }} /></div>
             </div>
             <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong}>{litCount > 0 ? 'Thắp thêm hương' : 'Thắp Hương'}</button>
             <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp.' : (litCount > 0 ? 'Đã thắp ' + litCount + ' nén (tượng trưng).' : 'Một cử chỉ chiêm nghiệm — không thay hành lễ thật.')}</p>
