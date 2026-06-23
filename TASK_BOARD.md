@@ -93,3 +93,14 @@ Chủ dự án đưa `di-chua.md` ("Thế giới tâm linh 3D" — Chùa & Đề
 | DC02 | Khấn Nguyện (lưu localStorage) · Thắp Hương (đếm + khói CSS) · Xin Xăm (16 thẻ tự biên soạn + diễn giải tham khảo, KHÔNG gọi là "AI" vì không có backend thật) | Feature | High | Done (v3.76) | 3 tương tác chạy thật; data thuần `dichua.js` test bằng Node; +16 test (364 total) |
 | DC03 | Công Đức — KHÔNG dựng nút donate giả (chưa có cổng thanh toán) · 7 địa điểm chưa làm tự ẩn 3 thẻ hành động + badge "Sắp ra mắt" | Content/Honesty | High | Done (v3.76) | modal minh bạch; verify bằng Playwright thật (10 ảnh chụp, 0 console error) — phát hiện+sửa 2 lỗi thật (JSX fragment thiếu khiến card hành động không ẩn được; `.dichua-hint` đè nút điều hướng) |
 | DC04 | Mở rộng tương lai: Nhà Thờ, các địa điểm Chùa còn lại (Tháp Chuông/Vườn Thiền/Giảng Đường/Nhà Tổ/Thư Viện/Tưởng Niệm/Pháp Bảo), 100 thẻ xăm đầy đủ, hub "Thế Giới Tâm Linh" gộp menu Tarot/TSH/Tử Vi | Feature | Low | Todo | chờ phản hồi người dùng thật trên MVP trước khi đầu tư thêm |
+
+## PHIÊN 24/06/2026 — "ĐI CHÙA" LÀM LẠI THEO ẢNH (full-page · tự vẽ ảnh · lắc xin xăm, Done)
+Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình ảnh, (3) vào menu Đi chùa là full page, (4) xin quẻ phải lắc mới rơi xăm.
+
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| DC05 | Full-page: tách `/di-chua` ra NGOÀI `<Layout>`, header riêng "Chùa An Lạc" (logo + nav 6 mục + 🔍🔔 + avatar Phật Tử), sidebar 11 khu, right panel 4 thẻ, slider — đúng bố cục ảnh | Feature/UI | High | Done (v3.77) | `.dc-root` fixed inset-0, không còn nav/footer site chính; verify Playwright (dc-header=1, footer link=0) |
+| DC06 | Tự tạo hình ảnh: `TempleScene.jsx` vẽ cảnh chùa bằng SVG (trời theo tông, núi/mây/cây/sân + công trình đổi theo khu: hall mái cong, cổng tam quan, tháp chuông, tượng Quán Âm, hồ sen, vườn đá) | Feature/Art | High | Done (v3.77) | 11 khu render khác nhau; thumbnail mini-scene; KHÔNG ảnh chụp/bản quyền (đã nói rõ không xuất được photoreal) |
+| DC07 | Xin xăm phải LẮC: `ShakeXam.jsx` — kéo ống qua lại (pointer) hoặc lắc điện thoại (DeviceMotion, xin quyền iOS) đủ mạnh → que rơi → hiện thẻ; nút phụ a11y; reduced-motion | Feature | High | Done (v3.77) | Playwright kéo qua lại → ra "Thẻ số 4·Hạ"; sửa bug drop-timer kẹt (effect cleanup → useRef) |
+| DC08 | Thẻ phải theo ảnh: Lời Cầu Nguyện (lưu local) · Thắp Hương Online (khói CSS) · Công Đức (modal minh bạch, KHÔNG nút donate giả) + thêm Xin Xăm; nav phụ/🔍/🔔 → modal "đang phát triển" | Content/Honesty | High | Done (v3.77) | 367 test pass; 0 console error; mobile không vỡ |
+| DC09 | Mở rộng tương lai: ảnh đẹp hơn (đổ bóng/chi tiết SVG sâu hơn hoặc cho phép tải ảnh thật), Nhà Thờ, thêm thẻ xăm, lịch sử lời nguyện/xăm đã lưu | Feature | Low | Todo | chờ phản hồi người dùng thật |

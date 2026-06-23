@@ -1,212 +1,206 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import SeoTag from '../components/SeoTag.jsx'
-import Disclaimer from '../components/Disclaimer.jsx'
-import Modal from '../components/Modal.jsx'
+import Logo from '../components/Logo.jsx'
+import TempleScene from '../components/TempleScene.jsx'
+import ShakeXam from '../components/ShakeXam.jsx'
 import {
-  DICHUA_LOCATIONS, locationById, rutXam,
+  DICHUA_LOCATIONS, locationById,
   loadLoiNguyen, addLoiNguyen, countThapHuong, thapHuong
 } from '../data/dichua.js'
 
-const TONE_BG = {
-  dawn: 'linear-gradient(180deg,#1e293b 0%,#334155 45%,#475569 100%)',
-  day: 'linear-gradient(180deg,#1e293b 0%,#3f3320 55%,#57452a 100%)',
-  gold: 'linear-gradient(180deg,#1c1410 0%,#3a2a14 55%,#5a3d18 100%)',
-  dusk: 'linear-gradient(180deg,#1a1025 0%,#2d1b3d 55%,#46264f 100%)'
-}
+const NAV = ['Trang Chủ', 'Chùa Online', 'Kinh Sách', 'Phật Pháp', 'Sự Kiện', 'Cộng Đồng']
 
-function IncenseBurner({ lit }) {
+function DcModal({ open, onClose, title, children }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!open) return
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    const t = setTimeout(() => ref.current && ref.current.focus(), 0)
+    return () => { document.removeEventListener('keydown', onKey); clearTimeout(t) }
+  }, [open, onClose])
+  if (!open) return null
   return (
-    <div className="relative mx-auto" style={{ width: 64, height: 70 }}>
-      {lit && [0, 1, 2].map(i => (
-        <span key={i} className="dichua-smoke" style={{ animationDelay: (i * 0.9) + 's', left: 22 + i * 8 }} />
-      ))}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-[3px]">
-        {[0, 1, 2].map(i => (
-          <span key={i} className="block rounded-full" style={{ width: 2, height: 30 - i * 3, background: 'linear-gradient(180deg,#e8c27a,#9a6a24)', boxShadow: lit ? '0 -6px 10px -2px rgba(251,191,36,.8)' : 'none' }} />
-        ))}
+    <div className="dc-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div className="dc-dialog" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
+        <button className="dc-dialog-x" aria-label="Đóng" onClick={onClose}>×</button>
+        {title && <h3 className="dc-dialog-title">{title}</h3>}
+        {children}
       </div>
-      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 rounded-t-full" style={{ width: 56, height: 26, background: 'linear-gradient(180deg,#caa454,#7a5420)', boxShadow: '0 6px 14px -4px rgba(0,0,0,.5)' }} />
     </div>
-  )
-}
-
-function LocItem({ loc, active, onClick, compact }) {
-  return (
-    <button type="button" onClick={() => onClick(loc.id)}
-      className={'dichua-side-item' + (active ? ' is-active' : '') + (!loc.mvp ? ' is-soon' : '') + (compact ? ' is-compact' : '')}
-      title={loc.mvp ? loc.ten : loc.ten + ' (sắp ra mắt)'}>
-      <span aria-hidden="true" className="text-[1.15rem]">{loc.icon}</span>
-      <span className="dichua-side-label">{loc.ten}</span>
-      {!loc.mvp && <span className="dichua-soon-badge">Sắp ra mắt</span>}
-    </button>
   )
 }
 
 export default function DiChua() {
   const [activeId, setActiveId] = useState('chanh-dien')
-  const [showIntro, setShowIntro] = useState(true)
   const [zoom, setZoom] = useState(1)
+  const [showInfo, setShowInfo] = useState(true)
   const [prayer, setPrayer] = useState('')
   const [prayerCount, setPrayerCount] = useState(0)
   const [sentFlash, setSentFlash] = useState(false)
   const [litCount, setLitCount] = useState(0)
-  const [xam, setXam] = useState(null)
-  const [helpOpen, setHelpOpen] = useState(false)
-  const [tienOpen, setTienOpen] = useState(false)
+  const [litFlash, setLitFlash] = useState(false)
+  const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon'
 
   useEffect(() => { setPrayerCount(loadLoiNguyen().length); setLitCount(countThapHuong()) }, [])
+  useEffect(() => { document.body.classList.add('dc-lock'); return () => document.body.classList.remove('dc-lock') }, [])
 
   const idx = DICHUA_LOCATIONS.findIndex(l => l.id === activeId)
   const loc = locationById(activeId) || DICHUA_LOCATIONS[0]
-  const go = dir => setActiveId(DICHUA_LOCATIONS[(idx + dir + DICHUA_LOCATIONS.length) % DICHUA_LOCATIONS.length].id)
+  const go = dir => { setActiveId(DICHUA_LOCATIONS[(idx + dir + DICHUA_LOCATIONS.length) % DICHUA_LOCATIONS.length].id); setZoom(1) }
 
   const sendPrayer = () => {
     if (!prayer.trim()) return
-    const list = addLoiNguyen(prayer)
-    setPrayerCount(list.length); setPrayer(''); setSentFlash(true)
-    setTimeout(() => setSentFlash(false), 2200)
+    setPrayerCount(addLoiNguyen(prayer).length); setPrayer(''); setSentFlash(true)
+    setTimeout(() => setSentFlash(false), 2400)
   }
-  const doThapHuong = () => setLitCount(thapHuong())
-  const doXinXam = () => setXam(rutXam())
+  const doThapHuong = () => { setLitCount(thapHuong()); setLitFlash(true); setTimeout(() => setLitFlash(false), 1800) }
 
   return (
-    <>
-      <SeoTag title="Đi Chùa — Đại Tự Tâm Linh | Tam Sở"
-        description="Trải nghiệm tham quan chùa hư cấu Đại Tự Tâm Linh: bước qua cổng, dạo sân, vào chính điện, thắp hương, khấn nguyện và xin thẻ xăm — tham khảo, không thay việc hành lễ thật."
+    <div className="dc-root">
+      <SeoTag title="Đi Chùa — Chùa An Lạc (không gian tâm linh online) | Tam Sở"
+        description="Chùa An Lạc — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
         path="/di-chua" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi chùa' }]} />
 
-      <section className="wrap text-center pt-[58px] pb-5">
-        <div className="text-gold text-kicker uppercase">Thế giới tâm linh · MVP</div>
-        <h1 className="text-display my-3">Đi Chùa</h1>
-        <p className="text-muted text-lead max-w-[700px] mx-auto">
-          <b className="text-cream">Đại Tự Tâm Linh</b> — một công trình hư cấu lấy cảm hứng từ nhiều ngôi chùa Việt, không sao chép địa điểm cụ thể nào.
-          Bước qua cổng, dạo sân, vào chính điện, thắp một nén hương và xin một thẻ xăm.
-        </p>
-      </section>
+      {/* HEADER */}
+      <header className="dc-header">
+        <Link to="/" className="dc-brand" title="Về Tam Sở">
+          <Logo size={34} className="shrink-0" />
+          <span className="dc-brand-txt"><b>Chùa An Lạc</b><i>Không gian tâm linh online</i></span>
+        </Link>
+        <nav className="dc-nav">
+          {NAV.map(n => n === 'Trang Chủ'
+            ? <Link key={n} to="/" className="dc-nav-link">{n}</Link>
+            : <button key={n} type="button" onClick={() => n !== 'Chùa Online' && setModal('soon')}
+                className={'dc-nav-link' + (n === 'Chùa Online' ? ' is-active' : '')}>{n}</button>)}
+        </nav>
+        <div className="dc-head-right">
+          <button className="dc-icon-btn" aria-label="Tìm kiếm" onClick={() => setModal('soon')}>🔍</button>
+          <button className="dc-icon-btn" aria-label="Thông báo" onClick={() => setModal('soon')}>🔔</button>
+          <Link to="/ho-so" className="dc-user" title="Hồ sơ">
+            <span className="dc-avatar">P</span>
+            <span className="dc-user-txt"><b>Phật Tử</b><i>Hồ Sơ</i></span>
+          </Link>
+        </div>
+      </header>
 
-      <section className="wrap pb-12">
-        <div className="dichua-shell">
-          <div className="dichua-topbar">
-            <span className="dichua-brand">{loc.icon} <b>Đại Tự Tâm Linh</b></span>
-            <span className="dichua-topbar-loc">{loc.ten}</span>
-            <span className="flex gap-2 ml-auto">
-              <button type="button" className="dichua-pill-btn" onClick={() => setHelpOpen(true)}>❔ Hướng dẫn</button>
-              <button type="button" className="dichua-pill-btn" onClick={() => setTienOpen(true)}>🙏 Công đức</button>
-            </span>
-          </div>
-
-          <div className="dichua-mobilenav lg:hidden">
-            {DICHUA_LOCATIONS.map(l => <LocItem key={l.id} loc={l} active={l.id === activeId} onClick={setActiveId} compact />)}
-          </div>
-
-          <div className="dichua-body">
-            <aside className="dichua-side hidden lg:flex">
-              {DICHUA_LOCATIONS.map(l => <LocItem key={l.id} loc={l} active={l.id === activeId} onClick={setActiveId} />)}
-            </aside>
-
-            <div className="dichua-stage-wrap">
-              <motion.div key={activeId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}
-                className="dichua-stage" style={{ background: TONE_BG[loc.tone] || TONE_BG.day }}>
-                <div className="dichua-stage-inner" style={{ transform: 'scale(' + zoom + ')' }}>
-                  <div className="dichua-signage">{loc.bienHieu}</div>
-                  <div className="dichua-icon-big" aria-hidden="true">{loc.icon}</div>
-                  {loc.mvp && <IncenseBurner lit={litCount > 0} />}
-                  {!loc.mvp && <div className="dichua-soon-flag">🚧 Đang xây dựng — sắp ra mắt</div>}
-                  {showIntro && <p className="dichua-caption">{loc.moTa}</p>}
-                </div>
-
-                <div className="dichua-ctrl-row">
-                  <button type="button" aria-label="Hiện mô tả" onClick={() => setShowIntro(true)} className="dichua-ctrl">↑</button>
-                  <button type="button" aria-label="Địa điểm trước" onClick={() => go(-1)} className="dichua-ctrl">←</button>
-                  <button type="button" aria-label="Ẩn mô tả" onClick={() => setShowIntro(false)} className="dichua-ctrl">↓</button>
-                  <button type="button" aria-label="Địa điểm sau" onClick={() => go(1)} className="dichua-ctrl">→</button>
-                  <button type="button" aria-label="Thu nhỏ" onClick={() => setZoom(z => Math.max(1, +(z - 0.1).toFixed(2)))} className="dichua-ctrl">−</button>
-                  <button type="button" aria-label="Phóng to" onClick={() => setZoom(z => Math.min(1.3, +(z + 0.1).toFixed(2)))} className="dichua-ctrl">+</button>
-                </div>
-                <p className="dichua-hint hidden sm:block">🖱️ Mũi tên đổi hướng/địa điểm · cuộn dải ảnh dưới để chọn nhanh</p>
-              </motion.div>
-            </div>
-
-            <aside className="dichua-actions">
-              {!loc.mvp && (
-                <div className="dichua-card">
-                  <div className="dichua-card-title">🚧 Chưa mở ở {loc.ten}</div>
-                  <p className="dichua-card-desc">Khấn nguyện, thắp hương và xin xăm hiện chỉ có ở Cổng Tam Quan, Sân Chùa và Chánh Điện — các địa điểm khác đang được xây dựng.</p>
-                  <button type="button" className="dichua-card-btn" onClick={() => setActiveId('chanh-dien')}>Đi tới Chánh Điện</button>
-                </div>
-              )}
-              {loc.mvp && (
-                <>
-                  <div className="dichua-card">
-                    <div className="dichua-card-title">🙏 Khấn Nguyện</div>
-                    <textarea value={prayer} onChange={e => setPrayer(e.target.value)} maxLength={500}
-                      placeholder="Viết lời nguyện của bạn…" className="dichua-textarea" rows={3} />
-                    <button type="button" className="dichua-card-btn" onClick={sendPrayer} disabled={!prayer.trim()}>Gửi Lời Nguyện</button>
-                    <p className="dichua-card-note">{sentFlash ? '✓ Đã ghi nhận lời nguyện của bạn.' : (prayerCount > 0 ? 'Bạn đã gửi ' + prayerCount + ' lời nguyện.' : 'Lưu riêng tư trong trình duyệt của bạn.')}</p>
-                  </div>
-
-                  <div className="dichua-card">
-                    <div className="dichua-card-title">🕯️ Thắp Hương</div>
-                    <p className="dichua-card-desc">Một nén hương tượng trưng — chỉ là cử chỉ chiêm nghiệm, không thay việc hành lễ thật.</p>
-                    <button type="button" className="dichua-card-btn" onClick={doThapHuong}>{litCount > 0 ? '🔥 Thắp thêm hương' : '🔥 Thắp hương'}</button>
-                    {litCount > 0 && <p className="dichua-card-note">Đã thắp {litCount} lượt (tượng trưng).</p>}
-                  </div>
-
-                  <div className="dichua-card">
-                    <div className="dichua-card-title">🎋 Xin Xăm</div>
-                    <p className="dichua-card-desc">Rút một trong 16 thẻ — diễn giải tham khảo dân gian, không phải lời tiên đoán chắc chắn.</p>
-                    <button type="button" className="dichua-card-btn" onClick={doXinXam}>{xam ? 'Xin lại' : 'Xin một thẻ'}</button>
-                    {xam && (
-                      <div className="dichua-xam-result animate-fade">
-                        <div className="dichua-xam-so">Thẻ số {xam.so} · {xam.bac}</div>
-                        <p className="dichua-xam-cau">{xam.cau[0]}<br />{xam.cau[1]}</p>
-                        <p className="dichua-card-desc">{xam.dienGiai}</p>
-                        <p className="dichua-card-note">💡 {xam.loiKhuyen}</p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </aside>
-          </div>
-
-          <div className="dichua-slider">
+      <div className="dc-body">
+        {/* SIDEBAR */}
+        <aside className="dc-sidebar">
+          <nav className="dc-side-list">
             {DICHUA_LOCATIONS.map(l => (
-              <button key={l.id} type="button" onClick={() => setActiveId(l.id)}
-                className={'dichua-thumb' + (l.id === activeId ? ' is-active' : '')}>
-                <span className="dichua-thumb-ic">{l.icon}</span>
-                <span className="dichua-thumb-label">{l.ten}</span>
-                {!l.mvp && <span className="dichua-soon-dot" title="Sắp ra mắt" />}
+              <button key={l.id} type="button" onClick={() => { setActiveId(l.id); setZoom(1) }}
+                className={'dc-side-item' + (l.id === activeId ? ' is-active' : '')}>
+                <span className="dc-side-ic" aria-hidden="true">{l.icon}</span>
+                <span>{l.ten}</span>
               </button>
             ))}
+          </nav>
+          <div className="dc-side-foot">
+            <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('congduc')}>◈ Công Đức</button>
+            <button type="button" className="dc-btn dc-btn-ghost" onClick={() => setModal('help')}>ⓘ Hướng Dẫn</button>
           </div>
+        </aside>
+
+        {/* MAIN VIEWPORT */}
+        <div className="dc-stage">
+          <motion.div key={activeId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
+            className="dc-scene" style={{ transform: `scale(${zoom})` }}>
+            <TempleScene scene={loc.scene} tone={loc.tone} bienHieu={loc.bienHieu} className="dc-scene-svg" />
+          </motion.div>
+
+          {showInfo && (
+            <div className="dc-caption">
+              <div className="dc-caption-kicker">{loc.icon} Đang ở</div>
+              <div className="dc-caption-title">{loc.ten}</div>
+              <p className="dc-caption-desc">{loc.moTa}</p>
+            </div>
+          )}
+
+          <div className="dc-ctrl-row">
+            <button className="dc-ctrl" aria-label="Hiện mô tả" onClick={() => setShowInfo(true)}>↑</button>
+            <button className="dc-ctrl" aria-label="Khu trước" onClick={() => go(-1)}>←</button>
+            <button className="dc-ctrl" aria-label="Ẩn mô tả" onClick={() => setShowInfo(false)}>↓</button>
+            <button className="dc-ctrl" aria-label="Khu sau" onClick={() => go(1)}>→</button>
+            <button className="dc-ctrl" aria-label="Phóng to" onClick={() => setZoom(z => Math.min(1.4, +(z + 0.1).toFixed(2)))}>＋</button>
+            <button className="dc-ctrl" aria-label="Thu nhỏ / về mặc định" onClick={() => setZoom(z => Math.max(1, +(z - 0.1).toFixed(2)))}>－</button>
+          </div>
+          <p className="dc-stage-hint">🖱️ Mũi tên đổi khu · ＋－ phóng to · cảnh do Tam Sở tự vẽ (SVG), không phải ảnh chụp</p>
         </div>
-      </section>
 
-      <section className="wrap pb-10">
-        <Disclaimer>
-          <b>Lưu ý.</b> "Đi chùa" là không gian mô phỏng mang tính chiêm nghiệm/thư giãn, <b>không thay thế</b> việc hành lễ ngoài đời.
-          Đại Tự Tâm Linh là công trình <b>hư cấu</b>, lấy cảm hứng từ nhiều ngôi chùa Việt — không sao chép địa điểm cụ thể nào.
-          Nội dung thẻ xăm do Tam Sở tự biên soạn theo thể loại dân gian, mang tính tham khảo để chiêm nghiệm, <span className="note">cần kiểm chứng thêm</span> với góc nhìn của riêng bạn.
-        </Disclaimer>
-      </section>
+        {/* RIGHT PANEL */}
+        <aside className="dc-right">
+          <div className="dc-card">
+            <div className="dc-card-title">Lời Cầu Nguyện</div>
+            <textarea className="dc-textarea" rows={2} maxLength={500} value={prayer}
+              onChange={e => setPrayer(e.target.value)} placeholder="Viết lời nguyện của bạn…" />
+            <div className="dc-pray-icon" aria-hidden="true">🙏</div>
+            <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={sendPrayer} disabled={!prayer.trim()}>Gửi Lời Nguyện</button>
+            <p className="dc-card-note">{sentFlash ? '✓ Đã ghi nhận lời nguyện của bạn.' : (prayerCount > 0 ? 'Bạn đã gửi ' + prayerCount + ' lời nguyện (lưu riêng trên máy).' : 'Lưu riêng tư trong trình duyệt của bạn.')}</p>
+          </div>
 
-      <Modal open={helpOpen} onClose={() => setHelpOpen(false)}>
-        <h3 className="text-h3 mb-2">Hướng dẫn</h3>
-        <ul className="text-[.92rem] leading-relaxed list-disc pl-5">
-          <li>← → : chuyển địa điểm trước/sau</li>
-          <li>↑ ↓ : hiện/ẩn mô tả địa điểm</li>
-          <li>− + : thu nhỏ/phóng to khung cảnh</li>
-          <li>Dải ảnh dưới cùng hoặc danh sách bên trái: chọn nhanh địa điểm</li>
-          <li>3 thẻ bên phải: khấn nguyện, thắp hương, xin xăm</li>
+          <div className="dc-card">
+            <div className="dc-card-title">Thắp Hương Online</div>
+            <div className={'dc-censer' + (litCount > 0 ? ' is-lit' : '')} aria-hidden="true">
+              <span className="dc-censer-stick" /><span className="dc-censer-stick" /><span className="dc-censer-stick" />
+              <div className="dc-censer-bowl" />
+            </div>
+            <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong}>{litCount > 0 ? 'Thắp thêm hương' : 'Thắp Hương'}</button>
+            <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp.' : (litCount > 0 ? 'Đã thắp ' + litCount + ' nén (tượng trưng).' : 'Một cử chỉ chiêm nghiệm — không thay hành lễ thật.')}</p>
+          </div>
+
+          <div className="dc-card">
+            <div className="dc-card-title">Xin Xăm</div>
+            <p className="dc-card-desc">Lắc ống xăm để xin một quẻ — 16 thẻ, diễn giải tham khảo dân gian.</p>
+            <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={() => setModal('xam')}>🎋 Lắc Xin Xăm</button>
+          </div>
+
+          <div className="dc-card">
+            <div className="dc-card-title">Công Đức</div>
+            <p className="dc-card-desc">Tùy hỷ công đức xây dựng và hoằng pháp.</p>
+            <button type="button" className="dc-btn dc-btn-ghost dc-btn-block" onClick={() => setModal('congduc')}>Công Đức Ngay</button>
+          </div>
+        </aside>
+      </div>
+
+      {/* SLIDER */}
+      <div className="dc-slider">
+        {DICHUA_LOCATIONS.map(l => (
+          <button key={l.id} type="button" onClick={() => { setActiveId(l.id); setZoom(1) }}
+            className={'dc-thumb' + (l.id === activeId ? ' is-active' : '')} title={l.ten}>
+            <TempleScene scene={l.scene} tone={l.tone} className="dc-thumb-svg" />
+            <span className="dc-thumb-label">{l.ten}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* OVERLAYS */}
+      <DcModal open={modal === 'help'} onClose={() => setModal(null)} title="Hướng Dẫn">
+        <ul className="dc-help-list">
+          <li><b>←  →</b> : chuyển khu trước / sau</li>
+          <li><b>↑  ↓</b> : hiện / ẩn mô tả khu</li>
+          <li><b>＋  －</b> : phóng to / thu nhỏ khung cảnh</li>
+          <li><b>Sidebar trái</b> hoặc <b>dải ảnh dưới</b> : chọn nhanh một khu</li>
+          <li><b>Lời Cầu Nguyện</b> : viết & lưu riêng trên máy bạn</li>
+          <li><b>Thắp Hương</b> : cử chỉ tượng trưng</li>
+          <li><b>Xin Xăm</b> : <b>lắc ống xăm</b> (kéo qua lại hoặc lắc điện thoại) đến khi que rơi ra</li>
         </ul>
-      </Modal>
-      <Modal open={tienOpen} onClose={() => setTienOpen(false)}>
-        <h3 className="text-h3 mb-2">🙏 Công đức</h3>
-        <p className="leading-relaxed">Đại Tự Tâm Linh <b>chưa có</b> hình thức cúng dường/công đức thật. Tính năng này cần một cổng thanh toán minh bạch và xác minh rõ ràng nên Tam Sở chưa triển khai.</p>
-        <p className="note mt-2">Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, khấn nguyện, xin xăm) trước khi thêm bất kỳ tính năng liên quan đến tiền.</p>
-      </Modal>
-    </>
+      </DcModal>
+
+      <DcModal open={modal === 'congduc'} onClose={() => setModal(null)} title="◈ Công Đức">
+        <p className="leading-relaxed">Chùa An Lạc <b>chưa có</b> hình thức cúng dường / công đức thật. Tính năng này cần một cổng thanh toán minh bạch và xác minh rõ ràng, nên Tam Sở chưa triển khai.</p>
+        <p className="dc-card-note" style={{ marginTop: 10 }}>Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, lời nguyện, xin xăm) trước khi thêm bất kỳ tính năng liên quan đến tiền. Sẽ không bao giờ có nút quyên góp giả ở đây.</p>
+      </DcModal>
+
+      <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống">
+        <ShakeXam />
+      </DcModal>
+
+      <DcModal open={modal === 'soon'} onClose={() => setModal(null)} title="Đang phát triển">
+        <p className="leading-relaxed">Khu vực này (Kinh Sách / Phật Pháp / Sự Kiện / Cộng Đồng, tìm kiếm, thông báo) đang được xây dựng. Hiện <b>Chùa Online</b> là phần đã mở — mời bạn dạo các khu trong khuôn viên.</p>
+      </DcModal>
+    </div>
   )
 }

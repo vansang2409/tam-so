@@ -823,31 +823,35 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(lj.includes('monthCanChi') && lj.includes('gioHoangDao') && lj.includes('solar2lunar') && /không phải lời phán/.test(lj), 'LichVanNien: dùng can chi + giờ hoàng đạo + khung tham khảo')
 }
 
-// — Đi chùa: dữ liệu địa điểm + bộ thẻ xăm (thuần JS, test bằng Node) —
+// — Đi chùa: dữ liệu khu + bộ thẻ xăm (thuần JS, test bằng Node) —
 {
-  ok(DC.DICHUA_LOCATIONS.length === 10, 'DICHUA_LOCATIONS: đủ 10 địa điểm')
-  ok(DC.MVP_LOCATION_IDS.length === 3 && DC.MVP_LOCATION_IDS.includes('chanh-dien'), 'MVP_LOCATION_IDS: 3 địa điểm MVP gồm Chánh Điện')
-  ok(DC.DICHUA_LOCATIONS.every(l => l.id && l.ten && l.icon && l.bienHieu && l.moTa), 'DICHUA_LOCATIONS: mỗi địa điểm đủ id/ten/icon/bienHieu/moTa')
-  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 10, 'DICHUA_LOCATIONS: id duy nhất')
-  ok(DC.locationById('chanh-dien').ten === 'Chánh Điện', "locationById('chanh-dien') = Chánh Điện")
+  ok(DC.DICHUA_LOCATIONS.length === 11, 'DICHUA_LOCATIONS: đủ 11 khu (khớp ảnh mockup)')
+  ok(DC.DICHUA_LOCATIONS.every(l => l.id && l.ten && l.icon && l.bienHieu && l.moTa && l.scene && l.tone), 'DICHUA_LOCATIONS: mỗi khu đủ id/ten/icon/bienHieu/moTa/scene/tone')
+  ok(DC.DICHUA_LOCATIONS.every(l => ['dawn', 'day', 'dusk', 'gold'].includes(l.tone)), 'DICHUA_LOCATIONS: tone hợp lệ')
+  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 11, 'DICHUA_LOCATIONS: id duy nhất')
+  ok(DC.locationById('chanh-dien').scene === 'dien' && DC.locationById('cong-tam-quan').scene === 'cong', 'locationById: trả đúng khu + scene')
   ok(DC.locationById('khong-co') === null, 'locationById slug sai → null')
 
   eq(DC.DICHUA_XAM.length, 16, 'DICHUA_XAM: đủ 16 thẻ')
   ok(new Set(DC.DICHUA_XAM.map(x => x.so)).size === 16, 'DICHUA_XAM: số thẻ duy nhất')
   ok(DC.DICHUA_XAM.every(x => ['Thượng', 'Trung Bình', 'Hạ'].includes(x.bac)), 'DICHUA_XAM: mỗi thẻ có bậc hợp lệ')
   ok(DC.DICHUA_XAM.every(x => Array.isArray(x.cau) && x.cau.length === 2 && x.dienGiai.length > 10 && x.loiKhuyen.length > 5), 'DICHUA_XAM: mỗi thẻ đủ câu + diễn giải + lời khuyên')
-  let drawOk = true
-  for (let i = 0; i < 200; i++) { const x = DC.rutXam(); if (!x || typeof x.so !== 'number') drawOk = false }
+  let drawOk = true; for (let i = 0; i < 200; i++) { const x = DC.rutXam(); if (!x || typeof x.so !== 'number') drawOk = false }
   ok(drawOk, 'rutXam: luôn trả về 1 thẻ hợp lệ (200 lần)')
   ok(DC.xamBySo(1).cau.length === 2 && DC.xamBySo(999) === null, 'xamBySo: tra đúng + số sai → null')
 
-  ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node (không có localStorage) → mảng rỗng')
-  ok(DC.countThapHuong() === 0, 'countThapHuong: chạy trong Node (không có localStorage) → 0')
+  ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node → mảng rỗng')
+  ok(DC.countThapHuong() === 0, 'countThapHuong: chạy trong Node → 0')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
-  ok(mj.includes('di-chua') && mj.includes('DiChua'), 'main.jsx: route /di-chua đã wire')
+  ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) đã wire')
+  ok(mj.indexOf('path="/di-chua"') < mj.indexOf('element={<Layout'), 'main.jsx: /di-chua nằm NGOÀI Layout (full page)')
   const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
-  ok(lj2.includes('/di-chua'), 'Layout.jsx: menu có liên kết tới /di-chua')
+  ok(lj2.includes('/di-chua'), 'Layout.jsx: menu vẫn có liên kết tới /di-chua')
+  const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')
+  ok(ts.includes('export default function TempleScene') && ts.includes('viewBox'), 'TempleScene.jsx: component SVG tồn tại')
+  const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
+  ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)

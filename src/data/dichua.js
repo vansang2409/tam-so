@@ -1,35 +1,36 @@
-/* DỮ LIỆU "ĐI CHÙA" — Đại Tự Tâm Linh (công trình HƯ CẤU, lấy cảm hứng từ nhiều
- * ngôi chùa Việt, KHÔNG sao chép địa điểm cụ thể nào).
- * Gồm: danh sách địa điểm trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn,
- * lấy cảm hứng từ thể loại xăm dân gian — không chép lại bộ xăm của bất kỳ chùa nào).
+/* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa An Lạc" (HƯ CẤU, lấy cảm hứng
+ * từ nhiều ngôi chùa Việt — KHÔNG sao chép địa điểm cụ thể nào).
+ * Gồm: 11 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
+ * dân gian) + helper lưu lời nguyện / đếm hương (cục bộ trong trình duyệt).
  * Thuần JS, KHÔNG phụ thuộc React → test được bằng Node. Không có dữ kiện server. */
 
-// — Địa điểm trong khuôn viên —
-// mvp:true = đã có trải nghiệm đầy đủ; mvp:false = đang phát triển (hiện badge "Sắp ra mắt")
+// — Các khu trong khuôn viên (khớp bố cục ảnh mockup) —
+// scene: kiểu cảnh để TempleScene vẽ; tone: bảng màu trời (dawn/day/dusk/gold)
 export const DICHUA_LOCATIONS = [
-  { id: 'cong-tam-quan', ten: 'Cổng Tam Quan', icon: '⛩️', mvp: true, bienHieu: 'ĐẠI TỰ TÂM LINH', tone: 'dawn',
-    moTa: 'Cổng ba lối vào của Đại Tự Tâm Linh. Bước qua đây là tạm gác lại ồn ào để vào một nhịp sống chậm hơn.' },
-  { id: 'san-chua', ten: 'Sân Chùa', icon: '🌳', mvp: true, bienHieu: 'SÂN CHÙA', tone: 'day',
-    moTa: 'Sân lát đá rộng, hai hàng cây rợp bóng — chỗ dừng chân trước khi vào chính điện.' },
-  { id: 'chanh-dien', ten: 'Chánh Điện', icon: '🛕', mvp: true, bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', tone: 'gold',
-    moTa: 'Nơi đặt tượng thờ chính, hương trầm quanh năm không tắt — trung tâm của Đại Tự Tâm Linh.' },
-  { id: 'thap-chuong', ten: 'Tháp Chuông', icon: '🔔', mvp: false, bienHieu: 'THÁP CHUÔNG', tone: 'dusk',
-    moTa: 'Tháp treo đại hồng chung, tiếng chuông ngân mỗi buổi sớm.' },
-  { id: 'vuon-thien', ten: 'Vườn Thiền', icon: '🪷', mvp: false, bienHieu: 'VƯỜN THIỀN', tone: 'day',
-    moTa: 'Khu vườn tĩnh lặng để ngồi thiền và thả bộ chậm, có hồ sen nhỏ.' },
-  { id: 'giang-duong', ten: 'Giảng Đường', icon: '📿', mvp: false, bienHieu: 'GIẢNG ĐƯỜNG', tone: 'day',
-    moTa: 'Nơi giảng pháp và sinh hoạt cộng đồng.' },
-  { id: 'nha-to', ten: 'Nhà Tổ', icon: '🕯️', mvp: false, bienHieu: 'NHÀ TỔ', tone: 'dusk',
-    moTa: 'Nơi thờ các vị tổ sư khai sơn.' },
-  { id: 'thu-vien', ten: 'Thư Viện', icon: '📚', mvp: false, bienHieu: 'THƯ VIỆN', tone: 'day',
-    moTa: 'Kinh sách và tài liệu tham khảo.' },
-  { id: 'tuong-niem', ten: 'Góc Tưởng Niệm', icon: '🪔', mvp: false, bienHieu: 'TƯỞNG NIỆM', tone: 'dusk',
-    moTa: 'Không gian lặng để tưởng nhớ người thân đã khuất.' },
-  { id: 'phap-bao', ten: 'Cửa Hàng Pháp Bảo', icon: '🛍️', mvp: false, bienHieu: 'PHÁP BẢO', tone: 'day',
-    moTa: 'Vật phẩm lưu niệm mang tính biểu tượng — chỉ trưng bày, KHÔNG giao dịch thật.' }
+  { id: 'chanh-dien',      ten: 'Chánh Điện',          icon: '🛕', bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', scene: 'dien',    tone: 'day',
+    moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa An Lạc.' },
+  { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk',
+    moTa: 'Nơi thờ các vị tổ sư khai sơn, không gian trầm mặc và trang nghiêm.' },
+  { id: 'thap-chuong',     ten: 'Tháp Chuông',         bienHieu: 'THÁP CHUÔNG',       icon: '🔔', scene: 'thap',    tone: 'dawn',
+    moTa: 'Tháp treo đại hồng chung, tiếng chuông ngân vọng mỗi buổi sớm và chiều.' },
+  { id: 'vuon-lam-ty-ni',  ten: 'Vườn Lâm Tỳ Ni',      bienHieu: 'VƯỜN LÂM TỲ NI',    icon: '🌳', scene: 'vuon',    tone: 'day',
+    moTa: 'Khu vườn xanh mát với hồ sen, mô phỏng nơi Đức Phật đản sinh.' },
+  { id: 'giang-duong',     ten: 'Giảng Đường',         bienHieu: 'GIẢNG ĐƯỜNG',       icon: '📿', scene: 'duong',   tone: 'day',
+    moTa: 'Nơi giảng pháp, tụng kinh và sinh hoạt cộng đồng Phật tử.' },
+  { id: 'nha-khach',       ten: 'Nhà Khách',           bienHieu: 'NHÀ KHÁCH',         icon: '🏠', scene: 'khach',   tone: 'day',
+    moTa: 'Nơi đón tiếp khách thập phương ghé thăm và lưu trú.' },
+  { id: 'cong-tam-quan',   ten: 'Cổng Tam Quan',       bienHieu: 'CHÙA AN LẠC',       icon: '⛩️', scene: 'cong',    tone: 'dawn',
+    moTa: 'Cổng ba lối — bước qua đây là tạm gác ồn ào, vào một nhịp sống chậm hơn.' },
+  { id: 'thu-vien',        ten: 'Thư Viện',            bienHieu: 'THƯ VIỆN',          icon: '📖', scene: 'thuvien', tone: 'day',
+    moTa: 'Kinh sách, tài liệu Phật học và không gian đọc tĩnh lặng.' },
+  { id: 'goc-thien',       ten: 'Góc Thiền',           bienHieu: 'GÓC THIỀN',         icon: '🧘', scene: 'thien',   tone: 'dusk',
+    moTa: 'Vườn đá và khoảng lặng để ngồi thiền, theo dõi hơi thở.' },
+  { id: 'tuong-cau-nguyen',ten: 'Tượng Cầu Nguyện',    bienHieu: 'TƯỢNG QUÁN ÂM',     icon: '🙏', scene: 'tuong',   tone: 'gold',
+    moTa: 'Tôn tượng Quán Thế Âm Bồ Tát giữa sân, nơi gửi gắm lời nguyện an lành.' },
+  { id: 'cua-hang-phap-bao',ten: 'Cửa Hàng Pháp Bảo',  bienHieu: 'PHÁP BẢO',          icon: '🛍️', scene: 'phapbao', tone: 'day',
+    moTa: 'Vật phẩm mang tính biểu tượng — chỉ trưng bày, KHÔNG giao dịch thật.' }
 ]
 
-export const MVP_LOCATION_IDS = DICHUA_LOCATIONS.filter(l => l.mvp).map(l => l.id)
 export const locationById = id => DICHUA_LOCATIONS.find(l => l.id === id) || null
 
 // — Bộ thẻ xăm (16 thẻ, nội dung tự biên soạn lấy cảm hứng dân gian) —
@@ -65,7 +66,7 @@ export const DICHUA_XAM = [
   { so: 10, bac: 'Trung Bình', cau: ['Đường vòng tuy xa mà chắc bước', 'Đường tắt dễ trượt lúc trời mưa'],
     dienGiai: 'Có hai lựa chọn, một nhanh một chậm — lựa chọn chắc chắn hơn đang là hướng đáng theo lúc này.',
     loiKhuyen: 'Ưu tiên cách làm bạn kiểm soát được, dù mất thêm thời gian.' },
-  { so: 11, bac: 'Thượng', cau: ['Khách quý đến nhà niềm vui đến', 'Tin lành theo gió tự xa say'],
+  { so: 11, bac: 'Thượng', cau: ['Khách quý đến nhà niềm vui đến', 'Tin lành theo gió tự xa bay'],
     dienGiai: 'Có tin tốt hoặc một cuộc gặp gỡ đáng giá sắp đến — có thể từ người quen lâu chưa liên lạc.',
     loiKhuyen: 'Giữ liên lạc cởi mở, đừng ngại là người chủ động trước.' },
   { so: 12, bac: 'Trung Bình', cau: ['Trời chưa định mưa hay định nắng', 'Mang theo cả hai chẳng thiệt mình'],
@@ -91,9 +92,8 @@ export function rutXam(rng = Math.random) {
 }
 export const xamBySo = so => DICHUA_XAM.find(x => x.so === so) || null
 
-// — Lời nguyện (lưu cục bộ trong trình duyệt máy bạn, KHÔNG gửi đi đâu) —
+// — Lưu cục bộ trong trình duyệt máy bạn, KHÔNG gửi đi đâu —
 export const LOINGUYEN_KEY = 'tamso_dichua_loinguyen'
-// — Số lần thắp hương (chỉ là bộ đếm tượng trưng) —
 export const THAPHUONG_KEY = 'tamso_dichua_thaphuong'
 
 const _ls = () => (typeof localStorage !== 'undefined' ? localStorage : null)

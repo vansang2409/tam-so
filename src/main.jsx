@@ -29,6 +29,7 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router {...routerProps}>
       <Routes>
+        <Route path="/di-chua" element={<DiChua />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />
@@ -48,7 +49,6 @@ createRoot(document.getElementById('root')).render(
           <Route path="sinh-nam" element={<SinhNam />} />
           <Route path="sinh-nam/:year" element={<SinhNam />} />
           <Route path="kinh-dich" element={<IChing />} />
-          <Route path="di-chua" element={<DiChua />} />
           <Route path="tuong-hop" element={<TuongHop />} />
           <Route path="bo-suu-tap" element={<Collection />} />
           <Route path="nguon" element={<Sources />} />
