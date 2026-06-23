@@ -1,4 +1,4 @@
-THƯ MỤC ẢNH KHU "ĐI CHÙA" (Chùa An Lạc)
+THƯ MỤC ẢNH KHU "ĐI CHÙA" (Chùa Tam Sở)
 ========================================
 
 Thả ảnh vào ĐÂY, đặt tên đúng theo id của từng khu (đuôi .jpg), tỉ lệ 16:9:

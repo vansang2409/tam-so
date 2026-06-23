@@ -249,7 +249,7 @@ input[type=number] {
 /* Card nhấc nhẹ khi hover cho các panel có .hover-lift — bo góc & viền mềm hiện đại */
 .panel { transition: box-shadow .25s ease, border-color .25s ease; }
 /* =========================================================================
- * ĐI CHÙA — Chùa An Lạc (FULL-PAGE, v3.77). Theme tối RIÊNG, không đụng site sáng.
+ * ĐI CHÙA — Chùa Tam Sở (FULL-PAGE, v3.77). Theme tối RIÊNG, không đụng site sáng.
  * Cảnh chùa do TempleScene vẽ bằng SVG (không ảnh chụp/bản quyền). Xin xăm = lắc.
  * ========================================================================= */
 .dc-lock { overflow: hidden; }

@@ -1,4 +1,4 @@
-/* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa An Lạc" (HƯ CẤU, lấy cảm hứng
+/* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa Tam Sở" (HƯ CẤU, lấy cảm hứng
  * từ nhiều ngôi chùa Việt — KHÔNG sao chép địa điểm cụ thể nào).
  * Gồm: 11 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
  * dân gian) + helper lưu lời nguyện / đếm hương (cục bộ trong trình duyệt).
@@ -8,7 +8,7 @@
 // scene: kiểu cảnh để TempleScene vẽ; tone: bảng màu trời (dawn/day/dusk/gold)
 export const DICHUA_LOCATIONS = [
   { id: 'chanh-dien',      ten: 'Chánh Điện',          icon: '🛕', bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', scene: 'dien',    tone: 'day',
-    moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa An Lạc.' },
+    moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa Tam Sở.' },
   { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk',
     moTa: 'Nơi thờ các vị tổ sư khai sơn, không gian trầm mặc và trang nghiêm.' },
   { id: 'thap-chuong',     ten: 'Tháp Chuông',         bienHieu: 'THÁP CHUÔNG',       icon: '🔔', scene: 'thap',    tone: 'dawn',
@@ -19,7 +19,7 @@ export const DICHUA_LOCATIONS = [
     moTa: 'Nơi giảng pháp, tụng kinh và sinh hoạt cộng đồng Phật tử.' },
   { id: 'nha-khach',       ten: 'Nhà Khách',           bienHieu: 'NHÀ KHÁCH',         icon: '🏠', scene: 'khach',   tone: 'day',
     moTa: 'Nơi đón tiếp khách thập phương ghé thăm và lưu trú.' },
-  { id: 'cong-tam-quan',   ten: 'Cổng Tam Quan',       bienHieu: 'CHÙA AN LẠC',       icon: '⛩️', scene: 'cong',    tone: 'dawn',
+  { id: 'cong-tam-quan',   ten: 'Cổng Tam Quan',       bienHieu: 'CHÙA TAM SỞ',       icon: '⛩️', scene: 'cong',    tone: 'dawn',
     moTa: 'Cổng ba lối — bước qua đây là tạm gác ồn ào, vào một nhịp sống chậm hơn.' },
   { id: 'thu-vien',        ten: 'Thư Viện',            bienHieu: 'THƯ VIỆN',          icon: '📖', scene: 'thuvien', tone: 'day',
     moTa: 'Kinh sách, tài liệu Phật học và không gian đọc tĩnh lặng.' },

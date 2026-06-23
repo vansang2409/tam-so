@@ -1,6 +1,6 @@
 import { useId } from 'react'
 
-/* TempleScene — cảnh "Chùa An Lạc" vẽ thuần bằng SVG (KHÔNG dùng ảnh chụp/bản quyền).
+/* TempleScene — cảnh "Chùa Tam Sở" vẽ thuần bằng SVG (KHÔNG dùng ảnh chụp/bản quyền).
  * Tự sinh từ code: trời theo tông (dawn/day/dusk/gold), núi, cây, sân và công trình
  * thay đổi theo từng khu (scene). Mỗi instance có id gradient riêng để không đụng nhau. */
 
@@ -233,7 +233,7 @@ export default function TempleScene({ scene = 'dien', tone = 'day', bienHieu = '
 
   return (
     <svg viewBox="0 0 1000 600" className={className} style={style} preserveAspectRatio="xMidYMid slice" role="img"
-      aria-label={'Minh hoạ ' + (bienHieu || 'Chùa An Lạc')}>
+      aria-label={'Minh hoạ ' + (bienHieu || 'Chùa Tam Sở')}>
       <defs>
         <linearGradient id={'sky' + uid} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={P.t} />

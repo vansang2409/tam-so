@@ -17,7 +17,7 @@ function SceneView({ loc, className }) {
   const [err, setErr] = useState(false)
   const src = (import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'
   if (err) return <TempleScene scene={loc.scene} tone={loc.tone} className={className} />
-  return <img src={src} alt={'Cảnh ' + loc.ten + ' — Chùa An Lạc'} className={className} loading="lazy" onError={() => setErr(true)} />
+  return <img src={src} alt={'Cảnh ' + loc.ten + ' — Chùa Tam Sở'} className={className} loading="lazy" onError={() => setErr(true)} />
 }
 
 function DcModal({ open, onClose, title, children }) {
@@ -68,15 +68,15 @@ export default function DiChua() {
 
   return (
     <div className="dc-root">
-      <SeoTag title="Đi Chùa — Chùa An Lạc (không gian tâm linh online) | Tam Sở"
-        description="Chùa An Lạc — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
+      <SeoTag title="Đi Chùa — Chùa Tam Sở (không gian tâm linh online) | Tam Sở"
+        description="Chùa Tam Sở — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
         path="/di-chua" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi chùa' }]} />
 
       {/* HEADER */}
       <header className="dc-header">
         <Link to="/" className="dc-brand" title="Về Tam Sở">
           <Logo size={34} className="shrink-0" />
-          <span className="dc-brand-txt"><b>Chùa An Lạc</b><i>Không gian tâm linh online</i></span>
+          <span className="dc-brand-txt"><b>Chùa Tam Sở</b><i>Không gian tâm linh online</i></span>
         </Link>
         <nav className="dc-nav">
           {NAV.map(n => n === 'Trang Chủ'
@@ -200,7 +200,7 @@ export default function DiChua() {
       </DcModal>
 
       <DcModal open={modal === 'congduc'} onClose={() => setModal(null)} title="◈ Công Đức">
-        <p className="leading-relaxed">Chùa An Lạc <b>chưa có</b> hình thức cúng dường / công đức thật. Tính năng này cần một cổng thanh toán minh bạch và xác minh rõ ràng, nên Tam Sở chưa triển khai.</p>
+        <p className="leading-relaxed">Chùa Tam Sở <b>chưa có</b> hình thức cúng dường / công đức thật. Tính năng này cần một cổng thanh toán minh bạch và xác minh rõ ràng, nên Tam Sở chưa triển khai.</p>
         <p className="dc-card-note" style={{ marginTop: 10 }}>Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, lời nguyện, xin xăm) trước khi thêm bất kỳ tính năng liên quan đến tiền. Sẽ không bao giờ có nút quyên góp giả ở đây.</p>
       </DcModal>
 
