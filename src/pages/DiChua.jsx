@@ -12,6 +12,14 @@ import {
 
 const NAV = ['Trang Chủ', 'Chùa Online', 'Kinh Sách', 'Phật Pháp', 'Sự Kiện', 'Cộng Đồng']
 
+// Ưu tiên ảnh thật public/dichua/<id>.jpg; thiếu/lỗi → tự quay về cảnh SVG (TempleScene)
+function SceneView({ loc, className }) {
+  const [err, setErr] = useState(false)
+  const src = (import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'
+  if (err) return <TempleScene scene={loc.scene} tone={loc.tone} className={className} />
+  return <img src={src} alt={'Cảnh ' + loc.ten + ' — Chùa An Lạc'} className={className} loading="lazy" onError={() => setErr(true)} />
+}
+
 function DcModal({ open, onClose, title, children }) {
   const ref = useRef(null)
   useEffect(() => {
@@ -108,8 +116,10 @@ export default function DiChua() {
         <div className="dc-stage">
           <motion.div key={activeId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
             className="dc-scene" style={{ transform: `scale(${zoom})` }}>
-            <TempleScene scene={loc.scene} tone={loc.tone} bienHieu={loc.bienHieu} className="dc-scene-svg" />
+            <SceneView loc={loc} className="dc-scene-svg" />
           </motion.div>
+
+          <div className="dc-sign">{loc.bienHieu}</div>
 
           {showInfo && (
             <div className="dc-caption">
@@ -170,7 +180,7 @@ export default function DiChua() {
         {DICHUA_LOCATIONS.map(l => (
           <button key={l.id} type="button" onClick={() => { setActiveId(l.id); setZoom(1) }}
             className={'dc-thumb' + (l.id === activeId ? ' is-active' : '')} title={l.ten}>
-            <TempleScene scene={l.scene} tone={l.tone} className="dc-thumb-svg" />
+            <SceneView loc={l} className="dc-thumb-svg" />
             <span className="dc-thumb-label">{l.ten}</span>
           </button>
         ))}

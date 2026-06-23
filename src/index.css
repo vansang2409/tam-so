@@ -411,3 +411,12 @@ input[type=number] {
   .dc-stage { min-height: 260px; }
   .dc-stage-hint { display: none; }
 }
+
+/* Đi chùa: ảnh thật (nếu có) phủ kín khung; biển hiệu overlay đè lên cả ảnh lẫn SVG */
+.dc-scene-svg, .dc-thumb-svg { object-fit: cover; }
+.dc-sign { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2;
+  background: rgba(58,29,16,.86); border: 1px solid #e3b54e; color: #f3d68a;
+  font-family: 'Playfair Display', Georgia, serif; font-weight: 700; letter-spacing: .12em;
+  font-size: .82rem; padding: 5px 16px; border-radius: 8px; white-space: nowrap; pointer-events: none;
+  box-shadow: 0 6px 16px -6px rgba(0,0,0,.6); max-width: 86%; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 760px) { .dc-sign { font-size: .68rem; padding: 4px 10px; } }
