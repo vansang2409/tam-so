@@ -248,3 +248,75 @@ input[type=number] {
 .btn-primary, .btn-ghost { transition: background .18s ease, border-color .18s ease, transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease; }
 /* Card nhấc nhẹ khi hover cho các panel có .hover-lift — bo góc & viền mềm hiện đại */
 .panel { transition: box-shadow .25s ease, border-color .25s ease; }
+
+/* =========================================================================
+ * ĐI CHÙA — "Đại Tự Tâm Linh" (v3.76) — khối UI tối riêng, KHÔNG đụng theme sáng toàn site
+ * ========================================================================= */
+.dichua-shell { background: linear-gradient(160deg,#0f172a,#1e293b); border: 1px solid rgba(255,255,255,.08); border-radius: 28px; color: #e2e8f0; overflow: hidden; }
+
+.dichua-topbar { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); flex-wrap: wrap; }
+.dichua-brand { color: #f8fafc; font-family: theme('fontFamily.serif'); }
+.dichua-topbar-loc { color: #fbbf24; font-size: .85rem; }
+.dichua-pill-btn { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); color: #e2e8f0; border-radius: 999px; padding: 6px 14px; font-size: .82rem; cursor: pointer; transition: background .15s; }
+.dichua-pill-btn:hover { background: rgba(255,255,255,.12); }
+
+.dichua-mobilenav { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px 0; }
+.dichua-mobilenav .dichua-side-item.is-compact { width: auto; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px; border-radius: 14px; background: rgba(255,255,255,.05); }
+.dichua-mobilenav .dichua-side-item.is-compact .dichua-side-label { font-size: .66rem; white-space: nowrap; }
+.dichua-mobilenav .dichua-side-item.is-compact .dichua-soon-badge { display: none; }
+
+.dichua-body { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 14px 18px; }
+@media (min-width: 1024px) { .dichua-body { grid-template-columns: 220px 1fr 280px; align-items: start; } }
+
+.dichua-side { display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 10px; }
+.dichua-side-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 12px; padding: 9px 10px; font-size: .88rem; color: #cbd5e1; cursor: pointer; transition: background .15s, color .15s; }
+.dichua-side-item:hover { background: rgba(255,255,255,.06); color: #fff; }
+.dichua-side-item.is-active { background: rgba(251,191,36,.16); color: #fbbf24; font-weight: 600; }
+.dichua-side-item.is-soon { opacity: .55; }
+.dichua-side-label { flex: 1; }
+.dichua-soon-badge { font-size: .6rem; padding: 1px 7px; border-radius: 999px; background: rgba(255,255,255,.08); color: #94a3b8; white-space: nowrap; }
+
+.dichua-stage { position: relative; border-radius: 20px; overflow: hidden; min-height: 380px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 20px 50px -20px rgba(0,0,0,.6); }
+.dichua-stage-inner { text-align: center; transition: transform .25s ease; padding: 0 16px; }
+.dichua-signage { display: inline-block; background: rgba(0,0,0,.4); border: 1px solid rgba(251,191,36,.35); color: #fbbf24; font-weight: 700; letter-spacing: .08em; font-size: .75rem; padding: 4px 14px; border-radius: 10px; margin-bottom: 10px; }
+.dichua-icon-big { font-size: 5rem; line-height: 1; filter: drop-shadow(0 10px 24px rgba(0,0,0,.5)); margin-bottom: 6px; }
+.dichua-caption { max-width: 420px; margin: 10px auto 0; color: #cbd5e1; font-size: .88rem; line-height: 1.6; }
+.dichua-soon-flag { color: #fcd34d; font-size: .85rem; background: rgba(0,0,0,.35); display: inline-block; padding: 4px 12px; border-radius: 10px; margin-top: 8px; }
+
+.dichua-ctrl-row { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 8px; }
+.dichua-ctrl { width: 36px; height: 36px; border-radius: 50%; background: rgba(15,23,42,.55); border: 1px solid rgba(255,255,255,.18); color: #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: .95rem; transition: background .15s, transform .15s; }
+.dichua-ctrl:hover { background: rgba(251,191,36,.25); transform: translateY(-1px); }
+.dichua-ctrl:active { transform: translateY(0) scale(.95); }
+.dichua-hint { position: absolute; left: 14px; bottom: 14px; font-size: .72rem; color: #94a3b8; background: rgba(15,23,42,.5); padding: 5px 10px; border-radius: 8px; max-width: 220px; pointer-events: none; }
+
+.dichua-actions { display: flex; flex-direction: column; gap: 12px; }
+.dichua-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 14px; }
+.dichua-card-title { font-weight: 700; color: #fde68a; margin-bottom: 6px; font-size: .95rem; }
+.dichua-card-desc { font-size: .8rem; color: #94a3b8; margin: 0 0 8px; line-height: 1.5; }
+.dichua-textarea { width: 100%; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 8px 10px; color: #e2e8f0; font-size: .86rem; resize: vertical; font-family: inherit; }
+.dichua-textarea::placeholder { color: #64748b; }
+.dichua-textarea:focus { outline: none; border-color: #d97706; }
+.dichua-card-btn { width: 100%; margin-top: 8px; background: linear-gradient(135deg,#d97706,#b45309); color: #fff; border: 0; border-radius: 10px; padding: 9px 12px; font-weight: 600; font-size: .86rem; cursor: pointer; transition: filter .15s, transform .15s; }
+.dichua-card-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.dichua-card-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.dichua-card-note { font-size: .74rem; color: #94a3b8; margin: 8px 0 0; }
+.dichua-xam-result { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,.15); }
+.dichua-xam-so { font-weight: 700; color: #fbbf24; font-size: .85rem; margin-bottom: 4px; }
+.dichua-xam-cau { font-style: italic; color: #e2e8f0; font-size: .88rem; line-height: 1.6; margin: 0 0 8px; }
+
+.dichua-slider { display: flex; gap: 10px; overflow-x: auto; padding: 6px 18px 18px; }
+.dichua-thumb { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84px; padding: 10px 6px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); color: #cbd5e1; cursor: pointer; position: relative; transition: border-color .15s, background .15s; }
+.dichua-thumb:hover { border-color: rgba(251,191,36,.4); }
+.dichua-thumb.is-active { border-color: #fbbf24; background: rgba(251,191,36,.12); color: #fde68a; }
+.dichua-thumb-ic { font-size: 1.3rem; }
+.dichua-thumb-label { font-size: .66rem; text-align: center; line-height: 1.2; }
+.dichua-soon-dot { position: absolute; top: 6px; right: 8px; width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; }
+
+@keyframes dichuaSmoke { 0% { transform: translateY(0) scale(.6); opacity: 0; } 15% { opacity: .55; } 100% { transform: translateY(-46px) scale(1.4); opacity: 0; } }
+.dichua-smoke { position: absolute; bottom: 40px; width: 6px; height: 6px; border-radius: 50%; background: rgba(226,232,240,.55); filter: blur(3px); animation: dichuaSmoke 3.2s ease-in infinite; }
+@media (prefers-reduced-motion: reduce) { .dichua-smoke { animation: none; opacity: 0; } }
+@media (max-width: 520px) {
+  .dichua-icon-big { font-size: 3.6rem; }
+  .dichua-stage { min-height: 300px; }
+  .dichua-hint { display: none; }
+}

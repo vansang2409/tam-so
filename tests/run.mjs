@@ -25,6 +25,7 @@ import * as NDP from '../src/data/numerologyDeep.js'
 import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { SAO_KHUYEN } from '../src/data/saoKhuyen.js'
+import * as DC from '../src/data/dichua.js'
 import { readFileSync } from 'node:fs'
 
 let pass = 0, fail = 0
@@ -820,6 +821,33 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(hj.includes("import LichVanNien") && hj.includes('<LichVanNien />'), 'Home.jsx: có gắn LichVanNien')
   const lj = readFileSync(new URL('../src/components/LichVanNien.jsx', import.meta.url), 'utf8')
   ok(lj.includes('monthCanChi') && lj.includes('gioHoangDao') && lj.includes('solar2lunar') && /không phải lời phán/.test(lj), 'LichVanNien: dùng can chi + giờ hoàng đạo + khung tham khảo')
+}
+
+// — Đi chùa: dữ liệu địa điểm + bộ thẻ xăm (thuần JS, test bằng Node) —
+{
+  ok(DC.DICHUA_LOCATIONS.length === 10, 'DICHUA_LOCATIONS: đủ 10 địa điểm')
+  ok(DC.MVP_LOCATION_IDS.length === 3 && DC.MVP_LOCATION_IDS.includes('chanh-dien'), 'MVP_LOCATION_IDS: 3 địa điểm MVP gồm Chánh Điện')
+  ok(DC.DICHUA_LOCATIONS.every(l => l.id && l.ten && l.icon && l.bienHieu && l.moTa), 'DICHUA_LOCATIONS: mỗi địa điểm đủ id/ten/icon/bienHieu/moTa')
+  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 10, 'DICHUA_LOCATIONS: id duy nhất')
+  ok(DC.locationById('chanh-dien').ten === 'Chánh Điện', "locationById('chanh-dien') = Chánh Điện")
+  ok(DC.locationById('khong-co') === null, 'locationById slug sai → null')
+
+  eq(DC.DICHUA_XAM.length, 16, 'DICHUA_XAM: đủ 16 thẻ')
+  ok(new Set(DC.DICHUA_XAM.map(x => x.so)).size === 16, 'DICHUA_XAM: số thẻ duy nhất')
+  ok(DC.DICHUA_XAM.every(x => ['Thượng', 'Trung Bình', 'Hạ'].includes(x.bac)), 'DICHUA_XAM: mỗi thẻ có bậc hợp lệ')
+  ok(DC.DICHUA_XAM.every(x => Array.isArray(x.cau) && x.cau.length === 2 && x.dienGiai.length > 10 && x.loiKhuyen.length > 5), 'DICHUA_XAM: mỗi thẻ đủ câu + diễn giải + lời khuyên')
+  let drawOk = true
+  for (let i = 0; i < 200; i++) { const x = DC.rutXam(); if (!x || typeof x.so !== 'number') drawOk = false }
+  ok(drawOk, 'rutXam: luôn trả về 1 thẻ hợp lệ (200 lần)')
+  ok(DC.xamBySo(1).cau.length === 2 && DC.xamBySo(999) === null, 'xamBySo: tra đúng + số sai → null')
+
+  ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node (không có localStorage) → mảng rỗng')
+  ok(DC.countThapHuong() === 0, 'countThapHuong: chạy trong Node (không có localStorage) → 0')
+
+  const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
+  ok(mj.includes('di-chua') && mj.includes('DiChua'), 'main.jsx: route /di-chua đã wire')
+  const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
+  ok(lj2.includes('/di-chua'), 'Layout.jsx: menu có liên kết tới /di-chua')
 }
 
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)

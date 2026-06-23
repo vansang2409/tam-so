@@ -15,6 +15,7 @@ import Zodiac from './pages/Zodiac.jsx'
 import IChing from './pages/IChing.jsx'
 import TuongHop from './pages/TuongHop.jsx'
 import Sources from './pages/Sources.jsx'
+import DiChua from './pages/DiChua.jsx'
 import Collection from './pages/Collection.jsx'
 import ConGiap from './pages/ConGiap.jsx'
 import HopTuoi from './pages/HopTuoi.jsx'
@@ -47,6 +48,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="sinh-nam" element={<SinhNam />} />
           <Route path="sinh-nam/:year" element={<SinhNam />} />
           <Route path="kinh-dich" element={<IChing />} />
+          <Route path="di-chua" element={<DiChua />} />
           <Route path="tuong-hop" element={<TuongHop />} />
           <Route path="bo-suu-tap" element={<Collection />} />
           <Route path="nguon" element={<Sources />} />

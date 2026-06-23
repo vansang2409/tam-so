@@ -83,3 +83,13 @@ Freemium markers · gói premium report · lịch sử không giới hạn · tr
 | V01 | Vá màu inline-style sót lại từ ĐẠI TU v3.72 (Modal/CardImage/Skeleton) | UI | High | Done (v3.73) | 3 file, gradient kem/tan cũ → trắng/slate |
 | V02 | Vá "lớp phủ trắng vô hình" (bg-white/[.0x] trên nền trắng mới) | UI | High | Done (v3.74) | 9 chỗ/6 file → bg-gold/5; verify bằng preview_inspect (getComputedStyle) |
 | V03 | Audit toàn site + sửa các điểm thật từ audit | UI | Med | Done (v3.75) | hex `#b45309`→`bg-gold` (Tarot/Collection); H1 trang con ConGiap+Zodiac lệch ~20% to hơn cụm 4 trang khác → khớp về clamp(1.8-2.6rem); verify qua dev server thật (getComputedStyle). Giữ nguyên badge sáng/tối/Miếu-Vượng LaSoTuVi — xác minh là hệ màu phân biệt có chủ đích, KHÔNG phải lỗi |
+
+## PHIÊN 23/06/2026 — TÍNH NĂNG MỚI "ĐI CHÙA" (theo di-chua.md, Done)
+Chủ dự án đưa `di-chua.md` ("Thế giới tâm linh 3D" — Chùa & Đền + Nhà Thờ, Three.js/Next.js/TypeScript, quy trình 6 tài liệu thiết kế trước khi code) + ảnh mockup, rồi yêu cầu trực tiếp "làm menu Đi chùa". Đã hỏi lại phạm vi (chat vs tài liệu lệch quy mô rất xa) — chủ dự án chọn "làm giống hình". Quyết định: build MVP thật theo layout ảnh ngay, KHÔNG qua giai đoạn 6 tài liệu thiết kế, KHÔNG đổi stack (giữ Vite/JS, không Three.js/TS/Next.js) vì web hiện tại 100% tĩnh/client-side.
+
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| DC01 | Trang `/di-chua` "Đại Tự Tâm Linh" (hư cấu) — sidebar địa điểm, viewport+điều hướng/zoom, slider ảnh, panel hành động; tông tối riêng scoped, không đụng theme sáng toàn site | Feature | High | Done (v3.76) | route+nav wired; 10 địa điểm (3 MVP: Cổng Tam Quan/Sân Chùa/Chánh Điện + 7 "sắp ra mắt"); build sạch |
+| DC02 | Khấn Nguyện (lưu localStorage) · Thắp Hương (đếm + khói CSS) · Xin Xăm (16 thẻ tự biên soạn + diễn giải tham khảo, KHÔNG gọi là "AI" vì không có backend thật) | Feature | High | Done (v3.76) | 3 tương tác chạy thật; data thuần `dichua.js` test bằng Node; +16 test (364 total) |
+| DC03 | Công Đức — KHÔNG dựng nút donate giả (chưa có cổng thanh toán) · 7 địa điểm chưa làm tự ẩn 3 thẻ hành động + badge "Sắp ra mắt" | Content/Honesty | High | Done (v3.76) | modal minh bạch; verify bằng Playwright thật (10 ảnh chụp, 0 console error) — phát hiện+sửa 2 lỗi thật (JSX fragment thiếu khiến card hành động không ẩn được; `.dichua-hint` đè nút điều hướng) |
+| DC04 | Mở rộng tương lai: Nhà Thờ, các địa điểm Chùa còn lại (Tháp Chuông/Vườn Thiền/Giảng Đường/Nhà Tổ/Thư Viện/Tưởng Niệm/Pháp Bảo), 100 thẻ xăm đầy đủ, hub "Thế Giới Tâm Linh" gộp menu Tarot/TSH/Tử Vi | Feature | Low | Todo | chờ phản hồi người dùng thật trên MVP trước khi đầu tư thêm |
