@@ -108,7 +108,7 @@ function CungPage({ z }) {
       <section className="wrap pt-[60px] pb-1 text-center">
         <p className="note mb-1"><Link to="/cung-hoang-dao" className="text-gold">Cung hoàng đạo</Link> / {z.ten}</p>
         <div className="text-[3.6rem] leading-none">{z.sym}</div>
-        <h1 className="text-[clamp(2rem,5vw,3rem)] my-1">{z.ten} <span className="note text-[1.1rem]">({z.en})</span></h1>
+        <h1 className="text-[clamp(1.8rem,4.5vw,2.6rem)] my-1">{z.ten} <span className="note text-[1.1rem]">({z.en})</span></h1>
         <div className="flex gap-2 flex-wrap justify-center my-2"><span className={'pill ' + elColor[z.nguyenTo]}>Nguyên tố {z.nguyenTo}</span><span className="badge">{z.sao}</span><span className="badge">{z.from[1]}/{z.from[0]} – {z.to[1]}/{z.to[0]}</span></div>
         <p className="max-w-[560px] mx-auto">{z.net}</p>
         <p className="note m-0">Tính chất {z.tinh} · Cơ thể: {z.than} · Màu {LUCKY[z.en].mau} · Đá {LUCKY[z.en].da} · Số {LUCKY[z.en].so}</p>

@@ -311,7 +311,7 @@ function TarotIndex() {
         <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thư viện 78 lá</h2>
         <div className="flex gap-2 flex-wrap justify-center mb-6 mt-4">
           {FILTERS.map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-[#b45309] text-white border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
+            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gold text-white border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
           ))}
         </div>
         <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>

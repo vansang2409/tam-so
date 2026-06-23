@@ -68,7 +68,7 @@ function ConGiapPage({ c }) {
       <section className="wrap pt-[60px] pb-1 text-center">
         <p className="note mb-1"><Link to="/con-giap" className="text-gold">12 con giáp</Link> / Tuổi {c.ten}</p>
         <div className="text-[3.6rem] leading-none">{EMOJI[c.ten]}</div>
-        <h1 className="text-[clamp(2rem,5vw,3rem)] my-1">Tuổi {c.ten} <span className="note text-[1.1rem]">(con {c.con})</span></h1>
+        <h1 className="text-[clamp(1.8rem,4.5vw,2.6rem)] my-1">Tuổi {c.ten} <span className="note text-[1.1rem]">(con {c.con})</span></h1>
         <div className="flex gap-2 flex-wrap justify-center my-2"><span className={'pill ' + (hClass[c.hanh] || '')}>Hành {c.hanh}</span><span className="badge">{c.amduong}</span><span className="badge">Giờ {c.gio}</span></div>
         <p className="max-w-[560px] mx-auto">{c.net}.</p>
         {years.length > 0 && <p className="note m-0">Một số năm sinh tuổi {c.ten}: {years.join(' · ')}… (cách nhau 12 năm)</p>}
