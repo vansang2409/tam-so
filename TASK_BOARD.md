@@ -76,3 +76,10 @@ Chủ dự án yêu cầu tập trung **UI/hiệu ứng animation** & **chất l
 
 ## MONETIZATION (plan, chưa code thanh toán)
 Freemium markers · gói premium report · lịch sử không giới hạn · trải nâng cao · PDF cá nhân hóa. Xem MONETIZATION_PLAN.md.
+## PHIÊN 23/06/2026 — TINH CHỈNH UI v3.72 (theo yêu cầu chủ dự án)
+
+| ID | Task | Nhóm | Ưu tiên | TT | Tiêu chí xong |
+|---|---|---|---|---|---|
+| V01 | Vá màu inline-style sót lại từ ĐẠI TU v3.72 (Modal/CardImage/Skeleton) | UI | High | Done (v3.73) | 3 file, gradient kem/tan cũ → trắng/slate |
+| V02 | Vá "lớp phủ trắng vô hình" (bg-white/[.0x] trên nền trắng mới) | UI | High | Done (v3.74) | 9 chỗ/6 file → bg-gold/5; verify bằng preview_inspect (getComputedStyle) |
+| V03 | Audit toàn site tìm thêm điểm chưa nhất quán với design system mới | UI | Med | Doing | đã có báo cáo audit (Explore agent 23/06): kích thước heading detail-page lệch nhẹ giữa Tarot/Numerology/ConGiap/Zodiac (clamp khác nhau), badge sáng/tối ở LaSoTuVi dùng màu tuỳ ý, vài nút active dùng hex `#b45309` thay `bg-gold` — CHƯA sửa (rủi ro thấp, giá trị thẩm mỹ chưa rõ vì không xem được ảnh chụp màn hình trong môi trường này); cân nhắc làm tiếp hoặc chờ chủ dự án tự xem qua localhost:5173/tam-so-test.html rồi chỉ điểm cụ thể |
