@@ -17,14 +17,14 @@ Tách **dữ kiện** (tính toán, kiểm chứng được) vs **diễn giải*
 ## Gotcha kỹ thuật
 - **QUY TẮC BẮT BUỘC — KHÔNG dùng Edit/Write tool cho repo này.** Edit/Write tool ghi qua mount ổ D: hay CẮT CỤT file khi nội dung phình → vỡ app. Mọi sửa đổi đi qua **`node scripts/safe-edit.mjs <spec.json>`** (find/replace duy nhất + append + ghi đè; tự đọc lại so độ dài chống cắt cụt + đếm ngoặc) HOẶC `node fs.writeFileSync` trực tiếp. Sau khi sửa: xem 3 dòng cuối + cân ngoặc + chạy test. Spec đặt ở /tmp (heredoc 'EOF' quoted để khỏi escape). Khi thử nghiệm helper, dùng file ABSOLUTE dưới /tmp (mount D: CHẶN xoá → đừng tạo file rác trong repo).
 - KHÔNG build trên mount (node_modules Windows) → dựng `/tmp/b`: copy src+config, `npm install`, `npm i -D vite-plugin-singlefile`, tạo `vite.config.single.js`; build chính + single; copy `dist/`+`dist-single/index.html`→`tam-so-test.html`. `/tmp` có thể bị xoá giữa phiên → dựng lại. Verify `dist IDENTICAL` + single `NUL=0`. Bump `public/sw.js` cache.
-- Không push từ sandbox → user chạy `push-to-github.bat` (commit message luôn ghi "v2.11" nhưng chứa code hiện tại). git LOCAL (checkout/reset/show) chạy được.
+- **Làm xong thì TỰ PUSH luôn** (dặn 23/06/2026, thay quy tắc cũ "không push từ sandbox") — commit xong là `git push origin master`, không cần hỏi lại hay chờ user chạy `push-to-github.bat`. git LOCAL (checkout/reset/show) chạy được.
 - Agent ngoài có thể sửa cùng repo → nếu hỏng, `git checkout HEAD -- <file>` để hoàn nguyên.
 
 ## Vòng lặp làm việc
 Đọc SUMMARY/TASK_BOARD/WORK_LOG → lấy task High/Doing → làm → tự test → build → present → cập nhật log/board. Không dừng khi còn task; chỉ dừng khi bị chặn thật.
 
 ## Lưu ý báo cáo
-- **KHÔNG nhắc user chạy push-to-github.bat** — chủ dự án tự chạy cuối ngày (dặn 19/06/2026).
+- Không cần nhắc user chạy `push-to-github.bat` nữa — từ 23/06/2026 AI tự push sau khi commit.
 
 ## ⚡ Chế độ làm việc (AI EMPLOYEE — ANTI-STOP) — bắt buộc
 Chủ dự án yêu cầu (19/06/2026): **tự nghiên cứu, tự lên kế hoạch, làm LIÊN TỤC không ngừng nghỉ. CHỈ ngừng khi chủ dự án NHẮN.**
