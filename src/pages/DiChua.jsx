@@ -50,6 +50,8 @@ export default function DiChua() {
   const [sentFlash, setSentFlash] = useState(false)
   const [litCount, setLitCount] = useState(0)
   const [litFlash, setLitFlash] = useState(false)
+  const [igniting, setIgniting] = useState(false)
+  const [litLocs, setLitLocs] = useState({})
   const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon'
 
   useEffect(() => { setPrayerCount(loadLoiNguyen().length); setLitCount(countThapHuong()) }, [])
@@ -58,13 +60,22 @@ export default function DiChua() {
   const idx = DICHUA_LOCATIONS.findIndex(l => l.id === activeId)
   const loc = locationById(activeId) || DICHUA_LOCATIONS[0]
   const go = dir => { setActiveId(DICHUA_LOCATIONS[(idx + dir + DICHUA_LOCATIONS.length) % DICHUA_LOCATIONS.length].id); setZoom(1) }
+  const canHuong = !!loc.huong
+  const huongPlaces = DICHUA_LOCATIONS.filter(l => l.huong)
+  const sceneLit = canHuong && !!litLocs[activeId]
 
   const sendPrayer = () => {
     if (!prayer.trim()) return
     setPrayerCount(addLoiNguyen(prayer).length); setPrayer(''); setSentFlash(true)
     setTimeout(() => setSentFlash(false), 2400)
   }
-  const doThapHuong = () => { setLitCount(thapHuong()); setLitFlash(true); setTimeout(() => setLitFlash(false), 1800) }
+  const doThapHuong = () => {
+    if (!canHuong) return
+    setLitCount(thapHuong()); setLitFlash(true); setIgniting(true)
+    setLitLocs(prev => ({ ...prev, [activeId]: true }))
+    setTimeout(() => setLitFlash(false), 2200)
+    setTimeout(() => setIgniting(false), 1300)
+  }
 
   return (
     <div className="dc-root">
@@ -121,6 +132,10 @@ export default function DiChua() {
 
           <div className="dc-sign">{loc.bienHieu}</div>
 
+          {sceneLit && (
+            <div className="dc-scene-smoke" aria-hidden="true"><span /><span /><span /><span /></div>
+          )}
+
           {showInfo && (
             <div className="dc-caption">
               <div className="dc-caption-kicker">{loc.icon} Đang ở</div>
@@ -153,13 +168,27 @@ export default function DiChua() {
 
           <div className="dc-card">
             <div className="dc-card-title">Thắp Hương Online</div>
-            <div className={'dc-censer' + (litCount > 0 ? ' is-lit' : '')} aria-hidden="true">
-              <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-              <span className="dc-incense" /><span className="dc-incense" /><span className="dc-incense" />
-              <div className="dc-pot"><i className="dc-pot-h dc-pot-h-l" /><i className="dc-pot-h dc-pot-h-r" /><i className="dc-pot-leg" style={{ left: "14px" }} /><i className="dc-pot-leg" style={{ right: "14px" }} /></div>
-            </div>
-            <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong}>{litCount > 0 ? 'Thắp thêm hương' : 'Thắp Hương'}</button>
-            <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp.' : (litCount > 0 ? 'Đã thắp ' + litCount + ' nén (tượng trưng).' : 'Một cử chỉ chiêm nghiệm — không thay hành lễ thật.')}</p>
+            {canHuong ? (
+              <>
+                <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
+                  <span className="dc-flame" />
+                  <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
+                  <span className="dc-incense" /><span className="dc-incense" /><span className="dc-incense" />
+                  <div className="dc-pot"><i className="dc-pot-h dc-pot-h-l" /><i className="dc-pot-h dc-pot-h-r" /><i className="dc-pot-leg" style={{ left: '14px' }} /><i className="dc-pot-leg" style={{ right: '14px' }} /></div>
+                </div>
+                <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
+                <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>
+              </>
+            ) : (
+              <>
+                <p className="dc-card-desc">Khu này không có hương án. Mời bạn tới nơi có thể thắp hương:</p>
+                <div className="dc-huong-places">
+                  {huongPlaces.map(h => (
+                    <button key={h.id} type="button" className="dc-chip" onClick={() => { setActiveId(h.id); setZoom(1) }}>{h.icon} {h.ten}</button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="dc-card">

@@ -1,63 +1,72 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { rutXam } from '../data/dichua.js'
 
-/* ShakeXam — xin xăm bằng cách LẮC: kéo ống xăm qua lại (chuột/cảm ứng) hoặc lắc
- * điện thoại (DeviceMotion). Lắc đủ mạnh → một que xăm rơi ra → hiện diễn giải.
- * Tôn trọng prefers-reduced-motion; có nút phụ cho người không lắc được (a11y). */
+/* ShakeXam — xin xăm bằng cách LẮC. Phải lắc đủ một khoảng thời gian NGẪU NHIÊN
+ * (tối thiểu 7s, tối đa 30s) tính theo thời gian ĐANG lắc thật (ngừng lắc thì dừng đếm),
+ * rồi một que tre mới rơi ra. Lắc = kéo ống qua lại (chuột/cảm ứng) hoặc lắc điện thoại
+ * (DeviceMotion). Tôn trọng prefers-reduced-motion; có nút phụ cho người không lắc được. */
 
 const reduced = () =>
   typeof window !== 'undefined' && window.matchMedia &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
+const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
+const pickTarget = () => 7000 + Math.random() * 23000   // 7s … 30s
 const STICKS = Array.from({ length: 11 })
 
 export default function ShakeXam() {
   const [phase, setPhase] = useState('idle')   // idle | shaking | dropping | result
   const [progress, setProgress] = useState(0)
+  const [secs, setSecs] = useState(0)
   const [tilt, setTilt] = useState(0)
   const [xam, setXam] = useState(null)
   const [active, setActive] = useState(false)
   const [motionOn, setMotionOn] = useState(false)
   const [needPerm, setNeedPerm] = useState(false)
-  const lastX = useRef(null), lastDir = useRef(0), lastShakeT = useRef(0)
-  const tiltTimer = useRef(null), dropTimer = useRef(null)
-  const progRef = useRef(0), dropped = useRef(false)
 
-  useEffect(() => () => { clearTimeout(tiltTimer.current); clearTimeout(dropTimer.current) }, [])
+  const lastX = useRef(null), lastDir = useRef(0)
+  const tiltTimer = useRef(null), dropTimer = useRef(null), raf = useRef(0)
+  const targetRef = useRef(pickTarget())
+  const shakenRef = useRef(0), lastShakeRef = useRef(0), lastFrameRef = useRef(0), dropped = useRef(false)
 
   const startDrop = useCallback(() => {
     if (dropped.current) return
     dropped.current = true
-    setActive(false); setPhase('dropping')
+    cancelAnimationFrame(raf.current); raf.current = 0
+    setActive(false); setProgress(100); setPhase('dropping')
     clearTimeout(dropTimer.current)
     dropTimer.current = setTimeout(() => { setXam(rutXam()); setPhase('result') }, reduced() ? 200 : 950)
   }, [])
 
-  const bump = useCallback((amt, dir) => {
+  // vòng lặp tích luỹ thời gian ĐANG lắc
+  const tick = useCallback(t => {
+    if (dropped.current) { raf.current = 0; return }
+    const dt = lastFrameRef.current ? Math.min(t - lastFrameRef.current, 100) : 0
+    lastFrameRef.current = t
+    if (t - lastShakeRef.current < 420) shakenRef.current += dt   // chỉ đếm khi đang lắc
+    setProgress(Math.min(100, (shakenRef.current / targetRef.current) * 100))
+    setSecs(Math.floor(shakenRef.current / 1000))
+    if (shakenRef.current >= targetRef.current) { startDrop(); return }
+    raf.current = requestAnimationFrame(tick)
+  }, [startDrop])
+
+  const registerShake = useCallback(dir => {
     if (dropped.current) return
+    lastShakeRef.current = now()
+    setPhase(p => (p === 'result' || p === 'dropping') ? p : 'shaking')
     setTilt(dir * 11)
     clearTimeout(tiltTimer.current)
     tiltTimer.current = setTimeout(() => setTilt(0), 150)
-    setPhase(p => (p === 'result' || p === 'dropping') ? p : 'shaking')
-    const np = Math.min(100, progRef.current + amt)
-    progRef.current = np
-    setProgress(np)
-    if (np >= 100) startDrop()
-  }, [startDrop])
+    if (!raf.current) { lastFrameRef.current = 0; raf.current = requestAnimationFrame(tick) }
+  }, [tick])
 
-  // kéo qua lại (pointer): đổi chiều = một nhịp lắc
+  // kéo qua lại (pointer)
   const feed = useCallback(x => {
     if (lastX.current != null) {
       const dx = x - lastX.current
-      if (Math.abs(dx) > 3) {
-        const dir = dx > 0 ? 1 : -1
-        if (lastDir.current && dir !== lastDir.current) bump(8, dir)
-        else setTilt(dir * 8)
-        lastDir.current = dir
-      }
+      if (Math.abs(dx) > 3) { const dir = dx > 0 ? 1 : -1; registerShake(dir); lastDir.current = dir }
     }
     lastX.current = x
-  }, [bump])
+  }, [registerShake])
 
   const onDown = e => { if (phase === 'result') return; setActive(true); lastX.current = e.clientX; lastDir.current = 0; try { e.currentTarget.setPointerCapture(e.pointerId) } catch (_) {} }
   const onMove = e => { if (active) feed(e.clientX) }
@@ -69,28 +78,29 @@ export default function ShakeXam() {
     const onMotion = e => {
       const a = e.accelerationIncludingGravity || e.acceleration; if (!a) return
       const mag = Math.abs(a.x || 0) + Math.abs(a.y || 0)
-      const now = (typeof performance !== 'undefined' ? performance.now() : Date.now())
-      if (mag > 17 && now - lastShakeT.current > 130) { lastShakeT.current = now; bump(11, (a.x || 0) > 0 ? 1 : -1) }
+      if (mag > 16) registerShake((a.x || 0) > 0 ? 1 : -1)
     }
     window.addEventListener('devicemotion', onMotion)
     return () => window.removeEventListener('devicemotion', onMotion)
-  }, [motionOn, bump])
+  }, [motionOn, registerShake])
 
   useEffect(() => {
     const DME = typeof window !== 'undefined' && window.DeviceMotionEvent
     if (DME && typeof DME.requestPermission === 'function') setNeedPerm(true)
     else if (DME) setMotionOn(true)
   }, [])
+  useEffect(() => () => { cancelAnimationFrame(raf.current); clearTimeout(tiltTimer.current); clearTimeout(dropTimer.current) }, [])
 
   const enableMotion = async () => {
     try { const r = await window.DeviceMotionEvent.requestPermission(); if (r === 'granted') { setMotionOn(true); setNeedPerm(false) } } catch (_) {}
   }
   const reset = () => {
-    clearTimeout(dropTimer.current)
-    progRef.current = 0; dropped.current = false; lastDir.current = 0; lastX.current = null
-    setPhase('idle'); setProgress(0); setTilt(0); setXam(null)
+    cancelAnimationFrame(raf.current); raf.current = 0; clearTimeout(dropTimer.current)
+    dropped.current = false; shakenRef.current = 0; lastShakeRef.current = 0; lastFrameRef.current = 0
+    lastDir.current = 0; lastX.current = null; targetRef.current = pickTarget()
+    setPhase('idle'); setProgress(0); setSecs(0); setTilt(0); setXam(null)
   }
-  const autoShake = () => { if (dropped.current || phase === 'result') return; startDrop() }
+  const autoShake = () => { if (!dropped.current && phase !== 'result') startDrop() }
 
   if (phase === 'result' && xam) {
     return (
@@ -114,7 +124,10 @@ export default function ShakeXam() {
         role="button" tabIndex={0} aria-label="Lắc ống xăm — kéo qua lại để xin thẻ">
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
           <div className="xam-sticks">
-            {STICKS.map((_, i) => <span key={i} className="xam-stick" style={{ '--n': i, height: (54 + ((i * 13) % 40)) + 'px' }} />)}
+            {STICKS.map((_, i) => (
+              <span key={i} className="xam-stick"
+                style={{ '--n': i, height: (60 + ((i * 17) % 34)) + 'px', transform: `rotate(${(i - 5) * 1.7}deg)` }} />
+            ))}
           </div>
           <div className="xam-tube"><span className="xam-mouth" /></div>
         </div>
@@ -126,7 +139,9 @@ export default function ShakeXam() {
       <p className="xam-hint">
         {dropping ? 'Que xăm đang rơi…'
           : progress === 0 ? 'Kéo ống xăm qua lại (hoặc lắc điện thoại) để xin thẻ'
-          : progress < 60 ? 'Lắc tiếp nào…' : 'Sắp rồi, lắc mạnh hơn chút!'}
+          : progress < 55 ? `Khấn rồi lắc đều tay… (đã lắc ${secs}s)`
+          : progress < 90 ? `Sắp được rồi, cứ lắc tiếp… (${secs}s)`
+          : `Que xăm sắp rơi… (${secs}s)`}
       </p>
       {needPerm && <button type="button" className="dc-btn dc-btn-ghost xam-perm" onClick={enableMotion}>📱 Bật cảm biến lắc điện thoại</button>}
       {!dropping && <button type="button" className="xam-fallback" onClick={autoShake}>Không lắc được? Bấm để xin thẻ</button>}

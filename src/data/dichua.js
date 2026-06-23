@@ -7,9 +7,9 @@
 // — Các khu trong khuôn viên (khớp bố cục ảnh mockup) —
 // scene: kiểu cảnh để TempleScene vẽ; tone: bảng màu trời (dawn/day/dusk/gold)
 export const DICHUA_LOCATIONS = [
-  { id: 'chanh-dien',      ten: 'Chánh Điện',          icon: '🛕', bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', scene: 'dien',    tone: 'day',
+  { id: 'chanh-dien',      ten: 'Chánh Điện',          icon: '🛕', bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', scene: 'dien',    tone: 'day', huong: true,
     moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa Tam Sở.' },
-  { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk',
+  { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk', huong: true,
     moTa: 'Nơi thờ các vị tổ sư khai sơn, không gian trầm mặc và trang nghiêm.' },
   { id: 'thap-chuong',     ten: 'Tháp Chuông',         bienHieu: 'THÁP CHUÔNG',       icon: '🔔', scene: 'thap',    tone: 'dawn',
     moTa: 'Tháp treo đại hồng chung, tiếng chuông ngân vọng mỗi buổi sớm và chiều.' },
@@ -25,7 +25,7 @@ export const DICHUA_LOCATIONS = [
     moTa: 'Kinh sách, tài liệu Phật học và không gian đọc tĩnh lặng.' },
   { id: 'goc-thien',       ten: 'Góc Thiền',           bienHieu: 'GÓC THIỀN',         icon: '🧘', scene: 'thien',   tone: 'dusk',
     moTa: 'Vườn đá và khoảng lặng để ngồi thiền, theo dõi hơi thở.' },
-  { id: 'tuong-cau-nguyen',ten: 'Tượng Cầu Nguyện',    bienHieu: 'TƯỢNG QUÁN ÂM',     icon: '🙏', scene: 'tuong',   tone: 'gold',
+  { id: 'tuong-cau-nguyen',ten: 'Tượng Cầu Nguyện',    bienHieu: 'TƯỢNG QUÁN ÂM',     icon: '🙏', scene: 'tuong',   tone: 'gold', huong: true,
     moTa: 'Tôn tượng Quán Thế Âm Bồ Tát giữa sân, nơi gửi gắm lời nguyện an lành.' },
   { id: 'cua-hang-phap-bao',ten: 'Cửa Hàng Pháp Bảo',  bienHieu: 'PHÁP BẢO',          icon: '🛍️', scene: 'phapbao', tone: 'day',
     moTa: 'Vật phẩm mang tính biểu tượng — chỉ trưng bày, KHÔNG giao dịch thật.' }
