@@ -23,7 +23,7 @@ export default function CardImage({ card, w = 320, reversed = false, imgClass = 
   return (
     <div
       className={imgClass + ' flex flex-col items-center justify-center gap-1 border border-gold/25 ' + fallbackClass}
-      style={{ aspectRatio: '2 / 3', background: 'linear-gradient(160deg, #fbf4e3, #efe1c2)', fontSize: base + 'px', ...rot }}
+      style={{ aspectRatio: '2 / 3', background: 'linear-gradient(160deg, #f8fafc, #eef2f7)', fontSize: base + 'px', ...rot }}
       title={card.nameVi}
     >
       {card.roman ? <span className="text-gold font-serif tracking-[.18em]" style={{ fontSize: '.6em' }}>{card.roman}</span> : null}

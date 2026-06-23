@@ -1,10 +1,11 @@
-# SUMMARY — Tam Sở (cập nhật 22/06/2026)
+# SUMMARY — Tam Sở (cập nhật 23/06/2026)
 
 **Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (348 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.72.0, 348 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
+**Hiện trạng: v3.73.0, 348 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
 
 **Đã xong gần đây (phiên này):**
+- **VÁ MÀU SÓT (v3.73)**: 3 nơi dùng inline style (Modal nền hộp thoại+overlay, CardImage fallback, Skeleton shimmer) vẫn giữ gradient kem/tan giấy-cổ cũ vì đợt đổi token v3.72 chỉ bắt được class Tailwind, không bắt style inline — đổi sang trắng/slate khớp tông mới. Gặp & né được file `package.json` rỗng lạ trong thư mục home Windows làm build crash (build ở vị trí khác để né, không sửa file đó vì ngoài phạm vi repo). 348 test pass.
 - **ĐẠI TU UI clean-SaaS + Framer Motion (v3.72)**: đổi design tokens (tailwind.config + index.css) sang nền trắng/slate + nhấn amber, heading sans, bóng mềm; thêm framer-motion chuyển trang toàn site + header trắng + nút nhấn lún. Giữ tên token cũ (cream/ink/gold) nên cả site đổi theo. Đợt nền tảng — chờ duyệt rồi tinh chỉnh từng trang. 348 test.
 - **LỊCH VẠN NIÊN (v3.71)**: `LichVanNien.jsx` trên Home — khối Dương|Âm lịch + can chi Ngày/Tháng/Năm + giờ hoàng đạo + nút ‹ › đổi ngày. Thêm `monthCanChi` (Ngũ Hổ Độn) vào tuvi.js, verify khớp ảnh (22/6/2026 = Đinh Mão · Giáp Ngọ · Bính Ngọ). 348 test (+8).
 - **NAV DROPDOWN (v3.70)**: desktop còn 4 mục chính (Tarot · Thần số học · Tử vi · Kinh Dịch) + nút "Thêm ▾" chứa 6 mục phụ; Trang chủ ở logo. `MoreDropdown` (đóng khi click-ngoài/Escape/đổi route). Mobile ☰ vẫn đủ 11 mục. Thuần markup, 340 test.
