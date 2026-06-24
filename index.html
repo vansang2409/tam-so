@@ -11,6 +11,15 @@
       }
     }(window.location))
   </script>
+  <script>/* áp theme sáng/tối TRƯỚC khi vẽ trang — tránh nhấp nháy sai màu (FOUC) */
+    (function () {
+      try {
+        var saved = localStorage.getItem('tamso-theme');
+        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    })()
+  </script>
   <link rel="icon" type="image/png" href="./logo.png" />
   <title>Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</title>
   <meta name="description" content="Tam Sở: Tarot (78 lá), Thần số học, Tử vi/Bát Trạch, lá số Tử Vi Đẩu Số, Cung hoàng đạo và Kinh Dịch — luận giải có nguồn, phân biệt rõ dữ kiện và diễn giải." />
@@ -28,7 +37,8 @@
   <meta name="twitter:image" content="https://tam-so.vercel.app/og.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="canonical" href="https://tam-so.vercel.app/" />
-  <meta name="theme-color" content="#f1e6cc" />
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b0f17" media="(prefers-color-scheme: dark)" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

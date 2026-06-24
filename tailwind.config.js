@@ -1,18 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: 'class',
   safelist: ['h-Kim', 'h-Mộc', 'h-Thủy', 'h-Hỏa', 'h-Thổ'],
   theme: {
     extend: {
       colors: {
-        // Clean-SaaS light: bề mặt trắng, chữ slate, nhấn hổ phách (giữ chất Tam Sở)
-        ink: '#ffffff',      // bề mặt chính (card)
-        ink2: '#f8fafc',     // bề mặt phụ (slate-50)
-        gold: { DEFAULT: '#b45309', soft: '#d97706' },  // amber-700 / amber-600 — nhấn
-        clay: { DEFAULT: '#d97706' },
-        plum: { DEFAULT: '#7c3aed' },   // tím nhẹ cho điểm nhấn phụ (huyền học hiện đại)
-        cream: '#0f172a',    // CHỮ CHÍNH (slate-900)
-        muted: '#64748b'     // chữ phụ (slate-500)
+        // Token màu qua CSS variable (xem :root/.dark trong index.css) — đổi theme không cần sửa class ở page.
+        ink: 'rgb(var(--c-ink) / <alpha-value>)',
+        ink2: 'rgb(var(--c-ink2) / <alpha-value>)',
+        gold: { DEFAULT: 'rgb(var(--c-gold) / <alpha-value>)', soft: 'rgb(var(--c-gold-soft) / <alpha-value>)' },
+        clay: { DEFAULT: 'rgb(var(--c-clay) / <alpha-value>)' },
+        plum: { DEFAULT: 'rgb(var(--c-plum) / <alpha-value>)' },
+        cream: 'rgb(var(--c-cream) / <alpha-value>)',
+        muted: 'rgb(var(--c-muted) / <alpha-value>)'
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'Georgia', 'serif'],

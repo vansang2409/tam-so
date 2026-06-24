@@ -74,7 +74,7 @@ function DrawnCard({ card, up, pos, delay = 0 }) {
           <CardImage card={card} w={260} reversed={!up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[3rem] my-6" />
           <div>
             <div className="font-serif text-[1.05rem] leading-tight">{card.nameVi}</div>
-            <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-800' : 'text-rose-700')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
+            <div className={'text-[.78rem] font-semibold ' + (up ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400')}>{up ? '▲ Xuôi' : '▼ Ngược'}</div>
           </div>
         </div>
         <div className="flip3d-back cardback-sheen" style={{ borderRadius: 16, overflow: 'hidden', background: 'linear-gradient(160deg,#2a1d0d,#3a2912)', border: '1px solid rgba(211,162,78,.4)', boxShadow: 'inset 0 0 0 4px rgba(211,162,78,.10), inset 0 0 0 5px rgba(211,162,78,.22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -113,8 +113,8 @@ function CardPage({ card }) {
         <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1 mt-4">Khi ngược (reversed)</div>
         <div className="flex gap-2 flex-wrap my-1.5">{card.revKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
         <p className="mt-1">{card.rev}</p>
-        {(card.love || d.love) && <p className="mt-4 mb-0"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {card.love || d.love}</p>}
-        {(card.work || d.work) && <p className="mt-1 mb-0"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {card.work || d.work}</p>}
+        {(card.love || d.love) && <p className="mt-4 mb-0"><span className="text-rose-700 dark:text-rose-400 font-semibold">❤ Tình yêu:</span> {card.love || d.love}</p>}
+        {(card.work || d.work) && <p className="mt-1 mb-0"><span className="text-emerald-800 dark:text-emerald-400 font-semibold">💼 Công việc:</span> {card.work || d.work}</p>}
         {(card.finance || d.finance) && <p className="mt-1 mb-0"><span className="text-amber-700 font-semibold">💰 Tài chính:</span> {card.finance || d.finance}</p>}
         {(card.advice || d.advice) && <p className="mt-2 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {card.advice || d.advice}</p>}
         <p className="note mt-4 mb-0 text-[.78rem]">Ý nghĩa mang tính biểu tượng – tham khảo để chiêm nghiệm, không phải lời tiên đoán chắc chắn.</p>
@@ -216,7 +216,7 @@ function TarotIndex() {
                 <div className="text-[.74rem] tracking-[.16em] uppercase text-gold">Lá của bạn</div>
                 <CardImage card={quick.card} w={240} reversed={!quick.up} imgClass="rounded-md w-full h-auto my-1" fallbackClass="text-[2.6rem] my-5" />
                 <div><div className="font-serif text-[1.05rem] leading-tight">{quick.card.nameVi}</div>
-                  <div className={'text-[.78rem] font-semibold ' + (quick.up ? 'text-emerald-800' : 'text-rose-700')}>{quick.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
+                  <div className={'text-[.78rem] font-semibold ' + (quick.up ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400')}>{quick.up ? '▲ Xuôi' : '▼ Ngược'}</div></div>
               </div>
               <div><h3 className="text-[1.3rem] mb-1">{quick.card.nameVi} <span className="note">({quick.up ? 'xuôi' : 'ngược'})</span></h3><p className="m-0">{meaningOf(quick.card, quick.up)}</p>
                 {quick.card.advice && <p className="note mt-1 mb-0"><span className="text-gold font-semibold">✦ Bạn có thể làm gì:</span> {quick.card.advice}</p>}
@@ -248,7 +248,7 @@ function TarotIndex() {
 
           {picks.length > 0 && isYesNo && (
             <div className="text-center mt-6 animate-fade">
-              <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-800' : 'text-rose-700')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
+              <div className={'font-serif text-[3rem] ' + (picks[0].up ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400')}>{picks[0].up ? 'CÓ' : 'KHÔNG'}</div>
               <div className="flex justify-center mt-2"><div style={{ width: 150 }}><DrawnCard card={picks[0].card} up={picks[0].up} pos="Trả lời" /></div></div>
               <p className="mt-3 max-w-[560px] mx-auto">{meaningOf(picks[0].card, picks[0].up)}</p>
             </div>
@@ -317,7 +317,7 @@ function TarotIndex() {
         <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map((c, i) => (
             <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-gold/5 border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
-              <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
+              <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-1 right-1.5 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 dark:text-white/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
             </div>
@@ -344,8 +344,8 @@ function TarotIndex() {
           <div className="flex gap-2 flex-wrap my-1.5 justify-center">{sel.revKeys.map(k => <Badge key={k}>{k}</Badge>)}</div>
           {sel.rev && <p className="mb-0">{sel.rev}</p>}
           {sel.advice && <p className="mt-3 mb-0"><span className="text-gold font-semibold">✦ Lời khuyên:</span> {sel.advice}</p>}
-          {sel.love && <p className="mt-2 mb-0 text-[.92rem]"><span className="text-rose-700 font-semibold">❤ Tình yêu:</span> {sel.love}</p>}
-          {sel.work && <p className="mt-1 mb-0 text-[.92rem]"><span className="text-emerald-800 font-semibold">💼 Công việc:</span> {sel.work}</p>}
+          {sel.love && <p className="mt-2 mb-0 text-[.92rem]"><span className="text-rose-700 dark:text-rose-400 font-semibold">❤ Tình yêu:</span> {sel.love}</p>}
+          {sel.work && <p className="mt-1 mb-0 text-[.92rem]"><span className="text-emerald-800 dark:text-emerald-400 font-semibold">💼 Công việc:</span> {sel.work}</p>}
           <div className="text-center mt-3 no-print"><Link to={'/tarot/' + cardSlug(sel)} onClick={() => setSel(null)} className="font-semibold">Mở trang riêng của lá này →</Link></div>
         </>)}
       </Modal>

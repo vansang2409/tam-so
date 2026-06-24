@@ -7,6 +7,7 @@ const pageInit = _reduce ? false : { opacity: 0, y: 12 }
 const pageAnim = { opacity: 1, y: 0 }
 const pageTr = { duration: 0.34, ease: [0.22, 0.7, 0.3, 1] }
 import Logo from './Logo.jsx'
+import ThemeToggle from './ThemeToggle.jsx'
 import { countCollection } from '../data/collection.js'
 
 const links = [
@@ -42,7 +43,7 @@ function CollBtn() {
     <NavLink to="/bo-suu-tap" aria-label={'Bộ sưu tập đã lưu' + (n ? ', ' + n + ' mục' : '')} title="Bộ sưu tập đã lưu"
       className={({ isActive }) => isActive
         ? base + ' text-gold bg-gold/10'
-        : base + ' text-muted hover:text-cream hover:bg-black/5'}>
+        : base + ' text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5'}>
       <span aria-hidden="true">🔖</span>
       {n > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-600 text-white text-[.62rem] font-bold flex items-center justify-center">{n}</span>}
     </NavLink>
@@ -70,7 +71,7 @@ function MoreDropdown({ items }) {
         Thêm <span aria-hidden="true" className={'inline-block text-[.7em] transition-transform duration-200 ' + (open ? 'rotate-180' : '')}>▾</span>
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 top-[calc(100%+12px)] min-w-[196px] flex flex-col gap-0.5 bg-white border border-slate-200 rounded-2xl p-2 shadow-lift z-50 animate-fade">
+        <div role="menu" className="absolute right-0 top-[calc(100%+12px)] min-w-[196px] flex flex-col gap-0.5 bg-white dark:bg-ink border border-slate-200 dark:border-slate-700 rounded-2xl p-2 shadow-lift z-50 animate-fade">
           {items.map(i => (<NavLink key={i.to} to={i.to} role="menuitem" className={({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')}>{i.label}</NavLink>))}
         </div>
       )}
@@ -84,7 +85,7 @@ function Navbar() {
   useEffect(() => { setOpen(false) }, [loc])
   const cls = ({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 border-b border-slate-200/80">
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-ink/80 border-b border-slate-200/80 dark:border-slate-700/80">
       <nav className="flex items-center justify-between gap-3 px-[22px] py-3.5 max-w-content mx-auto">
         <Link to="/" className="flex items-center gap-2.5 font-serif text-[1.3rem] font-bold text-cream whitespace-nowrap no-underline hover:no-underline">
           <Logo size={30} className="shrink-0" /> Tam Sở<span className="text-gold">.</span>
@@ -94,12 +95,13 @@ function Navbar() {
             {PRIMARY.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
             <MoreDropdown items={MORE} />
           </div>
-          <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:hidden flex-col gap-0.5 absolute top-[64px] right-3.5 left-3.5 bg-white border border-slate-200 rounded-2xl p-2 shadow-lift z-50`}>
+          <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:hidden flex-col gap-0.5 absolute top-[64px] right-3.5 left-3.5 bg-white dark:bg-ink border border-slate-200 dark:border-slate-700 rounded-2xl p-2 shadow-lift z-50`}>
             {links.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
           </div>
+          <ThemeToggle />
           <CollBtn />
           <button onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open} aria-controls="navmenu"
-            className="md:hidden bg-transparent border border-slate-300 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
+            className="md:hidden bg-transparent border border-slate-300 dark:border-slate-600 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
         </div>
       </nav>
     </header>
@@ -108,7 +110,7 @@ function Navbar() {
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 mt-10 py-[30px] text-muted text-[.9rem]">
+    <footer className="border-t border-slate-200 dark:border-slate-700 mt-10 py-[30px] text-muted text-[.9rem]">
       <div className="wrap flex justify-between gap-4 flex-wrap items-center">
         <span className="inline-flex items-center gap-1.5"><Logo size={18} className="shrink-0" /> Tam Sở — © {new Date().getFullYear()} · Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch</span>
         <span className="flex gap-4 flex-wrap">

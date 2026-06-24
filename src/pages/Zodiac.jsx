@@ -11,7 +11,7 @@ import { relatedForSign } from '../data/related.js'
 import { ZODIAC_EXTRA } from '../data/zodiacDeep.js'
 
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
-const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Cần dung hòa': 'text-rose-700', 'Trung bình': 'text-amber-800' }
+const VC = { 'Rất hợp': 'text-emerald-800 dark:text-emerald-400', 'Hợp': 'text-emerald-800 dark:text-emerald-400', 'Cần dung hòa': 'text-rose-700 dark:text-rose-400', 'Trung bình': 'text-amber-800 dark:text-amber-400' }
 
 function CompatMatrix() {
   const mark = { 'Rất hợp': '♥', 'Hợp': '+', 'Trung bình': '•', 'Cần dung hòa': '~' }

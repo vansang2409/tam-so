@@ -254,7 +254,7 @@ function NameTool() {
                 <div className="grid grid-cols-3 gap-1.5 max-w-[220px] mx-auto">
                   {LO_SHU_LAYOUT.flat().map(num => {
                     const c = res.lo.counts[num]
-                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-gold/5' : 'border-black/10 text-black/30'}`}>{c ? String(num).repeat(c) : num}</div>
+                    return <div key={num} className={`aspect-square flex items-center justify-center rounded-lg border text-[1rem] ${c ? 'border-gold/40 text-cream bg-gold/5' : 'border-black/10 dark:border-white/10 text-black/30 dark:text-white/30'}`}>{c ? String(num).repeat(c) : num}</div>
                   })}
                 </div>
                 <p className="note mt-3 mb-0">{res.lo.missing.length ? 'Số còn thiếu: ' + res.lo.missing.join(', ') + '.' : 'Đủ cả 9 số — hiếm gặp!'}</p>
@@ -268,7 +268,7 @@ function NameTool() {
                 <p className="note m-0 mt-2">Năm tới ({CUR.getFullYear() + 1}): số <b className="text-gold">{personalYear(res.dd, res.mm, CUR.getFullYear() + 1)}</b> · ({CUR.getFullYear() + 2}): số <b className="text-gold">{personalYear(res.dd, res.mm, CUR.getFullYear() + 2)}</b> — Năm cá nhân xoay vòng 1→9 rồi lặp lại.</p>
                 {res.karmic.length > 0 && (
                   <div className="mt-3">
-                    <div className="text-[.9rem] text-rose-700 font-semibold">Nợ nghiệp (Karmic Debt)</div>
+                    <div className="text-[.9rem] text-rose-700 dark:text-rose-400 font-semibold">Nợ nghiệp (Karmic Debt)</div>
                     {res.karmic.map(k => <p key={k} className="note m-0">• {KARMIC_DEBT[k]}</p>)}
                   </div>
                 )}
@@ -288,7 +288,7 @@ function NameTool() {
                   <p className="note mt-1 mb-0">Con số lặp nhiều nhất trong tên — thiên hướng nổi trội.</p>
                 </div>
                 <div>
-                  <div className="text-[.9rem] text-rose-700 font-semibold mb-1">Bài học nghiệp quả</div>
+                  <div className="text-[.9rem] text-rose-700 dark:text-rose-400 font-semibold mb-1">Bài học nghiệp quả</div>
                   {res.stats.missing.length ? <p className="m-0">{res.stats.missing.map(n => <span key={n} className="mr-3"><b className="text-cream">{n}</b> {NUMEROLOGY[n] ? '· ' + NUMEROLOGY[n].keys[0] : ''}</span>)}</p> : <p className="note m-0">Đủ cả 9 — hiếm gặp!</p>}
                   <p className="note mt-1 mb-0">Con số vắng mặt trong tên — bài học cần trau dồi.</p>
                 </div>

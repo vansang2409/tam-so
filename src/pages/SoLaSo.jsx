@@ -7,7 +7,7 @@ import { hopTuoiChi } from '../data/tuvi.js'
 import { weavePair } from '../data/soLaSoSynth.js'
 
 const GIO_LABEL = ['Tý (23–1h)', 'Sửu (1–3h)', 'Dần (3–5h)', 'Mão (5–7h)', 'Thìn (7–9h)', 'Tỵ (9–11h)', 'Ngọ (11–13h)', 'Mùi (13–15h)', 'Thân (15–17h)', 'Dậu (17–19h)', 'Tuất (19–21h)', 'Hợi (21–23h)']
-const REL_CLS = { 'Tam hợp': 'text-emerald-800', 'Lục hợp': 'text-emerald-800', 'Lục xung': 'text-rose-700', 'Tứ hành xung': 'text-rose-700', 'Cùng tuổi': 'text-amber-800', 'Bình thường': 'text-muted' }
+const REL_CLS = { 'Tam hợp': 'text-emerald-800 dark:text-emerald-400', 'Lục hợp': 'text-emerald-800 dark:text-emerald-400', 'Lục xung': 'text-rose-700 dark:text-rose-400', 'Tứ hành xung': 'text-rose-700 dark:text-rose-400', 'Cùng tuổi': 'text-amber-800 dark:text-amber-400', 'Bình thường': 'text-muted' }
 const REL_NOTE = {
   'Tam hợp': 'Hai chi nâng đỡ nhau (nhóm tam hợp) — thường dễ đồng điệu.',
   'Lục hợp': 'Hai chi tương hợp từng đôi — hợp tác, hòa thuận.',

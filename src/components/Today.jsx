@@ -77,7 +77,7 @@ export default function Today() {
                 <div className={cap}>Lá bài của bạn</div>
                 <div className="w-[80px] mx-auto"><CardImage card={drawn.card} w={140} reversed={!drawn.up} imgClass="rounded-md w-full h-auto" fallbackClass="text-[2.4rem]" /></div>
                 <div className="font-serif text-[1rem] mt-2 leading-tight">{drawn.card.nameVi}</div>
-                <div className={'text-[.75rem] font-semibold ' + (drawn.up ? 'text-emerald-800' : 'text-rose-700')}>{drawn.up ? '▲ Xuôi' : '▼ Ngược'}</div>
+                <div className={'text-[.75rem] font-semibold ' + (drawn.up ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400')}>{drawn.up ? '▲ Xuôi' : '▼ Ngược'}</div>
               </Link>
               <Link to="/kinh-dich" className={tile}>
                 <div className={cap}>Quẻ của bạn</div>

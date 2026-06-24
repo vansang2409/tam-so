@@ -157,7 +157,7 @@ export default function Profile() {
             <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
               <span className="note">Gần đây:</span>
               {hist.map((h, i) => <button key={i} onClick={() => loadProfile(h)} className="badge cursor-pointer hover:text-gold">{h.n || (h.d + '/' + h.m + '/' + h.y)}</button>)}
-              <button onClick={clearHist} className="note hover:text-rose-700">xóa</button>
+              <button onClick={clearHist} className="note hover:text-rose-700 dark:text-rose-400">xóa</button>
             </div>
           )}
 
@@ -230,9 +230,9 @@ export default function Profile() {
                       DIA_CHI.forEach(z => { const r = hopTuoiChi(me, z.ten); if (g[r]) g[r].push(z.con) })
                       return (
                         <div className="text-[.95rem] leading-relaxed">
-                          <div><span className="text-emerald-800 font-semibold">Tam hợp:</span> {g['Tam hợp'].join(', ') || '—'}</div>
-                          <div><span className="text-emerald-800 font-semibold">Lục hợp:</span> {g['Lục hợp'].join(', ') || '—'}</div>
-                          <div className="mt-0.5"><span className="text-rose-700 font-semibold">Lục xung:</span> {g['Lục xung'].join(', ') || '—'}</div>
+                          <div><span className="text-emerald-800 dark:text-emerald-400 font-semibold">Tam hợp:</span> {g['Tam hợp'].join(', ') || '—'}</div>
+                          <div><span className="text-emerald-800 dark:text-emerald-400 font-semibold">Lục hợp:</span> {g['Lục hợp'].join(', ') || '—'}</div>
+                          <div className="mt-0.5"><span className="text-rose-700 dark:text-rose-400 font-semibold">Lục xung:</span> {g['Lục xung'].join(', ') || '—'}</div>
                           <div className="note">Tứ hành xung: {g['Tứ hành xung'].join(', ') || '—'}</div>
                         </div>
                       )
@@ -249,7 +249,7 @@ export default function Profile() {
                   </Card>
                   <Card to="/tarot" label="Lá bài hôm nay">
                     <div className="flex items-center gap-3"><span className="text-[2.4rem] leading-none">{today.card.symbol}</span>
-                      <div><div className="font-serif text-[1.2rem]">{today.card.nameVi}</div><span className={'text-[.8rem] font-semibold ' + (today.up ? 'text-emerald-800' : 'text-rose-700')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</span></div></div>
+                      <div><div className="font-serif text-[1.2rem]">{today.card.nameVi}</div><span className={'text-[.8rem] font-semibold ' + (today.up ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400')}>{today.up ? '▲ Xuôi' : '▼ Ngược'}</span></div></div>
                   </Card>
                 </div>
                 <p className="note text-center mt-3 mb-0">tamso · chiêm nghiệm để hiểu mình — không phải lời tiên tri.</p>

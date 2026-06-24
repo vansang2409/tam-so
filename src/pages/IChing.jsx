@@ -15,7 +15,7 @@ function Line({ yang, changing, delay = 0 }) {
       {yang
         ? <span className="inline-block w-[120px] h-[12px] bg-gold rounded-sm" />
         : <><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /><span className="inline-block w-[52px] h-[12px] bg-gold rounded-sm" /></>}
-      {changing && <span className="text-rose-700 text-[.8rem]">● động</span>}
+      {changing && <span className="text-rose-700 dark:text-rose-400 text-[.8rem]">● động</span>}
     </div>
   )
 }

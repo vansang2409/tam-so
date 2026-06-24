@@ -3,8 +3,48 @@
 @tailwind utilities;
 
 /* =========================================================================
- * TAM SỞ — design system, tông VÀNG NÂU ĐẤT (ochre + terracotta + nền nâu trầm)
+ * TAM SỞ — design system, clean-SaaS sáng/tối qua biến CSS (xem :root/.dark)
  * ========================================================================= */
+:root {
+  --c-ink: 255 255 255;        /* bề mặt chính (card/panel) */
+  --c-ink2: 248 250 252;       /* bề mặt phụ (hover/disclaimer/table-hover) */
+  --c-gold: 180 83 9;          /* nhấn chính (amber-700) */
+  --c-gold-soft: 217 119 6;    /* nhấn phụ/hover (amber-600) */
+  --c-clay: 217 119 6;
+  --c-plum: 124 58 237;        /* tím nhẹ — điểm nhấn phụ */
+  --c-cream: 15 23 42;         /* chữ chính (slate-900) */
+  --c-muted: 100 116 139;      /* chữ phụ (slate-500) */
+  --c-border: 233 238 245;     /* viền nhạt mặc định */
+  --c-border-hover: 203 213 225;   /* viền khi hover (trung tính) */
+  --c-border-gold: 252 217 168;    /* viền nhấn vàng nhạt (hover-lift/badge/tcard.rev) */
+  --c-page-bg: 248 250 252;
+  --c-badge-bg: 254 243 226;
+  --c-badge-border: 253 228 196;
+  --c-tcard-rev-bg: 253 246 239;
+  --c-table-head: 71 85 105;   /* slate-600 */
+  --c-pull: 51 65 85;          /* slate-700 */
+  --c-shadow: 15 23 42;        /* tint cho box-shadow */
+}
+.dark {
+  --c-ink: 23 28 40;
+  --c-ink2: 30 36 50;
+  --c-gold: 245 158 11;        /* amber-500 — sáng hơn để nổi trên nền tối */
+  --c-gold-soft: 251 191 36;   /* amber-400 */
+  --c-clay: 251 191 36;
+  --c-plum: 167 139 250;       /* violet-400 */
+  --c-cream: 226 232 240;      /* slate-200 */
+  --c-muted: 148 163 184;      /* slate-400 */
+  --c-border: 51 65 85;        /* slate-700 */
+  --c-border-hover: 71 85 105; /* slate-600 */
+  --c-border-gold: 120 78 20;
+  --c-page-bg: 11 15 23;
+  --c-badge-bg: 51 39 12;
+  --c-badge-border: 92 61 12;
+  --c-tcard-rev-bg: 40 28 18;
+  --c-table-head: 148 163 184;
+  --c-pull: 203 213 225;
+  --c-shadow: 0 0 0;
+}
 @layer base {
   html { scroll-behavior: smooth; font-size: 16.5px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
@@ -13,58 +53,59 @@
     color: theme('colors.cream');
     line-height: 1.7;
     background:
-      radial-gradient(900px 520px at 100% -5%, rgba(180,83,9,.05), transparent 60%),
-      radial-gradient(820px 480px at -5% 2%, rgba(124,58,237,.045), transparent 60%),
-      #f8fafc;
+      radial-gradient(900px 520px at 100% -5%, rgb(var(--c-gold) / .05), transparent 60%),
+      radial-gradient(820px 480px at -5% 2%, rgb(var(--c-plum) / .045), transparent 60%),
+      rgb(var(--c-page-bg));
     background-attachment: fixed;
     min-height: 100vh;
+    transition: background-color .25s ease;
   }
   h1, h2, h3, h4 { font-family: theme('fontFamily.sans'); font-weight: 700; line-height: 1.15; letter-spacing: -.02em; color: theme('colors.cream'); }
   a { color: theme('colors.gold.DEFAULT'); text-decoration: none; }
   a:hover { text-decoration: underline; }
   #root { position: relative; z-index: 1; }
-  ::selection { background: rgba(180,83,9,.16); color: #0f172a; }
+  ::selection { background: rgb(var(--c-gold) / .16); color: rgb(var(--c-cream)); }
 }
 
 @layer components {
   .wrap { max-width: theme('maxWidth.content'); margin: 0 auto; padding: 0 28px; }
 
   .btn { @apply inline-flex items-center justify-center gap-2 cursor-pointer font-semibold rounded-xl transition; padding: 12px 22px; border: 1px solid transparent; letter-spacing: .005em; font-size: .96rem; }
-  .btn-primary { background: #b45309; color: #fff; box-shadow: 0 1px 2px rgba(180,83,9,.25), 0 8px 20px -8px rgba(180,83,9,.5); }
-  .btn-primary:hover { background: #9a3f08; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(180,83,9,.25), 0 12px 26px -8px rgba(180,83,9,.55); text-decoration: none; }
-  .btn-ghost { background: #fff; color: theme('colors.cream'); border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
-  .btn-ghost:hover { background: #f8fafc; border-color: #cbd5e1; text-decoration: none; }
+  .btn-primary { background: rgb(var(--c-gold)); color: #fff; box-shadow: 0 1px 2px rgb(var(--c-gold) / .25), 0 8px 20px -8px rgb(var(--c-gold) / .5); }
+  .btn-primary:hover { background: rgb(var(--c-gold-soft)); transform: translateY(-1px); box-shadow: 0 2px 4px rgb(var(--c-gold) / .25), 0 12px 26px -8px rgb(var(--c-gold) / .55); text-decoration: none; }
+  .btn-ghost { background: rgb(var(--c-ink)); color: theme('colors.cream'); border: 1px solid rgb(var(--c-border)); box-shadow: 0 1px 2px rgb(var(--c-shadow) / .04); }
+  .btn-ghost:hover { background: rgb(var(--c-ink2)); border-color: rgb(var(--c-border-hover)); text-decoration: none; }
 
-  .panel { background: #fff; border: 1px solid #e9eef5; border-radius: 16px; box-shadow: theme('boxShadow.soft'); }
-  .gradient-text { background: linear-gradient(100deg, #b45309, #d97706 45%, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .panel { background: rgb(var(--c-ink)); border: 1px solid rgb(var(--c-border)); border-radius: 16px; box-shadow: theme('boxShadow.soft'); }
+  .gradient-text { background: linear-gradient(100deg, rgb(var(--c-gold)), rgb(var(--c-gold-soft)) 45%, rgb(var(--c-plum))); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-  .badge { @apply inline-flex items-center rounded-full font-semibold; padding: 4px 12px; font-size: .8rem; background: #fef3e2; color: #b45309; border: 1px solid #fde4c4; }
-  .badge-gold { background: #fef3e2; color: #b45309; border-color: #fcd9a8; }
+  .badge { @apply inline-flex items-center rounded-full font-semibold; padding: 4px 12px; font-size: .8rem; background: rgb(var(--c-badge-bg)); color: rgb(var(--c-gold)); border: 1px solid rgb(var(--c-badge-border)); }
+  .badge-gold { background: rgb(var(--c-badge-bg)); color: rgb(var(--c-gold)); border-color: rgb(var(--c-badge-border)); }
 
   .pill { @apply inline-block rounded-full font-semibold; padding: 2px 9px; font-size: .78rem; }
-  .field-input { background: #fff; border: 1px solid #e2e8f0; color: theme('colors.cream'); padding: 11px 14px; border-radius: 12px; font-family: theme('fontFamily.sans'); font-size: 1rem; transition: border-color .15s ease, box-shadow .15s ease; }
-  .field-input:focus { outline: none; border-color: #d97706; box-shadow: 0 0 0 3px rgba(217,119,6,.15); }
+  .field-input { background: rgb(var(--c-ink)); border: 1px solid rgb(var(--c-border)); color: theme('colors.cream'); padding: 11px 14px; border-radius: 12px; font-family: theme('fontFamily.sans'); font-size: 1rem; transition: border-color .15s ease, box-shadow .15s ease, background-color .25s ease; }
+  .field-input:focus { outline: none; border-color: rgb(var(--c-gold-soft)); box-shadow: 0 0 0 3px rgb(var(--c-gold-soft) / .15); }
 
   .kv { @apply grid gap-y-3.5 gap-x-7 my-4; grid-template-columns: max-content 1fr; }
-  .big-number { font-family: theme('fontFamily.sans'); font-weight: 800; font-size: 4rem; line-height: 1; color: #b45309; text-align: center; letter-spacing: -.03em; }
+  .big-number { font-family: theme('fontFamily.sans'); font-weight: 800; font-size: 4rem; line-height: 1; color: rgb(var(--c-gold)); text-align: center; letter-spacing: -.03em; }
 
-  .tcard { width: 170px; min-height: 280px; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; background: #fff; border: 1px solid #e9eef5; box-shadow: theme('boxShadow.soft'); animation: fade .5s ease; }
-  .tcard.rev { background: #fdf6ef; border-color: #fcd9a8; }
+  .tcard { width: 170px; min-height: 280px; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; background: rgb(var(--c-ink)); border: 1px solid rgb(var(--c-border)); box-shadow: theme('boxShadow.soft'); animation: fade .5s ease; }
+  .tcard.rev { background: rgb(var(--c-tcard-rev-bg)); border-color: rgb(var(--c-border-gold)); }
   .tcard.rev .sym { transform: rotate(180deg); }
 
   table.data { @apply w-full text-sm; border-collapse: collapse; min-width: 480px; }
-  table.data th, table.data td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #eef2f7; }
-  table.data th { color: #475569; font-weight: 700; }
-  table.data tr:hover td { background: #f8fafc; }
+  table.data th, table.data td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgb(var(--c-border)); }
+  table.data th { color: rgb(var(--c-table-head)); font-weight: 700; }
+  table.data tr:hover td { background: rgb(var(--c-ink2)); }
 
-  .disclaimer { background: #f8fafc; border: 1px solid #e9eef5; border-radius: 14px; padding: 18px 22px; color: theme('colors.muted'); font-size: .92rem; line-height: 1.7; }
-  .disclaimer b { color: #b45309; }
+  .disclaimer { background: rgb(var(--c-ink2)); border: 1px solid rgb(var(--c-border)); border-radius: 14px; padding: 18px 22px; color: theme('colors.muted'); font-size: .92rem; line-height: 1.7; }
+  .disclaimer b { color: rgb(var(--c-gold)); }
   .note { font-size: .9rem; color: theme('colors.muted'); font-style: normal; line-height: 1.6; }
 
-  .rule { height: 1px; background: #e9eef5; border: 0; margin: 0; }
+  .rule { height: 1px; background: rgb(var(--c-border)); border: 0; margin: 0; }
   .hover-lift { transition: transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease, border-color .3s ease; }
-  .hover-lift:hover { transform: translateY(-4px); box-shadow: theme('boxShadow.lift'); border-color: #fcd9a8; }
-  .pull { font-family: theme('fontFamily.serif'); font-style: italic; font-size: 1.4rem; line-height: 1.45; color: #334155; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: theme('boxShadow.lift'); border-color: rgb(var(--c-border-gold)); }
+  .pull { font-family: theme('fontFamily.serif'); font-style: italic; font-size: 1.4rem; line-height: 1.45; color: rgb(var(--c-pull)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -77,8 +118,13 @@
 .h-Thủy { background: rgba(70,120,210,.16); color: #234a86; }
 .h-Hỏa { background: rgba(210,80,80,.16); color: #8a2a2a; }
 .h-Thổ { background: rgba(180,130,50,.22); color: #6a4a12; }
+.dark .h-Kim { background: rgba(140,140,160,.28); color: #d4d4e0; }
+.dark .h-Mộc { background: rgba(70,160,90,.26); color: #8fe0a8; }
+.dark .h-Thủy { background: rgba(70,120,210,.26); color: #9cc1f5; }
+.dark .h-Hỏa { background: rgba(210,80,80,.26); color: #f5a3a3; }
+.dark .h-Thổ { background: rgba(180,130,50,.32); color: #f0c789; }
 
-/* In ấn / Lưu PDF cho trang Hồ sơ */
+/* In ấn / Lưu PDF cho trang Hồ sơ — LUÔN sáng, bất kể đang ở dark mode */
 @media print {
   header, footer, .btn, .field-input, .no-print { display: none !important; }
   body, body::before { background: #fff !important; }
@@ -120,7 +166,7 @@
 
 /* Accessibility: vòng focus rõ cho điều hướng bằng bàn phím */
 .btn:focus-visible, .field-input:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visible, button:focus-visible {
-  outline: 2px solid #d97706;
+  outline: 2px solid rgb(var(--c-gold-soft));
   outline-offset: 2px;
 }
 
@@ -134,20 +180,20 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* Thanh cuộn (scrollbar) tinh chỉnh theo tông màu vàng nâu của website */
+/* Thanh cuộn (scrollbar) tinh chỉnh theo tông màu của website */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #eef2f7;
+  background: rgb(var(--c-ink2));
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(148,163,184,.5);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100,116,139,.7);
+  background: rgba(148,163,184,.7);
 }
 
 /* =========================================================================
@@ -165,7 +211,7 @@ input[type=number] {
 /* Ánh sáng quét trên mặt sau lá Tarot (chờ lật) */
 .cardback-sheen::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: linear-gradient(115deg, transparent 30%, rgba(217,119,6,.18) 48%, transparent 66%);
+  background: linear-gradient(115deg, transparent 30%, rgb(var(--c-gold-soft) / .18) 48%, transparent 66%);
   transform: translateX(-130%); animation: sheen 2.8s ease-in-out infinite;
 }
 @keyframes sheen { 0%, 55% { transform: translateX(-130%) } 100% { transform: translateX(130%) } }
@@ -214,7 +260,7 @@ input[type=number] {
   font-size: .9rem;
   font-weight: 500;
   letter-spacing: .005em;
-  color: #64748b;
+  color: rgb(var(--c-muted));
   white-space: nowrap;
   text-decoration: none;
   transition: color .2s ease;
@@ -224,23 +270,23 @@ input[type=number] {
   position: absolute;
   left: 3px; right: 3px; bottom: -1px;
   height: 2px;
-  background: linear-gradient(90deg, #d97706, #b45309);
+  background: linear-gradient(90deg, rgb(var(--c-gold-soft)), rgb(var(--c-gold)));
   border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform .26s cubic-bezier(.2,.7,.3,1);
 }
-.navlink:hover { color: #0f172a; text-decoration: none; }
+.navlink:hover { color: rgb(var(--c-cream)); text-decoration: none; }
 .navlink:hover::after { transform: scaleX(1); }
-.navlink.is-active { color: #b45309; font-weight: 600; }
+.navlink.is-active { color: rgb(var(--c-gold)); font-weight: 600; }
 .navlink.is-active::after { transform: scaleX(1); }
-.navlink:focus-visible { outline: 2px solid #d97706; outline-offset: 3px; border-radius: 4px; }
+.navlink:focus-visible { outline: 2px solid rgb(var(--c-gold-soft)); outline-offset: 3px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) { .navlink::after { transition: none; } }
 /* Trong panel menu mobile (xổ dọc): mỗi mục là một hàng, gạch chân thành đường ngăn nhẹ */
 @media (max-width: 767px) {
   .navlink { display: block; padding: 9px 10px; font-size: .95rem; }
   .navlink::after { left: 10px; right: 10px; bottom: 2px; }
-  .navlink.is-active { background: rgba(180,83,9,.08); border-radius: 10px; }
+  .navlink.is-active { background: rgb(var(--c-gold) / .08); border-radius: 10px; }
   .navlink.is-active::after { transform: scaleX(0); }
 }
 /* Tương tác nút — nhấn lún nhẹ (clean SaaS) */
@@ -546,3 +592,16 @@ input[type=number] {
 @media (prefers-reduced-motion: reduce) {
   .dc-scene-smoke span, .dc-censer.is-igniting .dc-flame { animation: none !important; opacity: 0 !important; }
 }
+
+
+/* =========================================================================
+ * DARK MODE TOGGLE (v3.76) — nút mặt trời/mặt trăng, lưu lựa chọn localStorage
+ * ========================================================================= */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 999px; flex-shrink: 0;
+  background: transparent; border: 1px solid rgb(var(--c-border)); color: rgb(var(--c-muted));
+  cursor: pointer; font-size: 1.05rem; transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+.theme-toggle:hover { color: rgb(var(--c-gold)); border-color: rgb(var(--c-border-gold)); background: rgb(var(--c-gold) / .06); }
+.theme-toggle:active { transform: scale(.93); }

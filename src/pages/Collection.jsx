@@ -73,7 +73,7 @@ export default function Collection() {
                 <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={onCopy}>{copied ? '✓ Đã chép' : '📋 Chép'}</button>
                 <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={onDownload}>⬇ Tải .txt</button>
                 {confirmClear
-                  ? <button className="btn btn-ghost text-[.82rem] py-1.5 px-3 text-rose-700 font-semibold" onClick={onClear}>Chắc chứ? Xóa hết</button>
+                  ? <button className="btn btn-ghost text-[.82rem] py-1.5 px-3 text-rose-700 dark:text-rose-400 font-semibold" onClick={onClear}>Chắc chứ? Xóa hết</button>
                   : <button className="btn btn-ghost text-[.82rem] py-1.5 px-3" onClick={() => setConfirmClear(true)}>🗑 Xóa tất cả</button>}
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function Collection() {
                         {it.note && <p className="text-muted text-[.86rem] mt-1 mb-0 break-words">{it.note}</p>}
                         <div className="text-muted text-[.74rem] mt-2">🕘 {fmt(it.t)}</div>
                       </div>
-                      <button onClick={() => onRemove(it.id)} aria-label="Xóa khỏi bộ sưu tập" title="Xóa khỏi bộ sưu tập" className="shrink-0 bg-transparent border-0 cursor-pointer text-black/30 hover:text-rose-700 text-[1.15rem] leading-none">✕</button>
+                      <button onClick={() => onRemove(it.id)} aria-label="Xóa khỏi bộ sưu tập" title="Xóa khỏi bộ sưu tập" className="shrink-0 bg-transparent border-0 cursor-pointer text-black/30 dark:text-white/30 hover:text-rose-700 dark:text-rose-400 text-[1.15rem] leading-none">✕</button>
                     </div>
                     <div className="mt-2"><Link to={m.path} className="text-gold text-[.84rem] hover:underline">Mở {m.label} →</Link></div>
                   </div>

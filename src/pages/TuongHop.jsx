@@ -7,9 +7,9 @@ import { xemHopTuoi } from '../data/tuvi.js'
 import { getZodiac, zodiacCompat } from '../data/zodiac.js'
 
 const VC = {
-  'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Đồng điệu': 'text-emerald-800', 'Có điểm chung': 'text-emerald-800',
-  'Bổ sung cho nhau': 'text-amber-800', 'Bình hòa': 'text-amber-800', 'Trung bình': 'text-amber-800',
-  'Cần dung hòa': 'text-rose-700', 'Cần lưu ý': 'text-rose-700', 'Khá xung khắc': 'text-rose-700'
+  'Rất hợp': 'text-emerald-800 dark:text-emerald-400', 'Hợp': 'text-emerald-800 dark:text-emerald-400', 'Đồng điệu': 'text-emerald-800 dark:text-emerald-400', 'Có điểm chung': 'text-emerald-800 dark:text-emerald-400',
+  'Bổ sung cho nhau': 'text-amber-800 dark:text-amber-400', 'Bình hòa': 'text-amber-800 dark:text-amber-400', 'Trung bình': 'text-amber-800 dark:text-amber-400',
+  'Cần dung hòa': 'text-rose-700 dark:text-rose-400', 'Cần lưu ý': 'text-rose-700 dark:text-rose-400', 'Khá xung khắc': 'text-rose-700 dark:text-rose-400'
 }
 const vc = v => VC[v] || 'text-cream'
 const _POS = ['Rất hợp', 'Hợp', 'Đồng điệu', 'Có điểm chung']

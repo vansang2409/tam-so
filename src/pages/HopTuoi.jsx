@@ -11,11 +11,11 @@ const EMOJI = { 'Tý': '🐭', 'Sửu': '🐂', 'Dần': '🐯', 'Mão': '🐱',
 
 // Thứ tự nhóm + nhãn trấn an (dữ kiện Can Chi, chỉ tham khảo).
 const GROUPS = [
-  { key: 'Tam hợp', label: 'Tam hợp — rất hợp', note: 'nâng đỡ, đồng điệu nhất', cls: 'text-emerald-800' },
-  { key: 'Lục hợp', label: 'Lục hợp — hợp', note: 'hợp ý, dễ đồng hành', cls: 'text-emerald-800' },
-  { key: 'Bình thường', label: 'Bình thường', note: 'không xung không hợp nổi bật', cls: 'text-amber-800' },
-  { key: 'Tứ hành xung', label: 'Tứ hành xung — cần dung hòa', note: 'dễ khác nhịp, cần nhường nhau', cls: 'text-rose-700' },
-  { key: 'Lục xung', label: 'Lục xung — cần lưu ý', note: 'dễ va chạm, cần kiên nhẫn', cls: 'text-rose-700' }
+  { key: 'Tam hợp', label: 'Tam hợp — rất hợp', note: 'nâng đỡ, đồng điệu nhất', cls: 'text-emerald-800 dark:text-emerald-400' },
+  { key: 'Lục hợp', label: 'Lục hợp — hợp', note: 'hợp ý, dễ đồng hành', cls: 'text-emerald-800 dark:text-emerald-400' },
+  { key: 'Bình thường', label: 'Bình thường', note: 'không xung không hợp nổi bật', cls: 'text-amber-800 dark:text-amber-400' },
+  { key: 'Tứ hành xung', label: 'Tứ hành xung — cần dung hòa', note: 'dễ khác nhịp, cần nhường nhau', cls: 'text-rose-700 dark:text-rose-400' },
+  { key: 'Lục xung', label: 'Lục xung — cần lưu ý', note: 'dễ va chạm, cần kiên nhẫn', cls: 'text-rose-700 dark:text-rose-400' }
 ]
 
 function groupBy(chi) {

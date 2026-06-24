@@ -11,8 +11,8 @@ import { SAO_KHUYEN } from '../data/saoKhuyen.js'
 // Vị trí 12 chi trên lá số 4×4 [cột, hàng] (1-indexed)
 const POS = { 5: [1, 1], 6: [2, 1], 7: [3, 1], 8: [4, 1], 4: [1, 2], 9: [4, 2], 3: [1, 3], 10: [4, 3], 2: [1, 4], 1: [2, 4], 0: [3, 4], 11: [4, 4] }
 const GIO_LABEL = ['Tý (23–1h)', 'Sửu (1–3h)', 'Dần (3–5h)', 'Mão (5–7h)', 'Thìn (7–9h)', 'Tỵ (9–11h)', 'Ngọ (11–13h)', 'Mùi (13–15h)', 'Thân (15–17h)', 'Dậu (17–19h)', 'Tuất (19–21h)', 'Hợi (21–23h)']
-const SAO_CLS = { chinh: 'text-cream font-semibold', cat: 'text-emerald-800', sat: 'text-rose-700', khac: 'text-muted' }
-const DO_CLS = { M:'bg-amber-300 text-amber-900', V:'bg-emerald-200 text-emerald-900', 'Đ':'bg-sky-200 text-sky-900', B:'bg-gray-200 text-gray-700', H:'bg-rose-100 text-rose-700' }
+const SAO_CLS = { chinh: 'text-cream font-semibold', cat: 'text-emerald-800 dark:text-emerald-400', sat: 'text-rose-700 dark:text-rose-400', khac: 'text-muted' }
+const DO_CLS = { M:'bg-amber-300 text-amber-900', V:'bg-emerald-200 text-emerald-900', 'Đ':'bg-sky-200 text-sky-900', B:'bg-gray-200 text-gray-700', H:'bg-rose-100 text-rose-700 dark:text-rose-400' }
 const HOA_CLS = { 'Lộc': 'bg-emerald-700', 'Quyền': 'bg-amber-700', 'Khoa': 'bg-sky-700', 'Kỵ': 'bg-rose-700' }
 
 function StarLine({ s }) {
@@ -197,7 +197,7 @@ export default function LaSoTuVi() {
                 {(() => {
                   const cat = ls.cachCuc.filter(c => c.tot === true).map(c => c.ten)
                   const xau = ls.cachCuc.filter(c => c.tot === false).map(c => c.ten)
-                  return <>{cat.length > 0 && <>Điểm sáng nổi bật: <span className="text-emerald-800 font-semibold">{cat.join(', ')}</span>. </>}{xau.length > 0 && <>Nên lưu tâm thêm: <span className="text-rose-700">{xau.join(', ')}</span> (đều có cách hóa giải, không phải điềm gở). </>}</>
+                  return <>{cat.length > 0 && <>Điểm sáng nổi bật: <span className="text-emerald-800 dark:text-emerald-400 font-semibold">{cat.join(', ')}</span>. </>}{xau.length > 0 && <>Nên lưu tâm thêm: <span className="text-rose-700 dark:text-rose-400">{xau.join(', ')}</span> (đều có cách hóa giải, không phải điềm gở). </>}</>
                 })()}
                 {ls.van && <>Năm {ls.van.year} (~{ls.van.age} tuổi âm), đại hạn đang ở cung <b className="text-cream">{ls.palaces[ls.van.daiHanChi].cung}</b>.</>}</p>
               {(() => { const ds = doSangSummary(ls); return ds && ds.text ? <p className="mt-1.5 mb-0 leading-relaxed"><span className="text-gold font-semibold">Độ sáng Mệnh:</span> {ds.text}</p> : null })()}
@@ -216,7 +216,7 @@ export default function LaSoTuVi() {
                   </div>
                 </div>
               </div>
-              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800">cát tinh</span> · <span className="text-rose-700">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; các ký hiệu <sup className="bg-amber-300 text-amber-900 text-[.55rem] px-0.5 rounded">M</sup>, <sup className="bg-emerald-200 text-emerald-900 text-[.55rem] px-0.5 rounded">V</sup>, <sup className="bg-sky-200 text-sky-900 text-[.55rem] px-0.5 rounded">Đ</sup>, <sup className="bg-gray-200 text-gray-700 text-[.55rem] px-0.5 rounded">B</sup>, <sup className="bg-rose-100 text-rose-700 text-[.55rem] px-0.5 rounded">H</sup> = độ sáng chính tinh (Miếu, Vượng, Đắc, Bình, Hãm). Khi chọn một cung, <span className="text-gold">ba cung hội chiếu</span> (tam phương tứ chính) sẽ sáng nhẹ — nên đọc cùng nhau.</p>
+              <p className="note text-center mt-2.5 mb-0">Chạm vào mỗi cung để xem chi tiết sao &amp; ý nghĩa bên dưới. <span className="text-cream">Màu sao:</span> <span className="text-cream font-semibold">chính tinh</span> · <span className="text-emerald-800 dark:text-emerald-400">cát tinh</span> · <span className="text-rose-700 dark:text-rose-400">sát tinh</span> · <span className="text-muted">sao khác</span>. Nhãn <sup className="bg-emerald-700 text-white text-[.55rem] px-1 rounded">Lộc</sup> = Tứ Hóa; các ký hiệu <sup className="bg-amber-300 text-amber-900 text-[.55rem] px-0.5 rounded">M</sup>, <sup className="bg-emerald-200 text-emerald-900 text-[.55rem] px-0.5 rounded">V</sup>, <sup className="bg-sky-200 text-sky-900 text-[.55rem] px-0.5 rounded">Đ</sup>, <sup className="bg-gray-200 text-gray-700 text-[.55rem] px-0.5 rounded">B</sup>, <sup className="bg-rose-100 text-rose-700 dark:text-rose-400 text-[.55rem] px-0.5 rounded">H</sup> = độ sáng chính tinh (Miếu, Vượng, Đắc, Bình, Hãm). Khi chọn một cung, <span className="text-gold">ba cung hội chiếu</span> (tam phương tứ chính) sẽ sáng nhẹ — nên đọc cùng nhau.</p>
             </div>
           </section>
 
@@ -235,9 +235,9 @@ export default function LaSoTuVi() {
               {ls.van && (
                 <div className="panel p-[22px]">
                   <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Vận hạn năm {ls.van.year} (~{ls.van.age} tuổi âm)</div>
-                  <VanRow label="Đại hạn (10 năm)" chi={ls.van.daiHanChi} ls={ls} cls="text-amber-800" />
+                  <VanRow label="Đại hạn (10 năm)" chi={ls.van.daiHanChi} ls={ls} cls="text-amber-800 dark:text-amber-400" />
                   <VanRow label="Tiểu hạn (năm)" chi={ls.van.tieuHanChi} ls={ls} cls="text-sky-800" />
-                  <VanRow label="Lưu niên (Thái Tuế)" chi={ls.van.luuNienChi} ls={ls} cls="text-rose-700" />
+                  <VanRow label="Lưu niên (Thái Tuế)" chi={ls.van.luuNienChi} ls={ls} cls="text-rose-700 dark:text-rose-400" />
                   <p className="note mt-2 mb-0">Vận hạn cho biết "sân khấu" của giai đoạn — cung nào được chiếu thì lĩnh vực đó nổi lên. Chỉ để chiêm nghiệm, không phải điều chắc chắn.</p>
                 </div>
               )}
@@ -265,7 +265,7 @@ export default function LaSoTuVi() {
                 <ul className="m-0 pl-0 list-none flex flex-col gap-2">
                   {ls.cachCuc.map((c, i) => (
                     <li key={i} className="leading-relaxed">
-                      <span className={'font-semibold ' + (c.tot === true ? 'text-emerald-800' : c.tot === false ? 'text-rose-700' : 'text-gold')}>{c.tot === true ? '✦ ' : c.tot === false ? '⚠ ' : '◇ '}{c.ten}</span>
+                      <span className={'font-semibold ' + (c.tot === true ? 'text-emerald-800 dark:text-emerald-400' : c.tot === false ? 'text-rose-700 dark:text-rose-400' : 'text-gold')}>{c.tot === true ? '✦ ' : c.tot === false ? '⚠ ' : '◇ '}{c.ten}</span>
                       <span className="note"> — {c.luan}</span>
                     </li>
                   ))}

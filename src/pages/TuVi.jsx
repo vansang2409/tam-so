@@ -6,7 +6,7 @@ import { THIEN_CAN, DIA_CHI, NGU_HANH, tinhCanChi, invSinh, invKhac, xemHopTuoi,
 import { solar2lunar } from '../data/lunar.js'
 import Reveal from '../components/Reveal.jsx'
 
-const VC = { 'Rất hợp': 'text-emerald-800', 'Hợp': 'text-emerald-800', 'Bình hòa': 'text-amber-800', 'Cần lưu ý': 'text-rose-700', 'Khá xung khắc': 'text-rose-700' }
+const VC = { 'Rất hợp': 'text-emerald-800 dark:text-emerald-400', 'Hợp': 'text-emerald-800 dark:text-emerald-400', 'Bình hòa': 'text-amber-800 dark:text-amber-400', 'Cần lưu ý': 'text-rose-700 dark:text-rose-400', 'Khá xung khắc': 'text-rose-700 dark:text-rose-400' }
 
 export default function TuVi() {
   usePageSeo({ title: 'Tử vi & Can Chi — tuổi, âm lịch, hợp tuổi, sao hạn | Tam Sở', description: 'Tra Can Chi tuổi, ngày âm lịch, hợp tuổi – xung khắc, Tam Tai, Bát Trạch và sao hạn theo năm. Dữ kiện lịch pháp kèm diễn giải để tham khảo.', path: '/tu-vi', breadcrumb: [{ name: 'Trang chủ', path: '/' }, { name: 'Tử vi & Can Chi' }] })
@@ -207,7 +207,7 @@ function DayTool() {
             <p className="note text-center">Giờ hoàng đạo (tốt) tô vàng, hắc đạo để mờ:</p>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {res.hours.map(g => (
-                <div key={g.chi} className={'rounded-lg px-2 py-2 text-center border text-[.86rem] ' + (g.hoangdao ? 'border-gold/50 bg-[rgba(211,162,78,.14)] text-gold' : 'border-black/15 text-black/45')}>
+                <div key={g.chi} className={'rounded-lg px-2 py-2 text-center border text-[.86rem] ' + (g.hoangdao ? 'border-gold/50 bg-[rgba(211,162,78,.14)] text-gold' : 'border-black/15 dark:border-white/10 text-black/45 dark:text-white/40')}>
                   <b>{g.chi}</b> <span className="opacity-80">{g.range}h</span><br />{g.hoangdao ? 'Hoàng đạo' : 'Hắc đạo'}
                 </div>
               ))}
@@ -247,11 +247,11 @@ function CungPhiTool() {
             </div>
             <div className="grid md:grid-cols-2 gap-4 mt-5">
               <div>
-                <div className="text-emerald-800 font-semibold mb-2">4 hướng TỐT</div>
+                <div className="text-emerald-800 dark:text-emerald-400 font-semibold mb-2">4 hướng TỐT</div>
                 {res.good.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
               </div>
               <div>
-                <div className="text-rose-700 font-semibold mb-2">4 hướng XẤU</div>
+                <div className="text-rose-700 dark:text-rose-400 font-semibold mb-2">4 hướng XẤU</div>
                 {res.bad.map(x => <div key={x.cung} className="flex justify-between gap-2 border-b border-white/5 py-1.5 text-[.92rem]"><span><b className="text-cream">{x.dir}</b> · {x.star}</span><span className="note text-right">{STAR_MEANING[x.star]}</span></div>)}
               </div>
             </div>
@@ -263,7 +263,7 @@ function CungPhiTool() {
   )
 }
 
-const SAOC = { 'tốt': 'text-emerald-800', 'trung': 'text-amber-800', 'xấu': 'text-rose-700' }
+const SAOC = { 'tốt': 'text-emerald-800 dark:text-emerald-400', 'trung': 'text-amber-800 dark:text-amber-400', 'xấu': 'text-rose-700 dark:text-rose-400' }
 function SaoHanTool() {
   const [y, setY] = useState(''); const [g, setG] = useState('nam')
   const [res, setRes] = useState(null); const [err, setErr] = useState('')
