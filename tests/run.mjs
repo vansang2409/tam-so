@@ -842,6 +842,15 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
   ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node → mảng rỗng')
   ok(DC.countThapHuong() === 0, 'countThapHuong: chạy trong Node → 0')
+  ok(Array.isArray(DC.loadXamLichSu()) && DC.loadXamLichSu().length === 0, 'loadXamLichSu: chạy trong Node (không có localStorage) → mảng rỗng')
+  ok(typeof DC.clearLoiNguyen === 'function' && Array.isArray(DC.clearLoiNguyen()), 'clearLoiNguyen: tồn tại, trả mảng rỗng')
+  ok(typeof DC.clearXamLichSu === 'function' && Array.isArray(DC.clearXamLichSu()), 'clearXamLichSu: tồn tại, trả mảng rỗng')
+  ok(DC.addXamLichSu({ so: 3 }).length === 1 && DC.addXamLichSu({ so: 3 })[0].so === 3, 'addXamLichSu: trả về danh sách có thẻ vừa thêm (không lưu được trong Node nhưng vẫn tính đúng trong bộ nhớ, giống addLoiNguyen)')
+
+  const dcj = readFileSync(new URL('../src/pages/DiChua.jsx', import.meta.url), 'utf8')
+  ok(dcj.includes('loadXamLichSu') && dcj.includes('clearLoiNguyen') && dcj.includes('clearXamLichSu') && dcj.includes("setModal('lichsu')"), 'DiChua.jsx: có nút + modal Lịch Sử (lời nguyện + xăm đã rút) wire đủ')
+  const sxj = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
+  ok(sxj.includes('addXamLichSu'), 'ShakeXam.jsx: rút thẻ có lưu vào lịch sử (addXamLichSu)')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
   ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) đã wire')

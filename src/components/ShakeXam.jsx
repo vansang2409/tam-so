@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { rutXam } from '../data/dichua.js'
+import { rutXam, addXamLichSu } from '../data/dichua.js'
 
 /* ShakeXam — xin xăm bằng cách LẮC. Phải lắc đủ một khoảng thời gian NGẪU NHIÊN
  * (tối thiểu 7s, tối đa 30s) tính theo thời gian ĐANG lắc thật (ngừng lắc thì dừng đếm),
@@ -34,7 +34,7 @@ export default function ShakeXam() {
     cancelAnimationFrame(raf.current); raf.current = 0
     setActive(false); setProgress(100); setPhase('dropping')
     clearTimeout(dropTimer.current)
-    dropTimer.current = setTimeout(() => { setXam(rutXam()); setPhase('result') }, reduced() ? 200 : 950)
+    dropTimer.current = setTimeout(() => { const x = rutXam(); addXamLichSu(x); setXam(x); setPhase('result') }, reduced() ? 200 : 950)
   }, [])
 
   // vòng lặp tích luỹ thời gian ĐANG lắc

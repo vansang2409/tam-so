@@ -7,7 +7,8 @@ import TempleScene from '../components/TempleScene.jsx'
 import ShakeXam from '../components/ShakeXam.jsx'
 import {
   DICHUA_LOCATIONS, locationById,
-  loadLoiNguyen, addLoiNguyen, countThapHuong, thapHuong
+  loadLoiNguyen, addLoiNguyen, clearLoiNguyen, countThapHuong, thapHuong,
+  loadXamLichSu, clearXamLichSu, xamBySo
 } from '../data/dichua.js'
 
 const NAV = ['Trang Chủ', 'Chùa Online', 'Kinh Sách', 'Phật Pháp', 'Sự Kiện', 'Cộng Đồng']
@@ -52,9 +53,12 @@ export default function DiChua() {
   const [litFlash, setLitFlash] = useState(false)
   const [igniting, setIgniting] = useState(false)
   const [litLocs, setLitLocs] = useState({})
-  const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon'
+  const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon' | 'lichsu'
+  const [lichSuLN, setLichSuLN] = useState([])
+  const [lichSuXam, setLichSuXam] = useState([])
 
   useEffect(() => { setPrayerCount(loadLoiNguyen().length); setLitCount(countThapHuong()) }, [])
+  useEffect(() => { if (modal === 'lichsu') { setLichSuLN(loadLoiNguyen()); setLichSuXam(loadXamLichSu()) } }, [modal])
   useEffect(() => { document.body.classList.add('dc-lock'); return () => document.body.classList.remove('dc-lock') }, [])
 
   const idx = DICHUA_LOCATIONS.findIndex(l => l.id === activeId)
@@ -69,6 +73,9 @@ export default function DiChua() {
     setPrayerCount(addLoiNguyen(prayer).length); setPrayer(''); setSentFlash(true)
     setTimeout(() => setSentFlash(false), 2400)
   }
+  const onClearLN = () => { setLichSuLN(clearLoiNguyen()); setPrayerCount(0) }
+  const onClearXam = () => { setLichSuXam(clearXamLichSu()) }
+  const fmtT = t => new Date(t).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
   const doThapHuong = () => {
     if (!canHuong) return
     setLitCount(thapHuong()); setLitFlash(true); setIgniting(true)
@@ -119,6 +126,7 @@ export default function DiChua() {
           </nav>
           <div className="dc-side-foot">
             <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('congduc')}>◈ Công Đức</button>
+            <button type="button" className="dc-btn dc-btn-ghost" onClick={() => setModal('lichsu')}>📜 Lịch Sử Của Bạn</button>
             <button type="button" className="dc-btn dc-btn-ghost" onClick={() => setModal('help')}>ⓘ Hướng Dẫn</button>
           </div>
         </aside>
@@ -236,6 +244,30 @@ export default function DiChua() {
 
       <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống">
         <ShakeXam />
+      </DcModal>
+
+      <DcModal open={modal === 'lichsu'} onClose={() => setModal(null)} title="📜 Lịch Sử Của Bạn">
+        <div className="dc-history-section">
+          <div className="dc-history-head"><b>🙏 Lời Nguyện đã viết ({lichSuLN.length})</b>
+            {lichSuLN.length > 0 && <button type="button" className="dc-history-clear" onClick={onClearLN}>Xoá hết</button>}
+          </div>
+          {lichSuLN.length === 0 ? <p className="dc-card-note">Bạn chưa viết lời nguyện nào.</p> : (
+            <ul className="dc-history-list">
+              {lichSuLN.map((p, i) => <li key={i}><span className="dc-history-time">{fmtT(p.t)}</span>{p.text}</li>)}
+            </ul>
+          )}
+        </div>
+        <div className="dc-history-section">
+          <div className="dc-history-head"><b>🎋 Thẻ Xăm đã rút ({lichSuXam.length})</b>
+            {lichSuXam.length > 0 && <button type="button" className="dc-history-clear" onClick={onClearXam}>Xoá hết</button>}
+          </div>
+          {lichSuXam.length === 0 ? <p className="dc-card-note">Bạn chưa xin thẻ xăm nào.</p> : (
+            <ul className="dc-history-list">
+              {lichSuXam.map((h, i) => { const x = xamBySo(h.so); return <li key={i}><span className="dc-history-time">{fmtT(h.t)}</span>Thẻ số {h.so}{x ? ' · ' + x.bac + ' — “' + x.cau[0] + '”' : ''}</li> })}
+            </ul>
+          )}
+        </div>
+        <p className="dc-card-note" style={{ marginTop: 10 }}>Lưu riêng trên máy bạn, không gửi đi đâu. Xoá bất cứ lúc nào.</p>
       </DcModal>
 
       <DcModal open={modal === 'soon'} onClose={() => setModal(null)} title="Đang phát triển">

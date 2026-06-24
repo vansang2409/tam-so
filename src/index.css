@@ -402,6 +402,15 @@ input[type=number] {
 .dc-help-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: .9rem; line-height: 1.5; }
 .dc-help-list b { color: #fbbf24; }
 
+.dc-history-section { margin-bottom: 16px; }
+.dc-history-section:last-of-type { margin-bottom: 0; }
+.dc-history-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: .92rem; }
+.dc-history-clear { background: transparent; border: 0; color: #fca5a5; font-size: .76rem; cursor: pointer; padding: 0; font: inherit; text-decoration: underline; }
+.dc-history-clear:hover { color: #f87171; }
+.dc-history-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+.dc-history-list li { font-size: .85rem; line-height: 1.5; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 8px 10px; }
+.dc-history-time { display: block; font-size: .68rem; color: #94a3b8; margin-bottom: 2px; }
+
 /* — Xin xăm: lắc ống → rơi que — */
 .xam-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .xam-stage { width: 200px; height: 220px; display: flex; align-items: center; justify-content: center; position: relative;

@@ -1,7 +1,7 @@
 {
   "name": "tam-so",
   "private": true,
-  "version": "3.81.0",
+  "version": "3.82.0",
   "type": "module",
   "description": "Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch (Vite + React + Tailwind)",
   "scripts": {

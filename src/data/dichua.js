@@ -114,6 +114,34 @@ export function addLoiNguyen(text) {
   return trimmed
 }
 
+export function clearLoiNguyen() {
+  const ls = _ls(); if (ls) { try { ls.removeItem(LOINGUYEN_KEY) } catch (e) { /* bỏ qua */ } }
+  return []
+}
+
+// — Lịch sử thẻ xăm đã rút (chỉ lưu số thẻ + thời điểm; tra lại nội dung qua xamBySo) —
+export const XAM_LICHSU_KEY = 'tamso_dichua_xam_lichsu'
+
+export function loadXamLichSu() {
+  const ls = _ls(); if (!ls) return []
+  try { const a = JSON.parse(ls.getItem(XAM_LICHSU_KEY) || '[]'); return Array.isArray(a) ? a : [] } catch (e) { return [] }
+}
+
+export function addXamLichSu(xam) {
+  if (!xam || typeof xam.so !== 'number') return loadXamLichSu()
+  const list = loadXamLichSu()
+  list.unshift({ t: Date.now(), so: xam.so })
+  const trimmed = list.slice(0, 50)
+  const ls = _ls()
+  if (ls) { try { ls.setItem(XAM_LICHSU_KEY, JSON.stringify(trimmed)) } catch (e) { /* hết dung lượng — bỏ qua */ } }
+  return trimmed
+}
+
+export function clearXamLichSu() {
+  const ls = _ls(); if (ls) { try { ls.removeItem(XAM_LICHSU_KEY) } catch (e) { /* bỏ qua */ } }
+  return []
+}
+
 export function countThapHuong() {
   const ls = _ls(); if (!ls) return 0
   try { return +ls.getItem(THAPHUONG_KEY) || 0 } catch (e) { return 0 }
