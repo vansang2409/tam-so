@@ -33,7 +33,11 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | A03 | Khối "Nội dung liên quan" (internal-link ngữ cảnh) cuối CungPage/CardPage/SoChuDaoPage → liên kết chéo sang hệ khác | SEO/Retention | Med | Done | mỗi trang sâu ≥3 link nội bộ đúng ngữ cảnh; không trùng; build sạch |
 
 ## LOW (tương lai)
-Đăng nhập · Thanh toán · Email daily · CMS · AI reading · Affiliate · Blog tự động · Dark theme toggle.
+Đăng nhập · Thanh toán · Email daily · CMS · AI reading · Affiliate · Blog tự động.
+
+| ID | Task | Nhóm | TT | Tiêu chí xong |
+|---|---|---|---|---|
+| V04 | Dark theme toggle | UI | Done (v3.81) | biến CSS sáng/tối cho token chung + ThemeToggle.jsx + FOUC-safe script; dark: bổ sung cho màu cảm xúc; KHÔNG đụng badge LaSoTuVi/Đi Chùa (theme riêng); verify qua dev server thật; 367 test |
 
 ## AUTO-ĐỀ XUẤT (đối thủ thientue.vn — 2026-06-19, chờ chủ dự án duyệt/loại)
 Định hướng: HỌC chiến lược SEO quy mô + nội dung hàng ngày của họ, NHƯNG giữ giọng TRUNG THỰC (tham khảo, không phán, không giật tít) làm điểm khác biệt; monetization nghiêng FREEMIUM hơn ads-volume.
