@@ -490,17 +490,23 @@ input[type=number] {
   background: linear-gradient(180deg, #df3a2c, #9e1f17); box-shadow: inset 0 -1px 0 rgba(0,0,0,.2); }
 
 .xam-tube { position: absolute; bottom: 0; left: 0; width: 96px; height: 116px; z-index: 2;
-  border-radius: 12px 12px 22px 22px; overflow: hidden;
-  background: linear-gradient(90deg, #321a0c 0%, #6e4220 15%, #a9743c 38%, #c89556 50%, #8a5630 66%, #4e2c14 86%, #2c160a 100%);
-  box-shadow: inset 0 12px 20px rgba(0,0,0,.4), inset 0 -10px 16px rgba(0,0,0,.35), 0 10px 22px -6px rgba(0,0,0,.55); }
-.xam-tube::before { content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: .4; pointer-events: none;
-  background: repeating-linear-gradient(90deg, rgba(0,0,0,.16) 0 1px, transparent 1px 7px); }
+  border-radius: 14px 14px 24px 24px; overflow: hidden;
+  background:
+    linear-gradient(180deg, transparent 53%, rgba(0,0,0,.34) 57%, rgba(0,0,0,.34) 60%, transparent 64%),
+    radial-gradient(ellipse 55% 130% at 26% 42%, rgba(255,241,209,.45), transparent 62%),
+    linear-gradient(90deg, #200f06 0%, #5c391c 13%, #8a5c30 27%, #c9a25c 39%, #f0dca8 48%, #c9a25c 58%, #8a5c30 73%, #4a2c14 89%, #1a0c05 100%);
+  box-shadow: inset 0 14px 22px rgba(0,0,0,.45), inset 0 -12px 18px rgba(0,0,0,.4), 0 12px 24px -6px rgba(0,0,0,.6); }
+.xam-tube::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,.2) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 11px);
+  opacity: .5; mix-blend-mode: overlay; }
 .xam-tube::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 24px; height: 13px;
-  background: linear-gradient(180deg, #f4dc96, #c9a23c 52%, #8a6018);
-  box-shadow: 0 1px 1px rgba(0,0,0,.3), 0 -1px 0 rgba(255,255,255,.18); }
+  background: linear-gradient(180deg, #f8e6ae, #c9a23c 55%, #7a5414);
+  box-shadow: 0 1px 1px rgba(0,0,0,.35), 0 -1px 0 rgba(255,255,255,.22), inset 0 1px 1px rgba(255,255,255,.3); }
 .xam-mouth { position: absolute; top: -9px; left: -4px; width: 104px; height: 24px; z-index: 4; border-radius: 50%;
-  background: radial-gradient(closest-side, #25140a 56%, #b98a32 59%, #f4dc96 74%, #9a6e22 100%);
-  box-shadow: 0 3px 7px rgba(0,0,0,.45); }
+  background: radial-gradient(closest-side, #1c0f06 48%, #5c3c14 52%, #b98a32 58%, #f8e6ae 68%, #c9a23c 80%, #6e4810 100%);
+  box-shadow: 0 3px 8px rgba(0,0,0,.5), inset 0 -2px 4px rgba(0,0,0,.35), inset 0 2px 3px rgba(255,255,255,.15); }
 
 .xam-falling { position: absolute; left: 50%; top: 26px; width: 6px; height: 72px; z-index: 6;
   transform: translateX(-50%); border-radius: 3px;
@@ -521,19 +527,25 @@ input[type=number] {
 .dc-censer > .dc-incense:nth-child(5) { transform: translateX(-50%) rotate(1deg); }
 .dc-censer > .dc-incense:nth-child(6) { transform: translateX(-50%) rotate(13deg); }
 
-.dc-pot { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 66px; height: 34px;
-  border-radius: 14px 14px 18px 18px;
-  background: linear-gradient(180deg, #f4dc96 0%, #cda646 32%, #9a6e22 78%, #7a5418 100%);
-  box-shadow: inset 0 4px 7px rgba(255,255,255,.3), inset 0 -7px 9px rgba(0,0,0,.32); }
-.dc-pot::before { content: ''; position: absolute; top: -6px; left: -4px; width: 74px; height: 14px; border-radius: 50%;
-  background: linear-gradient(180deg, #f8e2a4, #b98a32); box-shadow: 0 2px 4px rgba(0,0,0,.3); }
-.dc-pot::after { content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); width: 52px; height: 8px;
-  border-radius: 50%; background: rgba(0,0,0,.28); filter: blur(2px); }
-.dc-pot-h { position: absolute; top: 7px; width: 13px; height: 17px; border: 3px solid #b3851f; border-radius: 50%; background: transparent; }
+.dc-pot { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 68px; height: 36px;
+  border-radius: 16px 16px 20px 20px;
+  background:
+    radial-gradient(ellipse 50% 65% at 30% 22%, rgba(255,240,195,.6), transparent 58%),
+    linear-gradient(180deg, #f4dc96 0%, #cda646 30%, #9a6e22 76%, #5c3f0e 100%);
+  box-shadow: inset 0 4px 7px rgba(255,255,255,.3), inset 0 -8px 11px rgba(0,0,0,.4), 0 3px 7px rgba(0,0,0,.3); }
+.dc-pot::before { content: ''; position: absolute; top: -7px; left: -5px; width: 78px; height: 16px; border-radius: 50%;
+  background: radial-gradient(ellipse 60% 75% at 35% 28%, #fef0c8, transparent 55%), linear-gradient(180deg, #f8e2a4, #8a6018);
+  box-shadow: 0 2px 5px rgba(0,0,0,.4), inset 0 -2px 3px rgba(0,0,0,.3), inset 0 1px 2px rgba(255,255,255,.4); }
+.dc-pot::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 54px; height: 9px;
+  border-radius: 50%; background: rgba(0,0,0,.34); filter: blur(2.5px); }
+.dc-pot-h { position: absolute; top: 8px; width: 13px; height: 17px; border: 3px solid #b3851f; border-radius: 50%; background: transparent;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.45), inset 0 -1px 2px rgba(0,0,0,.35); }
 .dc-pot-h-l { left: -9px; }
 .dc-pot-h-r { right: -9px; }
 /* chân đỉnh */
-.dc-pot-leg { position: absolute; bottom: -7px; width: 5px; height: 9px; background: linear-gradient(180deg,#b3851f,#6e4d12); border-radius: 0 0 2px 2px; }
+.dc-pot-leg { position: absolute; bottom: -8px; width: 6px; height: 10px;
+  background: linear-gradient(90deg, #5c3f0e, #cda646 45%, #b3851f 60%, #5c3f0e); border-radius: 0 0 2px 2px;
+  box-shadow: 0 2px 3px rgba(0,0,0,.35); }
 
 .dc-smoke { position: absolute; bottom: 66px; left: 50%; width: 7px; height: 7px; border-radius: 50%;
   background: rgba(226,232,240,.5); filter: blur(3px); opacity: 0; }
@@ -552,16 +564,21 @@ input[type=number] {
 /* Que xăm: thanh tre dẹt, đầu SƠN SON phẳng (không phải đầu diêm tròn), xếp xoè */
 .xam-sticks { bottom: 62px; gap: 1px; }
 .xam-stick { width: 7px; border-radius: 2px 2px 0 0;
-  background: linear-gradient(90deg, #5e4119 0%, #9c7a36 22%, #e2c884 50%, #9c7a36 78%, #4a3413 100%);
-  box-shadow: inset -1px 0 0 rgba(0,0,0,.18), inset 1px 0 0 rgba(255,255,255,.14); }
+  background:
+    radial-gradient(ellipse 65% 45% at 30% 12%, rgba(255,255,255,.35), transparent 55%),
+    linear-gradient(90deg, #4a3413 0%, #8a6a2a 24%, #e2c884 48%, #8a6a2a 76%, #3a2a0e 100%);
+  box-shadow: inset -1px 0 0 rgba(0,0,0,.22), inset 1px 0 0 rgba(255,255,255,.16); }
 .xam-stick::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 18px; border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #9a2a20, #741c14); box-shadow: inset 0 -1px 0 rgba(0,0,0,.28); }
-.xam-stick::after { content: ''; position: absolute; top: 18px; left: 0; right: 0; height: 2px; background: #e0bd62; }
+  background: radial-gradient(ellipse 70% 55% at 32% 18%, #e0584a, transparent 58%), linear-gradient(180deg, #9a2a20, #5c140d);
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.32), inset 1px 0 0 rgba(255,255,255,.1); }
+.xam-stick::after { content: ''; position: absolute; top: 18px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #b8923e, #e0bd62, #b8923e); }
 
 .xam-falling { width: 7px; border-radius: 2px;
-  background: linear-gradient(90deg, #5e4119, #e2c884 50%, #4a3413); }
+  background:
+    radial-gradient(ellipse 65% 45% at 30% 12%, rgba(255,255,255,.35), transparent 55%),
+    linear-gradient(90deg, #4a3413, #e2c884 50%, #3a2a0e); }
 .xam-falling::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 18px; border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #9a2a20, #741c14); }
+  background: radial-gradient(ellipse 70% 55% at 32% 18%, #e0584a, transparent 58%), linear-gradient(180deg, #9a2a20, #5c140d); }
 .xam-falling::after { content: ''; position: absolute; top: 18px; left: 0; right: 0; height: 2px; background: #e0bd62; }
 
 /* Thắp hương: ngọn lửa bùng khi châm */
