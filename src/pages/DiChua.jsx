@@ -89,6 +89,7 @@ export default function DiChua() {
 
   return (
     <div className="dc-root">
+      <div className="dc-page-bg" style={{ backgroundImage: `url(${(import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'})` }} aria-hidden="true" />
       <SeoTag title="Đi Chùa — Chùa Tam Sở (không gian tâm linh online) | Tam Sở"
         description="Chùa Tam Sở — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
         path="/di-chua" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi chùa' }]} />
