@@ -183,10 +183,8 @@ export default function DiChua() {
             {canHuong ? (
               <>
                 <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
-                  <span className="dc-flame" />
                   <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-                  <span className="dc-incense" /><span className="dc-incense" /><span className="dc-incense" />
-                  <div className="dc-pot"><i className="dc-pot-h dc-pot-h-l" /><i className="dc-pot-h dc-pot-h-r" /><i className="dc-pot-leg" style={{ left: '14px' }} /><i className="dc-pot-leg" style={{ right: '14px' }} /></div>
+                  <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
                 </div>
                 <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
                 <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>

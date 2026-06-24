@@ -2,9 +2,10 @@
 
 **Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (373 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.86.0, 373 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
+**Hiện trạng: v3.87.0, 373 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
 
 **Đã xong gần đây (phiên này):**
+- **ĐI CHÙA — lư hương + ống xăm dùng ẢNH THẬT (v3.87)**: chủ dự án tự tạo 2 ảnh bằng Gemini (đỉnh đồng + ống xăm tre, chạm khắc rất chi tiết). Tự xoá nền bằng Canvas API qua browser thật (nội suy nền theo gradient 4 góc, ngưỡng mềm chống răng cưa, tự crop, cắt watermark) — không thêm dependency. Thay toàn bộ phần CSS vẽ tay của 2 vật thể này bằng ảnh thật, giữ animation khói/que rơi. Verify đã xoá nền đúng (ghép thử lên nền xanh lá để xem rõ), DOM load ảnh thành công — chờ chủ dự án xác nhận trực quan lần cuối.
 - **ĐI CHÙA — giảm độ tối hậu cảnh (v3.86)**: chủ dự án gửi ảnh chụp — hậu cảnh v3.85 dim quá tay (gần như đen hết), tăng brightness + giảm lớp phủ tối để ảnh thấy rõ hơn qua sidebar/card/slider. Chưa tự xem được bằng mắt, chờ chủ dự án xác nhận lần nữa.
 - **ĐI CHÙA — hậu cảnh mờ cho TOÀN TRANG (v3.85)**: sửa ý từ v3.84 ("background toàn trang" chứ không chỉ modal) — ảnh thật của khu đang xem giờ làm hậu cảnh cho cả `.dc-root` (header/sidebar/right-panel/slider), không chỉ riêng viewport trung tâm. Đổi theo khu đang xem. Lư hương/ống xăm: đã nói rõ CSS vẽ tay có giới hạn (2 lần sửa vẫn chưa đạt) — đề xuất hướng ảnh thật, chờ chủ dự án quyết định. 373 test pass.
 - **ĐI CHÙA — ảnh thật làm hậu cảnh modal Xin Xăm (v3.84)**: nâng cấp CSS v3.83 chưa đủ (phản hồi "vẫn vậy mà") → dùng luôn ảnh thật đã có sẵn (11 ảnh Gemini) làm hậu cảnh mờ cho khung thoại (blur+tối, chữ vẫn đọc được), đúng ảnh của khu đang xem. Verify ảnh tải thành công + computed style đúng qua dev server. 373 test pass (không đổi).

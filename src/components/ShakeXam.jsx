@@ -11,8 +11,6 @@ const reduced = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
 const pickTarget = () => 7000 + Math.random() * 23000   // 7s … 30s
-const STICKS = Array.from({ length: 11 })
-
 export default function ShakeXam() {
   const [phase, setPhase] = useState('idle')   // idle | shaking | dropping | result
   const [progress, setProgress] = useState(0)
@@ -123,13 +121,7 @@ export default function ShakeXam() {
       <div className="xam-stage" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}
         role="button" tabIndex={0} aria-label="Lắc ống xăm — kéo qua lại để xin thẻ">
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
-          <div className="xam-sticks">
-            {STICKS.map((_, i) => (
-              <span key={i} className="xam-stick"
-                style={{ '--n': i, height: (60 + ((i * 17) % 34)) + 'px', transform: `rotate(${(i - 5) * 1.7}deg)` }} />
-            ))}
-          </div>
-          <div className="xam-tube"><span className="xam-mouth" /></div>
+          <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-tube-cutout.png'} alt="" className="xam-tube-real" />
         </div>
         {dropping && <span className="xam-falling" />}
         {!active && !dropping && progress === 0 && <div className="xam-hand" aria-hidden="true">🤲</div>}
