@@ -21,7 +21,7 @@ function SceneView({ loc, className }) {
   return <img src={src} alt={'Cảnh ' + loc.ten + ' — Chùa Tam Sở'} className={className} loading="lazy" onError={() => setErr(true)} />
 }
 
-function DcModal({ open, onClose, title, children }) {
+function DcModal({ open, onClose, title, children, bgImage }) {
   const ref = useRef(null)
   useEffect(() => {
     if (!open) return
@@ -34,9 +34,12 @@ function DcModal({ open, onClose, title, children }) {
   return (
     <div className="dc-overlay" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <div className="dc-dialog" role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} ref={ref}>
-        <button className="dc-dialog-x" aria-label="Đóng" onClick={onClose}>×</button>
-        {title && <h3 className="dc-dialog-title">{title}</h3>}
-        {children}
+        {bgImage && <div className="dc-dialog-bg" style={{ backgroundImage: `url(${bgImage})` }} aria-hidden="true" />}
+        <div className="dc-dialog-content">
+          <button className="dc-dialog-x" aria-label="Đóng" onClick={onClose}>×</button>
+          {title && <h3 className="dc-dialog-title">{title}</h3>}
+          {children}
+        </div>
       </div>
     </div>
   )
@@ -242,7 +245,8 @@ export default function DiChua() {
         <p className="dc-card-note" style={{ marginTop: 10 }}>Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, lời nguyện, xin xăm) trước khi thêm bất kỳ tính năng liên quan đến tiền. Sẽ không bao giờ có nút quyên góp giả ở đây.</p>
       </DcModal>
 
-      <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống">
+      <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống"
+        bgImage={(import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'}>
         <ShakeXam />
       </DcModal>
 

@@ -395,8 +395,12 @@ input[type=number] {
 .dc-thumb.is-active .dc-thumb-label { color: #fde68a; font-weight: 600; }
 
 .dc-overlay { position: fixed; inset: 0; z-index: 70; background: rgba(2,6,16,.72); display: flex; align-items: center; justify-content: center; padding: 18px; }
-.dc-dialog { position: relative; width: 100%; max-width: 460px; max-height: 90vh; overflow: auto; background: #121a2b;
-  border: 1px solid rgba(251,191,36,.3); border-radius: 18px; padding: 22px; color: #e2e8f0; box-shadow: 0 30px 80px -20px rgba(0,0,0,.7); }
+.dc-dialog { position: relative; width: 100%; max-width: 460px; max-height: 90vh; overflow: hidden; background: #121a2b;
+  border: 1px solid rgba(251,191,36,.3); border-radius: 18px; color: #e2e8f0; box-shadow: 0 30px 80px -20px rgba(0,0,0,.7); }
+.dc-dialog-bg { position: absolute; inset: -20px; z-index: 0; background-size: cover; background-position: center;
+  filter: blur(20px) brightness(.45) saturate(1.1); }
+.dc-dialog-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,26,43,.55), rgba(18,26,43,.88)); }
+.dc-dialog-content { position: relative; z-index: 1; max-height: 90vh; overflow: auto; padding: 22px; }
 .dc-dialog-x { position: absolute; top: 12px; right: 14px; background: transparent; border: 0; color: #94a3b8; font-size: 1.6rem; line-height: 1; cursor: pointer; }
 .dc-dialog-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; color: #fde68a; margin: 0 0 12px; }
 .dc-help-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: .9rem; line-height: 1.5; }
