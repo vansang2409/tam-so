@@ -121,7 +121,7 @@ export default function ShakeXam() {
       <div className="xam-stage" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}
         role="button" tabIndex={0} aria-label="Lắc ống xăm — kéo qua lại để xin thẻ">
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
-          <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-tube-cutout.png'} alt="" className="xam-tube-real" />
+          <img src={(import.meta.env.BASE_URL || '/') + 'dichua/' + (phase === 'idle' ? 'dc-tube-cutout.png' : 'dc-tube-cutout-shake.png')} alt="" className="xam-tube-real" />
         </div>
         {dropping && <span className="xam-falling" />}
         {!active && !dropping && progress === 0 && <div className="xam-hand" aria-hidden="true">🤲</div>}

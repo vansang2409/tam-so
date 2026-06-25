@@ -424,7 +424,7 @@ input[type=number] {
 .xam-stage { width: 200px; height: 220px; display: flex; align-items: center; justify-content: center; position: relative;
   touch-action: none; cursor: grab; user-select: none; }
 .xam-stage:active { cursor: grabbing; }
-.xam-cyl { position: relative; width: 160px; height: 142px; transition: transform .12s ease; transform-origin: 50% 88%; }
+.xam-cyl { position: relative; width: 120px; height: 208px; transition: transform .12s ease; transform-origin: 50% 88%; }
 .xam-cyl.is-dropping { animation: xamWobble .5s ease; }
 .xam-sticks { position: absolute; left: 0; right: 0; bottom: 96px; display: flex; justify-content: center; align-items: flex-end; gap: 3px; height: 60px; }
 .xam-stick { width: 4px; background: linear-gradient(180deg,#e8c98a,#b9842f); border-radius: 2px 2px 0 0; transform-origin: bottom center; }
@@ -439,7 +439,7 @@ input[type=number] {
   border-radius: 2px; transform: translateX(-50%); animation: xamFall .9s cubic-bezier(.4,0,.7,1) forwards; }
 @keyframes xamJiggle { 0%,100% { transform: rotate(-6deg) } 50% { transform: rotate(6deg) } }
 @keyframes xamWobble { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-9deg) } 75% { transform: rotate(9deg) } }
-@keyframes xamFall { 0% { top: 46px; opacity: 0 } 15% { opacity: 1 } 70% { top: 160px } 100% { top: 230px; opacity: 0; transform: translateX(-50%) rotate(40deg) } }
+@keyframes xamFall { 0% { top: 120px; opacity: 0 } 15% { opacity: 1 } 70% { top: 185px } 100% { top: 230px; opacity: 0; transform: translateX(-50%) rotate(40deg) } }
 @keyframes xamHand { 0%,100% { transform: translateX(0) } 50% { transform: translateX(-10px) } }
 .xam-bar { width: 220px; height: 8px; border-radius: 5px; background: rgba(255,255,255,.1); overflow: hidden; }
 .xam-bar span { display: block; height: 100%; background: linear-gradient(90deg,#e0a93c,#fbbf24); transition: width .15s ease; }
@@ -518,7 +518,7 @@ input[type=number] {
   background: radial-gradient(closest-side, #1c0f06 48%, #5c3c14 52%, #b98a32 58%, #f8e6ae 68%, #c9a23c 80%, #6e4810 100%);
   box-shadow: 0 3px 8px rgba(0,0,0,.5), inset 0 -2px 4px rgba(0,0,0,.35), inset 0 2px 3px rgba(255,255,255,.15); }
 
-.xam-falling { position: absolute; left: 50%; top: 46px; width: 6px; height: 72px; z-index: 6;
+.xam-falling { position: absolute; left: 50%; top: 120px; width: 6px; height: 72px; z-index: 6;
   transform: translateX(-50%); border-radius: 3px;
   background: linear-gradient(90deg, #7d5a24, #ecd596 48%, #6e4d1e);
   animation: xamFall .9s cubic-bezier(.4,0,.7,1) forwards; }

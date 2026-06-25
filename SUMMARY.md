@@ -1,8 +1,8 @@
-# SUMMARY — Tam Sở (cập nhật 24/06/2026)
+# SUMMARY — Tam Sở (cập nhật 25/06/2026)
 
 **Mục tiêu:** web Tarot/Thần số học/Tử vi cấp sản phẩm thương mại — đẹp, dễ dùng, nội dung sâu, giữ chân, SEO tốt, freemium. Web TĨNH (Vite+React+Tailwind, client-side, PWA). Lệnh: test `node tests/run.mjs` (373 mốc), build `npm run build`. Không backend/auth/db.
 
-**Hiện trạng: v3.87.0, 373 test pass.** Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
+**Hiện trạng: v3.88.0, 373 test pass.** Đi Chùa: lư hương đã sửa hết lỗi vũng nước mờ dưới chân; ống xăm đổi sang 2 tư thế ảnh thật (Dreamina AI, không tay người) đổi theo trạng thái lắc (yên/xoè). Giao diện **clean-SaaS sáng** (nền trắng/slate, nhấn amber) + **Framer Motion** chuyển trang. **Toàn bộ backlog actionable (H/M/A/C/U) đã XONG; chỉ còn nhóm LOW cần backend.** Domain: `https://tam-so.vercel.app` (tạm).
 
 **Đã xong gần đây (phiên này):**
 - **ĐI CHÙA — lư hương + ống xăm dùng ẢNH THẬT (v3.87)**: chủ dự án tự tạo 2 ảnh bằng Gemini (đỉnh đồng + ống xăm tre, chạm khắc rất chi tiết). Tự xoá nền bằng Canvas API qua browser thật (nội suy nền theo gradient 4 góc, ngưỡng mềm chống răng cưa, tự crop, cắt watermark) — không thêm dependency. Thay toàn bộ phần CSS vẽ tay của 2 vật thể này bằng ảnh thật, giữ animation khói/que rơi. Verify đã xoá nền đúng (ghép thử lên nền xanh lá để xem rõ), DOM load ảnh thành công — chờ chủ dự án xác nhận trực quan lần cuối.
