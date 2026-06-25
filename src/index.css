@@ -305,6 +305,9 @@ input[type=number] {
 /* thanh cuộn site dùng track SÁNG (xem ::-webkit-scrollbar-track ở trên) — chói trên nền tối Đi Chùa, ẩn riêng khu này (vẫn cuộn/vuốt bình thường) */
 body.dc-lock, body.dc-lock * { scrollbar-width: none; }
 body.dc-lock::-webkit-scrollbar, body.dc-lock *::-webkit-scrollbar { width: 0; height: 0; }
+/* document.scrollingElement THỰC RA là <html>, không phải <body> — phải ẩn + khoá tràn ngang ở đây mới hết */
+html:has(body.dc-lock) { overflow-x: hidden; scrollbar-width: none; }
+html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 .dc-page-bg { position: absolute; inset: 0; z-index: -1; background-size: cover; background-position: center;
   filter: blur(26px) brightness(.7) saturate(1.15); transform: scale(1.1); transition: background-image .5s ease; }
 .dc-page-bg::after { content: ''; position: absolute; inset: 0;
