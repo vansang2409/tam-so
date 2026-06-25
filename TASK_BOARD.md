@@ -22,6 +22,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | H15 | Chủ dự án: "tôi nghĩ là bỏ luôn cũng được" sau H14 | UX | Med | Done (v3.95) | Đơn giản hoá: `.dc-caption{display:none}` ở mobile (tên địa điểm đã có ở tab sidebar + biển hiệu thường trực, không cần hộp overlay riêng); ẩn kèm 2 nút ↑/↓ thừa, dọn rule lẻ của H14 |
 | H16 | Chủ dự án gửi screenshot 4 thẻ panel phải, "làm lại cho tinh gọn hơn nha" | UI | Med | Done (v3.96) | Giảm padding/gap/font toàn bộ `.dc-card`+con; ảnh lư hương (chiếm nhiều nhất) 80→52px; dời lại vị trí khói theo tỉ lệ mới. Đo thật: tổng 4 thẻ 617px (trước ~830px), nút vẫn đạt chuẩn chạm 36-38px |
 | H17 | Chủ dự án sau H16: "vẫn vậy mà thử đổi style UI xem" — muốn đổi cách trình bày, không chỉ co nhỏ | UI | Med | Done (v3.97) | Đổi style: Thắp Hương từ ảnh to+nút xếp dọc → ảnh nhỏ+nút 1 hàng ngang; Xin Xăm+Công Đức ghép lưới 2 cột song song (trước xếp dọc lặp lại); icon 🙏 vào tiêu đề thay overlap góc textarea. Verify nút dài nhất vẫn 1 dòng, 2 cột cao bằng nhau. Tổng panel ~482px |
+| H18 | Chủ dự án sau H17: "rối và không đều gì hết" | UI | Med | Done (v3.98) | Đúng: 3/4 tiêu đề có icon, riêng Thắp Hương không có; nó cũng là thẻ DUY NHẤT xếp ngang trong khi 3 thẻ khác xếp dọc — trộn bố cục gây rối. Sửa: thêm icon 🔥, bỏ hàng ngang quay lại xếp dọc khớp nhịp 3 thẻ kia. Verify ảnh lư hương căn giữa đối xứng, cả 4 tiêu đề đều có icon |
 
 ## MEDIUM
 | ID | Task | Nhóm | TT |

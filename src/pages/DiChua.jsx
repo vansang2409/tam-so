@@ -178,16 +178,14 @@ export default function DiChua() {
           </div>
 
           <div className="dc-card">
-            <div className="dc-card-title">Thắp Hương Online</div>
+            <div className="dc-card-title">🔥 Thắp Hương Online</div>
             {canHuong ? (
               <>
-                <div className="dc-huong-row">
-                  <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
-                    <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-                    <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
-                  </div>
-                  <button type="button" className="dc-btn dc-btn-gold" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
+                <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
+                  <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
+                  <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
                 </div>
+                <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
                 <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>
               </>
             ) : (
