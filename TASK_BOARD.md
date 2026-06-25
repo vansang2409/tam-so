@@ -20,6 +20,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | H13 | Chủ dự án: "check trên localhost vẫn bị nha... có thể là do scroll" sau H12 | UX | High | Done (v3.93) | `document.scrollingElement` = `<html>`, KHÔNG phải `<body>` — toàn bộ fix H11/H12 nhắm sai chỗ (body.dc-lock). Sửa: `html:has(body.dc-lock){overflow-x:hidden;scrollbar-width:none}` + ẩn ::-webkit-scrollbar; verify getComputedStyle(documentElement) đúng khi ở Đi Chùa, không đụng html ở trang khác |
 | H14 | Chủ dự án: "phần dc-caption đang che hết người dùng ko thấy được á" sau H10's fix | UX | High | Done (v3.94) | Đo được: caption (full-width, đẩy xuống ở H10) cao 136px trong khung ảnh 260px = ~93% bị che (sign+caption+nút gần như liền nhau, không khoảng trống). Sửa ở @media ≤760px: ẩn `.dc-caption-desc`, giảm title/padding, tăng `.dc-stage` min-height 260→300px → caption co còn 65px, lộ khoảng trống thấy ảnh ~127px |
 | H15 | Chủ dự án: "tôi nghĩ là bỏ luôn cũng được" sau H14 | UX | Med | Done (v3.95) | Đơn giản hoá: `.dc-caption{display:none}` ở mobile (tên địa điểm đã có ở tab sidebar + biển hiệu thường trực, không cần hộp overlay riêng); ẩn kèm 2 nút ↑/↓ thừa, dọn rule lẻ của H14 |
+| H16 | Chủ dự án gửi screenshot 4 thẻ panel phải, "làm lại cho tinh gọn hơn nha" | UI | Med | Done (v3.96) | Giảm padding/gap/font toàn bộ `.dc-card`+con; ảnh lư hương (chiếm nhiều nhất) 80→52px; dời lại vị trí khói theo tỉ lệ mới. Đo thật: tổng 4 thẻ 617px (trước ~830px), nút vẫn đạt chuẩn chạm 36-38px |
 
 ## MEDIUM
 | ID | Task | Nhóm | TT |
