@@ -170,10 +170,9 @@ export default function DiChua() {
         {/* RIGHT PANEL */}
         <aside className="dc-right">
           <div className="dc-card">
-            <div className="dc-card-title">Lời Cầu Nguyện</div>
+            <div className="dc-card-title">🙏 Lời Cầu Nguyện</div>
             <textarea className="dc-textarea" rows={2} maxLength={500} value={prayer}
               onChange={e => setPrayer(e.target.value)} placeholder="Viết lời nguyện của bạn…" />
-            <div className="dc-pray-icon" aria-hidden="true">🙏</div>
             <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={sendPrayer} disabled={!prayer.trim()}>Gửi Lời Nguyện</button>
             <p className="dc-card-note">{sentFlash ? '✓ Đã ghi nhận lời nguyện của bạn.' : (prayerCount > 0 ? 'Bạn đã gửi ' + prayerCount + ' lời nguyện (lưu riêng trên máy).' : 'Lưu riêng tư trong trình duyệt của bạn.')}</p>
           </div>
@@ -182,11 +181,13 @@ export default function DiChua() {
             <div className="dc-card-title">Thắp Hương Online</div>
             {canHuong ? (
               <>
-                <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
-                  <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-                  <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
+                <div className="dc-huong-row">
+                  <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
+                    <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
+                    <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
+                  </div>
+                  <button type="button" className="dc-btn dc-btn-gold" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
                 </div>
-                <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
                 <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>
               </>
             ) : (
@@ -201,16 +202,17 @@ export default function DiChua() {
             )}
           </div>
 
-          <div className="dc-card">
-            <div className="dc-card-title">Xin Xăm</div>
-            <p className="dc-card-desc">Lắc ống xăm để xin một quẻ — 16 thẻ, diễn giải tham khảo dân gian.</p>
-            <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={() => setModal('xam')}>🎋 Lắc Xin Xăm</button>
-          </div>
-
-          <div className="dc-card">
-            <div className="dc-card-title">Công Đức</div>
-            <p className="dc-card-desc">Tùy hỷ công đức xây dựng và hoằng pháp.</p>
-            <button type="button" className="dc-btn dc-btn-ghost dc-btn-block" onClick={() => setModal('congduc')}>Công Đức Ngay</button>
+          <div className="dc-card-row">
+            <div className="dc-card dc-card-half">
+              <div className="dc-card-title">🎋 Xin Xăm</div>
+              <p className="dc-card-desc">Lắc ống xăm xin một quẻ.</p>
+              <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={() => setModal('xam')}>Lắc ngay</button>
+            </div>
+            <div className="dc-card dc-card-half">
+              <div className="dc-card-title">◈ Công Đức</div>
+              <p className="dc-card-desc">Tuỳ hỷ xây dựng &amp; hoằng pháp.</p>
+              <button type="button" className="dc-btn dc-btn-ghost dc-btn-block" onClick={() => setModal('congduc')}>Xem thêm</button>
+            </div>
           </div>
         </aside>
       </div>

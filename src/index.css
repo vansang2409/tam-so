@@ -384,7 +384,10 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
   padding: 6px 9px; color: #e2e8f0; font: inherit; font-size: .82rem; resize: vertical; }
 .dc-textarea::placeholder { color: #64748b; }
 .dc-textarea:focus { outline: none; border-color: #d97706; }
-.dc-pray-icon { text-align: right; font-size: 1.15rem; margin: -25px 5px 2px 0; opacity: .8; pointer-events: none; }
+.dc-huong-row { display: flex; align-items: center; gap: 10px; }
+.dc-huong-row .dc-btn { flex: 1; min-width: 0; }
+.dc-card-row { display: flex; gap: 9px; }
+.dc-card-half { flex: 1; min-width: 0; }
 .dc-censer { position: relative; height: 60px; display: flex; align-items: flex-end; justify-content: center; gap: 5px; margin-bottom: 10px; }
 .dc-censer-stick { width: 2px; height: 30px; background: linear-gradient(180deg,#caa44a,#7a5614); position: relative; }
 .dc-censer.is-lit .dc-censer-stick::before { content: ''; position: absolute; top: -4px; left: -1px; width: 4px; height: 4px;
@@ -535,7 +538,7 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
   background: linear-gradient(180deg, #df3a2c, #9e1f17); }
 
 /* — Lư hương: đỉnh đồng có quai + chân + khói — */
-.dc-censer { position: relative; height: 52px; margin-bottom: 7px; display: block; }
+.dc-censer { position: relative; height: 52px; width: 60px; flex-shrink: 0; display: block; }
 .dc-censer.is-lit::after { content: none; }     /* bỏ khói cũ (dùng .dc-smoke mới) */
 .dc-pot-real { position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); height: 48px; width: auto;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,.35)); }
