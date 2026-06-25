@@ -302,6 +302,9 @@ input[type=number] {
 .dc-root { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
   background: #0b1220; color: #e2e8f0; overflow: auto;
   font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+/* thanh cuộn site dùng track SÁNG (xem ::-webkit-scrollbar-track ở trên) — chói trên nền tối Đi Chùa, ẩn riêng khu này (vẫn cuộn/vuốt bình thường) */
+body.dc-lock, body.dc-lock * { scrollbar-width: none; }
+body.dc-lock::-webkit-scrollbar, body.dc-lock *::-webkit-scrollbar { width: 0; height: 0; }
 .dc-page-bg { position: absolute; inset: 0; z-index: -1; background-size: cover; background-position: center;
   filter: blur(26px) brightness(.7) saturate(1.15); transform: scale(1.1); transition: background-image .5s ease; }
 .dc-page-bg::after { content: ''; position: absolute; inset: 0;
