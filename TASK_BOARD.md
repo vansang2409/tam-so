@@ -14,6 +14,7 @@ Trạng thái: Todo / Doing / Done / Blocked. Ưu tiên: High / Med / Low.
 | H07 | Rà loading/empty/error state toàn site | UX | High | Done | forms đã có empty+error; +NotFound 404 catch-all; sửa hồi quy /tarot/:slug; slug sai (số/cung/lá)→NotFound |
 | H08 | Mobile responsive sweep toàn site | UX | High | Done (verify: bảng rộng đã overflow-x-auto; trang mới responsive) | 380px không vỡ ở 11 trang |
 | H09 | Chủ dự án: "người dùng sẽ dùng mobile nhiều hơn" — audit lại UI mobile (sau khi có thêm Đi Chùa/dark mode/lịch sử chưa từng test mobile) | UX | High | Done (v3.89) | Quét lập trình 16 route ở ~375px: 0 lỗi vỡ ngang thật (loại trừ overflow-x:auto cố ý); quét mọi nút bấm < 36px → sửa 4 chỗ (modal close ×2, 78 nút yêu thích Tarot, mũi tên lịch vạn niên) |
+| H10 | Chủ dự án gửi screenshot DevTools (iPhone 6/7/8 Plus, 414px) trang Đi Chùa: "xấu quá" — biển hiệu đè chữ | UX | High | Done (v3.90) | `.dc-sign` (giữa) + `.dc-caption` (trái, max-width 300px) cùng top:16px → đè nhau dưới ~414px; sửa bằng đẩy `.dc-caption` xuống dưới + full-width ở @media ≤760px; verify đo rect qua dev server thật, không còn chạm |
 
 ## MEDIUM
 | ID | Task | Nhóm | TT |

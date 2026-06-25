@@ -475,6 +475,8 @@ input[type=number] {
   .dc-brand-txt i, .dc-user-txt { display: none; }
   .dc-stage { min-height: 260px; }
   .dc-stage-hint { display: none; }
+  .dc-sign { max-width: 70%; }
+  .dc-caption { top: 50px; left: 10px; right: 10px; max-width: none; }
 }
 
 /* Đi chùa: ảnh thật (nếu có) phủ kín khung; biển hiệu overlay đè lên cả ảnh lẫn SVG */
