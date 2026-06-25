@@ -1,4 +1,4 @@
-const CACHE = 'tamso-v3.88'
+const CACHE = 'tamso-v3.89'
 self.addEventListener('install', e => {
   e.waitUntil((async () => { try { const c = await caches.open(CACHE); await c.add('./') } catch (_) {} self.skipWaiting() })())
 })

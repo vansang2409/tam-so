@@ -31,7 +31,7 @@ export default function Modal({ open, onClose, children }) {
         className="relative w-full max-w-[520px] my-auto p-5 sm:p-[30px] rounded-[18px] shadow-soft border border-gold/30 max-h-[92vh] overflow-y-auto focus:outline-none"
         style={{ background: '#fff' }}>
         <button onClick={onClose} aria-label="Đóng"
-          className="sticky top-0 float-right -mt-1 bg-transparent border-0 text-muted text-[1.6rem] leading-none cursor-pointer">×</button>
+          className="sticky top-0 float-right -mt-1 -mr-1 w-11 h-11 flex items-center justify-center bg-transparent border-0 text-muted text-[1.6rem] leading-none cursor-pointer">×</button>
         {children}
       </div>
     </div>

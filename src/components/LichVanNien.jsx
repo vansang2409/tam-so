@@ -26,7 +26,7 @@ export default function LichVanNien() {
         </div>
 
         <div className="flex items-center justify-center gap-1 sm:gap-2">
-          <button onClick={() => setOffset(o => o - 1)} aria-label="Ngày trước" className="shrink-0 px-2 sm:px-3 py-6 text-gold/60 hover:text-gold text-[1.7rem] leading-none cursor-pointer transition">‹</button>
+          <button onClick={() => setOffset(o => o - 1)} aria-label="Ngày trước" className="shrink-0 px-4 py-6 text-gold/60 hover:text-gold text-[1.7rem] leading-none cursor-pointer transition">‹</button>
           <div className="grid grid-cols-2 flex-1 max-w-[480px] divide-x divide-gold/20">
             <div className="text-center px-2 sm:px-4">
               <div className="text-gold text-[.7rem] uppercase tracking-[.18em] mb-1">Dương lịch</div>
@@ -41,7 +41,7 @@ export default function LichVanNien() {
               <div className="note m-0">Tháng {al.month}{al.leap ? ' (nhuận)' : ''} · Năm {ycc.tenCanChi}</div>
             </div>
           </div>
-          <button onClick={() => setOffset(o => o + 1)} aria-label="Ngày sau" className="shrink-0 px-2 sm:px-3 py-6 text-gold/60 hover:text-gold text-[1.7rem] leading-none cursor-pointer transition">›</button>
+          <button onClick={() => setOffset(o => o + 1)} aria-label="Ngày sau" className="shrink-0 px-4 py-6 text-gold/60 hover:text-gold text-[1.7rem] leading-none cursor-pointer transition">›</button>
         </div>
 
         <div className="text-center mt-4">
