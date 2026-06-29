@@ -869,5 +869,13 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
 }
 
+// Repo infrastructure: line endings
+{
+  const attrs = readFileSync(new URL('../.gitattributes', import.meta.url), 'utf8')
+  ok(attrs.includes('* text=auto eol=lf'), '.gitattributes: force text files to LF')
+  ok(attrs.includes('*.png binary') && attrs.includes('*.webp binary') && attrs.includes('*.ico binary'), '.gitattributes: mark image/icon formats as binary')
+  ok(!attrs.includes('\r'), '.gitattributes: no CRLF inside attributes file')
+}
+
 console.log(`\n${fail === 0 ? 'OK TAT CA' : 'FAIL'} ${pass} pass / ${fail} fail`)
 process.exit(fail === 0 ? 0 : 1)
