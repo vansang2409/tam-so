@@ -6,11 +6,13 @@ import './index.css'
 import Layout from './components/Layout.jsx'
 import Home from './pages/Home.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import { AuthProvider } from './components/AuthProvider.jsx'
 import { routeLoaders } from './routeLoaders.js'
 
 // Code-split: trang phu tai theo nhu cau (giam JS tai ban dau, tot cho mobile).
 // Layout + Home eager de trang chu hien tuc thi, khong nhap nhay.
 const Profile = lazy(routeLoaders.profile)
+const Auth = lazy(routeLoaders.auth)
 const Tarot = lazy(routeLoaders.tarot)
 const Numerology = lazy(routeLoaders.numerology)
 const TuVi = lazy(routeLoaders.tuVi)
@@ -41,12 +43,14 @@ function FullPageFallback() {
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Router {...routerProps}>
+    <AuthProvider>
+      <Router {...routerProps}>
       <Routes>
         <Route path="/di-chua" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><DiChua /></Suspense></ErrorBoundary>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />
+          <Route path="dang-nhap" element={<Auth />} />
           <Route path="tarot" element={<Tarot />} />
           <Route path="tarot/:slug" element={<Tarot />} />
           <Route path="than-so-hoc" element={<Numerology />} />
@@ -70,5 +74,6 @@ createRoot(document.getElementById('root')).render(
         </Route>
       </Routes>
     </Router>
+    </AuthProvider>
   </React.StrictMode>
 )

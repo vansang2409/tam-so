@@ -1,7 +1,7 @@
 {
   "name": "tam-so",
   "private": true,
-  "version": "4.0.5",
+  "version": "4.1.0",
   "type": "module",
   "description": "Tam Sở — Tarot · Thần số học · Tử vi · Chiêm tinh · Kinh Dịch (Vite + React + Tailwind)",
   "scripts": {
@@ -12,6 +12,7 @@
     "test": "node tests/run.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
     "framer-motion": "^11.18.2",
     "html-to-image": "^1.11.13",
     "react": "^18.3.1",

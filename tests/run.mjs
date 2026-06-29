@@ -889,6 +889,38 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
 }
 
+// Supabase Auth: đăng ký/đăng nhập tuỳ chọn
+{
+  const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  ok(pkgAuth.version === '4.1.0', 'package.json: bump version v4.1.0 cho Supabase Auth')
+  ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
+  const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
+  ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
+  const gi = readFileSync(new URL('../.gitignore', import.meta.url), 'utf8')
+  ok(gi.includes('.env.local') && gi.includes('.env.*.local'), '.gitignore: khong commit env local')
+
+  const supa = readFileSync(new URL('../src/lib/supabase.js', import.meta.url), 'utf8')
+  ok(supa.includes("import { createClient } from '@supabase/supabase-js'") && supa.includes('isSupabaseConfigured') && supa.includes('authRedirectTo'), 'supabase.js: tao client co guard cau hinh + redirect helper')
+  ok(supa.includes('VITE_SUPABASE_URL') && supa.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && supa.includes('VITE_SUPABASE_ANON_KEY'), 'supabase.js: doc URL + publishable/anon key tu env Vite')
+
+  const provider = readFileSync(new URL('../src/components/AuthProvider.jsx', import.meta.url), 'utf8')
+  ok(provider.includes('supabase.auth.getSession') && provider.includes('supabase.auth.onAuthStateChange') && provider.includes('useAuth'), 'AuthProvider: lay session, nghe auth state, expose useAuth')
+
+  const authPage = readFileSync(new URL('../src/pages/Auth.jsx', import.meta.url), 'utf8')
+  ok(authPage.includes('supabase.auth.signUp') && authPage.includes('emailRedirectTo') && authPage.includes('supabase.auth.signInWithPassword') && authPage.includes('supabase.auth.signOut'), 'Auth.jsx: co dang ky/dang nhap/dang xuat qua Supabase Auth')
+  ok(authPage.includes('SeoTag') && authPage.includes('Chưa nối Supabase') && authPage.includes('Tài khoản là tuỳ chọn'), 'Auth.jsx: co SEO + canh bao khi chua cau hinh + noi ro tai khoan tuy chon')
+
+  const mainAuth = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
+  ok(mainAuth.includes("import { AuthProvider } from './components/AuthProvider.jsx'") && mainAuth.includes('<AuthProvider>') && mainAuth.includes('path="dang-nhap" element={<Auth />}'), 'main.jsx: boc AuthProvider va wire route /dang-nhap')
+  const loadersAuth = readFileSync(new URL('../src/routeLoaders.js', import.meta.url), 'utf8')
+  ok(loadersAuth.includes("auth: () => import('./pages/Auth.jsx')") && loadersAuth.includes("'/dang-nhap': routeLoaders.auth"), 'routeLoaders: auth route lazy + prefetch')
+  const layoutAuth = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
+  ok(layoutAuth.includes("{ to: '/dang-nhap', label: 'Đăng nhập' }") && layoutAuth.includes('function AuthBtn') && layoutAuth.includes('useAuth()'), 'Layout.jsx: nav co link dang nhap va AuthBtn dung useAuth')
+
+  const sourcesAuth = readFileSync(new URL('../src/pages/Sources.jsx', import.meta.url), 'utf8')
+  ok(sourcesAuth.includes('Supabase Auth') && sourcesAuth.includes('Không bắt buộc') && sourcesAuth.includes('localStorage'), 'Sources.jsx: FAQ minh bach ve Supabase Auth tuy chon + localStorage')
+}
+
 // Repo infrastructure: line endings
 {
   const attrs = readFileSync(new URL('../.gitattributes', import.meta.url), 'utf8')

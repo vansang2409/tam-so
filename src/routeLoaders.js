@@ -1,5 +1,6 @@
 export const routeLoaders = {
   profile: () => import('./pages/Profile.jsx'),
+  auth: () => import('./pages/Auth.jsx'),
   tarot: () => import('./pages/Tarot.jsx'),
   numerology: () => import('./pages/Numerology.jsx'),
   tuVi: () => import('./pages/TuVi.jsx'),
@@ -19,6 +20,7 @@ export const routeLoaders = {
 
 export const routePrefetchers = {
   '/ho-so': routeLoaders.profile,
+  '/dang-nhap': routeLoaders.auth,
   '/tarot': routeLoaders.tarot,
   '/than-so-hoc': routeLoaders.numerology,
   '/tu-vi': routeLoaders.tuVi,

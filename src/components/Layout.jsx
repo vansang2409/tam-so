@@ -8,12 +8,14 @@ const pageAnim = { opacity: 1, y: 0 }
 const pageTr = { duration: 0.34, ease: [0.22, 0.7, 0.3, 1] }
 import Logo from './Logo.jsx'
 import ThemeToggle from './ThemeToggle.jsx'
+import { useAuth } from './AuthProvider.jsx'
 import { countCollection } from '../data/collection.js'
 import { prefetchRouteChunk } from '../routeLoaders.js'
 
 const links = [
   { to: '/', label: 'Trang chủ', end: true },
   { to: '/ho-so', label: 'Hồ sơ' },
+  { to: '/dang-nhap', label: 'Đăng nhập' },
   { to: '/tarot', label: 'Tarot' },
   { to: '/than-so-hoc', label: 'Thần số học' },
   { to: '/tu-vi', label: 'Tử vi' },
@@ -26,13 +28,25 @@ const links = [
   { to: '/nguon', label: 'Nguồn' }
 ]
 const PRIMARY = ['/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
-const MORE = ['/ho-so', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
+const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
 
 function prefetchProps(to) {
   return {
     onMouseEnter: () => prefetchRouteChunk(to),
     onFocus: () => prefetchRouteChunk(to)
   }
+}
+
+function AuthBtn() {
+  const { user, loading } = useAuth()
+  const label = loading ? '...' : (user?.user_metadata?.full_name || user?.email || '\u0110\u0103ng nh\u1eadp')
+  const title = user ? 'T\u00e0i kho\u1ea3n Tam S\u1edf' : '\u0110\u0103ng nh\u1eadp / \u0110\u0103ng k\u00fd'
+  return (
+    <NavLink to="/dang-nhap" {...prefetchProps('/dang-nhap')} aria-label={title} title={title}
+      className={({ isActive }) => 'px-3 py-2 rounded-full text-[.86rem] font-semibold transition shrink-0 ' + (isActive ? 'text-gold bg-gold/10' : 'text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5')}>
+      {user ? label.split('@')[0].slice(0, 16) : label}
+    </NavLink>
+  )
 }
 
 function CollBtn() {
@@ -107,6 +121,7 @@ function Navbar() {
             {links.map(l => (<NavLink key={l.to} to={l.to} {...prefetchProps(l.to)} end={l.end} className={cls}>{l.label}</NavLink>))}
           </div>
           <ThemeToggle />
+          <AuthBtn />
           <CollBtn />
           <button onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open} aria-controls="navmenu"
             className="md:hidden bg-transparent border border-slate-300 dark:border-slate-600 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
@@ -130,10 +145,11 @@ function Footer() {
   )
 }
 
-const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/la-so-tu-vi': 'Lá số Tử Vi — Tam Sở', '/so-la-so': 'So đôi lá số Tử Vi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/di-chua': 'Đi chùa — Đại Tự Tâm Linh — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/bo-suu-tap': 'Bộ sưu tập đã lưu — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
+const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/dang-nhap': 'Đăng nhập / Đăng ký — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/la-so-tu-vi': 'Lá số Tử Vi — Tam Sở', '/so-la-so': 'So đôi lá số Tử Vi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/di-chua': 'Đi chùa — Đại Tự Tâm Linh — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/bo-suu-tap': 'Bộ sưu tập đã lưu — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
 const DESCS = {
   '/': 'Tam Sở gom Tarot, Thần số học, Tử vi/Can Chi, Cung hoàng đạo và Kinh Dịch về một nơi — xem lá bài, quẻ và Can Chi của hôm nay.',
   '/ho-so': 'Lập hồ sơ huyền học tổng hợp: Số Chủ Đạo, Can Chi, cung hoàng đạo, cung phi, lá Tarot chủ đạo, tuổi hợp/khắc và báo cáo theo chủ đề.',
+  '/dang-nhap': 'Đăng nhập hoặc đăng ký tài khoản Tam Sở qua Supabase Auth; tài khoản là tuỳ chọn, các công cụ chính vẫn dùng được khi chưa đăng nhập.',
   '/tarot': 'Rút Tarot 78 lá Rider–Waite–Smith: lá hôm nay, nhiều kiểu trải bài, bài ngược, ý nghĩa xuôi/ngược và lời khuyên — chép & chia sẻ.',
   '/than-so-hoc': 'Tính Số Chủ Đạo và bộ số Pythagorean: Vận Mệnh, Linh Hồn, Lo Shu, Năm cá nhân, Đỉnh cao & Thử thách và bảng hợp Số Chủ Đạo.',
   '/tu-vi': 'Tra Can Chi năm/ngày/giờ, nạp âm, hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi Bát Trạch, Sao hạn và bảng hợp tuổi 12 con giáp.',
