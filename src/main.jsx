@@ -5,26 +5,26 @@ import { USE_PATH, BASENAME } from './data/site.js'
 import './index.css'
 import Layout from './components/Layout.jsx'
 import Home from './pages/Home.jsx'
+import { routeLoaders } from './routeLoaders.js'
 
 // Code-split: trang phu tai theo nhu cau (giam JS tai ban dau, tot cho mobile).
 // Layout + Home eager de trang chu hien tuc thi, khong nhap nhay.
-const Profile = lazy(() => import('./pages/Profile.jsx'))
-const Tarot = lazy(() => import('./pages/Tarot.jsx'))
-const Numerology = lazy(() => import('./pages/Numerology.jsx'))
-const TuVi = lazy(() => import('./pages/TuVi.jsx'))
-const LaSoTuVi = lazy(() => import('./pages/LaSoTuVi.jsx'))
-const SoLaSo = lazy(() => import('./pages/SoLaSo.jsx'))
-const Zodiac = lazy(() => import('./pages/Zodiac.jsx'))
-const IChing = lazy(() => import('./pages/IChing.jsx'))
-const TuongHop = lazy(() => import('./pages/TuongHop.jsx'))
-const Sources = lazy(() => import('./pages/Sources.jsx'))
-const DiChua = lazy(() => import('./pages/DiChua.jsx'))
-const Collection = lazy(() => import('./pages/Collection.jsx'))
-const ConGiap = lazy(() => import('./pages/ConGiap.jsx'))
-const HopTuoi = lazy(() => import('./pages/HopTuoi.jsx'))
-const SinhNam = lazy(() => import('./pages/SinhNam.jsx'))
-const NotFound = lazy(() => import('./components/NotFound.jsx'))
-
+const Profile = lazy(routeLoaders.profile)
+const Tarot = lazy(routeLoaders.tarot)
+const Numerology = lazy(routeLoaders.numerology)
+const TuVi = lazy(routeLoaders.tuVi)
+const LaSoTuVi = lazy(routeLoaders.laSoTuVi)
+const SoLaSo = lazy(routeLoaders.soLaSo)
+const Zodiac = lazy(routeLoaders.zodiac)
+const IChing = lazy(routeLoaders.iChing)
+const TuongHop = lazy(routeLoaders.tuongHop)
+const Sources = lazy(routeLoaders.sources)
+const DiChua = lazy(routeLoaders.diChua)
+const Collection = lazy(routeLoaders.collection)
+const ConGiap = lazy(routeLoaders.conGiap)
+const HopTuoi = lazy(routeLoaders.hopTuoi)
+const SinhNam = lazy(routeLoaders.sinhNam)
+const NotFound = lazy(routeLoaders.notFound)
 const Router = USE_PATH ? BrowserRouter : HashRouter
 const routerProps = USE_PATH ? { basename: BASENAME } : {}
 

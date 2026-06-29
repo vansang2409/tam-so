@@ -9,6 +9,7 @@ const pageTr = { duration: 0.34, ease: [0.22, 0.7, 0.3, 1] }
 import Logo from './Logo.jsx'
 import ThemeToggle from './ThemeToggle.jsx'
 import { countCollection } from '../data/collection.js'
+import { prefetchRouteChunk } from '../routeLoaders.js'
 
 const links = [
   { to: '/', label: 'Trang chủ', end: true },
@@ -27,6 +28,13 @@ const links = [
 const PRIMARY = ['/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
 const MORE = ['/ho-so', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
 
+function prefetchProps(to) {
+  return {
+    onMouseEnter: () => prefetchRouteChunk(to),
+    onFocus: () => prefetchRouteChunk(to)
+  }
+}
+
 function CollBtn() {
   const [n, setN] = useState(0)
   const loc = useLocation()
@@ -40,7 +48,7 @@ function CollBtn() {
   useEffect(() => { setN(countCollection()) }, [loc])
   const base = 'relative px-3 py-2 rounded-full text-[1.1rem] leading-none transition shrink-0'
   return (
-    <NavLink to="/bo-suu-tap" aria-label={'Bộ sưu tập đã lưu' + (n ? ', ' + n + ' mục' : '')} title="Bộ sưu tập đã lưu"
+    <NavLink to="/bo-suu-tap" {...prefetchProps('/bo-suu-tap')} aria-label={'Bộ sưu tập đã lưu' + (n ? ', ' + n + ' mục' : '')} title="Bộ sưu tập đã lưu"
       className={({ isActive }) => isActive
         ? base + ' text-gold bg-gold/10'
         : base + ' text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5'}>
@@ -72,7 +80,7 @@ function MoreDropdown({ items }) {
       </button>
       {open && (
         <div role="menu" className="absolute right-0 top-[calc(100%+12px)] min-w-[196px] flex flex-col gap-0.5 bg-white dark:bg-ink border border-slate-200 dark:border-slate-700 rounded-2xl p-2 shadow-lift z-50 animate-fade">
-          {items.map(i => (<NavLink key={i.to} to={i.to} role="menuitem" className={({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')}>{i.label}</NavLink>))}
+          {items.map(i => (<NavLink key={i.to} to={i.to} {...prefetchProps(i.to)} role="menuitem" className={({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')}>{i.label}</NavLink>))}
         </div>
       )}
     </div>
@@ -92,11 +100,11 @@ function Navbar() {
         </Link>
         <div className="flex items-center gap-1.5">
           <div className="hidden md:flex md:items-center md:gap-x-[18px]">
-            {PRIMARY.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
+            {PRIMARY.map(l => (<NavLink key={l.to} to={l.to} {...prefetchProps(l.to)} end={l.end} className={cls}>{l.label}</NavLink>))}
             <MoreDropdown items={MORE} />
           </div>
           <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:hidden flex-col gap-0.5 absolute top-[64px] right-3.5 left-3.5 bg-white dark:bg-ink border border-slate-200 dark:border-slate-700 rounded-2xl p-2 shadow-lift z-50`}>
-            {links.map(l => (<NavLink key={l.to} to={l.to} end={l.end} className={cls}>{l.label}</NavLink>))}
+            {links.map(l => (<NavLink key={l.to} to={l.to} {...prefetchProps(l.to)} end={l.end} className={cls}>{l.label}</NavLink>))}
           </div>
           <ThemeToggle />
           <CollBtn />
