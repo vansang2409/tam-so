@@ -805,7 +805,9 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(/tương sinh/.test(weaveDay({ card: cups, up: true, hex: tonHex, dayNum: 3 })), 'weaveDay: nhận diện ngũ hành tương sinh (Thủy×Mộc)')
   const tj = readFileSync(new URL('../src/components/Today.jsx', import.meta.url), 'utf8')
   ok(tj.includes("from '../data/dayWeave.js'") && tj.includes('weaveDay({'), 'Today.jsx: render weaveDay trong khối Hôm nay')
-}
+}  const homeToday = readFileSync(new URL('../src/pages/Home.jsx', import.meta.url), 'utf8')
+  ok(homeToday.includes("const Today = lazy(() => import('../components/Today.jsx'))") && homeToday.includes('<Suspense fallback=') && !homeToday.includes("import Today from '../components/Today.jsx'"), 'Home.jsx: lazy-load Today widget behind Suspense')
+
 
 // === Lịch vạn niên: can chi tháng âm lịch (monthCanChi, Ngũ Hổ Độn) ===
 {

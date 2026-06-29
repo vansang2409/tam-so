@@ -132,7 +132,7 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 |---|---|---|---|---|---|
 | P01 | Code-split route bang React.lazy + Suspense; tach vendor chunk | Perf/Tech | High | Done (v4.0.0) | main.jsx lazy 15 trang (giu Layout/Home eager); Suspense quanh Outlet + /di-chua; spinner fallback reduced-motion; vite manualChunks vendor. Do that gzip: tai ban dau trang chu 228KB->179KB (~-22%), trang nang chi tai khi truy cap; 27 chunk; 377 test pass; build main+single OK (NUL=0) |
 | Q1 | Dut diem churn CRLF bang `.gitattributes` + normalize LF | Quality/Git | High | Done (v4.0.1) | `.gitattributes` ep text LF + binary image/icon; tracked text khong con CRLF; them 3 test ha tang; 380 test pass; build `/tmp/b` main+single OK, single NUL=0 |
-| P2 | Lazy-load widget "que hom nay" tren Home | Perf | High | Todo | Home lazy import Today; data nang nam trong Today; test khoa lazy; index gzip giam ro |
+| P2 | Lazy-load widget "que hom nay" tren Home | Perf | High | Done (v4.0.2) | Home lazy import Today + Suspense; data nang nam trong Today; +1 test khoa lazy; app entry index 59.13KB raw / 24.76KB gzip (<70KB); build main+single OK, single NUL=0 |
 | P3 | Prefetch chunk route khi hover/focus nav | Perf/UX | High | Todo | importer dung chung main/Layout; respect saveData; test khoa prefetch |
 | Q5 | ErrorBoundary cho lazy-load fail | Reliability/UX | High | Todo | chunk import fail hien fallback co nut tai lai/thu lai, khong man trang |
 | P4 | Toi uu anh Di Chua WebP + lazy/async | Perf/Media | High | Todo | tong dung luong anh giam >=40%; verify anh render naturalWidth>0; build/test OK |

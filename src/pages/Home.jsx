@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import Today from '../components/Today.jsx'
 import LichVanNien from '../components/LichVanNien.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ZODIAC, ZODIAC_SLUG, dailyHoroscope } from '../data/zodiac.js'
+
+const Today = lazy(() => import('../components/Today.jsx'))
 
 const pillars = [
   { ic: '🃏', title: 'Rút bài Tarot', to: '/tarot', desc: 'Một câu hỏi trong lòng — để lá bài gợi mở.' },
@@ -107,7 +108,11 @@ export default function Home() {
         </div>
       </section>
 
-      <Reveal><Today /></Reveal>
+      <Reveal>
+        <Suspense fallback={<div className="page-fallback" role="status" aria-live="polite" aria-label="Dang tai hom nay"><span className="page-fallback-spinner" aria-hidden="true" /></div>}>
+          <Today />
+        </Suspense>
+      </Reveal>
 
       <section className="wrap pt-1 pb-3">
         <p className="note text-center max-w-[640px] mx-auto m-0">✦ Lá bài, quẻ Dịch và con số của ngày làm mới mỗi sáng — ghé lại ngày mai để nhận điều mới, và giữ chuỗi ngày của bạn.</p>
