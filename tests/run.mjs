@@ -26,6 +26,7 @@ import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { SAO_KHUYEN } from '../src/data/saoKhuyen.js'
 import * as DC from '../src/data/dichua.js'
+import * as SP from '../src/data/supabaseProfile.js'
 import { readFileSync } from 'node:fs'
 
 let pass = 0, fail = 0
@@ -892,7 +893,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.1.2', 'package.json: bump version v4.1.2 cho Google OAuth')
+  ok(pkgAuth.version === '4.1.3', 'package.json: bump version v4.1.3 cho profile sync')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
   ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
@@ -923,6 +924,30 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
   const sourcesAuth = readFileSync(new URL('../src/pages/Sources.jsx', import.meta.url), 'utf8')
   ok(sourcesAuth.includes('Supabase Auth') && sourcesAuth.includes('Không bắt buộc') && sourcesAuth.includes('localStorage'), 'Sources.jsx: FAQ minh bach ve Supabase Auth tuy chon + localStorage')
+}
+
+// Supabase DB/RLS: Hồ sơ tổng hợp sync qua public.profiles
+{
+  const row = SP.profileFormToRow('00000000-0000-0000-0000-000000000001', { n: 'An', d: '2', m: '3', y: '1990', g: 'nu', h: '7', t: 'Tổng quan', q: 'Một câu hỏi nhỏ' })
+  eq(row.id, '00000000-0000-0000-0000-000000000001', 'profileFormToRow: giữ id auth.users')
+  eq(row.birth_day, 2, 'profileFormToRow: birth_day dạng số')
+  eq(row.birth_hour, 7, 'profileFormToRow: birth_hour dạng số')
+  eq(SP.profileFormToRow('u', { d: '1', m: '1', y: '2000', h: '' }).birth_hour, null, 'profileFormToRow: giờ sinh rỗng -> null')
+  const form = SP.profileRowToForm({ display_name: 'An', birth_day: 2, birth_month: 3, birth_year: 1990, gender: 'nu', birth_hour: 7, topic: 'Tình yêu', question: 'Nhẹ thôi' })
+  ok(form.n === 'An' && form.d === '2' && form.m === '3' && form.y === '1990' && form.g === 'nu' && form.h === '7', 'profileRowToForm: roundtrip row -> form string')
+  ok(SP.hasUsableProfile(form) && !SP.hasUsableProfile({ n: 'An' }), 'hasUsableProfile: cần đủ ngày/tháng/năm')
+  ok(SP.profileSyncErrorMessage({ code: 'PGRST205', message: 'profiles not found' }).includes('supabase/schema.sql'), 'profileSyncErrorMessage: lỗi thiếu bảng gợi ý schema.sql')
+
+  const schema = readFileSync(new URL('../supabase/schema.sql', import.meta.url), 'utf8')
+  ok(schema.includes('create table if not exists public.profiles') && schema.includes('references auth.users(id) on delete cascade'), 'supabase/schema.sql: tạo public.profiles liên kết auth.users')
+  ok(schema.includes('enable row level security') && schema.includes('auth.uid() = id') && schema.includes('profiles_select_own') && schema.includes('profiles_update_own'), 'supabase/schema.sql: bật RLS + policy owner auth.uid() = id')
+
+  const profilePage = readFileSync(new URL('../src/pages/Profile.jsx', import.meta.url), 'utf8')
+  ok(profilePage.includes('useAuth()') && profilePage.includes("from('profiles')") && profilePage.includes('PROFILE_SELECT') && profilePage.includes('upsert(profileFormToRow'), 'Profile.jsx: tải/lưu hồ sơ qua Supabase profiles')
+  ok(profilePage.includes('Đồng bộ Supabase') && profilePage.includes('/dang-nhap') && profilePage.includes('profileSyncErrorMessage'), 'Profile.jsx: UI trạng thái sync + link đăng nhập + lỗi thân thiện')
+
+  const sourcesProfile = readFileSync(new URL('../src/pages/Sources.jsx', import.meta.url), 'utf8')
+  ok(sourcesProfile.includes('Hồ sơ tổng hợp') && sourcesProfile.includes('public.profiles') && sourcesProfile.includes('RLS'), 'Sources.jsx: FAQ nói rõ profile sync qua public.profiles/RLS')
 }
 
 // Repo infrastructure: line endings

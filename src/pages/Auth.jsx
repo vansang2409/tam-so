@@ -11,8 +11,8 @@ const TXT = {
   crumb: 'Đăng nhập',
   kicker: 'Tài khoản Tam Sở',
   title: 'Đăng nhập để giữ một chỗ riêng',
-  intro: 'Tài khoản là tuỳ chọn. Bạn vẫn có thể dùng Tarot, Thần số học, Tử vi, Kinh Dịch như trước; phần đăng nhập chỉ mở đường cho các tính năng lưu trữ/sync sau này.',
-  dataNote: 'Email và phiên đăng nhập được xử lý bởi Supabase Auth khi bạn bật cấu hình. Các kết quả chiêm nghiệm hiện vẫn lưu cục bộ trên trình duyệt cho đến khi có tính năng đồng bộ riêng.',
+  intro: 'Tài khoản là tuỳ chọn. Bạn vẫn có thể dùng Tarot, Thần số học, Tử vi, Kinh Dịch như trước; đăng nhập giúp lưu Hồ sơ tổng hợp lên Supabase và mở đường cho các phần đồng bộ khác.',
+  dataNote: 'Email và phiên đăng nhập được xử lý bởi Supabase Auth. Khi bạn lưu Hồ sơ tổng hợp, dữ liệu hồ sơ được ghi vào bảng public.profiles có RLS; lịch sử/bộ sưu tập khác hiện vẫn lưu cục bộ trên trình duyệt.',
   login: 'Đăng nhập',
   register: 'Đăng ký',
   google: 'Tiếp tục với Google',
@@ -140,7 +140,7 @@ export default function Auth() {
           <div className="border-b border-slate-200 dark:border-slate-700 px-5 py-4 md:px-6">
             <p className="text-[.76rem] font-bold uppercase tracking-[.14em] text-gold mb-1">Supabase Auth</p>
             <h2 className="text-[1.35rem] font-bold tracking-normal m-0">{isRegister ? 'Tạo tài khoản' : 'Chào bạn quay lại'}</h2>
-            <p className="text-muted text-sm m-0 mt-1">{isRegister ? 'Một email, một mật khẩu, nhẹ nhàng là đủ.' : 'Đăng nhập để chuẩn bị cho phần lưu/sync sau này.'}</p>
+            <p className="text-muted text-sm m-0 mt-1">{isRegister ? 'Một email, một mật khẩu, nhẹ nhàng là đủ.' : 'Đăng nhập để lưu Hồ sơ tổng hợp lên Supabase.'}</p>
           </div>
 
           <div className="p-5 md:p-6">

@@ -10,6 +10,8 @@ import { TAROT_CARDS, cardOfDay, birthCards } from '../data/tarot.js'
 import { solar2lunar } from '../data/lunar.js'
 import { anSao, hourToRank } from '../data/tuvidauso.js'
 import { buildReport } from '../data/report.js'
+import { useAuth } from '../components/AuthProvider.jsx'
+import { PROFILE_SELECT, normalizeProfileForm, profileFormToRow, profileRowToForm, profileSyncErrorMessage } from '../data/supabaseProfile.js'
 
 const CUR = new Date()
 const elColor = { 'Lửa': 'h-Hỏa', 'Đất': 'h-Thổ', 'Khí': 'h-Kim', 'Nước': 'h-Thủy' }
@@ -61,29 +63,79 @@ export default function Profile() {
   const [hour, setHour] = useState(''); const [topic, setTopic] = useState('Tổng quan'); const [question, setQuestion] = useState('')
   const [res, setRes] = useState(null); const [err, setErr] = useState(''); const [copied, setCopied] = useState(false); const [repCopied, setRepCopied] = useState(false); const [saving, setSaving] = useState(false)
   const [hist, setHist] = useState([])
+  const [syncMsg, setSyncMsg] = useState('')
+  const [syncKind, setSyncKind] = useState('note')
   const shotRef = useRef(null)
+  const { user, configured, supabase } = useAuth()
+  const canSyncProfile = Boolean(configured && supabase && user?.id)
   const today = cardOfDay()
+
+  const buildProfileParams = (entry) => {
+    const h = normalizeProfileForm(entry)
+    return { ...(h.n ? { n: h.n } : {}), d: h.d, m: h.m, y: h.y, g: h.g, ...(h.h !== '' ? { h: h.h } : {}), t: h.t, ...(h.q ? { q: h.q } : {}) }
+  }
+
+  const applyProfile = (entry, opts = {}) => {
+    const h = normalizeProfileForm(entry)
+    setName(h.n); setD(h.d); setM(h.m); setY(h.y); setG(h.g); setHour(h.h); setTopic(h.t); setQuestion(h.q)
+    if (h.d && h.m && h.y) {
+      setErr('')
+      setRes(compute(h.n, +h.d, +h.m, +h.y, h.g, h.h, h.t, h.q))
+      if (opts.params) setParams(buildProfileParams(h))
+      if (opts.local !== false) { try { localStorage.setItem('tamso_profile', JSON.stringify(h)) } catch (_) { } }
+    }
+  }
+
+  const saveRemoteProfile = async (entry) => {
+    if (!canSyncProfile) return
+    setSyncKind('note'); setSyncMsg('Đang lưu hồ sơ lên Supabase...')
+    const { error } = await supabase.from('profiles').upsert(profileFormToRow(user.id, entry), { onConflict: 'id' })
+    if (error) { setSyncKind('warn'); setSyncMsg(profileSyncErrorMessage(error)); return }
+    setSyncKind('ok'); setSyncMsg('Đã lưu hồ sơ lên Supabase.')
+  }
 
   useEffect(() => {
     try { setHist(JSON.parse(localStorage.getItem('tamso_profile_hist') || '[]')) } catch (_) { }
     const n = params.get('n') || '', d0 = params.get('d'), m0 = params.get('m'), y0 = params.get('y'), g0 = params.get('g') || 'nam'
     const h0 = params.get('h') || '', t0 = params.get('t') || 'Tổng quan', q0 = params.get('q') || ''
     if (d0 && m0 && y0) {
-      setName(n); setD(d0); setM(m0); setY(y0); setG(g0); setHour(h0); setTopic(t0); setQuestion(q0)
-      const dd = +d0, mm = +m0, yy = +y0
-      if (dd && mm && yy) setRes(compute(n, dd, mm, yy, g0, h0, t0, q0))
+      applyProfile({ n, d: d0, m: m0, y: y0, g: g0, h: h0, t: t0, q: q0 }, { local: false })
     } else {
-      try { const sv = JSON.parse(localStorage.getItem('tamso_profile') || 'null'); if (sv && sv.d && sv.m && sv.y) { setName(sv.n || ''); setD(sv.d); setM(sv.m); setY(sv.y); setG(sv.g || 'nam'); setHour(sv.h || ''); setTopic(sv.t || 'Tổng quan'); setQuestion(sv.q || ''); setRes(compute(sv.n || '', +sv.d, +sv.m, +sv.y, sv.g || 'nam', sv.h || '', sv.t || 'Tổng quan', sv.q || '')) } } catch (_) { }
-    } // eslint-disable-next-line
+      try {
+        const sv = JSON.parse(localStorage.getItem('tamso_profile') || 'null')
+        if (sv && sv.d && sv.m && sv.y) applyProfile(sv, { local: false })
+      } catch (_) { }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!configured) { setSyncKind('warn'); setSyncMsg('Chưa nối Supabase nên hồ sơ chỉ lưu trên trình duyệt này.'); return undefined }
+    if (!user || !supabase) { setSyncKind('note'); setSyncMsg('Đăng nhập để đồng bộ Hồ sơ tổng hợp giữa các thiết bị.'); return undefined }
+    const hasSharedParams = Boolean(params.get('d') && params.get('m') && params.get('y'))
+    if (hasSharedParams) { setSyncKind('note'); setSyncMsg('Bạn đang xem hồ sơ từ liên kết chia sẻ. Bấm “Lập hồ sơ” để lưu vào tài khoản Supabase.'); return undefined }
+    let alive = true
+    setSyncKind('note'); setSyncMsg('Đang tải hồ sơ từ Supabase...')
+    supabase.from('profiles').select(PROFILE_SELECT).eq('id', user.id).maybeSingle().then(({ data, error }) => {
+      if (!alive) return
+      if (error) { setSyncKind('warn'); setSyncMsg(profileSyncErrorMessage(error)); return }
+      if (!data) { setSyncKind('note'); setSyncMsg('Đã đăng nhập. Lập hồ sơ lần đầu để lưu lên Supabase.'); return }
+      applyProfile(profileRowToForm(data), { local: true })
+      setSyncKind('ok'); setSyncMsg('Đã tải hồ sơ từ Supabase.')
+    })
+    return () => { alive = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, configured, supabase])
 
   const calc = () => {
     const dd = +d, mm = +m, yy = +y
     if (!dd || !mm || !yy || dd < 1 || dd > 31 || mm < 1 || mm > 12 || yy < 1 || yy > 3000) { setErr('Vui lòng nhập ngày, tháng, năm sinh hợp lệ.'); setRes(null); return }
-    setErr(''); setRes(compute(name, dd, mm, yy, g, hour, topic, question))
-    setParams({ ...(name ? { n: name } : {}), d: '' + dd, m: '' + mm, y: '' + yy, g, ...(hour !== '' ? { h: '' + hour } : {}), t: topic, ...(question.trim() ? { q: question.trim() } : {}) })
-    try { localStorage.setItem('tamso_profile', JSON.stringify({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g, h: '' + hour, t: topic, q: question.trim() })) } catch (_) { }
-    saveHist({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g, h: '' + hour, t: topic, q: question.trim() })
+    const entry = normalizeProfileForm({ n: name, d: '' + dd, m: '' + mm, y: '' + yy, g, h: '' + hour, t: topic, q: question })
+    setErr(''); setRes(compute(entry.n, +entry.d, +entry.m, +entry.y, entry.g, entry.h, entry.t, entry.q))
+    setParams(buildProfileParams(entry))
+    try { localStorage.setItem('tamso_profile', JSON.stringify(entry)) } catch (_) { }
+    saveHist(entry)
+    saveRemoteProfile(entry)
   }
   const saveHist = (e) => {
     setHist(prev => {
@@ -94,9 +146,7 @@ export default function Profile() {
     })
   }
   const loadProfile = (h) => {
-    setName(h.n || ''); setD(h.d); setM(h.m); setY(h.y); setG(h.g || 'nam'); setHour(h.h || ''); setTopic(h.t || 'Tổng quan'); setQuestion(h.q || '')
-    setErr(''); setRes(compute(h.n || '', +h.d, +h.m, +h.y, h.g || 'nam', h.h || '', h.t || 'Tổng quan', h.q || ''))
-    setParams({ ...(h.n ? { n: h.n } : {}), d: h.d, m: h.m, y: h.y, g: h.g || 'nam', ...(h.h ? { h: h.h } : {}), t: h.t || 'Tổng quan', ...(h.q ? { q: h.q } : {}) })
+    applyProfile(h, { params: true, local: false })
     window.scrollTo(0, 0)
   }
   const clearHist = () => { setHist([]); try { localStorage.removeItem('tamso_profile_hist') } catch (_) { } }
@@ -153,6 +203,12 @@ export default function Profile() {
             <button className="btn btn-primary" onClick={calc}>✦ Lập hồ sơ</button>
           </div>
           {err && <div className="disclaimer mt-5">{err}</div>}
+          {configured && (
+            <div className={(syncKind === 'ok' ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-300' : syncKind === 'warn' ? 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-300' : 'border-slate-200 bg-slate-50 text-muted dark:border-slate-700 dark:bg-white/5') + ' mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed'}>
+              <b>Đồng bộ Supabase.</b> {syncMsg || 'Hồ sơ vẫn lưu an toàn trên trình duyệt này.'}
+              {!user && <Link className="ml-1 font-semibold text-gold hover:underline" to="/dang-nhap">Đăng nhập</Link>}
+            </div>
+          )}
           {hist.length > 0 && (
             <div className="mt-4 flex gap-2 flex-wrap items-center justify-center no-print">
               <span className="note">Gần đây:</span>
