@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import SeoTag from '../components/SeoTag.jsx'
 import Logo from '../components/Logo.jsx'
 import TempleScene from '../components/TempleScene.jsx'
+import TempleScene3D from '../components/TempleScene3D.jsx'
+import IncenseCenser3D from '../components/IncenseCenser3D.jsx'
 import ShakeXam from '../components/ShakeXam.jsx'
 import {
   DICHUA_LOCATIONS, locationById,
@@ -54,7 +56,6 @@ function DcModal({ open, onClose, title, children, bgImage }) {
 export default function DiChua() {
   const [activeId, setActiveId] = useState('chanh-dien')
   const [zoom, setZoom] = useState(1)
-  const [showInfo, setShowInfo] = useState(true)
   const [prayer, setPrayer] = useState('')
   const [prayerCount, setPrayerCount] = useState(0)
   const [sentFlash, setSentFlash] = useState(false)
@@ -65,10 +66,12 @@ export default function DiChua() {
   const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon' | 'lichsu'
   const [lichSuLN, setLichSuLN] = useState([])
   const [lichSuXam, setLichSuXam] = useState([])
+  const huongTimers = useRef([])
 
   useEffect(() => { setPrayerCount(loadLoiNguyen().length); setLitCount(countThapHuong()) }, [])
   useEffect(() => { if (modal === 'lichsu') { setLichSuLN(loadLoiNguyen()); setLichSuXam(loadXamLichSu()) } }, [modal])
   useEffect(() => { document.body.classList.add('dc-lock'); return () => document.body.classList.remove('dc-lock') }, [])
+  useEffect(() => () => { huongTimers.current.forEach(clearTimeout) }, [])
 
   const idx = DICHUA_LOCATIONS.findIndex(l => l.id === activeId)
   const loc = locationById(activeId) || DICHUA_LOCATIONS[0]
@@ -85,12 +88,18 @@ export default function DiChua() {
   const onClearLN = () => { setLichSuLN(clearLoiNguyen()); setPrayerCount(0) }
   const onClearXam = () => { setLichSuXam(clearXamLichSu()) }
   const fmtT = t => new Date(t).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+  const clearHuongTimers = () => { huongTimers.current.forEach(clearTimeout); huongTimers.current = [] }
   const doThapHuong = () => {
-    if (!canHuong) return
-    setLitCount(thapHuong()); setLitFlash(true); setIgniting(true)
-    setLitLocs(prev => ({ ...prev, [activeId]: true }))
-    setTimeout(() => setLitFlash(false), 2200)
-    setTimeout(() => setIgniting(false), 1300)
+    if (!canHuong || igniting) return
+    clearHuongTimers()
+    setIgniting(true); setLitFlash(false)
+    huongTimers.current = [
+      setTimeout(() => {
+        setLitCount(thapHuong()); setLitLocs(prev => ({ ...prev, [activeId]: true })); setLitFlash(true)
+      }, 520),
+      setTimeout(() => setIgniting(false), 1500),
+      setTimeout(() => setLitFlash(false), 3400)
+    ]
   }
 
   return (
@@ -129,8 +138,11 @@ export default function DiChua() {
             {DICHUA_LOCATIONS.map(l => (
               <button key={l.id} type="button" onClick={() => { setActiveId(l.id); setZoom(1) }}
                 className={'dc-side-item' + (l.id === activeId ? ' is-active' : '')}>
-                <span className="dc-side-ic" aria-hidden="true">{l.icon}</span>
-                <span>{l.ten}</span>
+                <SceneView loc={l} className="dc-side-thumb" />
+                <span className="dc-side-meta">
+                  <span className="dc-side-name">{l.ten}</span>
+                  <span className="dc-side-kicker">{l.bienHieu}</span>
+                </span>
               </button>
             ))}
           </nav>
@@ -144,33 +156,30 @@ export default function DiChua() {
         {/* MAIN VIEWPORT */}
         <div className="dc-stage">
           <motion.div key={activeId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
-            className="dc-scene" style={{ transform: `scale(${zoom})` }}>
-            <SceneView loc={loc} className="dc-scene-svg" loading="eager" />
+            className="dc-scene dc-scene-3d">
+            <TempleScene3D loc={loc} zoom={zoom} lit={sceneLit} bgImage={sceneImage(loc, 'webp')} className="dc-scene-webgl" />
           </motion.div>
 
           <div className="dc-sign">{loc.bienHieu}</div>
 
           {sceneLit && (
-            <div className="dc-scene-smoke" aria-hidden="true"><span /><span /><span /><span /></div>
-          )}
-
-          {showInfo && (
-            <div className="dc-caption">
-              <div className="dc-caption-kicker">{loc.icon} Đang ở</div>
-              <div className="dc-caption-title">{loc.ten}</div>
-              <p className="dc-caption-desc">{loc.moTa}</p>
+            <div className={'dc-scene-smoke' + (igniting ? ' is-igniting' : '')} aria-hidden="true">
+              <span /><span /><span /><span /><span /><span />
             </div>
           )}
 
+          <div className="dc-caption">
+              <div className="dc-caption-kicker">{loc.icon} Đang ở</div>
+              <div className="dc-caption-title">{loc.ten}</div>
+              <p className="dc-caption-desc">{loc.moTa}</p>
+          </div>
+
           <div className="dc-ctrl-row">
-            <button className="dc-ctrl" aria-label="Hiện mô tả" onClick={() => setShowInfo(true)}>↑</button>
             <button className="dc-ctrl" aria-label="Khu trước" onClick={() => go(-1)}>←</button>
-            <button className="dc-ctrl" aria-label="Ẩn mô tả" onClick={() => setShowInfo(false)}>↓</button>
             <button className="dc-ctrl" aria-label="Khu sau" onClick={() => go(1)}>→</button>
             <button className="dc-ctrl" aria-label="Phóng to" onClick={() => setZoom(z => Math.min(1.4, +(z + 0.1).toFixed(2)))}>＋</button>
             <button className="dc-ctrl" aria-label="Thu nhỏ / về mặc định" onClick={() => setZoom(z => Math.max(1, +(z - 0.1).toFixed(2)))}>－</button>
           </div>
-          <p className="dc-stage-hint">🖱️ Mũi tên đổi khu · ＋－ phóng to · cảnh do Tam Sở tự vẽ (SVG), không phải ảnh chụp</p>
         </div>
 
         {/* RIGHT PANEL */}
@@ -187,12 +196,13 @@ export default function DiChua() {
             <div className="dc-card-title">🔥 Thắp Hương Online</div>
             {canHuong ? (
               <>
-                <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
-                  <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-                  <picture><source srcSet={dcAsset('dc-pot-cutout.webp')} type="image/webp" /><img src={dcAsset('dc-pot-cutout.png')} alt="" className="dc-pot-real" loading="lazy" decoding="async" /></picture>
+                <div className="dc-huong-ritual">
+                  <IncenseCenser3D lit={litLocs[activeId] || igniting} igniting={igniting} />
                 </div>
-                <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
-                <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>
+                <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>
+                  {igniting ? 'Đang dâng hương...' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}
+                </button>
+                <p className="dc-card-note">{litFlash ? 'Hương đã được dâng tại ' + loc.ten + '.' : (sceneLit ? 'Khói hương đang lan nhẹ trong ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.'))}</p>
               </>
             ) : (
               <>
@@ -205,40 +215,22 @@ export default function DiChua() {
               </>
             )}
           </div>
-
-          <div className="dc-card-row">
-            <div className="dc-card dc-card-half">
+          <div className="dc-card dc-xam-card">
+            <div>
               <div className="dc-card-title">🎋 Xin Xăm</div>
               <p className="dc-card-desc">Lắc ống xăm xin một quẻ.</p>
-              <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={() => setModal('xam')}>Lắc ngay</button>
             </div>
-            <div className="dc-card dc-card-half">
-              <div className="dc-card-title">◈ Công Đức</div>
-              <p className="dc-card-desc">Tuỳ hỷ xây dựng &amp; hoằng pháp.</p>
-              <button type="button" className="dc-btn dc-btn-ghost dc-btn-block" onClick={() => setModal('congduc')}>Xem thêm</button>
-            </div>
+            <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('xam')}>Lắc ngay</button>
           </div>
         </aside>
-      </div>
-
-      {/* SLIDER */}
-      <div className="dc-slider">
-        {DICHUA_LOCATIONS.map(l => (
-          <button key={l.id} type="button" onClick={() => { setActiveId(l.id); setZoom(1) }}
-            className={'dc-thumb' + (l.id === activeId ? ' is-active' : '')} title={l.ten}>
-            <SceneView loc={l} className="dc-thumb-svg" />
-            <span className="dc-thumb-label">{l.ten}</span>
-          </button>
-        ))}
       </div>
 
       {/* OVERLAYS */}
       <DcModal open={modal === 'help'} onClose={() => setModal(null)} title="Hướng Dẫn">
         <ul className="dc-help-list">
           <li><b>←  →</b> : chuyển khu trước / sau</li>
-          <li><b>↑  ↓</b> : hiện / ẩn mô tả khu</li>
           <li><b>＋  －</b> : phóng to / thu nhỏ khung cảnh</li>
-          <li><b>Sidebar trái</b> hoặc <b>dải ảnh dưới</b> : chọn nhanh một khu</li>
+          <li><b>Danh sách khu</b> : chọn nhanh một không gian trong chùa</li>
           <li><b>Lời Cầu Nguyện</b> : viết & lưu riêng trên máy bạn</li>
           <li><b>Thắp Hương</b> : cử chỉ tượng trưng</li>
           <li><b>Xin Xăm</b> : <b>lắc ống xăm</b> (kéo qua lại hoặc lắc điện thoại) đến khi que rơi ra</li>

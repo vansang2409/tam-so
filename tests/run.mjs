@@ -854,6 +854,12 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(dcj.includes('loadXamLichSu') && dcj.includes('clearLoiNguyen') && dcj.includes('clearXamLichSu') && dcj.includes("setModal('lichsu')"), 'DiChua.jsx: có nút + modal Lịch Sử (lời nguyện + xăm đã rút) wire đủ')
   const sxj = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   ok(sxj.includes('addXamLichSu'), 'ShakeXam.jsx: rút thẻ có lưu vào lịch sử (addXamLichSu)')
+  ok(dcj.includes('IncenseCenser3D') && dcj.includes('<IncenseCenser3D lit=') && !dcj.includes('dc-huong-meter') && !dcj.includes('dc-scene-flash'), 'DiChua.jsx: thap huong dung asset lu huong 3D moi')
+  ok(dcj.includes('dc-side-thumb') && dcj.includes('dc-xam-card') && !dcj.includes('dc-slider') && !dcj.includes('setShowInfo'), 'DiChua.jsx: layout bo slider trung lap, sidebar co anh va action ben phai gon')
+  ok(sxj.includes('activeRef') && sxj.includes('xam-progress-row-simple') && sxj.includes('xam-hint-simple') && sxj.includes('onKeyDown') && !sxj.includes('xam-metrics') && !sxj.includes('xam-sound-toggle'), 'ShakeXam.jsx: giao dien luc lac duoc toi gian hoa')
+  const dcCssUpgrade = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
+  ok(dcCssUpgrade.includes('.dc-censer3d-img') && dcCssUpgrade.includes('.dc-censer3d-ember') && dcCssUpgrade.includes('.xam-aura') && dcCssUpgrade.includes('.xam-progress-row-simple') && !dcCssUpgrade.includes('.xam-sound-toggle'), 'CSS: asset lu huong 3D va lac xam toi gian')
+  ok(dcCssUpgrade.includes('.dc-side-thumb') && dcCssUpgrade.includes('.dc-xam-card') && !dcCssUpgrade.includes('.dc-slider') && !dcCssUpgrade.includes('.dc-thumb'), 'CSS: layout moi khong con thumbnail slider trung lap')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
   ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) đã wire')
@@ -876,16 +882,22 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(lj2.includes('/di-chua'), 'Layout.jsx: menu vẫn có liên kết tới /di-chua')
   ok(lj2.includes("const PRIMARY = ['/', '/tarot'") && lj2.includes("{ to: '/', label: 'Trang chủ'") && lj2.includes('end={l.end}'), 'Layout.jsx: desktop nav co menu Trang chu ro rang')
   const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')
+  const ts3 = readFileSync(new URL('../src/components/TempleScene3D.jsx', import.meta.url), 'utf8')
+  const ic3 = readFileSync(new URL('../src/components/IncenseCenser3D.jsx', import.meta.url), 'utf8')
   ok(ts.includes('export default function TempleScene') && ts.includes('viewBox'), 'TempleScene.jsx: component SVG tồn tại')
+  ok(ts3.includes("import * as THREE from 'three'") && ts3.includes('new THREE.WebGLRenderer') && ts3.includes('OrthographicCamera'), 'TempleScene3D.jsx: dung Three.js WebGLRenderer + camera overlay 2.5D')
+  ok(ts3.includes('makeLightBeams') && ts3.includes('makeSmokeVeil') && ts3.includes('makeDepthParticles') && ts3.includes('dc-webgl-bg'), 'TempleScene3D.jsx: cinematic 2.5D voi parallax, tia sang, khoi va hat bui')
+  ok(ic3.includes('lu-huong-3d-') && ic3.includes('<picture>') && ic3.includes('type="image/webp"') && ic3.includes('dc-censer3d-ember') && ic3.includes('dc-censer3d-smoke'), 'IncenseCenser3D.jsx: dung asset render 3D co idle/lit va hieu ung khoi')
   const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
   const imgBase = ['chanh-dien','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
-  const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake']
+  const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake','lu-huong-3d-idle','lu-huong-3d-lit']
   const bytes = f => readFileSync(new URL('../public/dichua/' + f, import.meta.url)).byteLength
   const originalBytes = imgBase.reduce((n, f) => n + bytes(f + '.jpg'), 0) + cutouts.reduce((n, f) => n + bytes(f + '.png'), 0)
   const webpBytes = imgBase.concat(cutouts).reduce((n, f) => n + bytes(f + '.webp'), 0)
   ok(imgBase.concat(cutouts).every(f => bytes(f + '.webp') > 1000), 'DiChua images: WebP variants exist and are non-empty')
   ok(webpBytes / originalBytes <= 0.6, 'DiChua images: WebP payload saves >=40%')
+  ok(dcj.includes('TempleScene3D') && dcj.includes('<TempleScene3D loc={loc}') && dcj.includes('dc-scene-3d'), 'DiChua.jsx: main viewport dung canh Three.js 3D')
   ok(dcj.includes('<picture>') && dcj.includes('type="image/webp"') && dcj.includes("sceneImage(loc, 'webp')") && dcj.includes('decoding="async"'), 'DiChua.jsx: prefers WebP with JPG/PNG fallback and async decode')
   ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube image uses WebP with PNG fallback')
 
@@ -894,8 +906,9 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.1.5', 'package.json: bump version v4.1.5 cho nav Trang chu')
+  ok(pkgAuth.version === '4.2.0', 'package.json: bump version v4.2.0 cho Di Chua 3D')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
+  ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
   ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
   const gi = readFileSync(new URL('../.gitignore', import.meta.url), 'utf8')
@@ -925,6 +938,21 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
   const sourcesAuth = readFileSync(new URL('../src/pages/Sources.jsx', import.meta.url), 'utf8')
   ok(sourcesAuth.includes('Supabase Auth') && sourcesAuth.includes('Không bắt buộc') && sourcesAuth.includes('localStorage'), 'Sources.jsx: FAQ minh bach ve Supabase Auth tuy chon + localStorage')
+}
+
+// PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
+{
+  const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
+  ok(sw.includes("const CACHE = 'tamso-v4.2.0'"), 'sw.js: bump CACHE v4.2.0')
+  ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
+  ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
+  ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')
+}
+
+// Di Chua 3D: tach Three.js thanh chunk rieng de /di-chua code khong phinh lai
+{
+  const vite = readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8')
+  ok(vite.includes("three: ['three']") && vite.includes('chunkSizeWarningLimit'), 'vite.config.js: tach chunk three rieng va dat nguong canh bao co chu dich')
 }
 
 // Supabase DB/RLS: Hồ sơ tổng hợp sync qua public.profiles

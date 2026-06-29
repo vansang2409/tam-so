@@ -8,12 +8,15 @@ export default defineConfig({
   plugins: [react()],
   base: process.env.VERCEL ? '/' : './',
   build: {
+    // Three.js duoc tach rieng cho /di-chua 3D; raw chunk >500KB la co chu dich.
+    chunkSizeWarningLimit: 650,
     rollupOptions: {
       output: {
         // Tach vendor (react + router + framer-motion) thanh chunk rieng -> cache lau,
         // doi code app khong lam invalidate vendor. Cac trang code-split tu dong tach chunk.
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
+          vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+          three: ['three']
         }
       }
     }
