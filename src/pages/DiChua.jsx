@@ -12,13 +12,19 @@ import {
 } from '../data/dichua.js'
 
 const NAV = ['Trang Chủ', 'Chùa Online', 'Kinh Sách', 'Phật Pháp', 'Sự Kiện', 'Cộng Đồng']
+const dcAsset = name => (import.meta.env.BASE_URL || '/') + 'dichua/' + name
+const sceneImage = (loc, ext) => dcAsset(loc.id + '.' + ext)
 
-// Ưu tiên ảnh thật public/dichua/<id>.jpg; thiếu/lỗi → tự quay về cảnh SVG (TempleScene)
-function SceneView({ loc, className }) {
+// Uu tien anh WebP; thieu/loi -> fallback JPG roi tu quay ve canh SVG (TempleScene).
+function SceneView({ loc, className, loading = 'lazy' }) {
   const [err, setErr] = useState(false)
-  const src = (import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'
   if (err) return <TempleScene scene={loc.scene} tone={loc.tone} className={className} />
-  return <img src={src} alt={'Cảnh ' + loc.ten + ' — Chùa Tam Sở'} className={className} loading="lazy" onError={() => setErr(true)} />
+  return (
+    <picture>
+      <source srcSet={sceneImage(loc, 'webp')} type="image/webp" />
+      <img src={sceneImage(loc, 'jpg')} alt={'Cảnh ' + loc.ten + ' — Chùa Tam Sở'} className={className} loading={loading} decoding="async" onError={() => setErr(true)} />
+    </picture>
+  )
 }
 
 function DcModal({ open, onClose, title, children, bgImage }) {
@@ -89,7 +95,7 @@ export default function DiChua() {
 
   return (
     <div className="dc-root">
-      <div className="dc-page-bg" style={{ backgroundImage: `url(${(import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'})` }} aria-hidden="true" />
+      <div className="dc-page-bg" style={{ backgroundImage: `url(${sceneImage(loc, 'webp')})` }} aria-hidden="true" />
       <SeoTag title="Đi Chùa — Chùa Tam Sở (không gian tâm linh online) | Tam Sở"
         description="Chùa Tam Sở — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
         path="/di-chua" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi chùa' }]} />
@@ -139,7 +145,7 @@ export default function DiChua() {
         <div className="dc-stage">
           <motion.div key={activeId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }}
             className="dc-scene" style={{ transform: `scale(${zoom})` }}>
-            <SceneView loc={loc} className="dc-scene-svg" />
+            <SceneView loc={loc} className="dc-scene-svg" loading="eager" />
           </motion.div>
 
           <div className="dc-sign">{loc.bienHieu}</div>
@@ -183,7 +189,7 @@ export default function DiChua() {
               <>
                 <div className={'dc-censer' + ((litLocs[activeId] || igniting) ? ' is-lit' : '') + (igniting ? ' is-igniting' : '')} aria-hidden="true">
                   <span className="dc-smoke" /><span className="dc-smoke" /><span className="dc-smoke" />
-                  <img src={(import.meta.env.BASE_URL || '/') + 'dichua/dc-pot-cutout.png'} alt="" className="dc-pot-real" />
+                  <picture><source srcSet={dcAsset('dc-pot-cutout.webp')} type="image/webp" /><img src={dcAsset('dc-pot-cutout.png')} alt="" className="dc-pot-real" loading="lazy" decoding="async" /></picture>
                 </div>
                 <button type="button" className="dc-btn dc-btn-gold dc-btn-block" onClick={doThapHuong} disabled={igniting}>{igniting ? '🔥 Đang thắp…' : (litLocs[activeId] ? 'Thắp thêm một nén' : 'Thắp Hương tại ' + loc.ten)}</button>
                 <p className="dc-card-note">{litFlash ? '🔥 Một nén hương vừa được thắp tại ' + loc.ten + '.' : (litCount > 0 ? 'Đã thắp tổng ' + litCount + ' nén (tượng trưng).' : 'Chạm để thắp một nén — cử chỉ chiêm nghiệm, không thay hành lễ thật.')}</p>
@@ -245,7 +251,7 @@ export default function DiChua() {
       </DcModal>
 
       <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống"
-        bgImage={(import.meta.env.BASE_URL || '/') + 'dichua/' + loc.id + '.jpg'}>
+        bgImage={sceneImage(loc, 'webp')}>
         <ShakeXam />
       </DcModal>
 

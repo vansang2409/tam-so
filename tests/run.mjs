@@ -877,6 +877,16 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(ts.includes('export default function TempleScene') && ts.includes('viewBox'), 'TempleScene.jsx: component SVG tồn tại')
   const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
+  const imgBase = ['chanh-dien','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
+  const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake']
+  const bytes = f => readFileSync(new URL('../public/dichua/' + f, import.meta.url)).byteLength
+  const originalBytes = imgBase.reduce((n, f) => n + bytes(f + '.jpg'), 0) + cutouts.reduce((n, f) => n + bytes(f + '.png'), 0)
+  const webpBytes = imgBase.concat(cutouts).reduce((n, f) => n + bytes(f + '.webp'), 0)
+  ok(imgBase.concat(cutouts).every(f => bytes(f + '.webp') > 1000), 'DiChua images: WebP variants exist and are non-empty')
+  ok(webpBytes / originalBytes <= 0.6, 'DiChua images: WebP payload saves >=40%')
+  ok(dcj.includes('<picture>') && dcj.includes('type="image/webp"') && dcj.includes("sceneImage(loc, 'webp')") && dcj.includes('decoding="async"'), 'DiChua.jsx: prefers WebP with JPG/PNG fallback and async decode')
+  ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube image uses WebP with PNG fallback')
+
 }
 
 // Repo infrastructure: line endings

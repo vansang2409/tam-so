@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { rutXam, addXamLichSu } from '../data/dichua.js'
 
+const dcAsset = name => (import.meta.env.BASE_URL || '/') + 'dichua/' + name
+
 /* ShakeXam — xin xăm bằng cách LẮC. Phải lắc đủ một khoảng thời gian NGẪU NHIÊN
  * (tối thiểu 7s, tối đa 30s) tính theo thời gian ĐANG lắc thật (ngừng lắc thì dừng đếm),
  * rồi một que tre mới rơi ra. Lắc = kéo ống qua lại (chuột/cảm ứng) hoặc lắc điện thoại
@@ -121,7 +123,7 @@ export default function ShakeXam() {
       <div className="xam-stage" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp}
         role="button" tabIndex={0} aria-label="Lắc ống xăm — kéo qua lại để xin thẻ">
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
-          <img src={(import.meta.env.BASE_URL || '/') + 'dichua/' + (phase === 'idle' ? 'dc-tube-cutout.png' : 'dc-tube-cutout-shake.png')} alt="" className="xam-tube-real" />
+          <picture><source srcSet={dcAsset(phase === 'idle' ? 'dc-tube-cutout.webp' : 'dc-tube-cutout-shake.webp')} type="image/webp" /><img src={dcAsset(phase === 'idle' ? 'dc-tube-cutout.png' : 'dc-tube-cutout-shake.png')} alt="" className="xam-tube-real" loading="lazy" decoding="async" /></picture>
         </div>
         {dropping && <span className="xam-falling" />}
         {!active && !dropping && progress === 0 && <div className="xam-hand" aria-hidden="true">🤲</div>}
