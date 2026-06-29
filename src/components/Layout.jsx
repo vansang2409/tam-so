@@ -27,7 +27,7 @@ const links = [
   { to: '/di-chua', label: 'Đi chùa' },
   { to: '/nguon', label: 'Nguồn' }
 ]
-const PRIMARY = ['/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
+const PRIMARY = ['/', '/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
 const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
 
 function prefetchProps(to) {

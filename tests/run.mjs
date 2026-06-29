@@ -874,6 +874,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(mj.includes('import ErrorBoundary') && mj.includes('<Route path="/di-chua" element={<ErrorBoundary><Suspense'), 'main.jsx: /di-chua lazy route duoc boc ErrorBoundary')
   const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
   ok(lj2.includes('/di-chua'), 'Layout.jsx: menu vẫn có liên kết tới /di-chua')
+  ok(lj2.includes("const PRIMARY = ['/', '/tarot'") && lj2.includes("{ to: '/', label: 'Trang chủ'") && lj2.includes('end={l.end}'), 'Layout.jsx: desktop nav co menu Trang chu ro rang')
   const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')
   ok(ts.includes('export default function TempleScene') && ts.includes('viewBox'), 'TempleScene.jsx: component SVG tồn tại')
   const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
@@ -893,7 +894,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.1.4', 'package.json: bump version v4.1.4 cho sync warning UI')
+  ok(pkgAuth.version === '4.1.5', 'package.json: bump version v4.1.5 cho nav Trang chu')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
   ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
