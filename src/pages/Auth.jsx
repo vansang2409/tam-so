@@ -15,6 +15,8 @@ const TXT = {
   dataNote: 'Email và phiên đăng nhập được xử lý bởi Supabase Auth khi bạn bật cấu hình. Các kết quả chiêm nghiệm hiện vẫn lưu cục bộ trên trình duyệt cho đến khi có tính năng đồng bộ riêng.',
   login: 'Đăng nhập',
   register: 'Đăng ký',
+  google: 'Tiếp tục với Google',
+  emailDivider: 'hoặc dùng email',
   missing: 'Chưa nối Supabase. Tạo .env.local từ .env.example, điền VITE_SUPABASE_URL và VITE_SUPABASE_PUBLISHABLE_KEY, rồi chạy lại dev server.',
   name: 'Tên hiển thị',
   email: 'Email',
@@ -35,6 +37,7 @@ const TXT = {
   invalidLogin: 'Email hoặc mật khẩu chưa đúng. Bạn kiểm tra lại nhẹ nhàng nhé.',
   emailConfirm: 'Tài khoản cần xác nhận email trước khi đăng nhập.',
   weakPassword: 'Mật khẩu cần đủ mạnh hơn một chút.',
+  googleConfig: 'Google chưa được bật trong Supabase Auth. Bạn kiểm tra cấu hình Google provider nhé.',
   genericError: 'Có lỗi nhỏ khi kết nối Supabase. Bạn thử lại sau ít phút nhé.'
 }
 
@@ -43,6 +46,7 @@ function messageForError(err) {
   if (/Invalid login credentials/i.test(msg)) return TXT.invalidLogin
   if (/Email not confirmed/i.test(msg)) return TXT.emailConfirm
   if (/Password should be/i.test(msg)) return TXT.weakPassword
+  if (/provider|oauth|google/i.test(msg)) return TXT.googleConfig
   return msg || TXT.genericError
 }
 
@@ -81,6 +85,22 @@ export default function Auth() {
     } catch (err) {
       setKind('warn'); setMsg(messageForError(err))
     } finally {
+      setBusy(false)
+    }
+  }
+
+  const signInGoogle = async () => {
+    setMsg(''); setKind('note')
+    if (!configured || !supabase) { setKind('warn'); setMsg(TXT.missing); return }
+    setBusy(true)
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: authRedirectTo('/dang-nhap') }
+      })
+      if (error) throw error
+    } catch (err) {
+      setKind('warn'); setMsg(messageForError(err))
       setBusy(false)
     }
   }
@@ -144,6 +164,15 @@ export default function Auth() {
                   <button type="button" className={'h-10 rounded-lg text-sm font-semibold transition ' + (isRegister ? 'bg-white text-cream shadow-sm dark:bg-slate-800' : 'text-muted hover:text-cream')} onClick={() => setMode('register')}>{TXT.register}</button>
                 </div>
                 {!configured && <div className="disclaimer mb-4 text-left"><b>{TXT.missing}</b></div>}
+                <button type="button" className="auth-google flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-cream shadow-sm transition hover:border-gold/40 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" disabled={busy || !configured} onClick={signInGoogle}>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[.95rem] font-black text-[#4285f4] shadow-sm" aria-hidden="true">G</span>
+                  {busy ? TXT.processing : TXT.google}
+                </button>
+                <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[.12em] text-muted">
+                  <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+                  <span>{TXT.emailDivider}</span>
+                  <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+                </div>
                 <form onSubmit={submit} className="space-y-4 auth-form">
                   {isRegister && (
                     <label className="block space-y-1.5">
