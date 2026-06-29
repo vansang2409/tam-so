@@ -57,6 +57,7 @@ export default function Auth() {
   const [msg, setMsg] = useState('')
   const [kind, setKind] = useState('note')
   const displayName = useMemo(() => user?.user_metadata?.full_name || user?.email || 'Bạn', [user])
+  const isRegister = mode === 'register'
 
   const submit = async e => {
     e.preventDefault()
@@ -67,7 +68,7 @@ export default function Auth() {
     if (password.length < 6) { setKind('warn'); setMsg(TXT.passBad); return }
     setBusy(true)
     try {
-      if (mode === 'register') {
+      if (isRegister) {
         const { error } = await supabase.auth.signUp({ email: cleanEmail, password, options: { data: { full_name: name.trim() }, emailRedirectTo: authRedirectTo('/dang-nhap') } })
         if (error) throw error
         setKind('ok'); setMsg(TXT.signupOk)
@@ -94,44 +95,77 @@ export default function Auth() {
   }
 
   return (
-    <section className="wrap py-12">
+    <section className="wrap py-10 md:py-14">
       <SeoTag title={TXT.seoTitle} description={TXT.seoDesc} path="/dang-nhap" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: TXT.crumb }]} />
-      <div className="max-w-[920px] mx-auto grid lg:grid-cols-[1fr_1.1fr] gap-6 items-start">
-        <div className="panel p-6">
-          <p className="text-gold text-kicker uppercase mb-2">{TXT.kicker}</p>
-          <h1 className="text-h1 mb-3">{TXT.title}</h1>
-          <p className="text-muted leading-relaxed mb-4">{TXT.intro}</p>
-          <div className="disclaimer text-left"><b>Lưu ý dữ liệu.</b> {TXT.dataNote}</div>
-        </div>
-        <div className="panel p-6 md:p-7">
-          {loading ? (
-            <div className="page-fallback"><span className="page-fallback-spinner" aria-hidden="true" /></div>
-          ) : user ? (
-            <div className="text-center py-4">
-              <div className="text-gold text-kicker uppercase mb-2">{TXT.signedIn}</div>
-              <h2 className="text-h2 mb-2">{TXT.hello}, {displayName}</h2>
-              <p className="text-muted mb-5">{TXT.sessionActive}</p>
-              <div className="flex gap-3 justify-center flex-wrap">
-                <Link className="btn btn-primary" to="/ho-so">{TXT.profile}</Link>
-                <button className="btn btn-ghost" type="button" disabled={busy} onClick={signOut}>{busy ? TXT.processing : TXT.signOut}</button>
-              </div>
+      <div className="max-w-[1020px] mx-auto grid lg:grid-cols-[minmax(0,1fr)_440px] gap-6 lg:gap-8 items-start">
+        <div className="panel p-7 md:p-8 lg:min-h-[430px] flex flex-col justify-between bg-gradient-to-br from-white via-white to-amber-50/55 dark:from-ink dark:via-ink dark:to-amber-950/15">
+          <div>
+            <p className="text-gold text-kicker uppercase mb-2">{TXT.kicker}</p>
+            <h1 className="text-h1 mb-3 max-w-[12ch]">{TXT.title}</h1>
+            <p className="text-muted leading-relaxed max-w-[58ch]">{TXT.intro}</p>
+          </div>
+          <div className="mt-7 space-y-3 text-sm text-muted">
+            <div className="flex gap-3 border-t border-slate-200/80 dark:border-slate-700 pt-4">
+              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold font-bold">1</span>
+              <p className="m-0"><b className="text-cream">Không bắt buộc.</b> Các công cụ chính vẫn dùng được khi chưa đăng nhập.</p>
             </div>
-          ) : (
-            <>
-              <div className="inline-flex rounded-full border border-gold/25 p-1 bg-gold/5 mb-5" role="tablist" aria-label="Auth mode">
-                <button type="button" className={'px-4 py-2 rounded-full text-sm font-semibold transition ' + (mode === 'login' ? 'bg-gold text-white' : 'text-muted hover:text-cream')} onClick={() => setMode('login')}>{TXT.login}</button>
-                <button type="button" className={'px-4 py-2 rounded-full text-sm font-semibold transition ' + (mode === 'register' ? 'bg-gold text-white' : 'text-muted hover:text-cream')} onClick={() => setMode('register')}>{TXT.register}</button>
+            <div className="flex gap-3 border-t border-slate-200/80 dark:border-slate-700 pt-4">
+              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold font-bold">2</span>
+              <p className="m-0"><b className="text-cream">Dữ liệu rõ ràng.</b> {TXT.dataNote}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="panel overflow-hidden p-0 shadow-lift border-slate-200 dark:border-slate-700 justify-self-center w-full max-w-[440px]">
+          <div className="border-b border-slate-200 dark:border-slate-700 px-5 py-4 md:px-6">
+            <p className="text-[.76rem] font-bold uppercase tracking-[.14em] text-gold mb-1">Supabase Auth</p>
+            <h2 className="text-[1.35rem] font-bold tracking-normal m-0">{isRegister ? 'Tạo tài khoản' : 'Chào bạn quay lại'}</h2>
+            <p className="text-muted text-sm m-0 mt-1">{isRegister ? 'Một email, một mật khẩu, nhẹ nhàng là đủ.' : 'Đăng nhập để chuẩn bị cho phần lưu/sync sau này.'}</p>
+          </div>
+
+          <div className="p-5 md:p-6">
+            {loading ? (
+              <div className="page-fallback"><span className="page-fallback-spinner" aria-hidden="true" /></div>
+            ) : user ? (
+              <div className="text-center py-5">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gold/10 text-gold font-bold">✓</div>
+                <div className="text-gold text-kicker uppercase mb-2">{TXT.signedIn}</div>
+                <h2 className="text-h2 mb-2">{TXT.hello}, {displayName}</h2>
+                <p className="text-muted mb-5">{TXT.sessionActive}</p>
+                <div className="flex gap-3 justify-center flex-wrap">
+                  <Link className="btn btn-primary" to="/ho-so">{TXT.profile}</Link>
+                  <button className="btn btn-ghost" type="button" disabled={busy} onClick={signOut}>{busy ? TXT.processing : TXT.signOut}</button>
+                </div>
               </div>
-              {!configured && <div className="disclaimer mb-4 text-left"><b>{TXT.missing}</b></div>}
-              <form onSubmit={submit} className="space-y-4">
-                {mode === 'register' && <label className="block"><span className="text-sm font-semibold text-cream">{TXT.name}</span><input className="field-input mt-1" value={name} onChange={e => setName(e.target.value)} placeholder="An" autoComplete="name" /></label>}
-                <label className="block"><span className="text-sm font-semibold text-cream">{TXT.email}</span><input className="field-input mt-1" value={email} onChange={e => setEmail(e.target.value)} placeholder="ban@example.com" autoComplete="email" inputMode="email" /></label>
-                <label className="block"><span className="text-sm font-semibold text-cream">{TXT.password}</span><input className="field-input mt-1" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={TXT.minPassword} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} /></label>
-                {msg && <p className={(kind === 'ok' ? 'text-emerald-700 dark:text-emerald-300' : 'text-amber-700 dark:text-amber-300') + ' text-sm leading-relaxed'}>{msg}</p>}
-                <button className="btn btn-primary w-full justify-center" type="submit" disabled={busy || !configured}>{busy ? TXT.processing : (mode === 'login' ? TXT.login : TXT.create)}</button>
-              </form>
-            </>
-          )}
+            ) : (
+              <>
+                <div className="grid grid-cols-2 rounded-xl bg-slate-100 dark:bg-white/5 p-1 mb-5" role="tablist" aria-label="Auth mode">
+                  <button type="button" className={'h-10 rounded-lg text-sm font-semibold transition ' + (!isRegister ? 'bg-white text-cream shadow-sm dark:bg-slate-800' : 'text-muted hover:text-cream')} onClick={() => setMode('login')}>{TXT.login}</button>
+                  <button type="button" className={'h-10 rounded-lg text-sm font-semibold transition ' + (isRegister ? 'bg-white text-cream shadow-sm dark:bg-slate-800' : 'text-muted hover:text-cream')} onClick={() => setMode('register')}>{TXT.register}</button>
+                </div>
+                {!configured && <div className="disclaimer mb-4 text-left"><b>{TXT.missing}</b></div>}
+                <form onSubmit={submit} className="space-y-4 auth-form">
+                  {isRegister && (
+                    <label className="block space-y-1.5">
+                      <span className="text-[.84rem] font-semibold text-cream">{TXT.name}</span>
+                      <input className="field-input block w-full h-12" value={name} onChange={e => setName(e.target.value)} placeholder="An" autoComplete="name" />
+                    </label>
+                  )}
+                  <label className="block space-y-1.5">
+                    <span className="text-[.84rem] font-semibold text-cream">{TXT.email}</span>
+                    <input className="field-input block w-full h-12" value={email} onChange={e => setEmail(e.target.value)} placeholder="ban@example.com" autoComplete="email" inputMode="email" />
+                  </label>
+                  <label className="block space-y-1.5">
+                    <span className="text-[.84rem] font-semibold text-cream">{TXT.password}</span>
+                    <input className="field-input block w-full h-12" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={TXT.minPassword} autoComplete={isRegister ? 'new-password' : 'current-password'} />
+                  </label>
+                  {msg && <p className={(kind === 'ok' ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900' : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900') + ' rounded-xl border px-3 py-2 text-sm leading-relaxed'}>{msg}</p>}
+                  <button className="btn btn-primary w-full h-12 justify-center rounded-xl shadow-[0_12px_24px_-14px_rgb(var(--c-gold))]" type="submit" disabled={busy || !configured}>{busy ? TXT.processing : (isRegister ? TXT.create : TXT.login)}</button>
+                </form>
+                <p className="mt-4 text-center text-xs leading-relaxed text-muted">Không có mật khẩu thần chú gì cả, chỉ là email + password bình thường.</p>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </section>

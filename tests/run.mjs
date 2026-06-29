@@ -892,7 +892,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.1.0', 'package.json: bump version v4.1.0 cho Supabase Auth')
+  ok(pkgAuth.version === '4.1.1', 'package.json: bump version v4.1.1 cho Supabase Auth UI polish')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
   ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
@@ -908,7 +908,9 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
   const authPage = readFileSync(new URL('../src/pages/Auth.jsx', import.meta.url), 'utf8')
   ok(authPage.includes('supabase.auth.signUp') && authPage.includes('emailRedirectTo') && authPage.includes('supabase.auth.signInWithPassword') && authPage.includes('supabase.auth.signOut'), 'Auth.jsx: co dang ky/dang nhap/dang xuat qua Supabase Auth')
+  ok(authPage.includes('const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/'), 'Auth.jsx emailRe: giu regex email co \\s va dau cham escape dung')
   ok(authPage.includes('SeoTag') && authPage.includes('Chưa nối Supabase') && authPage.includes('Tài khoản là tuỳ chọn'), 'Auth.jsx: co SEO + canh bao khi chua cau hinh + noi ro tai khoan tuy chon')
+  ok(authPage.includes('auth-form') && authPage.includes('field-input block w-full h-12') && authPage.includes('grid grid-cols-2 rounded-xl bg-slate-100') && authPage.includes('max-w-[440px]'), 'Auth.jsx: form input full-width, tab gon va card auth can doi hon')
 
   const mainAuth = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
   ok(mainAuth.includes("import { AuthProvider } from './components/AuthProvider.jsx'") && mainAuth.includes('<AuthProvider>') && mainAuth.includes('path="dang-nhap" element={<Auth />}'), 'main.jsx: boc AuthProvider va wire route /dang-nhap')

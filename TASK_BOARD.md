@@ -141,3 +141,4 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |
 |---|---|---|---|---|---|
 | AUTH01 | Dang ky/dang nhap bang Supabase Auth | Account/Supabase | High | Done (v4.1.0) | `/dang-nhap` lazy route; `AuthProvider`; signUp/signIn/signOut; env guard `.env.example`; nav AuthBtn; FAQ minh bach localStorage vs Supabase Auth; 404 test pass; build `/tmp/b` main+single OK, single NUL=0 |
+| AUTH02 | Polish form dang nhap/dang ky | UI/Account | High | Done (v4.1.1) | Fix form xau: label tren input, input full-width, auth card 440px, segmented tab/CTA nhe hon; 406 test pass; build `/tmp/b` main+single OK, single NUL=0 |
