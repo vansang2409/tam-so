@@ -893,7 +893,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.1.3', 'package.json: bump version v4.1.3 cho profile sync')
+  ok(pkgAuth.version === '4.1.4', 'package.json: bump version v4.1.4 cho sync warning UI')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
   ok(envEx.includes('VITE_SUPABASE_URL') && envEx.includes('VITE_SUPABASE_PUBLISHABLE_KEY') && envEx.includes('VITE_SUPABASE_ANON_KEY'), '.env.example: co du bien Supabase public config')
@@ -944,7 +944,8 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
   const profilePage = readFileSync(new URL('../src/pages/Profile.jsx', import.meta.url), 'utf8')
   ok(profilePage.includes('useAuth()') && profilePage.includes("from('profiles')") && profilePage.includes('PROFILE_SELECT') && profilePage.includes('upsert(profileFormToRow'), 'Profile.jsx: tải/lưu hồ sơ qua Supabase profiles')
-  ok(profilePage.includes('Đồng bộ Supabase') && profilePage.includes('/dang-nhap') && profilePage.includes('profileSyncErrorMessage'), 'Profile.jsx: UI trạng thái sync + link đăng nhập + lỗi thân thiện')
+  ok(profilePage.includes('showSyncWarning') && profilePage.includes('Hồ sơ chưa đồng bộ') && profilePage.includes('profileSyncErrorMessage'), 'Profile.jsx: chỉ hiện cảnh báo sync khi có lỗi cần xử lý')
+  ok(!profilePage.includes('Đồng bộ Supabase') && !profilePage.includes('Đăng nhập để đồng bộ Hồ sơ tổng hợp giữa các thiết bị.</b>'), 'Profile.jsx: không hiện banner sync kỹ thuật ở trạng thái bình thường')
 
   const sourcesProfile = readFileSync(new URL('../src/pages/Sources.jsx', import.meta.url), 'utf8')
   ok(sourcesProfile.includes('Hồ sơ tổng hợp') && sourcesProfile.includes('public.profiles') && sourcesProfile.includes('RLS'), 'Sources.jsx: FAQ nói rõ profile sync qua public.profiles/RLS')

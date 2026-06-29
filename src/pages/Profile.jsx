@@ -68,6 +68,7 @@ export default function Profile() {
   const shotRef = useRef(null)
   const { user, configured, supabase } = useAuth()
   const canSyncProfile = Boolean(configured && supabase && user?.id)
+  const showSyncWarning = Boolean(configured && syncKind === 'warn' && syncMsg)
   const today = cardOfDay()
 
   const buildProfileParams = (entry) => {
@@ -203,10 +204,9 @@ export default function Profile() {
             <button className="btn btn-primary" onClick={calc}>✦ Lập hồ sơ</button>
           </div>
           {err && <div className="disclaimer mt-5">{err}</div>}
-          {configured && (
-            <div className={(syncKind === 'ok' ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-300' : syncKind === 'warn' ? 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-300' : 'border-slate-200 bg-slate-50 text-muted dark:border-slate-700 dark:bg-white/5') + ' mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed'}>
-              <b>Đồng bộ Supabase.</b> {syncMsg || 'Hồ sơ vẫn lưu an toàn trên trình duyệt này.'}
-              {!user && <Link className="ml-1 font-semibold text-gold hover:underline" to="/dang-nhap">Đăng nhập</Link>}
+          {showSyncWarning && (
+            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800 dark:border-amber-900 dark:bg-amber-950/20 dark:text-amber-300">
+              <b>Hồ sơ chưa đồng bộ.</b> {syncMsg}
             </div>
           )}
           {hist.length > 0 && (
