@@ -1,35 +1,48 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter, BrowserRouter, Routes, Route } from 'react-router-dom'
 import { USE_PATH, BASENAME } from './data/site.js'
 import './index.css'
 import Layout from './components/Layout.jsx'
 import Home from './pages/Home.jsx'
-import Profile from './pages/Profile.jsx'
-import Tarot from './pages/Tarot.jsx'
-import Numerology from './pages/Numerology.jsx'
-import TuVi from './pages/TuVi.jsx'
-import LaSoTuVi from './pages/LaSoTuVi.jsx'
-import SoLaSo from './pages/SoLaSo.jsx'
-import Zodiac from './pages/Zodiac.jsx'
-import IChing from './pages/IChing.jsx'
-import TuongHop from './pages/TuongHop.jsx'
-import Sources from './pages/Sources.jsx'
-import DiChua from './pages/DiChua.jsx'
-import Collection from './pages/Collection.jsx'
-import ConGiap from './pages/ConGiap.jsx'
-import HopTuoi from './pages/HopTuoi.jsx'
-import SinhNam from './pages/SinhNam.jsx'
-import NotFound from './components/NotFound.jsx'
+
+// Code-split: trang phu tai theo nhu cau (giam JS tai ban dau, tot cho mobile).
+// Layout + Home eager de trang chu hien tuc thi, khong nhap nhay.
+const Profile = lazy(() => import('./pages/Profile.jsx'))
+const Tarot = lazy(() => import('./pages/Tarot.jsx'))
+const Numerology = lazy(() => import('./pages/Numerology.jsx'))
+const TuVi = lazy(() => import('./pages/TuVi.jsx'))
+const LaSoTuVi = lazy(() => import('./pages/LaSoTuVi.jsx'))
+const SoLaSo = lazy(() => import('./pages/SoLaSo.jsx'))
+const Zodiac = lazy(() => import('./pages/Zodiac.jsx'))
+const IChing = lazy(() => import('./pages/IChing.jsx'))
+const TuongHop = lazy(() => import('./pages/TuongHop.jsx'))
+const Sources = lazy(() => import('./pages/Sources.jsx'))
+const DiChua = lazy(() => import('./pages/DiChua.jsx'))
+const Collection = lazy(() => import('./pages/Collection.jsx'))
+const ConGiap = lazy(() => import('./pages/ConGiap.jsx'))
+const HopTuoi = lazy(() => import('./pages/HopTuoi.jsx'))
+const SinhNam = lazy(() => import('./pages/SinhNam.jsx'))
+const NotFound = lazy(() => import('./components/NotFound.jsx'))
 
 const Router = USE_PATH ? BrowserRouter : HashRouter
 const routerProps = USE_PATH ? { basename: BASENAME } : {}
+
+// Fallback toan trang (chi dung cho /di-chua o ngoai Layout); trong Layout
+// co Suspense rieng bao quanh <Outlet/> de giu lai nav/footer.
+function FullPageFallback() {
+  return (
+    <div className="page-fallback page-fallback--full" role="status" aria-live="polite" aria-label="Dang tai">
+      <span className="page-fallback-spinner" aria-hidden="true" />
+    </div>
+  )
+}
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router {...routerProps}>
       <Routes>
-        <Route path="/di-chua" element={<DiChua />} />
+        <Route path="/di-chua" element={<Suspense fallback={<FullPageFallback />}><DiChua /></Suspense>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />
@@ -58,9 +71,3 @@ createRoot(document.getElementById('root')).render(
     </Router>
   </React.StrictMode>
 )
-
-if (import.meta.env.PROD && 'serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register((USE_PATH ? BASENAME + '/' : import.meta.env.BASE_URL) + 'sw.js').catch(() => {})
-  })
-}

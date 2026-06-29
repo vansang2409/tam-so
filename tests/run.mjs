@@ -318,7 +318,7 @@ delete global.window
   // — H07: route 404 + slug sai → NotFound (chống hồi quy wiring) —
   const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
   const main = read('main.jsx')
-  ok(main.includes('path="*"') && main.includes('import NotFound'), 'main.jsx: có route catch-all 404 + import NotFound')
+  ok(main.includes('path="*"') && (main.includes('import NotFound') || main.includes('const NotFound = lazy')), 'main.jsx: có route catch-all 404 + import NotFound')
   ok(/export default function NotFound/.test(read('components/NotFound.jsx')), 'NotFound.jsx: có export default')
   const tarot = read('pages/Tarot.jsx')
   ok(/function TarotIndex\(\)/.test(tarot), 'Tarot: tách TarotIndex khỏi wrapper')
@@ -359,7 +359,7 @@ delete global.window
   // M04 wiring: route + trang + nút Lưu (Tarot/Kinh Dịch) + nav bookmark
   const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
   const main = read('main.jsx')
-  ok(main.includes('import Collection') && main.includes('path="bo-suu-tap"'), 'main.jsx: import + route /bo-suu-tap')
+  ok((main.includes('import Collection') || main.includes('const Collection = lazy')) && main.includes('path="bo-suu-tap"'), 'main.jsx: import + route /bo-suu-tap')
   ok(/export default function Collection/.test(read('pages/Collection.jsx')), 'Collection.jsx: có export default')
   const lay = read('components/Layout.jsx')
   ok(lay.includes('countCollection') && lay.includes('/bo-suu-tap') && /function CollBtn/.test(lay), 'Layout: nút bookmark + countCollection + link')
@@ -486,7 +486,7 @@ delete global.window
   // C02 wiring: route /con-giap + import + Home link + sitemap
   const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
   const main = read('main.jsx')
-  ok(main.includes('import ConGiap') && main.includes('path="con-giap"') && main.includes('path="con-giap/:slug"'), 'main.jsx: import + route /con-giap (+:slug)')
+  ok((main.includes('import ConGiap') || main.includes('const ConGiap = lazy')) && main.includes('path="con-giap"') && main.includes('path="con-giap/:slug"'), 'main.jsx: import + route /con-giap (+:slug)')
   ok(/export default function ConGiap/.test(read('pages/ConGiap.jsx')), 'ConGiap.jsx: có export default')
   const cg = read('pages/ConGiap.jsx')
   ok(cg.includes("from '../components/useSeo.js'") && cg.includes('usePageSeo({') && cg.includes('breadcrumb:'), 'ConGiap: SEO meta động + breadcrumb')
@@ -566,7 +566,7 @@ delete global.window
 {
   const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
   const main = read('main.jsx')
-  ok(main.includes('import HopTuoi') && main.includes('path="hop-tuoi"') && main.includes('path="hop-tuoi/:slug"'), 'main.jsx: import + route /hop-tuoi (+:slug)')
+  ok((main.includes('import HopTuoi') || main.includes('const HopTuoi = lazy')) && main.includes('path="hop-tuoi"') && main.includes('path="hop-tuoi/:slug"'), 'main.jsx: import + route /hop-tuoi (+:slug)')
   ok(/export default function HopTuoi/.test(read('pages/HopTuoi.jsx')), 'HopTuoi.jsx: export default')
   const h = read('pages/HopTuoi.jsx')
   ok(h.includes('hopTuoiChi') && h.includes('usePageSeo(') && h.includes('breadcrumb:'), 'HopTuoi: dùng hopTuoiChi + SEO meta')
@@ -614,7 +614,7 @@ delete global.window
   eq(V.tinhCanChi(2000).conGiap, 'Rồng', 'tinhCanChi 2000 cầm tinh Rồng')
   const read = rel => readFileSync(new URL('../src/' + rel, import.meta.url), 'utf8')
   const main = read('main.jsx')
-  ok(main.includes('import SinhNam') && main.includes('path="sinh-nam"') && main.includes('path="sinh-nam/:year"'), 'main.jsx: import + route /sinh-nam (+:year)')
+  ok((main.includes('import SinhNam') || main.includes('const SinhNam = lazy')) && main.includes('path="sinh-nam"') && main.includes('path="sinh-nam/:year"'), 'main.jsx: import + route /sinh-nam (+:year)')
   ok(/export default function SinhNam/.test(read('pages/SinhNam.jsx')), 'SinhNam.jsx: export default')
   const s = read('pages/SinhNam.jsx')
   ok(s.includes('tinhCanChi') && s.includes('usePageSeo(') && s.includes('breadcrumb:'), 'SinhNam: dùng tinhCanChi + SEO meta')
@@ -855,6 +855,12 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
   ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) đã wire')
   ok(mj.indexOf('path="/di-chua"') < mj.indexOf('element={<Layout'), 'main.jsx: /di-chua nằm NGOÀI Layout (full page)')
+  // Code-split (React.lazy + Suspense) — khoa lai toi uu, tranh vo tinh go
+  ok(mj.includes('lazy(') && mj.includes('Suspense'), 'main.jsx: dung React.lazy + Suspense (code-split)')
+  ok(mj.includes("lazy(() => import('./pages/Tarot.jsx'))") && mj.includes("lazy(() => import('./pages/IChing.jsx'))"), 'main.jsx: cac trang nang code-split dong (Tarot/IChing)')
+  ok(mj.includes("import Home from './pages/Home.jsx'"), 'main.jsx: Home van eager (trang chu hien tuc thi)')
+  const layCS = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
+  ok(layCS.includes('Suspense') && layCS.includes('<Outlet'), 'Layout.jsx: bao Suspense quanh Outlet (giu nav khi trang lazy tai)')
   const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
   ok(lj2.includes('/di-chua'), 'Layout.jsx: menu vẫn có liên kết tới /di-chua')
   const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')

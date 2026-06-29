@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import ErrorBoundary from './ErrorBoundary.jsx'
 import { motion } from 'framer-motion'
@@ -159,7 +159,11 @@ function ScrollToTop() {
   return null
 }
 
+function PageFallback() {
+  return (<div className="page-fallback" role="status" aria-live="polite" aria-label="Dang tai"><span className="page-fallback-spinner" aria-hidden="true" /></div>)
+}
+
 export default function Layout() {
   const { pathname } = useLocation()
-  return (<><ScrollToTop /><Navbar /><main><motion.div key={pathname} initial={pageInit} animate={pageAnim} transition={pageTr}><ErrorBoundary><Outlet /></ErrorBoundary></motion.div></main><Footer /><BackToTop /></>)
+  return (<><ScrollToTop /><Navbar /><main><motion.div key={pathname} initial={pageInit} animate={pageAnim} transition={pageTr}><ErrorBoundary><Suspense fallback={<PageFallback />}><Outlet /></Suspense></ErrorBoundary></motion.div></main><Footer /><BackToTop /></>)
 }

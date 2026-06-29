@@ -653,3 +653,10 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 }
 .theme-toggle:hover { color: rgb(var(--c-gold)); border-color: rgb(var(--c-border-gold)); background: rgb(var(--c-gold) / .06); }
 .theme-toggle:active { transform: scale(.93); }
+
+/* Fallback khi trang code-split dang tai (React.lazy/Suspense) */
+.page-fallback{display:flex;align-items:center;justify-content:center;min-height:40vh;width:100%}
+.page-fallback--full{min-height:100vh}
+.page-fallback-spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--gold,#f59e0b);border-top-color:transparent;animation:pf-spin .7s linear infinite}
+@keyframes pf-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.page-fallback-spinner{animation:none;opacity:.6}}
