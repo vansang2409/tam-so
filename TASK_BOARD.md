@@ -130,6 +130,7 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |
 |---|---|---|---|---|---|
 | DC16 | Nang cap viewport Di Chua thanh cinematic 2.5D bang Three.js | UI/3D | High | Done (v4.2.0) | `TempleScene3D.jsx` dung anh WebP that lam nen parallax + WebGL trong suot cho aura/tia sang/khoi/hat bui; bo khoi low-poly gia, fallback SVG khi WebGL loi; responsive 1366/1024/390/320/844x390 OK, khong slider/card overlap; `three` tach chunk rieng; 431 test pass; build OK |
+| DC17 | Bo sung khu Dien Ngoc Hoang lay cam hung tu Chua Ngoc Hoang/Phuoc Hai Tu Quan 1 | Content/Art | Med | Done | Them location `dien-ngoc-hoang` vao Di Chua, tao asset `dien-ngoc-hoang.jpg/.webp` phong cach dien tho Noi Hoa/Sino-Vietnamese voi mai ngo am duong, cot go do, ho rua/ca va khoi huong; test khoa 12 khu + asset WebP |
 
 ## PHIEN 29/06/2026 - HIEU NANG / CHAT LUONG (PLAN_CODEX)
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |

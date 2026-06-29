@@ -5,6 +5,7 @@ Thả ảnh vào ĐÂY, đặt tên đúng theo id của từng khu (đuôi .jpg
 
   cong-tam-quan.jpg       — Cổng Tam Quan
   chanh-dien.jpg          — Chánh Điện (Đại Hùng Bảo Điện)
+  dien-ngoc-hoang.jpg     — Điện Ngọc Hoàng
   nha-to.jpg              — Nhà Tổ
   thap-chuong.jpg         — Tháp Chuông
   vuon-lam-ty-ni.jpg      — Vườn Lâm Tỳ Ni

@@ -1,6 +1,6 @@
 /* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa Tam Sở" (HƯ CẤU, lấy cảm hứng
  * từ nhiều ngôi chùa Việt — KHÔNG sao chép địa điểm cụ thể nào).
- * Gồm: 11 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
+ * Gồm: 12 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
  * dân gian) + helper lưu lời nguyện / đếm hương (cục bộ trong trình duyệt).
  * Thuần JS, KHÔNG phụ thuộc React → test được bằng Node. Không có dữ kiện server. */
 
@@ -9,6 +9,8 @@
 export const DICHUA_LOCATIONS = [
   { id: 'chanh-dien',      ten: 'Chánh Điện',          icon: '🛕', bienHieu: 'ĐẠI HÙNG BẢO ĐIỆN', scene: 'dien',    tone: 'day', huong: true,
     moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa Tam Sở.' },
+  { id: 'dien-ngoc-hoang', ten: 'Điện Ngọc Hoàng',     icon: '🏮', bienHieu: 'ĐIỆN NGỌC HOÀNG',    scene: 'dien',    tone: 'dusk', huong: true,
+    moTa: 'Không gian lấy cảm hứng từ Phước Hải Tự ở Quận 1: mái ngói âm dương, tượng gốm màu, cột gỗ sẫm, hồ cá/rùa và khói hương dày trong điện thờ.' },
   { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk', huong: true,
     moTa: 'Nơi thờ các vị tổ sư khai sơn, không gian trầm mặc và trang nghiêm.' },
   { id: 'thap-chuong',     ten: 'Tháp Chuông',         bienHieu: 'THÁP CHUÔNG',       icon: '🔔', scene: 'thap',    tone: 'dawn',
