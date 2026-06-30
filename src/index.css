@@ -519,203 +519,191 @@ input[type=number] {
 
 
 /* =========================================================================
- * TAROT LIBRARY 3D DECK - stronger depth for the 78-card archive
+ * TAROT LIBRARY 3D GALLERY - clean archive cards with premium hover depth
  * ========================================================================= */
 .tarot-library-section {
-  perspective: 1500px;
-  perspective-origin: 50% 18%;
+  perspective: 1200px;
+  perspective-origin: 50% 16%;
 }
 .tarot-filter-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-  margin: 0 auto 26px;
+  gap: 9px;
+  margin: 0 auto 24px;
 }
 .tarot-filter-pill {
   position: relative;
-  min-height: 36px;
-  padding: 8px 15px;
+  min-height: 34px;
+  padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid rgb(var(--c-border));
-  background: linear-gradient(180deg, rgb(var(--c-ink)), rgb(var(--c-ink2) / .92));
+  background: rgb(var(--c-ink) / .92);
   color: rgb(var(--c-muted));
-  font-size: .85rem;
+  font-size: .82rem;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
   transform-style: preserve-3d;
   transition: transform .18s cubic-bezier(.2,.8,.2,1), border-color .18s ease, color .18s ease, box-shadow .18s ease, background .18s ease;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 10px 24px -22px rgb(var(--c-shadow) / .42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.76), 0 10px 20px -20px rgb(var(--c-shadow) / .38);
 }
 .tarot-filter-pill:hover,
 .tarot-filter-pill:focus-visible {
   color: rgb(var(--c-cream));
-  border-color: rgb(var(--c-gold) / .42);
-  transform: perspective(900px) translateY(-2px) translateZ(12px) rotateX(4deg);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.82), 0 16px 28px -21px rgb(var(--c-shadow) / .52);
+  border-color: rgb(var(--c-gold) / .4);
+  transform: perspective(900px) translateY(-2px) translateZ(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 14px 24px -20px rgb(var(--c-shadow) / .46);
 }
 .tarot-filter-pill.is-active {
   color: #fff;
-  border-color: color-mix(in srgb, rgb(var(--c-gold)) 58%, transparent);
+  border-color: transparent;
   background: linear-gradient(135deg, rgb(var(--c-gold)), #b45309);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.34), 0 16px 32px -22px rgb(180 83 9 / .64);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.34), 0 14px 26px -22px rgb(180 83 9 / .58);
 }
 .tarot-library-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
   gap: 18px;
-  perspective: 1500px;
+  perspective: 1200px;
   transform-style: preserve-3d;
 }
 .tarot-library-grid.in > .tarot-library-card {
-  animation: tarot-card-rise .64s cubic-bezier(.18,.8,.25,1) backwards;
-  animation-delay: calc(var(--i) * 28ms);
+  animation: tarot-gallery-rise .46s cubic-bezier(.18,.8,.25,1) backwards;
+  animation-delay: calc(var(--i) * 18ms);
 }
 .tarot-library-card {
   --accent: rgb(var(--c-gold));
   position: relative;
-  min-height: 252px;
-  padding: 10px;
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, rgb(var(--c-border)));
+  min-height: 238px;
+  padding: 12px 12px 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, rgb(var(--c-border)));
   border-radius: 8px;
-  overflow: visible;
-  isolation: isolate;
+  overflow: hidden;
   background:
-    radial-gradient(circle at 20% 8%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 34%),
-    linear-gradient(180deg, rgb(var(--c-ink)), rgb(var(--c-ink2) / .92));
-  transform: perspective(1200px) translate3d(var(--spread), 0, 0) rotateX(var(--rx)) rotateY(var(--ry));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.78),
-    inset 0 -18px 34px color-mix(in srgb, var(--accent) 7%, transparent),
-    0 16px 36px -28px rgb(var(--c-shadow) / .55);
-  transition: transform .26s cubic-bezier(.18,.8,.25,1), border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    linear-gradient(180deg, rgba(255,255,255,.74), transparent 34%),
+    color-mix(in srgb, var(--accent) 4%, rgb(var(--c-ink)));
+  transform: perspective(900px) translateY(0) translateZ(0) rotateX(0) rotateY(0);
+  transform-style: preserve-3d;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 10px 26px -24px rgb(var(--c-shadow) / .42);
+  transition: transform .24s cubic-bezier(.18,.8,.25,1), border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 .tarot-library-card::before {
   content: '';
   position: absolute;
-  inset: 1px;
-  border-radius: 7px;
+  inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(115deg, transparent 0 28%, rgba(255,255,255,.42) 38%, transparent 48% 100%),
-    linear-gradient(180deg, rgba(255,255,255,.22), transparent 42%);
-  opacity: .42;
-  transform: translateZ(30px);
-  transition: opacity .22s ease, transform .22s ease;
+  border-radius: inherit;
+  background: linear-gradient(125deg, transparent 0 34%, rgba(255,255,255,.5) 43%, transparent 52% 100%);
+  opacity: 0;
+  transform: translateX(-26%) translateZ(22px);
+  transition: opacity .2s ease, transform .24s ease;
 }
 .tarot-library-card::after {
   content: '';
   position: absolute;
-  left: 8px;
-  right: -8px;
-  top: 9px;
-  bottom: -10px;
-  z-index: -2;
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--accent) 22%, rgb(var(--c-shadow))) 0 8px, transparent 8px),
-    linear-gradient(180deg, rgb(var(--c-shadow) / .18), rgb(var(--c-shadow) / .04));
-  filter: blur(.2px);
-  transform: translateZ(-24px) rotateX(-1deg) rotateY(2deg);
-  opacity: .58;
-  transition: opacity .22s ease, transform .22s ease;
+  left: 16px;
+  right: 16px;
+  bottom: 6px;
+  height: 18px;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 24%, rgb(var(--c-shadow))) 0, transparent 70%);
+  opacity: .18;
+  filter: blur(9px);
+  transform: translateZ(-18px);
+  transition: opacity .2s ease, transform .24s ease;
 }
 .tarot-library-card:hover,
 .tarot-library-card:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 56%, rgb(var(--c-border)));
-  transform: perspective(1200px) translate3d(var(--spread), -10px, 46px) rotateX(8deg) rotateY(calc(var(--ry) * -1));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.88),
-    inset 0 -22px 38px color-mix(in srgb, var(--accent) 11%, transparent),
-    0 28px 62px -34px color-mix(in srgb, var(--accent) 54%, rgb(var(--c-shadow))),
-    0 18px 38px -28px rgb(var(--c-shadow) / .68);
+  border-color: color-mix(in srgb, var(--accent) 44%, rgb(var(--c-border)));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.82), transparent 36%),
+    color-mix(in srgb, var(--accent) 8%, rgb(var(--c-ink)));
+  transform: perspective(900px) translateY(-8px) translateZ(24px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 24px 48px -30px color-mix(in srgb, var(--accent) 42%, rgb(var(--c-shadow))), 0 12px 28px -22px rgb(var(--c-shadow) / .48);
   text-decoration: none;
 }
 .tarot-library-card:hover::before,
 .tarot-library-card:focus-visible::before {
-  opacity: .72;
-  transform: translateZ(52px) translateX(3px);
+  opacity: .62;
+  transform: translateX(16%) translateZ(38px);
 }
 .tarot-library-card:hover::after,
 .tarot-library-card:focus-visible::after {
-  opacity: .76;
-  transform: translateZ(-34px) rotateX(-2deg) rotateY(4deg) translate(2px, 2px);
-}
-.tarot-library-aura,
-.tarot-library-edge {
-  position: absolute;
-  pointer-events: none;
+  opacity: .34;
+  transform: translateZ(-24px) translateY(4px) scale(1.06);
 }
 .tarot-library-aura {
-  inset: -18px;
-  z-index: -1;
-  border-radius: 18px;
-  background: radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 58%);
-  opacity: 0;
-  filter: blur(14px);
-  transform: translateZ(-10px) scale(.96);
-  transition: opacity .22s ease, transform .22s ease;
-}
-.tarot-library-edge {
-  top: 12px;
-  right: -7px;
-  bottom: 14px;
-  width: 11px;
-  border-radius: 0 8px 8px 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 42%, #fff), color-mix(in srgb, var(--accent) 28%, #1f2937));
-  box-shadow: inset 1px 0 0 rgba(255,255,255,.28), 6px 12px 22px -18px rgb(var(--c-shadow) / .82);
-  transform: translateZ(-12px) skewY(8deg);
-  opacity: .72;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%);
+  opacity: .18;
+  transform: translateZ(4px);
+  transition: opacity .2s ease;
 }
 .tarot-library-card:hover .tarot-library-aura,
-.tarot-library-card:focus-visible .tarot-library-aura {
-  opacity: 1;
-  transform: translateZ(-4px) scale(1.04);
-}
+.tarot-library-card:focus-visible .tarot-library-aura { opacity: .34; }
 .tarot-library-image {
   position: relative;
   z-index: 1;
-  min-height: 194px;
+  width: min(100%, 112px);
+  min-height: 168px;
   display: grid;
   align-items: start;
-  transform: translateZ(28px);
+  margin: 0 auto;
+  padding: 7px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgb(var(--c-ink)), rgb(var(--c-ink2) / .76));
+  border: 1px solid rgba(255,255,255,.68);
+  transform: translateZ(18px);
   transform-style: preserve-3d;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.82), 0 14px 28px -24px rgb(var(--c-shadow) / .58);
+  transition: transform .24s cubic-bezier(.18,.8,.25,1), box-shadow .2s ease, border-color .2s ease;
 }
 .tarot-library-img,
 .tarot-library-fallback {
   display: block;
   margin: 0 auto;
   width: 100%;
-  border-radius: 6px;
-  box-shadow: 0 16px 32px -24px rgb(var(--c-shadow) / .72), 0 0 0 1px rgba(255,255,255,.2);
-  transition: transform .26s cubic-bezier(.18,.8,.25,1), box-shadow .22s ease, filter .22s ease;
+  border-radius: 5px;
+  box-shadow: 0 10px 22px -18px rgb(var(--c-shadow) / .7), 0 0 0 1px rgba(15,23,42,.08);
+  transition: transform .24s cubic-bezier(.18,.8,.25,1), box-shadow .2s ease, filter .2s ease;
+}
+.tarot-library-card:hover .tarot-library-image,
+.tarot-library-card:focus-visible .tarot-library-image {
+  border-color: color-mix(in srgb, var(--accent) 26%, rgba(255,255,255,.76));
+  transform: translateY(-4px) translateZ(32px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 20px 34px -24px color-mix(in srgb, var(--accent) 34%, rgb(var(--c-shadow)));
 }
 .tarot-library-card:hover .tarot-library-img,
 .tarot-library-card:focus-visible .tarot-library-img,
 .tarot-library-card:hover .tarot-library-fallback,
 .tarot-library-card:focus-visible .tarot-library-fallback {
-  transform: translateY(-5px) translateZ(28px) scale(1.045) rotateZ(.45deg);
-  box-shadow: 0 24px 46px -24px color-mix(in srgb, var(--accent) 38%, rgb(var(--c-shadow))), 0 0 0 1px rgba(255,255,255,.34);
-  filter: saturate(1.05) contrast(1.02);
+  transform: translateZ(14px) scale(1.025);
+  box-shadow: 0 16px 30px -18px color-mix(in srgb, var(--accent) 34%, rgb(var(--c-shadow))), 0 0 0 1px rgba(15,23,42,.1);
+  filter: saturate(1.04) contrast(1.02);
 }
 .tarot-library-meta {
   position: relative;
   z-index: 2;
   display: grid;
-  gap: 4px;
+  gap: 5px;
   margin-top: 10px;
-  transform: translateZ(36px);
+  transform: translateZ(22px);
 }
 .tarot-library-kind {
   justify-self: center;
   max-width: 100%;
   padding: 4px 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 12%, rgb(var(--c-ink)));
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, rgb(var(--c-border)));
-  color: color-mix(in srgb, var(--accent) 78%, rgb(var(--c-cream)));
-  font-size: .66rem;
+  background: color-mix(in srgb, var(--accent) 10%, rgb(var(--c-ink)));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, rgb(var(--c-border)));
+  color: color-mix(in srgb, var(--accent) 76%, rgb(var(--c-cream)));
+  font-size: .64rem;
   font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
@@ -725,15 +713,15 @@ input[type=number] {
 }
 .tarot-library-name {
   color: rgb(var(--c-cream));
-  font-size: .84rem;
+  font-size: .86rem;
   font-weight: 850;
   line-height: 1.18;
   text-wrap: balance;
 }
 .tarot-fav-btn {
   position: absolute;
-  top: 7px;
-  right: 7px;
+  top: 8px;
+  right: 8px;
   z-index: 6;
   width: 34px;
   height: 34px;
@@ -746,49 +734,57 @@ input[type=number] {
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
-  transform: translateZ(58px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 12px 24px -20px rgb(var(--c-shadow) / .62);
+  transform: translateZ(42px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.76), 0 10px 20px -18px rgb(var(--c-shadow) / .58);
   transition: transform .18s ease, color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
 }
 .tarot-fav-btn:hover,
 .tarot-fav-btn:focus-visible,
 .tarot-fav-btn.is-active {
   color: #fff;
-  border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
   background: linear-gradient(135deg, var(--accent), #b45309);
-  transform: translateZ(64px) scale(1.07);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.36), 0 16px 30px -20px color-mix(in srgb, var(--accent) 66%, rgb(var(--c-shadow)));
+  transform: translateZ(52px) scale(1.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.38), 0 14px 26px -18px color-mix(in srgb, var(--accent) 58%, rgb(var(--c-shadow)));
 }
 .dark .tarot-filter-pill,
 .dark .tarot-library-card,
-.dark .tarot-fav-btn { box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 18px 38px -28px rgb(0 0 0 / .72); }
+.dark .tarot-fav-btn { box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 18px 34px -28px rgb(0 0 0 / .66); }
 
-@keyframes tarot-card-rise {
-  from { opacity: 0; transform: perspective(1200px) translate3d(var(--spread), 24px, -70px) rotateX(18deg) rotateY(var(--ry)); }
-  to { opacity: 1; transform: perspective(1200px) translate3d(var(--spread), 0, 0) rotateX(var(--rx)) rotateY(var(--ry)); }
+@keyframes tarot-gallery-rise {
+  from { opacity: 0; transform: perspective(900px) translateY(12px) translateZ(-18px) scale(.985); }
+  to { opacity: 1; transform: perspective(900px) translateY(0) translateZ(0) scale(1); }
 }
 
 @media (max-width: 640px) {
   .tarot-filter-row { gap: 8px; margin-bottom: 20px; }
   .tarot-filter-pill { min-height: 34px; padding: 7px 12px; font-size: .78rem; }
-  .tarot-library-grid { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 14px; }
-  .tarot-library-card { min-height: 230px; padding: 8px; opacity: 1; animation: none; transform: none; }
+  .tarot-library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .tarot-library-grid:not(.in) > .tarot-library-card,
-  .tarot-library-grid.in > .tarot-library-card { opacity: 1; animation: none; transform: none; }
+  .tarot-library-grid.in > .tarot-library-card,
+  .tarot-library-card { min-height: 244px; padding: 9px; opacity: 1; animation: none; transform: none; }
   .tarot-library-grid.in > .tarot-library-card:hover,
   .tarot-library-grid.in > .tarot-library-card:focus-visible,
   .tarot-library-grid:not(.in) > .tarot-library-card:hover,
   .tarot-library-grid:not(.in) > .tarot-library-card:focus-visible,
   .tarot-library-card:hover,
-  .tarot-library-card:focus-visible { transform: translateY(-5px); }
-  .tarot-library-card::after,
-  .tarot-library-edge { display: none; }
-  .tarot-library-image { min-height: 176px; transform: none; }
+  .tarot-library-card:focus-visible { transform: translateY(-4px); }
+  .tarot-library-card::after { display: none; }
+  .tarot-library-image { width: min(100%, 104px); min-height: 156px; padding: 6px; transform: none; }
   .tarot-library-meta { transform: none; }
-  .tarot-fav-btn { width: 32px; height: 32px; transform: none; }
+  .tarot-library-name { font-size: .84rem; }
+  .tarot-fav-btn { width: 34px; height: 34px; transform: none; }
   .tarot-fav-btn:hover,
   .tarot-fav-btn:focus-visible,
   .tarot-fav-btn.is-active { transform: scale(1.04); }
+}
+
+@media (max-width: 360px) {
+  .tarot-library-grid { gap: 12px; }
+  .tarot-library-grid:not(.in) > .tarot-library-card,
+  .tarot-library-grid.in > .tarot-library-card,
+  .tarot-library-card { min-height: 230px; }
+  .tarot-library-image { width: min(100%, 96px); min-height: 144px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -797,6 +793,7 @@ input[type=number] {
   .tarot-library-card::before,
   .tarot-library-card::after,
   .tarot-library-aura,
+  .tarot-library-image,
   .tarot-library-img,
   .tarot-library-fallback,
   .tarot-fav-btn { animation: none !important; transition: none !important; transform: none !important; }

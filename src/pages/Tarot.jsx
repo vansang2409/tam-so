@@ -334,9 +334,8 @@ function TarotIndex() {
               key={c.id}
               style={{
                 '--i': Math.min(i, 24),
-                '--rx': (((i % 5) - 2) * 0.7) + 'deg',
-                '--ry': ((((i * 2) % 7) - 3) * 0.65) + 'deg',
-                '--spread': ((i % 9) - 4) + 'px',
+                '--tilt-x': (((i % 5) - 2) * 0.55) + 'deg',
+                '--tilt-y': ((((i * 2) % 7) - 3) * 0.55) + 'deg',
                 '--accent': tarotAccent(c),
                 '--route3d-accent': tarotAccent(c)
               }}
@@ -347,7 +346,6 @@ function TarotIndex() {
               className="tarot-library-card route3d-card text-center cursor-pointer"
             >
               <span className="tarot-library-aura" aria-hidden="true" />
-              <span className="tarot-library-edge" aria-hidden="true" />
               <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'tarot-fav-btn ' + (isFav(c.id) ? 'is-active' : '')}>{isFav(c.id) ? '★' : '☆'}</button>
               <div className="tarot-library-image">
                 <CardImage card={c} w={220} imgClass="tarot-library-img rounded-md w-full h-auto" fallbackClass="tarot-library-fallback text-[1.7rem] py-4" />
