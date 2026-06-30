@@ -59,6 +59,16 @@ const FKEY = 'tamso_tarot_favs'
 
 const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+const tarotAccent = c => c.arcana === 'major'
+  ? '#b45309'
+  : c.suit === 'Gậy'
+    ? '#dc2626'
+    : c.suit === 'Cốc'
+      ? '#0891b2'
+      : c.suit === 'Kiếm'
+        ? '#4f46e5'
+        : '#d97706'
+
 function DrawnCard({ card, up, pos, delay = 0 }) {
   const [revealed, setRevealed] = useState(() => prefersReduced())
   useEffect(() => {
@@ -307,19 +317,45 @@ function TarotIndex() {
 
       <BirthCardsTool />
 
-      <section className="wrap py-10">
-        <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Thư viện 78 lá</h2>
-        <div className="flex gap-2 flex-wrap justify-center mb-6 mt-4">
+      <section className="wrap py-10 tarot-library-section">
+        <div className="text-center max-w-[720px] mx-auto mb-5">
+          <div className="text-gold text-kicker uppercase">Kho biểu tượng Rider-Waite-Smith</div>
+          <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] my-2">Thư viện 78 lá</h2>
+          <p className="note m-0">Bộ Rider-Waite-Smith là hệ biểu tượng phổ biến; phần này gom đủ 78 lá để đối chiếu dữ kiện, từ khóa và diễn giải.</p>
+        </div>
+        <div className="tarot-filter-row">
           {FILTERS.map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} className={'px-3.5 py-1.5 rounded-full text-[.85rem] font-semibold border transition ' + (filter === f.key ? 'bg-gold text-white border-transparent' : 'text-muted border-gold/25 hover:text-cream')}>{f.label}</button>
+            <button key={f.key} onClick={() => setFilter(f.key)} className={'tarot-filter-pill ' + (filter === f.key ? 'is-active' : '')}>{f.label}</button>
           ))}
         </div>
-        <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
+        <Reveal base="stagger-parent" className="tarot-library-grid">
           {cards.map((c, i) => (
-            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative route3d-card bg-gold/5 border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
-              <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-0 right-0 p-3 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 dark:text-white/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
-              <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
-              <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
+            <div
+              key={c.id}
+              style={{
+                '--i': Math.min(i, 24),
+                '--rx': (((i % 5) - 2) * 0.7) + 'deg',
+                '--ry': ((((i * 2) % 7) - 3) * 0.65) + 'deg',
+                '--spread': ((i % 9) - 4) + 'px',
+                '--accent': tarotAccent(c),
+                '--route3d-accent': tarotAccent(c)
+              }}
+              role="button"
+              tabIndex={0}
+              onClick={() => setSel(c)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }}
+              className="tarot-library-card route3d-card text-center cursor-pointer"
+            >
+              <span className="tarot-library-aura" aria-hidden="true" />
+              <span className="tarot-library-edge" aria-hidden="true" />
+              <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'tarot-fav-btn ' + (isFav(c.id) ? 'is-active' : '')}>{isFav(c.id) ? '★' : '☆'}</button>
+              <div className="tarot-library-image">
+                <CardImage card={c} w={220} imgClass="tarot-library-img rounded-md w-full h-auto" fallbackClass="tarot-library-fallback text-[1.7rem] py-4" />
+              </div>
+              <div className="tarot-library-meta">
+                <span className="tarot-library-kind">{c.arcana === 'major' ? 'Ẩn Chính' : c.suit}</span>
+                <div className="tarot-library-name">{c.nameVi}</div>
+              </div>
             </div>
           ))}
         </Reveal>
