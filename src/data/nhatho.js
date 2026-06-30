@@ -2,12 +2,12 @@
  * Tách rõ: trải nghiệm chiêm niệm cá nhân, KHÔNG thay việc tham dự Thánh lễ, cầu nguyện hay gặp linh mục thật. */
 
 export const NHATHO_SPACES = [
-  { id: 'gian-chinh', ten: 'Gian chính', icon: 'NT', tone: 'amber', title: 'Lối giữa & bàn thờ', desc: 'Không gian trung tâm với hàng ghế gỗ, lối đi giữa và bàn thờ ở phía trước. Dùng để dừng lại, thở chậm và đặt một ý nguyện bình an.', action: 'Chiêm niệm' },
-  { id: 'nen-cau-nguyen', ten: 'Nến cầu nguyện', icon: 'NE', tone: 'rose', title: 'Góc nến nhỏ', desc: 'Một góc thắp nến tượng trưng cho lời cầu nguyện âm thầm. Nến trong Tam Sở chỉ là cử chỉ online, không thay nghi thức thật.', action: 'Thắp nến' },
-  { id: 'kinh-mau', ten: 'Kính màu', icon: 'KM', tone: 'sky', title: 'Ánh sáng qua kính màu', desc: 'Kính màu gợi cảm giác ánh sáng đi qua nhiều sắc độ: đôi khi một việc cần được nhìn lại bằng lòng hiền hòa hơn.', action: 'Nhìn lại' },
-  { id: 'thanh-ca', ten: 'Thánh ca', icon: 'TC', tone: 'violet', title: 'Khoảng lặng của âm nhạc', desc: 'Không phát nhạc thật để tránh bản quyền; phần này dùng nhịp sáng và câu gợi ý để tạo cảm giác lắng nghe trong im lặng.', action: 'Lắng nghe' },
-  { id: 'sach-thanh', ten: 'Sách & suy niệm', icon: 'ST', tone: 'emerald', title: 'Bàn đọc nhỏ', desc: 'Một nơi ghi lại điều đang suy nghĩ. Nội dung bạn nhập chỉ lưu trong trình duyệt, không gửi lên máy chủ.', action: 'Ghi chú' },
-  { id: 'san-chuong', ten: 'Sân chuông', icon: 'CH', tone: 'slate', title: 'Tiếng chuông xa', desc: 'Khoảng sân trước tháp chuông, dùng như điểm kết thúc nhẹ nhàng trước khi quay lại trang chính.', action: 'Rời bước' }
+  { id: 'gian-chinh', image: 'nha-tho-tam-so', ten: 'Gian chính', icon: 'NT', tone: 'amber', title: 'Lối giữa & bàn thờ', desc: 'Không gian trung tâm với hàng ghế gỗ, lối đi giữa và bàn thờ ở phía trước. Dùng để dừng lại, thở chậm và đặt một ý nguyện bình an.', action: 'Chiêm niệm' },
+  { id: 'nen-cau-nguyen', image: 'nha-tho-nen-cau-nguyen', ten: 'Nến cầu nguyện', icon: 'NE', tone: 'rose', title: 'Góc nến nhỏ', desc: 'Một góc thắp nến tượng trưng cho lời cầu nguyện âm thầm. Nến trong Tam Sở chỉ là cử chỉ online, không thay nghi thức thật.', action: 'Thắp nến' },
+  { id: 'kinh-mau', image: 'nha-tho-kinh-mau', ten: 'Kính màu', icon: 'KM', tone: 'sky', title: 'Ánh sáng qua kính màu', desc: 'Kính màu gợi cảm giác ánh sáng đi qua nhiều sắc độ: đôi khi một việc cần được nhìn lại bằng lòng hiền hòa hơn.', action: 'Nhìn lại' },
+  { id: 'thanh-ca', image: 'nha-tho-thanh-ca', ten: 'Thánh ca', icon: 'TC', tone: 'violet', title: 'Khoảng lặng của âm nhạc', desc: 'Không phát nhạc thật để tránh bản quyền; phần này dùng nhịp sáng và câu gợi ý để tạo cảm giác lắng nghe trong im lặng.', action: 'Lắng nghe' },
+  { id: 'sach-thanh', image: 'nha-tho-sach-thanh', ten: 'Sách & suy niệm', icon: 'ST', tone: 'emerald', title: 'Bàn đọc nhỏ', desc: 'Một nơi ghi lại điều đang suy nghĩ. Nội dung bạn nhập chỉ lưu trong trình duyệt, không gửi lên máy chủ.', action: 'Ghi chú' },
+  { id: 'san-chuong', image: 'nha-tho-san-chuong', ten: 'Sân chuông', icon: 'CH', tone: 'slate', title: 'Tiếng chuông xa', desc: 'Khoảng sân trước tháp chuông, dùng như điểm kết thúc nhẹ nhàng trước khi quay lại trang chính.', action: 'Rời bước' }
 ]
 
 export const NHATHO_PRAYERS = [

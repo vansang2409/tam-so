@@ -946,7 +946,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(dcj.includes('TempleScene3D') && dcj.includes('<TempleScene3D loc={loc}') && dcj.includes('dc-scene-3d'), 'DiChua.jsx: main viewport dung canh Three.js 3D')
 
   ok(NT.NHATHO_SPACES.length === 6, 'NHATHO_SPACES: du 6 khu nha tho online')
-  ok(NT.NHATHO_SPACES.every(s => s.id && s.ten && s.icon && s.title && s.desc && s.action), 'NHATHO_SPACES: moi khu du id/ten/icon/title/desc/action')
+  ok(NT.NHATHO_SPACES.every(s => s.id && s.ten && s.icon && s.title && s.desc && s.action && s.image), 'NHATHO_SPACES: moi khu du id/ten/icon/title/desc/action/image')
   ok(new Set(NT.NHATHO_SPACES.map(s => s.id)).size === NT.NHATHO_SPACES.length, 'NHATHO_SPACES: id duy nhat')
   ok(NT.nhaThoSpaceById('gian-chinh').ten && NT.nhaThoSpaceById('khong-co') === null, 'nhaThoSpaceById: tra dung + id sai -> null')
   ok(typeof NT.prayerOfDay(new Date('2026-06-30')) === 'string' && NT.prayerOfDay(new Date('2026-06-30')).length > 40, 'prayerOfDay: tra loi goi y on dinh theo ngay')
@@ -954,9 +954,14 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(NT.addNhaThoNote('  binh an  ')[0].text === 'binh an' && Array.isArray(NT.clearNhaThoNotes()), 'add/clearNhaThoNote: trim + tra list')
   ok(NT.countNhaThoCandles() === 0 && NT.lightNhaThoCandle() === 1, 'NhaTho candles: dem/thap nen chay trong Node')
   const ntj = readFileSync(new URL('../src/pages/DiNhaTho.jsx', import.meta.url), 'utf8')
-  ok(ntj.includes('NHATHO_SPACES') && ntj.includes('nt-root') && ntj.includes('nha-tho-tam-so.webp') && ntj.includes('nha-tho-tam-so.png') && ntj.includes('không thay Thánh lễ'), 'DiNhaTho.jsx: full-page nha tho co data/asset/khung trung thuc')
+  ok(ntj.includes('NHATHO_SPACES') && ntj.includes('nt-root') && ntj.includes('activeImage') && ntj.includes('nt-stage-image') && ntj.includes('không thay Thánh lễ'), 'DiNhaTho.jsx: full-page nha tho co data/asset rieng tung khu/khung trung thuc')
   ok(ntj.includes('lightNhaThoCandle') && ntj.includes('addNhaThoNote') && ntj.includes("setModal('history')"), 'DiNhaTho.jsx: co thap nen, ghi chu rieng va lich su')
-  ok(readFileSync(new URL('../public/nhatho/nha-tho-tam-so.png', import.meta.url)).byteLength > 100000 && readFileSync(new URL('../public/nhatho/nha-tho-tam-so.webp', import.meta.url)).byteLength > 50000 && readFileSync(new URL('../public/nhatho/nha-tho-tam-so.jpg', import.meta.url)).byteLength > 50000, 'NhaTho asset: anh tu tao va ban WebP/JPG toi uu da duoc luu vao public/nhatho')
+  for (const space of NT.NHATHO_SPACES) {
+    for (const ext of ['png','webp','jpg']) {
+      const bytes = readFileSync(new URL('../public/nhatho/' + space.image + '.' + ext, import.meta.url)).byteLength
+      ok(bytes > (ext === 'png' ? 100000 : 50000), 'NhaTho asset: ' + space.image + '.' + ext + ' ton tai va du dung luong')
+    }
+  }
   ok(dcj.includes('<picture>') && dcj.includes('type="image/webp"') && dcj.includes("sceneImage(loc, 'webp')") && dcj.includes('decoding="async"'), 'DiChua.jsx: prefers WebP with JPG/PNG fallback and async decode')
   ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('dc-xam-stick.webp') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube and falling stick images use WebP with PNG fallback')
 
@@ -965,7 +970,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.8', 'package.json: bump version v4.3.8 cho Di Nha Tho')
+  ok(pkgAuth.version === '4.3.9', 'package.json: bump version v4.3.9 cho Di Nha Tho tung khu co anh rieng')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -1002,7 +1007,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.8'"), 'sw.js: bump CACHE v4.3.8')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.9'"), 'sw.js: bump CACHE v4.3.9')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')

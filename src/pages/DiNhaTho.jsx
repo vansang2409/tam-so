@@ -40,6 +40,8 @@ export default function DiNhaTho() {
   const [lit, setLit] = useState(false)
   const [modal, setModal] = useState(null)
   const active = nhaThoSpaceById(activeId) || NHATHO_SPACES[0]
+  const activeImage = active.image || 'nha-tho-tam-so'
+  const imageBases = Array.from(new Set(NHATHO_SPACES.map(space => space.image || 'nha-tho-tam-so')))
 
   useEffect(() => {
     document.body.classList.add('nt-lock')
@@ -64,8 +66,8 @@ export default function DiNhaTho() {
       <SeoTag title="Đi nhà thờ — không gian chiêm niệm online | Tam Sở"
         description="Đi nhà thờ Tam Sở: không gian nhà thờ online hư cấu để thắp nến tượng trưng, viết lời cầu nguyện riêng tư và chiêm niệm nhẹ nhàng; không thay việc tham dự Thánh lễ thật."
         path="/di-nha-tho" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi nhà thờ' }]} />
-      <div className="nt-bg" style={{ backgroundImage: `url(${ntAsset('nha-tho-tam-so.webp')})` }} aria-hidden="true" />
-      <picture className="nt-preload" aria-hidden="true"><source srcSet={ntAsset('nha-tho-tam-so.webp')} type="image/webp" /><source srcSet={ntAsset('nha-tho-tam-so.jpg')} type="image/jpeg" /><img src={ntAsset('nha-tho-tam-so.png')} alt="" loading="eager" decoding="async" /></picture>
+      <motion.div key={'bg-' + activeImage} className="nt-bg" style={{ backgroundImage: `url(${ntAsset(activeImage + '.webp')})` }} aria-hidden="true" initial={{ opacity: .72, scale: 1.05 }} animate={{ opacity: 1, scale: 1.04 }} transition={{ duration: .55 }} />
+      <div className="nt-preload" aria-hidden="true">{imageBases.map(base => <picture key={base}><source srcSet={ntAsset(base + '.webp')} type="image/webp" /><source srcSet={ntAsset(base + '.jpg')} type="image/jpeg" /><img src={ntAsset(base + '.png')} alt="" loading="eager" decoding="async" /></picture>)}</div>
       <div className="nt-lightfield" aria-hidden="true"><span /><span /><span /></div>
 
       <header className="nt-header">
@@ -89,8 +91,10 @@ export default function DiNhaTho() {
         </aside>
 
         <section className="nt-stage" aria-labelledby="nt-title">
+          <motion.div key={'stage-' + activeImage} className="nt-stage-image" style={{ backgroundImage: `url(${ntAsset(activeImage + '.webp')})` }} aria-hidden="true" initial={{ opacity: 0, rotateY: -10, y: 18 }} animate={{ opacity: 1, rotateY: -4, y: 0 }} transition={{ duration: .55, ease: [.2,.8,.2,1] }} />
           <motion.div key={active.id} className="nt-scene-card" initial={{ opacity: 0, y: 18, rotateX: 4 }} animate={{ opacity: 1, y: 0, rotateX: 0 }} transition={{ duration: .45, ease: [.2,.8,.2,1] }}>
             <div className="nt-scene-glass" aria-hidden="true" /><div className="nt-orbit" aria-hidden="true"><span /><span /><span /></div>
+            <div className="nt-space-photo" aria-hidden="true"><picture><source srcSet={ntAsset(activeImage + '.webp')} type="image/webp" /><source srcSet={ntAsset(activeImage + '.jpg')} type="image/jpeg" /><img src={ntAsset(activeImage + '.png')} alt="" loading="eager" decoding="async" /></picture></div>
             <p className="nt-eyebrow">{active.icon} · {active.ten}</p><h1 id="nt-title">{active.title}</h1><p>{active.desc}</p>
             <div className="nt-scene-actions"><button type="button" className="nt-btn nt-btn-primary" onClick={lightCandle}>Thắp một ngọn nến</button><button type="button" className="nt-btn nt-btn-ghost" onClick={() => setModal('about')}>Đọc lưu ý</button></div>
           </motion.div>
