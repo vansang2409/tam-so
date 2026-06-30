@@ -876,6 +876,12 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(mj.includes('lazy(') && mj.includes('Suspense'), 'main.jsx: dung React.lazy + Suspense (code-split)')
   ok(mj.includes("import { routeLoaders } from './routeLoaders.js'") && mj.includes('lazy(routeLoaders.tarot)') && mj.includes('lazy(routeLoaders.iChing)'), 'main.jsx: cac trang nang lazy qua routeLoaders dung chung')
   ok(mj.includes("import Home from './pages/Home.jsx'"), 'main.jsx: Home van eager (trang chu hien tuc thi)')
+  const home3dHome = readFileSync(new URL('../src/pages/Home.jsx', import.meta.url), 'utf8')
+  const home3dComp = readFileSync(new URL('../src/components/Home3DMenu.jsx', import.meta.url), 'utf8')
+  const home3dData = readFileSync(new URL('../src/data/homeMenu.js', import.meta.url), 'utf8')
+  ok(home3dHome.includes("const Home3DMenu = lazy(() => import('../components/Home3DMenu.jsx'))") && home3dHome.includes('Home3DMenuFallback') && home3dHome.includes('<Home3DMenu />'), 'Home.jsx: menu 3D trang chu duoc lazy-load va co fallback DOM')
+  ok(home3dComp.includes("import * as THREE from 'three'") && home3dComp.includes('new THREE.WebGLRenderer') && home3dComp.includes('prefers-reduced-motion') && home3dComp.includes('home3d-portals') && home3dComp.includes('HOME3D_MENU_ITEMS.map'), 'Home3DMenu.jsx: dung Three.js + reduced-motion + link DOM overlay')
+  ok(['/ho-so','/tarot','/than-so-hoc','/la-so-tu-vi','/kinh-dich','/di-chua'].every(to => home3dData.includes(to)), 'homeMenu.js: vong menu 3D co du 6 cong chinh')
   const loaders = readFileSync(new URL('../src/routeLoaders.js', import.meta.url), 'utf8')
   ok(loaders.includes("tarot: () => import('./pages/Tarot.jsx')") && loaders.includes("iChing: () => import('./pages/IChing.jsx')") && loaders.includes("'/di-chua': routeLoaders.diChua"), 'routeLoaders: map importer dung chung cho route/chunk nang')
   ok(loaders.includes('prefetchRouteChunk') && loaders.includes('saveData') && loaders.includes('inflight'), 'routeLoaders: prefetch idempotent va ton trong navigator.connection.saveData')
@@ -914,7 +920,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.2.0', 'package.json: bump version v4.2.0 cho Di Chua 3D')
+  ok(pkgAuth.version === '4.3.0', 'package.json: bump version v4.3.0 cho Home 3D menu')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -951,7 +957,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.2.0'"), 'sw.js: bump CACHE v4.2.0')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.0'"), 'sw.js: bump CACHE v4.3.0')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')

@@ -3,14 +3,26 @@ import { Link } from 'react-router-dom'
 import LichVanNien from '../components/LichVanNien.jsx'
 import Reveal from '../components/Reveal.jsx'
 import { ZODIAC, ZODIAC_SLUG, dailyHoroscope } from '../data/zodiac.js'
+import { HOME3D_MENU_ITEMS } from '../data/homeMenu.js'
 
 const Today = lazy(() => import('../components/Today.jsx'))
+const Home3DMenu = lazy(() => import('../components/Home3DMenu.jsx'))
 
-const pillars = [
-  { ic: '🃏', title: 'Rút bài Tarot', to: '/tarot', desc: 'Một câu hỏi trong lòng — để lá bài gợi mở.' },
-  { ic: '🔢', title: 'Thần số học', to: '/than-so-hoc', desc: 'Ngày sinh & họ tên ẩn chứa con số của bạn.' },
-  { ic: '☆', title: 'Lá số Tử Vi', to: '/la-so-tu-vi', desc: 'An sao 12 cung theo giờ sinh của bạn.' }
-]
+function Home3DMenuFallback() {
+  return (
+    <div className="home3d-fallback" aria-label="Menu công cụ Tam Sở">
+      {HOME3D_MENU_ITEMS.map((item, i) => (
+        <Link key={item.to} to={item.to} className="home3d-fallback-link" style={{ '--accent': item.accentCss, '--i': i }}>
+          <span className="home3d-glyph" aria-hidden="true">{item.glyph}</span>
+          <span className="home3d-text">
+            <span className="home3d-kicker">{item.kicker}</span>
+            <span className="home3d-label">{item.label}</span>
+          </span>
+        </Link>
+      ))}
+    </div>
+  )
+}
 
 const features = [
   { ic: '📜', title: 'Hồ sơ tổng hợp', to: '/ho-so', cta: 'Lập hồ sơ →', desc: 'Nhập một lần — xem ngay Số Chủ Đạo, Can Chi, cung hoàng đạo, lá Tarot chủ đạo và năm cá nhân trong một bức chân dung.' },
@@ -70,20 +82,13 @@ export default function Home() {
         </div>
       </section>
 
-      <Reveal><LichVanNien /></Reveal>
+      <Reveal as="section" base="stagger-parent" className="wrap pt-4 pb-2">
+        <Suspense fallback={<Home3DMenuFallback />}>
+          <Home3DMenu />
+        </Suspense>
+      </Reveal>
 
-      <section className="wrap pt-4 pb-2">
-        <p className="text-center text-gold text-kicker uppercase mb-3">Bạn muốn xem gì hôm nay?</p>
-        <Reveal base="stagger-parent" className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[820px] mx-auto">
-          {pillars.map((p, i) => (
-            <Link key={p.to} style={{ '--i': i }} to={p.to} className="panel hover-lift p-6 text-center no-underline block hover:border-gold/40">
-              <span className="block text-[2.4rem] mb-1">{p.ic}</span>
-              <h3 className="text-cream text-h3 mb-1">{p.title}</h3>
-              <p className="text-muted text-[.9rem] m-0">{p.desc}</p>
-            </Link>
-          ))}
-        </Reveal>
-      </section>
+      <Reveal><LichVanNien /></Reveal>
 
       <section className="wrap py-2">
         <div className="panel p-5 max-w-[680px] mx-auto bg-gold/[.05]">

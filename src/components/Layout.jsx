@@ -41,10 +41,12 @@ function AuthBtn() {
   const { user, loading } = useAuth()
   const label = loading ? '...' : (user?.user_metadata?.full_name || user?.email || '\u0110\u0103ng nh\u1eadp')
   const title = user ? 'T\u00e0i kho\u1ea3n Tam S\u1edf' : '\u0110\u0103ng nh\u1eadp / \u0110\u0103ng k\u00fd'
+  const shown = user ? label.split('@')[0].slice(0, 16) : label
+  const compact = user ? shown.slice(0, 1).toUpperCase() : '\u0110N'
   return (
     <NavLink to="/dang-nhap" {...prefetchProps('/dang-nhap')} aria-label={title} title={title}
-      className={({ isActive }) => 'px-3 py-2 rounded-full text-[.86rem] font-semibold transition shrink-0 ' + (isActive ? 'text-gold bg-gold/10' : 'text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5')}>
-      {user ? label.split('@')[0].slice(0, 16) : label}
+      className={({ isActive }) => 'min-w-[40px] text-center px-2.5 sm:px-3 py-2 rounded-full text-[.86rem] font-semibold transition shrink-0 ' + (isActive ? 'text-gold bg-gold/10' : 'text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5')}>
+      <span className="hidden sm:inline">{shown}</span><span className="sm:hidden" aria-hidden="true">{compact}</span>
     </NavLink>
   )
 }
@@ -60,7 +62,7 @@ function CollBtn() {
     return () => { window.removeEventListener('tamso:collection', upd); window.removeEventListener('storage', upd) }
   }, [])
   useEffect(() => { setN(countCollection()) }, [loc])
-  const base = 'relative px-3 py-2 rounded-full text-[1.1rem] leading-none transition shrink-0'
+  const base = 'relative px-2.5 sm:px-3 py-2 rounded-full text-[1.1rem] leading-none transition shrink-0'
   return (
     <NavLink to="/bo-suu-tap" {...prefetchProps('/bo-suu-tap')} aria-label={'Bộ sưu tập đã lưu' + (n ? ', ' + n + ' mục' : '')} title="Bộ sưu tập đã lưu"
       className={({ isActive }) => isActive
@@ -108,9 +110,9 @@ function Navbar() {
   const cls = ({ isActive }) => 'navlink' + (isActive ? ' is-active' : '')
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-ink/80 border-b border-slate-200/80 dark:border-slate-700/80">
-      <nav className="flex items-center justify-between gap-3 px-[22px] py-3.5 max-w-content mx-auto">
+      <nav className="flex items-center justify-between gap-3 px-3 sm:px-[22px] py-3.5 max-w-content mx-auto">
         <Link to="/" className="flex items-center gap-2.5 font-serif text-[1.3rem] font-bold text-cream whitespace-nowrap no-underline hover:no-underline">
-          <Logo size={30} className="shrink-0" /> Tam Sở<span className="text-gold">.</span>
+          <Logo size={30} className="shrink-0" /> <span className="tamso-brand-text">Tam Sở<span className="text-gold">.</span></span>
         </Link>
         <div className="flex items-center gap-1.5">
           <div className="hidden md:flex md:items-center md:gap-x-[18px]">
@@ -124,7 +126,7 @@ function Navbar() {
           <AuthBtn />
           <CollBtn />
           <button onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open} aria-controls="navmenu"
-            className="md:hidden bg-transparent border border-slate-300 dark:border-slate-600 text-cream rounded-[10px] px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
+            className="md:hidden bg-transparent border border-slate-300 dark:border-slate-600 text-cream rounded-[10px] px-2.5 sm:px-3 py-2 text-[1.1rem] cursor-pointer shrink-0">☰</button>
         </div>
       </nav>
     </header>
