@@ -1,6 +1,6 @@
 /* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa Tam Sở" (HƯ CẤU, lấy cảm hứng
  * từ nhiều ngôi chùa Việt — KHÔNG sao chép địa điểm cụ thể nào).
- * Gồm: 22 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
+ * Gồm: 23 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
  * dân gian) + helper lưu lời nguyện / đếm hương (cục bộ trong trình duyệt).
  * Thuần JS, KHÔNG phụ thuộc React → test được bằng Node. Không có dữ kiện server. */
 
@@ -25,6 +25,8 @@ export const DICHUA_LOCATIONS = [
     moTa: 'Không gian gợi mười điện và các phù điêu nhân quả, được diễn giải theo hướng chiêm nghiệm đạo đức, trang nghiêm nhưng không u tối.' },
   { id: 'dien-kim-hoa',    ten: 'Điện Kim Hoa',        icon: '🌺', bienHieu: 'KIM HOA THÁNH MẪU',  scene: 'dien',    tone: 'gold', huong: true,
     moTa: 'Gian thờ lấy cảm hứng từ Kim Hoa Thánh Mẫu và mười hai Bà Mụ, ấm áp với hoa, đèn và lời cầu an lành cho gia đạo.' },
+  { id: 'thien-y-thanh-mau', ten: 'Thiên Y Thánh Mẫu', icon: '🌿', bienHieu: 'THIÊN Y THÁNH MẪU',   scene: 'dien',    tone: 'gold', huong: true,
+    moTa: 'Gian thờ lấy cảm hứng từ Thiên Y Thánh Mẫu: sắc gỗ trầm, hũ thuốc, hoa sen và lời nguyện bình an cho thân tâm.' },
   { id: 'dien-ong-to',     ten: 'Điện Ông Tơ',         icon: '🧵', bienHieu: 'ÔNG TƠ BÀ NGUYỆT',   scene: 'dien',    tone: 'gold', huong: true,
     moTa: 'Góc cầu duyên lấy cảm hứng từ Ông Tơ Bà Nguyệt: chỉ đỏ, đèn đôi và không khí nhẹ nhàng cho những lời nguyện về kết nối.' },
   { id: 'dien-phat-ba',    ten: 'Điện Phật Bà',        icon: '🪷', bienHieu: 'ĐIỆN PHẬT BÀ',       scene: 'tuong',   tone: 'gold', huong: true,
@@ -143,6 +145,30 @@ export function clearLoiNguyen() {
 
 // — Lịch sử thẻ xăm đã rút (chỉ lưu số thẻ + thời điểm; tra lại nội dung qua xamBySo) —
 export const XAM_LICHSU_KEY = 'tamso_dichua_xam_lichsu'
+export const KEO_LICHSU_KEY = 'tamso_dichua_keo_lichsu'
+
+export const DICHUA_KEO = [
+  { id: 'am-duong', mat: ['Sấp', 'Ngửa'], ten: 'Âm Dương Keo', ket: 'Tín hiệu thuận',
+    dienGiai: 'Một mặt sấp, một mặt ngửa gợi ý câu hỏi đã có hướng thuận để bạn tiếp tục quan sát và hành động chậm rãi.',
+    loiKhuyen: 'Giữ tâm ngay thẳng, làm phần mình có thể làm, rồi xem kết quả thực tế trả lời thêm.' },
+  { id: 'hai-sap', mat: ['Sấp', 'Sấp'], ten: 'Tĩnh Keo', ket: 'Chưa nên vội',
+    dienGiai: 'Hai mặt cùng sấp nhắc bạn dừng lại một nhịp. Có thể câu hỏi còn thiếu dữ kiện hoặc tâm mình còn đang nôn nóng.',
+    loiKhuyen: 'Đổi câu hỏi cho rõ hơn, hoặc quay lại khi đã bình tĩnh và có thêm thông tin.' },
+  { id: 'hai-ngua', mat: ['Ngửa', 'Ngửa'], ten: 'Vấn Keo', ket: 'Cần hỏi lại',
+    dienGiai: 'Hai mặt cùng ngửa gợi cảm giác điều đang hỏi chưa chín. Đây là lời nhắc nhìn thêm mặt còn bỏ sót.',
+    loiKhuyen: 'Đừng ép một câu trả lời ngay. Hãy kiểm tra lại ý định, người liên quan và thời điểm.' }
+]
+
+const KEO_LABEL = { sap: 'Sấp', ngua: 'Ngửa' }
+export const keoById = id => DICHUA_KEO.find(k => k.id === id) || null
+
+export function xinKeo(rng = Math.random) {
+  const a = rng() < 0.5 ? 'sap' : 'ngua'
+  const b = rng() < 0.5 ? 'sap' : 'ngua'
+  const id = a !== b ? 'am-duong' : (a === 'sap' ? 'hai-sap' : 'hai-ngua')
+  const base = keoById(id)
+  return { ...base, mat: [KEO_LABEL[a], KEO_LABEL[b]] }
+}
 
 export function loadXamLichSu() {
   const ls = _ls(); if (!ls) return []
@@ -161,6 +187,26 @@ export function addXamLichSu(xam) {
 
 export function clearXamLichSu() {
   const ls = _ls(); if (ls) { try { ls.removeItem(XAM_LICHSU_KEY) } catch (e) { /* bỏ qua */ } }
+  return []
+}
+
+export function loadKeoLichSu() {
+  const ls = _ls(); if (!ls) return []
+  try { const a = JSON.parse(ls.getItem(KEO_LICHSU_KEY) || '[]'); return Array.isArray(a) ? a : [] } catch (e) { return [] }
+}
+
+export function addKeoLichSu(keo) {
+  if (!keo || !keo.id) return loadKeoLichSu()
+  const list = loadKeoLichSu()
+  list.unshift({ t: Date.now(), id: keo.id, mat: Array.isArray(keo.mat) ? keo.mat : [] })
+  const trimmed = list.slice(0, 50)
+  const ls = _ls()
+  if (ls) { try { ls.setItem(KEO_LICHSU_KEY, JSON.stringify(trimmed)) } catch (e) { /* hết dung lượng — bỏ qua */ } }
+  return trimmed
+}
+
+export function clearKeoLichSu() {
+  const ls = _ls(); if (ls) { try { ls.removeItem(KEO_LICHSU_KEY) } catch (e) { /* bỏ qua */ } }
   return []
 }
 

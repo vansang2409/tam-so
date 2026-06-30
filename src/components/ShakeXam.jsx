@@ -159,7 +159,12 @@ export default function ShakeXam() {
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
           <picture><source srcSet={dcAsset(phase === 'idle' ? 'dc-tube-cutout.webp' : 'dc-tube-cutout-shake.webp')} type="image/webp" /><img src={dcAsset(phase === 'idle' ? 'dc-tube-cutout.png' : 'dc-tube-cutout-shake.png')} alt="" className="xam-tube-real" loading="lazy" decoding="async" /></picture>
         </div>
-        {dropping && <span className="xam-falling" />}
+        {dropping && (
+          <picture className="xam-falling">
+            <source srcSet={dcAsset('dc-xam-stick.webp')} type="image/webp" />
+            <img src={dcAsset('dc-xam-stick.png')} alt="" loading="lazy" decoding="async" />
+          </picture>
+        )}
         {!active && !dropping && progress === 0 && <div className="xam-hand" aria-hidden="true">🤲</div>}
       </div>
 

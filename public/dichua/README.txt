@@ -13,6 +13,7 @@ Thả ảnh vào ĐÂY, đặt tên đúng theo id của từng khu (đuôi .jpg
   dien-thanh-hoang.jpg    — Điện Thành Hoàng
   dien-thap-dien.jpg      — Điện Thập Điện
   dien-kim-hoa.jpg        — Điện Kim Hoa
+  thien-y-thanh-mau.jpg   — Thiên Y Thánh Mẫu
   dien-ong-to.jpg         — Điện Ông Tơ
   dien-phat-ba.jpg        — Điện Phật Bà
   lau-quan-am.jpg         — Lầu Quán Âm
@@ -32,3 +33,4 @@ GHI CHÚ
 - Đừng để chữ trong ảnh — biển hiệu (ĐẠI HÙNG BẢO ĐIỆN...) được phủ bằng code.
 - Nên nén ảnh ~150–300 KB/tấm để web tải nhanh. Tỉ lệ 16:9 (vd 1920x1080).
 - Prompt tạo ảnh: xem mục "Đi Chùa" trong WORK_LOG / trao đổi với AI.
+- Cutout nghi thức: dc-tube-cutout(.webp/.png), dc-tube-cutout-shake(.webp/.png), dc-xam-stick(.webp/.png), dc-keo-blocks(.webp/.png).

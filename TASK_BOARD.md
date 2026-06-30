@@ -131,6 +131,7 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 |---|---|---|---|---|---|
 | DC16 | Nang cap viewport Di Chua thanh cinematic 2.5D bang Three.js | UI/3D | High | Done (v4.2.0) | `TempleScene3D.jsx` dung anh WebP that lam nen parallax + WebGL trong suot cho aura/tia sang/khoi/hat bui; bo khoi low-poly gia, fallback SVG khi WebGL loi; responsive 1366/1024/390/320/844x390 OK, khong slider/card overlap; `three` tach chunk rieng; 431 test pass; build OK |
 | DC17 | Bo sung cum khu lay cam hung tu Chua Ngoc Hoang/Phuoc Hai Tu Quan 1 | Content/Art | Med | Done | Tong 11 khu Ngoc Hoang-style: `dien-ngoc-hoang` + 10 khu moi (San Ho Rua, Mieu Ho Phap, Tien/Trung Dien, Thanh Hoang, Thap Dien, Kim Hoa, Ong To, Phat Ba, Lau Quan Am); asset JPG/WebP rieng; test khoa 22 khu + WebP |
+| DC18 | Tao lai ong xam/que tre, them Thien Y Thanh Mau va chuc nang Xin Keo | Feature/Art | Med | Done | Them `thien-y-thanh-mau` + asset JPG/WebP; thay cutout ong xam idle/shake moi, them `dc-xam-stick` va `dc-keo-blocks`; them `XinKeo.jsx`, helper/history xin keo, modal/card right panel; test khoa 23 khu + nghi thuc |
 
 ## PHIEN 29/06/2026 - HIEU NANG / CHAT LUONG (PLAN_CODEX)
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |

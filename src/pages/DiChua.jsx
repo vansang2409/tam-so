@@ -7,10 +7,12 @@ import TempleScene from '../components/TempleScene.jsx'
 import TempleScene3D from '../components/TempleScene3D.jsx'
 import IncenseCenser3D from '../components/IncenseCenser3D.jsx'
 import ShakeXam from '../components/ShakeXam.jsx'
+import XinKeo from '../components/XinKeo.jsx'
 import {
   DICHUA_LOCATIONS, locationById,
   loadLoiNguyen, addLoiNguyen, clearLoiNguyen, countThapHuong, thapHuong,
-  loadXamLichSu, clearXamLichSu, xamBySo
+  loadXamLichSu, clearXamLichSu, xamBySo,
+  loadKeoLichSu, clearKeoLichSu, keoById
 } from '../data/dichua.js'
 
 const NAV = ['Trang Chủ', 'Chùa Online', 'Kinh Sách', 'Phật Pháp', 'Sự Kiện', 'Cộng Đồng']
@@ -63,13 +65,14 @@ export default function DiChua() {
   const [litFlash, setLitFlash] = useState(false)
   const [igniting, setIgniting] = useState(false)
   const [litLocs, setLitLocs] = useState({})
-  const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'soon' | 'lichsu'
+  const [modal, setModal] = useState(null) // 'help' | 'congduc' | 'xam' | 'keo' | 'soon' | 'lichsu'
   const [lichSuLN, setLichSuLN] = useState([])
   const [lichSuXam, setLichSuXam] = useState([])
+  const [lichSuKeo, setLichSuKeo] = useState([])
   const huongTimers = useRef([])
 
   useEffect(() => { setPrayerCount(loadLoiNguyen().length); setLitCount(countThapHuong()) }, [])
-  useEffect(() => { if (modal === 'lichsu') { setLichSuLN(loadLoiNguyen()); setLichSuXam(loadXamLichSu()) } }, [modal])
+  useEffect(() => { if (modal === 'lichsu') { setLichSuLN(loadLoiNguyen()); setLichSuXam(loadXamLichSu()); setLichSuKeo(loadKeoLichSu()) } }, [modal])
   useEffect(() => { document.body.classList.add('dc-lock'); return () => document.body.classList.remove('dc-lock') }, [])
   useEffect(() => () => { huongTimers.current.forEach(clearTimeout) }, [])
 
@@ -87,6 +90,7 @@ export default function DiChua() {
   }
   const onClearLN = () => { setLichSuLN(clearLoiNguyen()); setPrayerCount(0) }
   const onClearXam = () => { setLichSuXam(clearXamLichSu()) }
+  const onClearKeo = () => { setLichSuKeo(clearKeoLichSu()) }
   const fmtT = t => new Date(t).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
   const clearHuongTimers = () => { huongTimers.current.forEach(clearTimeout); huongTimers.current = [] }
   const doThapHuong = () => {
@@ -222,6 +226,13 @@ export default function DiChua() {
             </div>
             <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('xam')}>Lắc ngay</button>
           </div>
+          <div className="dc-card dc-xam-card dc-keo-card">
+            <div>
+              <div className="dc-card-title">🪙 Xin Keo</div>
+              <p className="dc-card-desc">Gieo cặp keo âm dương.</p>
+            </div>
+            <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('keo')}>Gieo keo</button>
+          </div>
         </aside>
       </div>
 
@@ -234,6 +245,7 @@ export default function DiChua() {
           <li><b>Lời Cầu Nguyện</b> : viết & lưu riêng trên máy bạn</li>
           <li><b>Thắp Hương</b> : cử chỉ tượng trưng</li>
           <li><b>Xin Xăm</b> : <b>lắc ống xăm</b> (kéo qua lại hoặc lắc điện thoại) đến khi que rơi ra</li>
+          <li><b>Xin Keo</b> : gieo cặp keo âm dương để chiêm nghiệm một câu hỏi rõ ràng</li>
         </ul>
       </DcModal>
 
@@ -245,6 +257,11 @@ export default function DiChua() {
       <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống"
         bgImage={sceneImage(loc, 'webp')}>
         <ShakeXam />
+      </DcModal>
+
+      <DcModal open={modal === 'keo'} onClose={() => setModal(null)} title="🪙 Xin Keo — cặp keo âm dương"
+        bgImage={sceneImage(loc, 'webp')}>
+        <XinKeo />
       </DcModal>
 
       <DcModal open={modal === 'lichsu'} onClose={() => setModal(null)} title="📜 Lịch Sử Của Bạn">
@@ -265,6 +282,16 @@ export default function DiChua() {
           {lichSuXam.length === 0 ? <p className="dc-card-note">Bạn chưa xin thẻ xăm nào.</p> : (
             <ul className="dc-history-list">
               {lichSuXam.map((h, i) => { const x = xamBySo(h.so); return <li key={i}><span className="dc-history-time">{fmtT(h.t)}</span>Thẻ số {h.so}{x ? ' · ' + x.bac + ' — “' + x.cau[0] + '”' : ''}</li> })}
+            </ul>
+          )}
+        </div>
+        <div className="dc-history-section">
+          <div className="dc-history-head"><b>🪙 Keo đã xin ({lichSuKeo.length})</b>
+            {lichSuKeo.length > 0 && <button type="button" className="dc-history-clear" onClick={onClearKeo}>Xoá hết</button>}
+          </div>
+          {lichSuKeo.length === 0 ? <p className="dc-card-note">Bạn chưa xin keo lần nào.</p> : (
+            <ul className="dc-history-list">
+              {lichSuKeo.map((h, i) => { const k = keoById(h.id); return <li key={i}><span className="dc-history-time">{fmtT(h.t)}</span>{k ? k.ten + ' · ' + k.ket : h.id}{h.mat?.length ? ' — ' + h.mat.join(' / ') : ''}</li> })}
             </ul>
           )}
         </div>

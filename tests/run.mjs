@@ -828,12 +828,12 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
 // — Đi chùa: dữ liệu khu + bộ thẻ xăm (thuần JS, test bằng Node) —
 {
-  ok(DC.DICHUA_LOCATIONS.length === 22, 'DICHUA_LOCATIONS: đủ 22 khu (khớp ảnh mockup)')
+  ok(DC.DICHUA_LOCATIONS.length === 23, 'DICHUA_LOCATIONS: đủ 23 khu (khớp ảnh mockup)')
   ok(DC.DICHUA_LOCATIONS.every(l => l.id && l.ten && l.icon && l.bienHieu && l.moTa && l.scene && l.tone), 'DICHUA_LOCATIONS: mỗi khu đủ id/ten/icon/bienHieu/moTa/scene/tone')
   ok(DC.DICHUA_LOCATIONS.every(l => ['dawn', 'day', 'dusk', 'gold'].includes(l.tone)), 'DICHUA_LOCATIONS: tone hợp lệ')
-  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 22, 'DICHUA_LOCATIONS: id duy nhất')
+  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 23, 'DICHUA_LOCATIONS: id duy nhất')
   ok(DC.locationById('chanh-dien').scene === 'dien' && DC.locationById('dien-ngoc-hoang').scene === 'dien' && DC.locationById('cong-tam-quan').scene === 'cong', 'locationById: trả đúng khu + scene')
-  const ngocHoangAreas = ['san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','dien-ong-to','dien-phat-ba','lau-quan-am']
+  const ngocHoangAreas = ['san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','thien-y-thanh-mau','dien-ong-to','dien-phat-ba','lau-quan-am']
   ok(ngocHoangAreas.every(id => DC.locationById(id)), 'DICHUA_LOCATIONS: đủ cụm khu lấy cảm hứng Chùa Ngọc Hoàng')
   ok(DC.locationById('khong-co') === null, 'locationById slug sai → null')
 
@@ -844,23 +844,29 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   let drawOk = true; for (let i = 0; i < 200; i++) { const x = DC.rutXam(); if (!x || typeof x.so !== 'number') drawOk = false }
   ok(drawOk, 'rutXam: luôn trả về 1 thẻ hợp lệ (200 lần)')
   ok(DC.xamBySo(1).cau.length === 2 && DC.xamBySo(999) === null, 'xamBySo: tra đúng + số sai → null')
+  { const seq = [0.2, 0.8]; const k = DC.xinKeo(() => seq.shift()); ok(k.id === 'am-duong' && k.mat.join('/') === 'Sấp/Ngửa', 'xinKeo: một sấp một ngửa -> Âm Dương Keo') }
+  ok(DC.keoById('hai-sap').ket && DC.keoById('khong-co') === null, 'keoById: tra đúng + id sai -> null')
 
   ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node → mảng rỗng')
   ok(DC.countThapHuong() === 0, 'countThapHuong: chạy trong Node → 0')
   ok(Array.isArray(DC.loadXamLichSu()) && DC.loadXamLichSu().length === 0, 'loadXamLichSu: chạy trong Node (không có localStorage) → mảng rỗng')
+  ok(Array.isArray(DC.loadKeoLichSu()) && DC.loadKeoLichSu().length === 0, 'loadKeoLichSu: chạy trong Node (không có localStorage) → mảng rỗng')
   ok(typeof DC.clearLoiNguyen === 'function' && Array.isArray(DC.clearLoiNguyen()), 'clearLoiNguyen: tồn tại, trả mảng rỗng')
   ok(typeof DC.clearXamLichSu === 'function' && Array.isArray(DC.clearXamLichSu()), 'clearXamLichSu: tồn tại, trả mảng rỗng')
   ok(DC.addXamLichSu({ so: 3 }).length === 1 && DC.addXamLichSu({ so: 3 })[0].so === 3, 'addXamLichSu: trả về danh sách có thẻ vừa thêm (không lưu được trong Node nhưng vẫn tính đúng trong bộ nhớ, giống addLoiNguyen)')
+  ok(DC.addKeoLichSu({ id: 'am-duong', mat: ['Sấp', 'Ngửa'] }).length === 1 && DC.addKeoLichSu({ id: 'am-duong', mat: ['Sấp', 'Ngửa'] })[0].id === 'am-duong', 'addKeoLichSu: trả về danh sách có keo vừa thêm')
 
   const dcj = readFileSync(new URL('../src/pages/DiChua.jsx', import.meta.url), 'utf8')
-  ok(dcj.includes('loadXamLichSu') && dcj.includes('clearLoiNguyen') && dcj.includes('clearXamLichSu') && dcj.includes("setModal('lichsu')"), 'DiChua.jsx: có nút + modal Lịch Sử (lời nguyện + xăm đã rút) wire đủ')
+  ok(dcj.includes('loadXamLichSu') && dcj.includes('loadKeoLichSu') && dcj.includes('clearLoiNguyen') && dcj.includes('clearKeoLichSu') && dcj.includes("setModal('lichsu')"), 'DiChua.jsx: có nút + modal Lịch Sử (lời nguyện + xăm + keo đã xin) wire đủ')
   const sxj = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
+  const xkj = readFileSync(new URL('../src/components/XinKeo.jsx', import.meta.url), 'utf8')
   ok(sxj.includes('addXamLichSu'), 'ShakeXam.jsx: rút thẻ có lưu vào lịch sử (addXamLichSu)')
+  ok(xkj.includes('xinKeo') && xkj.includes('addKeoLichSu') && xkj.includes('dc-keo-blocks.webp'), 'XinKeo.jsx: gieo keo có lưu lịch sử và dùng asset cặp keo')
   ok(dcj.includes('IncenseCenser3D') && dcj.includes('<IncenseCenser3D lit=') && !dcj.includes('dc-huong-meter') && !dcj.includes('dc-scene-flash'), 'DiChua.jsx: thap huong dung asset lu huong 3D moi')
   ok(dcj.includes('dc-side-thumb') && dcj.includes('dc-xam-card') && !dcj.includes('dc-slider') && !dcj.includes('setShowInfo'), 'DiChua.jsx: layout bo slider trung lap, sidebar co anh va action ben phai gon')
-  ok(sxj.includes('activeRef') && sxj.includes('xam-progress-row-simple') && sxj.includes('xam-hint-simple') && sxj.includes('onKeyDown') && !sxj.includes('xam-metrics') && !sxj.includes('xam-sound-toggle'), 'ShakeXam.jsx: giao dien luc lac duoc toi gian hoa')
+  ok(sxj.includes('activeRef') && sxj.includes('xam-progress-row-simple') && sxj.includes('xam-hint-simple') && sxj.includes('onKeyDown') && sxj.includes('dc-xam-stick.webp') && !sxj.includes('xam-metrics') && !sxj.includes('xam-sound-toggle'), 'ShakeXam.jsx: giao dien luc lac duoc toi gian hoa va que tre dung asset')
   const dcCssUpgrade = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
-  ok(dcCssUpgrade.includes('.dc-censer3d-img') && dcCssUpgrade.includes('.dc-censer3d-ember') && dcCssUpgrade.includes('.xam-aura') && dcCssUpgrade.includes('.xam-progress-row-simple') && !dcCssUpgrade.includes('.xam-sound-toggle'), 'CSS: asset lu huong 3D va lac xam toi gian')
+  ok(dcCssUpgrade.includes('.dc-censer3d-img') && dcCssUpgrade.includes('.dc-censer3d-ember') && dcCssUpgrade.includes('.xam-aura') && dcCssUpgrade.includes('.xam-progress-row-simple') && dcCssUpgrade.includes('.keo-stage') && !dcCssUpgrade.includes('.xam-sound-toggle'), 'CSS: asset lu huong 3D, lac xam toi gian va xin keo')
   ok(dcCssUpgrade.includes('.dc-side-thumb') && dcCssUpgrade.includes('.dc-xam-card') && !dcCssUpgrade.includes('.dc-slider') && !dcCssUpgrade.includes('.dc-thumb'), 'CSS: layout moi khong con thumbnail slider trung lap')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
@@ -892,8 +898,8 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(ic3.includes('lu-huong-3d-') && ic3.includes('<picture>') && ic3.includes('type="image/webp"') && ic3.includes('dc-censer3d-ember') && ic3.includes('dc-censer3d-smoke'), 'IncenseCenser3D.jsx: dung asset render 3D co idle/lit va hieu ung khoi')
   const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
-  const imgBase = ['chanh-dien','dien-ngoc-hoang','san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','dien-ong-to','dien-phat-ba','lau-quan-am','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
-  const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake','lu-huong-3d-idle','lu-huong-3d-lit']
+  const imgBase = ['chanh-dien','dien-ngoc-hoang','san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','thien-y-thanh-mau','dien-ong-to','dien-phat-ba','lau-quan-am','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
+  const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake','dc-xam-stick','dc-keo-blocks','lu-huong-3d-idle','lu-huong-3d-lit']
   const bytes = f => readFileSync(new URL('../public/dichua/' + f, import.meta.url)).byteLength
   const originalBytes = imgBase.reduce((n, f) => n + bytes(f + '.jpg'), 0) + cutouts.reduce((n, f) => n + bytes(f + '.png'), 0)
   const webpBytes = imgBase.concat(cutouts).reduce((n, f) => n + bytes(f + '.webp'), 0)
@@ -901,7 +907,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(webpBytes / originalBytes <= 0.6, 'DiChua images: WebP payload saves >=40%')
   ok(dcj.includes('TempleScene3D') && dcj.includes('<TempleScene3D loc={loc}') && dcj.includes('dc-scene-3d'), 'DiChua.jsx: main viewport dung canh Three.js 3D')
   ok(dcj.includes('<picture>') && dcj.includes('type="image/webp"') && dcj.includes("sceneImage(loc, 'webp')") && dcj.includes('decoding="async"'), 'DiChua.jsx: prefers WebP with JPG/PNG fallback and async decode')
-  ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube image uses WebP with PNG fallback')
+  ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('dc-xam-stick.webp') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube and falling stick images use WebP with PNG fallback')
 
 }
 
