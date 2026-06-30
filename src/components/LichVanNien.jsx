@@ -19,7 +19,7 @@ export default function LichVanNien() {
 
   return (
     <section className="wrap py-6">
-      <div className="panel p-5 md:p-7 max-w-[760px] mx-auto">
+      <div className="panel home-depth-panel p-5 md:p-7 max-w-[760px] mx-auto">
         <div className="text-center mb-4">
           <div className="text-gold text-kicker uppercase mb-2">Lịch vạn niên {isToday && <span className="text-muted normal-case tracking-normal font-normal">· hôm nay</span>}</div>
           <div className="inline-block border border-gold/30 rounded-xl px-6 py-2 font-serif text-[clamp(1.1rem,3vw,1.35rem)] text-cream">{WD[date.getDay()]}, {p2(d)}/{p2(m)}/{y}</div>

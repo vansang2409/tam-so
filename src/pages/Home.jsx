@@ -25,15 +25,15 @@ function Home3DMenuFallback() {
 }
 
 const features = [
-  { ic: '📜', title: 'Hồ sơ tổng hợp', to: '/ho-so', cta: 'Lập hồ sơ →', desc: 'Nhập một lần — xem ngay Số Chủ Đạo, Can Chi, cung hoàng đạo, lá Tarot chủ đạo và năm cá nhân trong một bức chân dung.' },
-  { ic: '🃏', title: 'Tarot', to: '/tarot', cta: 'Vào phần Tarot →', desc: 'Bộ 78 lá đầy đủ, rút nhanh một lá, 6 kiểu trải (gồm Celtic Cross & Có/Không), lá chủ đạo theo ngày sinh, lưu lịch sử & lá yêu thích.' },
-  { ic: '🔢', title: 'Thần số học', to: '/than-so-hoc', cta: 'Tính con số →', desc: 'Số Chủ Đạo, Vận Mệnh, Linh Hồn, Nhân Cách, Trưởng Thành, biểu đồ Lo Shu, nợ nghiệp, Đỉnh cao & Thử thách, năm/tháng/ngày cá nhân.' },
-  { ic: '☯', title: 'Tử vi · Can Chi', to: '/tu-vi', cta: 'Tra Can Chi →', desc: 'Can Chi năm/ngày/giờ (tự quy đổi âm lịch), hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi.' },
-  { ic: '☆', title: 'Lá số Tử Vi', to: '/la-so-tu-vi', cta: 'Lập lá số →', desc: 'An sao Tử Vi Đẩu Số: 12 cung, 14 chính tinh, Tứ Hóa, lục cát – lục sát, Cục và đại hạn — thuật toán cổ điển tất định.' },
-  { ic: '💞', title: 'So đôi lá số', to: '/so-la-so', cta: 'So hai lá số →', desc: 'Đặt hai lá số Tử Vi cạnh nhau: Mệnh, cung Phu Thê và quan hệ địa chi năm sinh — đối chiếu dữ kiện để cùng chiêm nghiệm.' },
-  { ic: '♈', title: 'Cung hoàng đạo', to: '/cung-hoang-dao', cta: 'Xem cung →', desc: '12 cung phương Tây theo ngày sinh, tương hợp hai cung, màu/đá/số may mắn.' },
-  { ic: '📖', title: 'Kinh Dịch', to: '/kinh-dich', cta: 'Gieo quẻ →', desc: 'Gieo quẻ ba đồng xu (hào động & quẻ biến), luận hào động, tra cứu đủ 64 quẻ Văn Vương.' },
-  { ic: '💞', title: 'Tương hợp', to: '/tuong-hop', cta: 'Xem tương hợp →', desc: 'Ghép hai ngày sinh: tương hợp qua Số Chủ Đạo, Can Chi và cung hoàng đạo trong một trang.' }
+  { ic: 'HS', title: 'Hồ sơ tổng hợp', to: '/ho-so', cta: 'Lập hồ sơ →', desc: 'Nhập một lần — xem ngay Số Chủ Đạo, Can Chi, cung hoàng đạo, lá Tarot chủ đạo và năm cá nhân trong một bức chân dung.' },
+  { ic: 'TR', title: 'Tarot', to: '/tarot', cta: 'Vào phần Tarot →', desc: 'Bộ 78 lá đầy đủ, rút nhanh một lá, 6 kiểu trải (gồm Celtic Cross & Có/Không), lá chủ đạo theo ngày sinh, lưu lịch sử & lá yêu thích.' },
+  { ic: 'SO', title: 'Thần số học', to: '/than-so-hoc', cta: 'Tính con số →', desc: 'Số Chủ Đạo, Vận Mệnh, Linh Hồn, Nhân Cách, Trưởng Thành, biểu đồ Lo Shu, nợ nghiệp, Đỉnh cao & Thử thách, năm/tháng/ngày cá nhân.' },
+  { ic: 'CC', title: 'Tử vi · Can Chi', to: '/tu-vi', cta: 'Tra Can Chi →', desc: 'Can Chi năm/ngày/giờ (tự quy đổi âm lịch), hợp tuổi, giờ hoàng đạo, Tam Tai, cung phi.' },
+  { ic: 'LS', title: 'Lá số Tử Vi', to: '/la-so-tu-vi', cta: 'Lập lá số →', desc: 'An sao Tử Vi Đẩu Số: 12 cung, 14 chính tinh, Tứ Hóa, lục cát – lục sát, Cục và đại hạn — thuật toán cổ điển tất định.' },
+  { ic: 'SD', title: 'So đôi lá số', to: '/so-la-so', cta: 'So hai lá số →', desc: 'Đặt hai lá số Tử Vi cạnh nhau: Mệnh, cung Phu Thê và quan hệ địa chi năm sinh — đối chiếu dữ kiện để cùng chiêm nghiệm.' },
+  { ic: 'ZD', title: 'Cung hoàng đạo', to: '/cung-hoang-dao', cta: 'Xem cung →', desc: '12 cung phương Tây theo ngày sinh, tương hợp hai cung, màu/đá/số may mắn.' },
+  { ic: 'KD', title: 'Kinh Dịch', to: '/kinh-dich', cta: 'Gieo quẻ →', desc: 'Gieo quẻ ba đồng xu (hào động & quẻ biến), luận hào động, tra cứu đủ 64 quẻ Văn Vương.' },
+  { ic: 'TH', title: 'Tương hợp', to: '/tuong-hop', cta: 'Xem tương hợp →', desc: 'Ghép hai ngày sinh: tương hợp qua Số Chủ Đạo, Can Chi và cung hoàng đạo trong một trang.' }
 ]
 
 export default function Home() {
@@ -91,7 +91,7 @@ export default function Home() {
       <Reveal><LichVanNien /></Reveal>
 
       <section className="wrap py-2">
-        <div className="panel p-5 max-w-[680px] mx-auto bg-gold/[.05]">
+        <div className="panel home-depth-panel p-5 max-w-[680px] mx-auto bg-gold/[.05]">
           {cungObj && dh ? (
             <>
               <div className="flex items-center justify-between flex-wrap gap-2 mb-1">
@@ -123,17 +123,18 @@ export default function Home() {
         <p className="note text-center max-w-[640px] mx-auto m-0">✦ Lá bài, quẻ Dịch và con số của ngày làm mới mỗi sáng — ghé lại ngày mai để nhận điều mới, và giữ chuỗi ngày của bạn.</p>
       </section>
 
-      <Reveal as="section" className="wrap py-12">
+      <Reveal as="section" className="home-cube-section wrap py-12">
         <p className="text-center text-gold text-kicker uppercase mb-8">Công cụ của Tam Sở</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-9">
+        <div className="home-cube-grid">
           {features.map(f => (
-            <div key={f.to} className="group flex flex-col">
-              <span className="block text-[2rem] mb-2">{f.ic}</span>
-              <h3 className="text-h3 mb-1.5">{f.title}</h3>
-              <p className="text-muted text-[.95rem] mb-3">{f.desc}</p>
-              <Link to={f.to} className="font-semibold mt-auto inline-flex items-center gap-1 hover:gap-1.5 transition-all">{f.cta}</Link>
-              <hr className="rule mt-4" />
-            </div>
+            <Link key={f.to} to={f.to} className="home-cube-card">
+              <span className="home-cube-icon" aria-hidden="true">{f.ic}</span>
+              <span className="home-cube-body">
+                <span className="home-cube-title">{f.title}</span>
+                <span className="home-cube-desc">{f.desc}</span>
+              </span>
+              <span className="home-cube-cta">{f.cta}</span>
+            </Link>
           ))}
         </div>
       </Reveal>

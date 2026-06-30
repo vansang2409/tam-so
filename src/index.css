@@ -380,6 +380,69 @@ input[type=number] {
   .home3d-link,
   .home3d-fallback-link { transition: none !important; }
 }
+
+/* =========================================================================
+ * HOME 3D BLOCKS — khối nội dung nổi cho các section Trang chủ
+ * ========================================================================= */
+.home-depth-panel { position: relative; isolation: isolate; overflow: visible; transform-style: preserve-3d; box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 18px 44px -28px rgb(var(--c-shadow) / .55); }
+.home-depth-panel::before {
+  content: ''; position: absolute; inset: 12px -10px -14px 10px; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(135deg, rgb(var(--c-border) / .76), rgb(var(--c-gold) / .18) 52%, transparent);
+  transform: translateZ(-18px); opacity: .7;
+}
+.home-cube-section { perspective: 1400px; }
+.home-cube-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; perspective: 1300px; }
+.home-cube-card {
+  --tilt-y: -5deg; position: relative; min-height: 258px; display: flex; flex-direction: column; gap: 14px; padding: 18px;
+  border: 1px solid rgb(var(--c-border)); border-radius: 8px; color: rgb(var(--c-cream)); text-decoration: none; isolation: isolate; overflow: visible;
+  background: linear-gradient(180deg, rgb(var(--c-ink) / .98), rgb(var(--c-ink2) / .92));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 16px 36px -26px rgb(var(--c-shadow) / .62);
+  transform-style: preserve-3d; transform: translateZ(0) rotateX(0) rotateY(0);
+  transition: transform .24s cubic-bezier(.2,.7,.3,1), border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.home-cube-card::before {
+  content: ''; position: absolute; inset: 12px -10px -14px 12px; z-index: -1; border-radius: 8px; pointer-events: none;
+  background: linear-gradient(135deg, rgb(var(--c-border-hover) / .72), rgb(var(--c-gold) / .2) 58%, transparent);
+  transform: translateZ(-18px); opacity: .72;
+}
+.home-cube-card::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,.22), transparent 38%, rgb(var(--c-gold) / .06));
+  transform: translateZ(18px); opacity: .8;
+}
+.home-cube-card:nth-child(3n+2) { --tilt-y: 0deg; }
+.home-cube-card:nth-child(3n) { --tilt-y: 5deg; }
+.home-cube-card:hover,
+.home-cube-card:focus-visible { transform: translateY(-7px) rotateX(5deg) rotateY(var(--tilt-y)); border-color: rgb(var(--c-border-gold)); box-shadow: inset 0 1px 0 rgba(255,255,255,.76), 0 24px 48px -26px rgb(var(--c-shadow) / .7); text-decoration: none; }
+.home-cube-icon {
+  position: relative; z-index: 1; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; background: linear-gradient(135deg, rgb(var(--c-gold) / .13), rgb(var(--c-ink2)));
+  border: 1px solid rgb(var(--c-border-gold)); color: rgb(var(--c-gold)); font-size: .82rem; font-weight: 800; letter-spacing: 0; transform: translateZ(32px);
+}
+.home-cube-body { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; transform: translateZ(24px); }
+.home-cube-title { color: rgb(var(--c-cream)); font-size: 1.08rem; line-height: 1.2; font-weight: 800; letter-spacing: 0; }
+.home-cube-desc { color: rgb(var(--c-muted)); font-size: .93rem; line-height: 1.62; }
+.home-cube-cta { position: relative; z-index: 1; margin-top: auto; color: rgb(var(--c-gold)); font-weight: 800; transform: translateZ(28px); }
+.dark .home-depth-panel { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 20px 48px -28px rgb(0 0 0 / .7); }
+.dark .home-cube-card { background: linear-gradient(180deg, rgb(var(--c-ink) / .94), rgb(var(--c-ink2) / .82)); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 38px -28px rgb(0 0 0 / .72); }
+
+@media (max-width: 900px) {
+  .home-cube-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .home-cube-grid { grid-template-columns: 1fr; gap: 14px; }
+  .home-cube-card { min-height: 0; padding: 16px; }
+  .home-cube-card:hover,
+  .home-cube-card:focus-visible { transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-depth-panel,
+  .home-cube-card,
+  .home-cube-card::before,
+  .home-cube-card::after { transition: none !important; transform: none !important; }
+}
 /* =========================================================================
  * ĐI CHÙA — Chùa Tam Sở (FULL-PAGE, v3.77). Theme tối RIÊNG, không đụng site sáng.
  * Cảnh chùa do TempleScene vẽ bằng SVG (không ảnh chụp/bản quyền). Xin xăm = lắc.
