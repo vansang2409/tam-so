@@ -6,6 +6,16 @@ Thả ảnh vào ĐÂY, đặt tên đúng theo id của từng khu (đuôi .jpg
   cong-tam-quan.jpg       — Cổng Tam Quan
   chanh-dien.jpg          — Chánh Điện (Đại Hùng Bảo Điện)
   dien-ngoc-hoang.jpg     — Điện Ngọc Hoàng
+  san-ho-rua.jpg          — Sân Hồ Rùa
+  mieu-ho-phap.jpg        — Miếu Hộ Pháp
+  tien-dien-tho-dia.jpg   — Tiền Điện Thổ Địa
+  trung-dien-duoc-su.jpg  — Trung Điện Dược Sư
+  dien-thanh-hoang.jpg    — Điện Thành Hoàng
+  dien-thap-dien.jpg      — Điện Thập Điện
+  dien-kim-hoa.jpg        — Điện Kim Hoa
+  dien-ong-to.jpg         — Điện Ông Tơ
+  dien-phat-ba.jpg        — Điện Phật Bà
+  lau-quan-am.jpg         — Lầu Quán Âm
   nha-to.jpg              — Nhà Tổ
   thap-chuong.jpg         — Tháp Chuông
   vuon-lam-ty-ni.jpg      — Vườn Lâm Tỳ Ni

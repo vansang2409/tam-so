@@ -828,11 +828,13 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 
 // — Đi chùa: dữ liệu khu + bộ thẻ xăm (thuần JS, test bằng Node) —
 {
-  ok(DC.DICHUA_LOCATIONS.length === 12, 'DICHUA_LOCATIONS: đủ 12 khu (khớp ảnh mockup)')
+  ok(DC.DICHUA_LOCATIONS.length === 22, 'DICHUA_LOCATIONS: đủ 22 khu (khớp ảnh mockup)')
   ok(DC.DICHUA_LOCATIONS.every(l => l.id && l.ten && l.icon && l.bienHieu && l.moTa && l.scene && l.tone), 'DICHUA_LOCATIONS: mỗi khu đủ id/ten/icon/bienHieu/moTa/scene/tone')
   ok(DC.DICHUA_LOCATIONS.every(l => ['dawn', 'day', 'dusk', 'gold'].includes(l.tone)), 'DICHUA_LOCATIONS: tone hợp lệ')
-  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 12, 'DICHUA_LOCATIONS: id duy nhất')
+  ok(new Set(DC.DICHUA_LOCATIONS.map(l => l.id)).size === 22, 'DICHUA_LOCATIONS: id duy nhất')
   ok(DC.locationById('chanh-dien').scene === 'dien' && DC.locationById('dien-ngoc-hoang').scene === 'dien' && DC.locationById('cong-tam-quan').scene === 'cong', 'locationById: trả đúng khu + scene')
+  const ngocHoangAreas = ['san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','dien-ong-to','dien-phat-ba','lau-quan-am']
+  ok(ngocHoangAreas.every(id => DC.locationById(id)), 'DICHUA_LOCATIONS: đủ cụm khu lấy cảm hứng Chùa Ngọc Hoàng')
   ok(DC.locationById('khong-co') === null, 'locationById slug sai → null')
 
   eq(DC.DICHUA_XAM.length, 16, 'DICHUA_XAM: đủ 16 thẻ')
@@ -890,7 +892,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(ic3.includes('lu-huong-3d-') && ic3.includes('<picture>') && ic3.includes('type="image/webp"') && ic3.includes('dc-censer3d-ember') && ic3.includes('dc-censer3d-smoke'), 'IncenseCenser3D.jsx: dung asset render 3D co idle/lit va hieu ung khoi')
   const sx = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   ok(sx.includes('export default function ShakeXam') && sx.includes('devicemotion') && sx.includes('rutXam'), 'ShakeXam.jsx: lắc (devicemotion/pointer) → rutXam')
-  const imgBase = ['chanh-dien','dien-ngoc-hoang','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
+  const imgBase = ['chanh-dien','dien-ngoc-hoang','san-ho-rua','mieu-ho-phap','tien-dien-tho-dia','trung-dien-duoc-su','dien-thanh-hoang','dien-thap-dien','dien-kim-hoa','dien-ong-to','dien-phat-ba','lau-quan-am','nha-to','thap-chuong','vuon-lam-ty-ni','giang-duong','nha-khach','cong-tam-quan','thu-vien','goc-thien','tuong-cau-nguyen','cua-hang-phap-bao']
   const cutouts = ['dc-pot-cutout','dc-tube-cutout','dc-tube-cutout-shake','lu-huong-3d-idle','lu-huong-3d-lit']
   const bytes = f => readFileSync(new URL('../public/dichua/' + f, import.meta.url)).byteLength
   const originalBytes = imgBase.reduce((n, f) => n + bytes(f + '.jpg'), 0) + cutouts.reduce((n, f) => n + bytes(f + '.png'), 0)

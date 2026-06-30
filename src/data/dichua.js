@@ -1,6 +1,6 @@
 /* DỮ LIỆU "ĐI CHÙA" — không gian chùa online "Chùa Tam Sở" (HƯ CẤU, lấy cảm hứng
  * từ nhiều ngôi chùa Việt — KHÔNG sao chép địa điểm cụ thể nào).
- * Gồm: 12 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
+ * Gồm: 22 khu trong khuôn viên + bộ thẻ xăm (nội dung tự biên soạn theo thể loại
  * dân gian) + helper lưu lời nguyện / đếm hương (cục bộ trong trình duyệt).
  * Thuần JS, KHÔNG phụ thuộc React → test được bằng Node. Không có dữ kiện server. */
 
@@ -11,6 +11,26 @@ export const DICHUA_LOCATIONS = [
     moTa: 'Đại Hùng Bảo Điện — nơi đặt tượng thờ chính, hương trầm quanh năm. Trung tâm của Chùa Tam Sở.' },
   { id: 'dien-ngoc-hoang', ten: 'Điện Ngọc Hoàng',     icon: '🏮', bienHieu: 'ĐIỆN NGỌC HOÀNG',    scene: 'dien',    tone: 'dusk', huong: true,
     moTa: 'Không gian lấy cảm hứng từ Phước Hải Tự ở Quận 1: mái ngói âm dương, tượng gốm màu, cột gỗ sẫm, hồ cá/rùa và khói hương dày trong điện thờ.' },
+  { id: 'san-ho-rua',      ten: 'Sân Hồ Rùa',          icon: '🐢', bienHieu: 'SÂN HỒ RÙA',          scene: 'vuon',    tone: 'day',
+    moTa: 'Sân trong lấy cảm hứng từ hồ rùa/cá của Phước Hải Tự: mặt nước tĩnh, bonsai, mái ngói gốm màu và hương trầm dẫn vào các điện thờ.' },
+  { id: 'mieu-ho-phap',    ten: 'Miếu Hộ Pháp',        icon: '🛡️', bienHieu: 'MIẾU HỘ PHÁP',       scene: 'cong',    tone: 'dusk', huong: true,
+    moTa: 'Miếu nhỏ ở lối vào, gợi tinh thần hộ trì trước khi bước qua cổng và tiến vào không gian thờ tự bên trong.' },
+  { id: 'tien-dien-tho-dia', ten: 'Tiền Điện Thổ Địa', icon: '🏮', bienHieu: 'TIỀN ĐIỆN',          scene: 'dien',    tone: 'dusk', huong: true,
+    moTa: 'Tiền điện lấy cảm hứng từ lớp thờ Thổ Địa và Môn Quan: gian đầu khi nhập điện, ấm sáng, gần gũi và trang nghiêm.' },
+  { id: 'trung-dien-duoc-su', ten: 'Trung Điện Dược Sư', icon: '🪷', bienHieu: 'TRUNG ĐIỆN',       scene: 'dien',    tone: 'dusk', huong: true,
+    moTa: 'Trung điện gợi tinh thần Phật Dược Sư và các lớp thờ hộ trì, với ánh xanh dịu, hoa sen và khói hương lắng nhẹ.' },
+  { id: 'dien-thanh-hoang', ten: 'Điện Thành Hoàng',   icon: '🏛️', bienHieu: 'ĐIỆN THÀNH HOÀNG',  scene: 'dien',    tone: 'dusk', huong: true,
+    moTa: 'Gian thờ lấy cảm hứng từ các lớp Thành Hoàng, Lỗ Ban và Thái Tuế: nơi ghi dấu tinh thần bảo hộ, nghề nghiệp và thời vận.' },
+  { id: 'dien-thap-dien',  ten: 'Điện Thập Điện',      icon: '⚖️', bienHieu: 'THẬP ĐIỆN',          scene: 'dien',    tone: 'dusk', huong: true,
+    moTa: 'Không gian gợi mười điện và các phù điêu nhân quả, được diễn giải theo hướng chiêm nghiệm đạo đức, trang nghiêm nhưng không u tối.' },
+  { id: 'dien-kim-hoa',    ten: 'Điện Kim Hoa',        icon: '🌺', bienHieu: 'KIM HOA THÁNH MẪU',  scene: 'dien',    tone: 'gold', huong: true,
+    moTa: 'Gian thờ lấy cảm hứng từ Kim Hoa Thánh Mẫu và mười hai Bà Mụ, ấm áp với hoa, đèn và lời cầu an lành cho gia đạo.' },
+  { id: 'dien-ong-to',     ten: 'Điện Ông Tơ',         icon: '🧵', bienHieu: 'ÔNG TƠ BÀ NGUYỆT',   scene: 'dien',    tone: 'gold', huong: true,
+    moTa: 'Góc cầu duyên lấy cảm hứng từ Ông Tơ Bà Nguyệt: chỉ đỏ, đèn đôi và không khí nhẹ nhàng cho những lời nguyện về kết nối.' },
+  { id: 'dien-phat-ba',    ten: 'Điện Phật Bà',        icon: '🪷', bienHieu: 'ĐIỆN PHẬT BÀ',       scene: 'tuong',   tone: 'gold', huong: true,
+    moTa: 'Điện bên phải gợi hình ảnh Phật Bà và không gian tưởng niệm, ánh vàng dịu, tĩnh lặng và nhiều sắc thái từ bi.' },
+  { id: 'lau-quan-am',     ten: 'Lầu Quán Âm',         icon: '🙏', bienHieu: 'LẦU QUÁN ÂM',        scene: 'tuong',   tone: 'gold', huong: true,
+    moTa: 'Lầu trên với cầu thang gỗ dẫn tới điện Quán Âm, tạo cảm giác đi lên một khoảng lặng cao hơn trong khói hương.' },
   { id: 'nha-to',          ten: 'Nhà Tổ',              bienHieu: 'NHÀ TỔ',            icon: '🏛️', scene: 'to',      tone: 'dusk', huong: true,
     moTa: 'Nơi thờ các vị tổ sư khai sơn, không gian trầm mặc và trang nghiêm.' },
   { id: 'thap-chuong',     ten: 'Tháp Chuông',         bienHieu: 'THÁP CHUÔNG',       icon: '🔔', scene: 'thap',    tone: 'dawn',
