@@ -130,6 +130,7 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |
 |---|---|---|---|---|---|
 | H3D06 | Mo rong 3D card/surface sang cac menu khac tru Di Chua | UI/3D | High | Done (v4.3.4) | `route3d-panel/card/chip` dung chung cho Tarot, Than so hoc, Tu vi, La so Tu Vi, So doi la so, Kinh Dich, Cung hoang dao, Hop tuoi, Tuong hop, Ho so, Today; DiChua khong bi ap class; 457 test pass; build `/tmp/b` + Playwright OK |
+| H3D09 | Sua CTA Home bi nhan doi mui ten | UI | High | Done (v4.3.7) | Xoa arrow khoi `features.cta`, chi giu `.home-cube-cta::after`; them test khoa hoi quy; 460 test pass; build `/tmp/b` + Playwright OK |
 | H3D08 | Lam lai thu vien 78 la Tarot thanh clean 3D gallery | UI/3D | High | Done (v4.3.6) | Bo card edge/tilt roi; gallery sach hon, image plate nho gon, hover translateZ vua phai, mobile khong chong/tran; 459 test pass; build `/tmp/b` + Playwright OK |
 | H3D07 | Nang cap thu vien 78 la Tarot thanh card deck 3D manh hon | UI/3D | High | Done (v4.3.5) | `tarot-library-card/grid/filter` co aura, card edge, image/meta/fav noi lop, stagger rise + hover translateZ; giu filter/favorite/modal; 459 test pass; build `/tmp/b` + Playwright OK |
 | H3D05 | Redesign 3D card sau khi search tham khao HTML/CSS | UI/3D | High | Done (v4.3.3) | Tham khao MDN/daisyUI/Aceternity; bo fake-cube nang, dung premium hover card co accent rieng + tilt/translateZ nhe + CTA pill; 454 test pass; build `/tmp/b` + Playwright OK |

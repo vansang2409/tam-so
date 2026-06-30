@@ -888,6 +888,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(home3dCss.includes('linear-gradient(135deg, rgb(var(--c-gold-soft))') && home3dCss.includes('.btn:disabled') && home3dCss.includes('box-shadow: inset 0 1px 0 rgba(255,255,255,.68)'), 'CSS: button chung co gradient, shadow va disabled state dep hon')
   ok(home3dHome.includes('home-cube-section') && home3dHome.includes('home-cube-grid') && home3dHome.includes('home-cube-card') && home3dHome.includes('home-depth-panel'), 'Home.jsx: section cong cu va panel hom nay duoc tao khoi 3D')
   ok(home3dHome.includes(`<Link key={f.to} to={f.to} className="home-cube-card" style={{ '--accent': f.accent }}>`) && home3dHome.includes('home-cube-cta'), 'Home.jsx: moi khoi 3D cong cu la link that, co accent rieng, khong long link')
+  ok(!/cta: '[^']*→'/.test(home3dHome) && home3dCss.includes(".home-cube-cta::after { content: '→'"), 'Home.jsx/CSS: CTA cong cu khong nhan doi mui ten, chi CSS ::after them arrow')
   const lich3d = readFileSync(new URL('../src/components/LichVanNien.jsx', import.meta.url), 'utf8')
   ok(lich3d.includes('panel home-depth-panel'), 'LichVanNien: panel lich co chieu sau 3D nhe')
   ok(home3dCss.includes('.home-cube-card') && home3dCss.includes('transform-style: preserve-3d') && home3dCss.includes('backface-visibility: hidden') && home3dCss.includes('perspective(1100px)') && home3dCss.includes('.home-depth-panel'), 'CSS: co khoi 3D tham khao card hover dep hon, khong fake cube day')
@@ -948,7 +949,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.6', 'package.json: bump version v4.3.6 cho Tarot library gallery redesign')
+  ok(pkgAuth.version === '4.3.7', 'package.json: bump version v4.3.7 cho Home CTA arrow fix')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -985,7 +986,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.6'"), 'sw.js: bump CACHE v4.3.6')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.7'"), 'sw.js: bump CACHE v4.3.7')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')
