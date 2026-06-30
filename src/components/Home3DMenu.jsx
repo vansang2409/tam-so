@@ -74,6 +74,7 @@ export default function Home3DMenu() {
 
     const root = new THREE.Group()
     root.rotation.x = -0.18
+    root.scale.setScalar(0.76)
     scene.add(root)
 
     const gold = new THREE.Color(0xb45309)
