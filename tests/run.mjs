@@ -912,7 +912,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok([tarot3d, numerology3d, iching3d, zodiac3d, hopTuoi3d, tuVi3d, laSo3d, soLaSo3d, tuongHop3d, profile3d, today3d].every(src => src.includes('route3d-')), 'Cac menu/trang chinh ngoai DiChua: da gan route3d class')
   ok(!dcj.includes('route3d-'), 'DiChua.jsx: khong bi ap theme route3d theo yeu cau tru menu Di Chua')
   ok(tarot3d.includes('tarot-library-grid') && tarot3d.includes('tarot-library-card') && tarot3d.includes('tarotAccent(c)') && tarot3d.includes('tarot-library-image') && tarot3d.includes('tarot-fav-btn') && !tarot3d.includes('tarot-library-edge'), 'Tarot.jsx: thu vien 78 la la gallery 3D sach, anh/meta/fav noi lop va khong con canh card day')
-  ok(route3dCss.includes('.nt-root') && route3dCss.includes('.nt-scene-card') && route3dCss.includes('@keyframes ntBeam'), 'CSS: Di Nha Tho co full-page 2.5D + anh sang kinh mau')
+  ok(route3dCss.includes('.nt-root') && route3dCss.includes('.nt-scene-card{border:0!important') && route3dCss.includes('@keyframes ntBeam'), 'CSS: Di Nha Tho bo popup giua, giu full-page 2.5D + anh sang kinh mau')
   ok(route3dCss.includes('.tarot-library-card:hover') && route3dCss.includes('translateZ(24px)') && route3dCss.includes('@keyframes tarot-gallery-rise') && route3dCss.includes('.tarot-library-grid.in > .tarot-library-card') && route3dCss.includes('.tarot-library-aura') && route3dCss.includes('.tarot-filter-pill.is-active') && !route3dCss.includes('.tarot-library-edge'), 'CSS: Tarot library gallery sach hon, hover 3D, aura nhe, filter pill va animation rise')
   const loaders = readFileSync(new URL('../src/routeLoaders.js', import.meta.url), 'utf8')
   ok(loaders.includes("tarot: () => import('./pages/Tarot.jsx')") && loaders.includes("iChing: () => import('./pages/IChing.jsx')") && loaders.includes("'/di-chua': routeLoaders.diChua") && loaders.includes("'/di-nha-tho': routeLoaders.diNhaTho"), 'routeLoaders: map importer dung chung cho route/chunk nang')
@@ -970,7 +970,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.9', 'package.json: bump version v4.3.9 cho Di Nha Tho tung khu co anh rieng')
+  ok(pkgAuth.version === '4.3.10', 'package.json: bump version v4.3.10 cho Di Nha Tho bo popup giua')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -1007,7 +1007,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.9'"), 'sw.js: bump CACHE v4.3.9')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.10'"), 'sw.js: bump CACHE v4.3.10')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')
