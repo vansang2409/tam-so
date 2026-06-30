@@ -119,6 +119,7 @@ export default function DiChua() {
           <Logo size={34} className="shrink-0" />
           <span className="dc-brand-txt"><b>Chùa Tam Sở</b><i>Không gian tâm linh online</i></span>
         </Link>
+        <Link to="/" className="dc-mobile-home">Trang chủ</Link>
         <nav className="dc-nav">
           {NAV.map(n => n === 'Trang Chủ'
             ? <Link key={n} to="/" className="dc-nav-link">{n}</Link>
