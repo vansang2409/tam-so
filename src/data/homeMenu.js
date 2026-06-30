@@ -4,5 +4,6 @@ export const HOME3D_MENU_ITEMS = [
   { to: '/than-so-hoc', label: 'Thần số học', kicker: 'Con số', glyph: 'SO', x: '74%', y: '70%', accent: 0x4f46e5, accentCss: '#4f46e5' },
   { to: '/la-so-tu-vi', label: 'Lá số Tử Vi', kicker: 'An sao', glyph: 'TV', x: '50%', y: '84%', accent: 0x0f766e, accentCss: '#0f766e' },
   { to: '/kinh-dich', label: 'Kinh Dịch', kicker: 'Gieo quẻ', glyph: 'KD', x: '26%', y: '70%', accent: 0x64748b, accentCss: '#64748b' },
-  { to: '/di-chua', label: 'Đi chùa', kicker: 'Không gian', glyph: 'DC', x: '24%', y: '30%', accent: 0xd97706, accentCss: '#d97706' }
+  { to: '/di-chua', label: 'Đi chùa', kicker: 'Không gian', glyph: 'DC', x: '24%', y: '30%', accent: 0xd97706, accentCss: '#d97706' },
+  { to: '/di-nha-tho', label: 'Đi nhà thờ', kicker: 'Chiêm niệm', glyph: 'NT', x: '18%', y: '50%', accent: 0x0ea5e9, accentCss: '#0ea5e9' }
 ]

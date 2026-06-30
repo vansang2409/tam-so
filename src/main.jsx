@@ -23,6 +23,7 @@ const IChing = lazy(routeLoaders.iChing)
 const TuongHop = lazy(routeLoaders.tuongHop)
 const Sources = lazy(routeLoaders.sources)
 const DiChua = lazy(routeLoaders.diChua)
+const DiNhaTho = lazy(routeLoaders.diNhaTho)
 const Collection = lazy(routeLoaders.collection)
 const ConGiap = lazy(routeLoaders.conGiap)
 const HopTuoi = lazy(routeLoaders.hopTuoi)
@@ -31,7 +32,7 @@ const NotFound = lazy(routeLoaders.notFound)
 const Router = USE_PATH ? BrowserRouter : HashRouter
 const routerProps = USE_PATH ? { basename: BASENAME } : {}
 
-// Fallback toan trang (chi dung cho /di-chua o ngoai Layout); trong Layout
+// Fallback toan trang (dung cho /di-chua va /di-nha-tho o ngoai Layout); trong Layout
 // co Suspense rieng bao quanh <Outlet/> de giu lai nav/footer.
 function FullPageFallback() {
   return (
@@ -47,6 +48,7 @@ createRoot(document.getElementById('root')).render(
       <Router {...routerProps}>
       <Routes>
         <Route path="/di-chua" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><DiChua /></Suspense></ErrorBoundary>} />
+        <Route path="/di-nha-tho" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><DiNhaTho /></Suspense></ErrorBoundary>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />

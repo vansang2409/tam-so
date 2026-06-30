@@ -26,6 +26,7 @@ import * as TV from '../src/data/tuvidauso.js'
 import { SAO_CUNG as TVSC } from '../src/data/tuvi-saocung.js'
 import { SAO_KHUYEN } from '../src/data/saoKhuyen.js'
 import * as DC from '../src/data/dichua.js'
+import * as NT from '../src/data/nhatho.js'
 import * as SP from '../src/data/supabaseProfile.js'
 import { readFileSync } from 'node:fs'
 
@@ -870,8 +871,9 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(dcCssUpgrade.includes('.dc-side-thumb') && dcCssUpgrade.includes('.dc-xam-card') && !dcCssUpgrade.includes('.dc-slider') && !dcCssUpgrade.includes('.dc-thumb'), 'CSS: layout moi khong con thumbnail slider trung lap')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
-  ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) đã wire')
-  ok(mj.indexOf('path="/di-chua"') < mj.indexOf('element={<Layout'), 'main.jsx: /di-chua nằm NGOÀI Layout (full page)')
+  ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) da wire')
+  ok(mj.includes('path="/di-nha-tho"') && mj.includes('DiNhaTho'), 'main.jsx: route /di-nha-tho (full-page) da wire')
+  ok(mj.indexOf('path="/di-chua"') < mj.indexOf('element={<Layout') && mj.indexOf('path="/di-nha-tho"') < mj.indexOf('element={<Layout'), 'main.jsx: /di-chua va /di-nha-tho nam NGOAI Layout (full page)')
   // Code-split (React.lazy + Suspense) — khoa lai toi uu, tranh vo tinh go
   ok(mj.includes('lazy(') && mj.includes('Suspense'), 'main.jsx: dung React.lazy + Suspense (code-split)')
   ok(mj.includes("import { routeLoaders } from './routeLoaders.js'") && mj.includes('lazy(routeLoaders.tarot)') && mj.includes('lazy(routeLoaders.iChing)'), 'main.jsx: cac trang nang lazy qua routeLoaders dung chung')
@@ -881,8 +883,8 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   const home3dData = readFileSync(new URL('../src/data/homeMenu.js', import.meta.url), 'utf8')
   ok(home3dHome.includes("const Home3DMenu = lazy(() => import('../components/Home3DMenu.jsx'))") && home3dHome.includes('Home3DMenuFallback') && home3dHome.includes('<Home3DMenu />'), 'Home.jsx: menu 3D trang chu duoc lazy-load va co fallback DOM')
   ok(home3dComp.includes("import * as THREE from 'three'") && home3dComp.includes('new THREE.WebGLRenderer') && home3dComp.includes('prefers-reduced-motion') && home3dComp.includes('home3d-portals') && home3dComp.includes('HOME3D_MENU_ITEMS.map') && home3dComp.includes('root.scale.setScalar(0.76)'), 'Home3DMenu.jsx: dung Three.js + reduced-motion + link DOM overlay')
-  ok(['/ho-so','/tarot','/than-so-hoc','/la-so-tu-vi','/kinh-dich','/di-chua'].every(to => home3dData.includes(to)), 'homeMenu.js: vong menu 3D co du 6 cong chinh')
-  ok(["y: '16%'", "x: '76%', y: '30%'", "x: '74%', y: '70%'", "y: '84%'", "x: '26%', y: '70%'", "x: '24%', y: '30%'"] .every(p => home3dData.includes(p)), 'homeMenu.js: portal 3D lui vao trong de khong bi cat mep')
+  ok(['/ho-so','/tarot','/than-so-hoc','/la-so-tu-vi','/kinh-dich','/di-chua','/di-nha-tho'].every(to => home3dData.includes(to)), 'homeMenu.js: vong menu 3D co du 7 cong chinh gom Di Nha Tho')
+  ok(["y: '16%'", "x: '76%', y: '30%'", "x: '74%', y: '70%'", "y: '84%'", "x: '26%', y: '70%'", "x: '24%', y: '30%'", "x: '18%', y: '50%'"] .every(p => home3dData.includes(p)), 'homeMenu.js: portal 3D lui vao trong de khong bi cat mep')
   const home3dCss = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
   ok(home3dCss.includes('min-height: 520px') && home3dCss.includes('left: clamp(96px') && home3dCss.includes('radial-gradient(circle at 35% 24%'), 'CSS: khung Home 3D du rong va card portal duoc polish')
   ok(home3dCss.includes('linear-gradient(135deg, rgb(var(--c-gold-soft))') && home3dCss.includes('.btn:disabled') && home3dCss.includes('box-shadow: inset 0 1px 0 rgba(255,255,255,.68)'), 'CSS: button chung co gradient, shadow va disabled state dep hon')
@@ -910,9 +912,10 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok([tarot3d, numerology3d, iching3d, zodiac3d, hopTuoi3d, tuVi3d, laSo3d, soLaSo3d, tuongHop3d, profile3d, today3d].every(src => src.includes('route3d-')), 'Cac menu/trang chinh ngoai DiChua: da gan route3d class')
   ok(!dcj.includes('route3d-'), 'DiChua.jsx: khong bi ap theme route3d theo yeu cau tru menu Di Chua')
   ok(tarot3d.includes('tarot-library-grid') && tarot3d.includes('tarot-library-card') && tarot3d.includes('tarotAccent(c)') && tarot3d.includes('tarot-library-image') && tarot3d.includes('tarot-fav-btn') && !tarot3d.includes('tarot-library-edge'), 'Tarot.jsx: thu vien 78 la la gallery 3D sach, anh/meta/fav noi lop va khong con canh card day')
+  ok(route3dCss.includes('.nt-root') && route3dCss.includes('.nt-scene-card') && route3dCss.includes('@keyframes ntBeam'), 'CSS: Di Nha Tho co full-page 2.5D + anh sang kinh mau')
   ok(route3dCss.includes('.tarot-library-card:hover') && route3dCss.includes('translateZ(24px)') && route3dCss.includes('@keyframes tarot-gallery-rise') && route3dCss.includes('.tarot-library-grid.in > .tarot-library-card') && route3dCss.includes('.tarot-library-aura') && route3dCss.includes('.tarot-filter-pill.is-active') && !route3dCss.includes('.tarot-library-edge'), 'CSS: Tarot library gallery sach hon, hover 3D, aura nhe, filter pill va animation rise')
   const loaders = readFileSync(new URL('../src/routeLoaders.js', import.meta.url), 'utf8')
-  ok(loaders.includes("tarot: () => import('./pages/Tarot.jsx')") && loaders.includes("iChing: () => import('./pages/IChing.jsx')") && loaders.includes("'/di-chua': routeLoaders.diChua"), 'routeLoaders: map importer dung chung cho route/chunk nang')
+  ok(loaders.includes("tarot: () => import('./pages/Tarot.jsx')") && loaders.includes("iChing: () => import('./pages/IChing.jsx')") && loaders.includes("'/di-chua': routeLoaders.diChua") && loaders.includes("'/di-nha-tho': routeLoaders.diNhaTho"), 'routeLoaders: map importer dung chung cho route/chunk nang')
   ok(loaders.includes('prefetchRouteChunk') && loaders.includes('saveData') && loaders.includes('inflight'), 'routeLoaders: prefetch idempotent va ton trong navigator.connection.saveData')
   const layCS = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
   ok(layCS.includes('Suspense') && layCS.includes('<Outlet'), 'Layout.jsx: bao Suspense quanh Outlet (giu nav khi trang lazy tai)')
@@ -922,7 +925,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(eb.includes('window.location.reload') && eb.includes('retry = () => this.setState({ err: null })'), 'ErrorBoundary: co nut tai lai va thu lai')
   ok(mj.includes('import ErrorBoundary') && mj.includes('<Route path="/di-chua" element={<ErrorBoundary><Suspense'), 'main.jsx: /di-chua lazy route duoc boc ErrorBoundary')
   const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
-  ok(lj2.includes('/di-chua'), 'Layout.jsx: menu vẫn có liên kết tới /di-chua')
+  ok(lj2.includes('/di-chua') && lj2.includes('/di-nha-tho'), 'Layout.jsx: menu van co lien ket toi /di-chua va /di-nha-tho')
   ok(lj2.includes("const PRIMARY = ['/', '/tarot'") && lj2.includes("{ to: '/', label: 'Trang chủ'") && lj2.includes('end={l.end}'), 'Layout.jsx: desktop nav co menu Trang chu ro rang')
   const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')
   const ts3 = readFileSync(new URL('../src/components/TempleScene3D.jsx', import.meta.url), 'utf8')
@@ -941,6 +944,19 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(imgBase.concat(cutouts).every(f => bytes(f + '.webp') > 1000), 'DiChua images: WebP variants exist and are non-empty')
   ok(webpBytes / originalBytes <= 0.6, 'DiChua images: WebP payload saves >=40%')
   ok(dcj.includes('TempleScene3D') && dcj.includes('<TempleScene3D loc={loc}') && dcj.includes('dc-scene-3d'), 'DiChua.jsx: main viewport dung canh Three.js 3D')
+
+  ok(NT.NHATHO_SPACES.length === 6, 'NHATHO_SPACES: du 6 khu nha tho online')
+  ok(NT.NHATHO_SPACES.every(s => s.id && s.ten && s.icon && s.title && s.desc && s.action), 'NHATHO_SPACES: moi khu du id/ten/icon/title/desc/action')
+  ok(new Set(NT.NHATHO_SPACES.map(s => s.id)).size === NT.NHATHO_SPACES.length, 'NHATHO_SPACES: id duy nhat')
+  ok(NT.nhaThoSpaceById('gian-chinh').ten && NT.nhaThoSpaceById('khong-co') === null, 'nhaThoSpaceById: tra dung + id sai -> null')
+  ok(typeof NT.prayerOfDay(new Date('2026-06-30')) === 'string' && NT.prayerOfDay(new Date('2026-06-30')).length > 40, 'prayerOfDay: tra loi goi y on dinh theo ngay')
+  ok(Array.isArray(NT.loadNhaThoNotes()) && NT.loadNhaThoNotes().length === 0, 'loadNhaThoNotes: Node khong localStorage -> mang rong')
+  ok(NT.addNhaThoNote('  binh an  ')[0].text === 'binh an' && Array.isArray(NT.clearNhaThoNotes()), 'add/clearNhaThoNote: trim + tra list')
+  ok(NT.countNhaThoCandles() === 0 && NT.lightNhaThoCandle() === 1, 'NhaTho candles: dem/thap nen chay trong Node')
+  const ntj = readFileSync(new URL('../src/pages/DiNhaTho.jsx', import.meta.url), 'utf8')
+  ok(ntj.includes('NHATHO_SPACES') && ntj.includes('nt-root') && ntj.includes('nha-tho-tam-so.webp') && ntj.includes('nha-tho-tam-so.png') && ntj.includes('không thay Thánh lễ'), 'DiNhaTho.jsx: full-page nha tho co data/asset/khung trung thuc')
+  ok(ntj.includes('lightNhaThoCandle') && ntj.includes('addNhaThoNote') && ntj.includes("setModal('history')"), 'DiNhaTho.jsx: co thap nen, ghi chu rieng va lich su')
+  ok(readFileSync(new URL('../public/nhatho/nha-tho-tam-so.png', import.meta.url)).byteLength > 100000 && readFileSync(new URL('../public/nhatho/nha-tho-tam-so.webp', import.meta.url)).byteLength > 50000 && readFileSync(new URL('../public/nhatho/nha-tho-tam-so.jpg', import.meta.url)).byteLength > 50000, 'NhaTho asset: anh tu tao va ban WebP/JPG toi uu da duoc luu vao public/nhatho')
   ok(dcj.includes('<picture>') && dcj.includes('type="image/webp"') && dcj.includes("sceneImage(loc, 'webp')") && dcj.includes('decoding="async"'), 'DiChua.jsx: prefers WebP with JPG/PNG fallback and async decode')
   ok(sx.includes('<picture>') && sx.includes('dc-tube-cutout.webp') && sx.includes('dc-tube-cutout.png') && sx.includes('dc-xam-stick.webp') && sx.includes('decoding="async"'), 'ShakeXam.jsx: tube and falling stick images use WebP with PNG fallback')
 
@@ -949,7 +965,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.7', 'package.json: bump version v4.3.7 cho Home CTA arrow fix')
+  ok(pkgAuth.version === '4.3.8', 'package.json: bump version v4.3.8 cho Di Nha Tho')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -986,7 +1002,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.7'"), 'sw.js: bump CACHE v4.3.7')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.8'"), 'sw.js: bump CACHE v4.3.8')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')

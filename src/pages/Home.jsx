@@ -33,7 +33,8 @@ const features = [
   { ic: 'SD', accent: '#db2777', title: 'So đôi lá số', to: '/so-la-so', cta: 'So hai lá số', desc: 'Đặt hai lá số Tử Vi cạnh nhau: Mệnh, cung Phu Thê và quan hệ địa chi năm sinh — đối chiếu dữ kiện để cùng chiêm nghiệm.' },
   { ic: 'ZD', accent: '#0891b2', title: 'Cung hoàng đạo', to: '/cung-hoang-dao', cta: 'Xem cung', desc: '12 cung phương Tây theo ngày sinh, tương hợp hai cung, màu/đá/số may mắn.' },
   { ic: 'KD', accent: '#64748b', title: 'Kinh Dịch', to: '/kinh-dich', cta: 'Gieo quẻ', desc: 'Gieo quẻ ba đồng xu (hào động & quẻ biến), luận hào động, tra cứu đủ 64 quẻ Văn Vương.' },
-  { ic: 'TH', accent: '#d97706', title: 'Tương hợp', to: '/tuong-hop', cta: 'Xem tương hợp', desc: 'Ghép hai ngày sinh: tương hợp qua Số Chủ Đạo, Can Chi và cung hoàng đạo trong một trang.' }
+  { ic: 'TH', accent: '#d97706', title: 'Tương hợp', to: '/tuong-hop', cta: 'Xem tương hợp', desc: 'Ghép hai ngày sinh: tương hợp qua Số Chủ Đạo, Can Chi và cung hoàng đạo trong một trang.' },
+  { ic: 'NT', accent: '#0ea5e9', title: 'Đi nhà thờ', to: '/di-nha-tho', cta: 'Vào nhà thờ', desc: 'Không gian chiêm niệm online: thắp nến tượng trưng, viết lời cầu nguyện riêng tư, nhìn ánh kính màu và giữ một khoảng lặng nhẹ nhàng.' }
 ]
 
 export default function Home() {

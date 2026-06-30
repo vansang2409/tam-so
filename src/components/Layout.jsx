@@ -25,10 +25,11 @@ const links = [
   { to: '/tuong-hop', label: 'Tương hợp' },
   { to: '/kinh-dich', label: 'Kinh Dịch' },
   { to: '/di-chua', label: 'Đi chùa' },
+  { to: '/di-nha-tho', label: 'Đi nhà thờ' },
   { to: '/nguon', label: 'Nguồn' }
 ]
 const PRIMARY = ['/', '/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
-const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
+const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/di-nha-tho', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
 
 function prefetchProps(to) {
   return {
@@ -147,7 +148,7 @@ function Footer() {
   )
 }
 
-const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/dang-nhap': 'Đăng nhập / Đăng ký — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/la-so-tu-vi': 'Lá số Tử Vi — Tam Sở', '/so-la-so': 'So đôi lá số Tử Vi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/di-chua': 'Đi chùa — Đại Tự Tâm Linh — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/bo-suu-tap': 'Bộ sưu tập đã lưu — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
+const TITLES = { '/': 'Tam Sở — Trang chủ', '/ho-so': 'Hồ sơ tổng hợp — Tam Sở', '/dang-nhap': 'Đăng nhập / Đăng ký — Tam Sở', '/tarot': 'Tarot — Tam Sở', '/than-so-hoc': 'Thần số học — Tam Sở', '/tu-vi': 'Tử vi · Can Chi — Tam Sở', '/la-so-tu-vi': 'Lá số Tử Vi — Tam Sở', '/so-la-so': 'So đôi lá số Tử Vi — Tam Sở', '/cung-hoang-dao': 'Cung hoàng đạo — Tam Sở', '/kinh-dich': 'Kinh Dịch — Tam Sở', '/di-chua': 'Đi chùa — Đại Tự Tâm Linh — Tam Sở', '/di-nha-tho': 'Đi nhà thờ — Tam Sở', '/tuong-hop': 'Tương hợp — Tam Sở', '/bo-suu-tap': 'Bộ sưu tập đã lưu — Tam Sở', '/nguon': 'Nguồn & Lưu ý — Tam Sở' }
 const DESCS = {
   '/': 'Tam Sở gom Tarot, Thần số học, Tử vi/Can Chi, Cung hoàng đạo và Kinh Dịch về một nơi — xem lá bài, quẻ và Can Chi của hôm nay.',
   '/ho-so': 'Lập hồ sơ huyền học tổng hợp: Số Chủ Đạo, Can Chi, cung hoàng đạo, cung phi, lá Tarot chủ đạo, tuổi hợp/khắc và báo cáo theo chủ đề.',
@@ -161,6 +162,7 @@ const DESCS = {
   '/tuong-hop': 'Xem tương hợp hai người qua Số Chủ Đạo, Can Chi và cung hoàng đạo — chia sẻ kết quả cho người ấy và bạn bè.',
   '/kinh-dich': 'Gieo quẻ Kinh Dịch bằng 3 đồng xu hoặc Mai Hoa Dịch Số, luận hào động và tra cứu đủ 64 quẻ kèm nguyên văn thoán/hào từ.',
   '/di-chua': 'Đi chùa Đại Tự Tâm Linh (hư cấu): bước qua cổng, dạo sân, vào chính điện, thắp hương, khấn nguyện và xin thẻ xăm — trải nghiệm tham khảo, không thay việc hành lễ thật.',
+  '/di-nha-tho': 'Đi nhà thờ Tam Sở (hư cấu): không gian chiêm niệm online với nến cầu nguyện, kính màu, thánh ca tĩnh lặng và ghi chú riêng tư — không thay Thánh lễ hay tư vấn mục vụ thật.',
   '/bo-suu-tap': 'Bộ sưu tập cá nhân: lưu lại trải bài Tarot và quẻ Kinh Dịch yêu thích ngay trong trình duyệt máy bạn để ngẫm lại sau, có thể chép hoặc tải về .txt.',
   '/nguon': 'Nguồn tham khảo và lưu ý của Tam Sở: phân biệt rõ dữ kiện kiểm chứng được và phần luận giải truyền thống; kèm FAQ minh bạch.'
 }
