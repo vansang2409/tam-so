@@ -12,6 +12,8 @@ import { routeLoaders } from './routeLoaders.js'
 // Code-split: trang phu tai theo nhu cau (giam JS tai ban dau, tot cho mobile).
 // Layout + Home eager de trang chu hien tuc thi, khong nhap nhay.
 const Profile = lazy(routeLoaders.profile)
+const Admin = lazy(routeLoaders.admin)
+const Blog = lazy(routeLoaders.blog)
 const Auth = lazy(routeLoaders.auth)
 const Tarot = lazy(routeLoaders.tarot)
 const Numerology = lazy(routeLoaders.numerology)
@@ -49,9 +51,12 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/di-chua" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><DiChua /></Suspense></ErrorBoundary>} />
         <Route path="/di-nha-tho" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><DiNhaTho /></Suspense></ErrorBoundary>} />
+        <Route path="/admin/*" element={<ErrorBoundary><Suspense fallback={<FullPageFallback />}><Admin /></Suspense></ErrorBoundary>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="ho-so" element={<Profile />} />
+          <Route path="bai-viet" element={<Blog />} />
+          <Route path="bai-viet/:slug" element={<Blog />} />
           <Route path="dang-nhap" element={<Auth />} />
           <Route path="tarot" element={<Tarot />} />
           <Route path="tarot/:slug" element={<Tarot />} />

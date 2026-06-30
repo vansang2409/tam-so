@@ -282,6 +282,40 @@ input[type=number] {
 .navlink.is-active { color: rgb(var(--c-gold)); font-weight: 600; }
 .navlink.is-active::after { transform: scaleX(1); }
 .navlink:focus-visible { outline: 2px solid rgb(var(--c-gold-soft)); outline-offset: 3px; border-radius: 4px; }
+.spiritual-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgb(var(--c-gold) / .08);
+  border: 1px solid rgb(var(--c-gold) / .18);
+}
+.spiritual-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: rgb(var(--c-cream));
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .18s ease, color .18s ease, transform .18s ease;
+}
+.spiritual-nav-link:hover {
+  color: rgb(var(--c-gold));
+  background: rgb(var(--c-gold) / .12);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.spiritual-nav-link.is-active {
+  color: rgb(var(--c-ink));
+  background: rgb(var(--c-gold));
+}
+.spiritual-nav-link.is-muted { opacity: .72; }
 @media (prefers-reduced-motion: reduce) { .navlink::after { transition: none; } }
 /* Trong panel menu mobile (xổ dọc): mỗi mục là một hàng, gạch chân thành đường ngăn nhẹ */
 @media (max-width: 767px) {
@@ -298,9 +332,158 @@ input[type=number] {
 .btn-primary, .btn-ghost { transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease, filter .18s ease; }
 /* Card nhấc nhẹ khi hover cho các panel có .hover-lift — bo góc & viền mềm hiện đại */
 .panel { transition: box-shadow .25s ease, border-color .25s ease; }
+.spiritual-float {
+  position: fixed;
+  right: 18px;
+  bottom: 82px;
+  z-index: 60;
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+.spiritual-float-menu {
+  width: min(286px, calc(100vw - 32px));
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgb(var(--c-border-gold));
+  background: rgb(var(--c-ink) / .96);
+  box-shadow: 0 26px 70px -26px rgb(var(--c-shadow) / .8);
+  backdrop-filter: blur(14px);
+  animation: fade .18s ease both;
+}
+.spiritual-float-title {
+  margin: 0 2px 2px;
+  color: rgb(var(--c-gold));
+  font-size: .74rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.spiritual-float-item {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-areas: "ic title" "ic note";
+  gap: 1px 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 14px;
+  color: rgb(var(--c-cream));
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: rgb(var(--c-card) / .52);
+}
+.spiritual-float-item:hover {
+  border-color: rgb(var(--c-gold) / .32);
+  background: rgb(var(--c-gold) / .1);
+  text-decoration: none;
+}
+.spiritual-float-item span {
+  grid-area: ic;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgb(var(--c-gold) / .12);
+  border: 1px solid rgb(var(--c-gold) / .2);
+}
+.spiritual-float-item b { grid-area: title; line-height: 1.15; }
+.spiritual-float-item small { grid-area: note; color: rgb(var(--c-muted)); line-height: 1.35; }
+@media (max-width: 560px) {
+  .spiritual-float { right: 10px; bottom: 72px; }
+  .spiritual-float-menu { width: min(218px, calc(100vw - 20px)); gap: 6px; padding: 8px; }
+  .spiritual-float-item { grid-template-columns: 34px minmax(0, 1fr); min-height: 50px; padding: 8px; }
+  .spiritual-float-item span { width: 32px; height: 32px; border-radius: 10px; }
+  .spiritual-float-item small { display: none; }
+}
+
 /* =========================================================================
  * HOME 3D MENU — vòng chọn công cụ trên trang chủ
  * ========================================================================= */
+.spiritual-prompt {
+  width: min(1120px, calc(100% - 28px));
+  margin: 34px auto 0;
+}
+.spiritual-prompt-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .92fr);
+  gap: 18px;
+  align-items: center;
+  padding: clamp(18px, 3vw, 26px);
+  border-radius: 18px;
+  border: 1px solid rgb(var(--c-border-gold));
+  background: radial-gradient(circle at 16% 20%, rgb(var(--c-gold) / .12), transparent 32%), linear-gradient(135deg, rgb(var(--c-ink2) / .88), rgb(var(--c-ink) / .94));
+  box-shadow: 0 24px 70px -42px rgb(var(--c-shadow) / .55);
+}
+.spiritual-prompt-kicker {
+  margin: 0 0 6px;
+  color: rgb(var(--c-gold));
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.spiritual-prompt h2 {
+  margin: 0 0 8px;
+  color: rgb(var(--c-cream));
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+.spiritual-prompt p:not(.spiritual-prompt-kicker) {
+  margin: 0;
+  color: rgb(var(--c-muted));
+  line-height: 1.65;
+}
+.spiritual-prompt-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.spiritual-prompt-card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-areas: "ic title" "ic note";
+  gap: 2px 10px;
+  align-items: center;
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgb(var(--c-border));
+  background: rgb(var(--c-card) / .72);
+  color: rgb(var(--c-cream));
+  text-decoration: none;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.spiritual-prompt-card:hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--c-gold) / .42);
+  background: rgb(var(--c-gold) / .1);
+  text-decoration: none;
+}
+.spiritual-prompt-card span {
+  grid-area: ic;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgb(var(--c-gold) / .12);
+  border: 1px solid rgb(var(--c-gold) / .22);
+}
+.spiritual-prompt-card b { grid-area: title; line-height: 1.16; }
+.spiritual-prompt-card small { grid-area: note; color: rgb(var(--c-muted)); line-height: 1.35; }
+@media (max-width: 760px) {
+  .spiritual-prompt { margin-top: 24px; }
+  .spiritual-prompt-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .spiritual-prompt-actions { grid-template-columns: 1fr; }
+  .spiritual-prompt-card { min-height: 72px; }
+}
+
 .home3d-menu { position: relative; margin-top: 2px; padding-bottom: 26px; }
 .home3d-head { text-align: center; margin-bottom: 12px; }
 .home3d-stage { position: relative; max-width: 1040px; min-height: 520px; margin: 0 auto; isolation: isolate; overflow: visible; }
@@ -801,7 +984,7 @@ input[type=number] {
 
 /* =========================================================================
  * ĐI CHÙA — Chùa Tam Sở (FULL-PAGE, v3.77). Theme tối RIÊNG, không đụng site sáng.
- * Cảnh chùa do TempleScene vẽ bằng SVG (không ảnh chụp/bản quyền). Xin xăm = lắc.
+ * Cảnh chùa do TempleScene vẽ bằng SVG (không ảnh chụp/bản quyền). Xâm Bà = lắc.
  * ========================================================================= */
 .dc-lock { overflow: hidden; }
 .dc-root { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
@@ -946,7 +1129,7 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 .dc-history-list li { font-size: .85rem; line-height: 1.5; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 8px 10px; }
 .dc-history-time { display: block; font-size: .68rem; color: #94a3b8; margin-bottom: 2px; }
 
-/* — Xin xăm: lắc ống → rơi que — */
+/* — Xâm Bà: lắc ống → rơi que — */
 .xam-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .xam-stage { width: 200px; height: 220px; display: flex; align-items: center; justify-content: center; position: relative;
   touch-action: none; cursor: grab; user-select: none; }
@@ -1087,7 +1270,7 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 }
 
 /* =========================================================================
- * ĐI CHÙA v3.79 — nâng cấp ống xăm + lư hương cho nhìn thật hơn (vẫn động)
+ * ĐI CHÙA v3.79 — nâng cấp ống Xâm Bà + lư hương cho nhìn thật hơn (vẫn động)
  * ========================================================================= */
 
 /* — Ống xăm: ống gỗ + que tre đầu sơn đỏ — */
@@ -1231,7 +1414,7 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
   .dc-scene-smoke span, .dc-censer3d-smoke, .dc-censer3d-ember { animation: none !important; }
 }
 
-/* Di Chua: incense ritual image asset + xin xam feedback */
+/* Di Chua: incense ritual image asset + Xam Ba feedback */
 .dc-huong-ritual { display: flex; justify-content: center; align-items: center; min-height: 236px; margin: -2px 0 10px; }
 .dc-censer3d { width: min(224px, 92%); aspect-ratio: 1148 / 1370; position: relative; overflow: hidden; border-radius: 12px;
   background: linear-gradient(180deg, rgba(39,22,14,.92), rgba(13,10,9,.94));
@@ -1325,18 +1508,32 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 .xam-falling img { width: 100%; height: 100%; object-fit: contain; display: block;
   filter: drop-shadow(0 9px 10px rgba(0,0,0,.48)) saturate(1.04); }
 .keo-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.keo-stage { width: min(270px, 76vw); height: 210px; border: 1px solid rgba(253,224,71,.22); border-radius: 18px;
+.keo-stage { width: min(270px, 76vw); height: 210px; border: 1px solid rgba(253,224,71,.16); border-radius: 18px;
   background:
-    radial-gradient(circle at 50% 38%, rgba(253,224,71,.18), transparent 34%),
-    radial-gradient(circle at 22% 80%, rgba(94,234,212,.12), transparent 28%),
-    linear-gradient(180deg, rgba(31,41,55,.92), rgba(15,23,42,.98));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 36px rgba(0,0,0,.34);
+    radial-gradient(circle at 50% 42%, rgba(253,224,71,.1), transparent 32%),
+    linear-gradient(180deg, rgba(20,28,42,.86), rgba(9,13,22,.96));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 36px rgba(0,0,0,.26);
   cursor: pointer; position: relative; overflow: hidden; display: grid; place-items: center; touch-action: manipulation; }
 .keo-stage::after { content: ''; position: absolute; inset: 12px; border-radius: 14px; pointer-events: none;
-  border: 1px solid rgba(255,255,255,.06); background: linear-gradient(130deg, rgba(255,255,255,.07), transparent 42%); }
-.keo-blocks { width: 78%; max-width: 224px; z-index: 1; filter: drop-shadow(0 15px 16px rgba(0,0,0,.44)); }
+  border: 1px solid rgba(255,255,255,.04); background: linear-gradient(130deg, rgba(255,255,255,.035), transparent 42%); }
+.keo-blocks { position: absolute; width: 78%; max-width: 224px; z-index: 0; opacity: .08; filter: blur(.2px) drop-shadow(0 15px 16px rgba(0,0,0,.34)); }
 .keo-blocks img { width: 100%; height: auto; display: block; }
-.keo-stage.is-casting .keo-blocks { animation: keoCast .82s cubic-bezier(.2,.8,.2,1) infinite; }
+.keo-toss { position: relative; z-index: 1; width: min(220px, 72vw); height: 150px; display: block; }
+.keo-piece { --rot: -16deg; --x: -46px; --y: 22px; position: absolute; left: 50%; top: 50%;
+  width: 96px; height: 124px; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--rot));
+  border-radius: 32px; overflow: visible; background: transparent; border: 0;
+  filter: drop-shadow(0 18px 16px rgba(0,0,0,.44)); transform-origin: center; }
+.keo-piece-2 { --rot: 18deg; --x: 46px; --y: 20px; }
+.keo-piece-art { position: absolute; inset: 0; overflow: hidden; border-radius: 30px; transform: translateZ(0); }
+.keo-piece-art img { position: absolute; top: 50%; height: 112%; width: auto; max-width: none; transform: translateY(-50%);
+  filter: saturate(1.08) contrast(1.05); }
+.keo-piece[data-face="sap"] .keo-piece-art img { left: -2%; }
+.keo-piece[data-face="ngua"] .keo-piece-art img { right: -2%; }
+.keo-stage.is-casting .keo-piece-1 { animation: keoThrowOne .98s cubic-bezier(.2,.74,.18,1) infinite; }
+.keo-stage.is-casting .keo-piece-2 { animation: keoThrowTwo .98s cubic-bezier(.2,.74,.18,1) infinite; animation-delay: .08s; }
+.keo-stage.is-result .keo-piece { transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+.keo-stage.is-result .keo-piece-1 { --x: -52px; --y: 22px; --rot: -19deg; }
+.keo-stage.is-result .keo-piece-2 { --x: 52px; --y: 22px; --rot: 19deg; }
 .keo-result { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 .keo-result-card { width: min(100%, 430px); display: grid; gap: 10px; padding: 14px; border-radius: 14px;
   background: linear-gradient(180deg, rgba(15,23,42,.72), rgba(30,41,59,.5));
@@ -1346,12 +1543,21 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 .keo-faces { display: flex; justify-content: center; gap: 8px; }
 .keo-faces span { min-width: 68px; text-align: center; border-radius: 999px; padding: 5px 10px;
   color: #fde68a; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.28); font-weight: 700; font-size: .78rem; }
+.keo-faces span[data-face="sap"] { color: #1f1308; background: rgba(253,224,71,.86); border-color: rgba(180,83,9,.3); }
+.keo-faces span[data-face="ngua"] { color: #e0f2fe; background: rgba(15,23,42,.58); border-color: rgba(125,211,252,.32); }
 .keo-result-khuyen { margin: 0; color: #fde68a; }
 .keo-note { max-width: min(340px, 82vw); color: #94a3b8; margin: 0; text-align: center; font-size: .74rem; line-height: 1.5; }
-@keyframes keoCast {
-  0%, 100% { transform: translateY(0) rotate(0deg) scale(1) }
-  35% { transform: translateY(-12px) rotate(-7deg) scale(1.03) }
-  70% { transform: translateY(5px) rotate(8deg) scale(.98) }
+@keyframes keoThrowOne {
+  0% { transform: translate(calc(-50% - 46px), calc(-50% + 28px)) rotate(-18deg) scale(1) }
+  28% { transform: translate(calc(-50% - 76px), calc(-50% - 58px)) rotate(-146deg) scale(1.04) }
+  58% { transform: translate(calc(-50% - 18px), calc(-50% - 18px)) rotate(-284deg) scale(1.02) }
+  82%, 100% { transform: translate(calc(-50% - 52px), calc(-50% + 22px)) rotate(-379deg) scale(1) }
+}
+@keyframes keoThrowTwo {
+  0% { transform: translate(calc(-50% + 46px), calc(-50% + 26px)) rotate(20deg) scale(1) }
+  30% { transform: translate(calc(-50% + 78px), calc(-50% - 62px)) rotate(168deg) scale(1.05) }
+  62% { transform: translate(calc(-50% + 12px), calc(-50% - 13px)) rotate(308deg) scale(1.01) }
+  84%, 100% { transform: translate(calc(-50% + 52px), calc(-50% + 22px)) rotate(378deg) scale(1) }
 }
 @keyframes xamAura {
   0% { opacity: .38; transform: scale(.82) }
@@ -1374,7 +1580,7 @@ html:has(body.dc-lock)::-webkit-scrollbar { width: 0; height: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .xam-stage.is-active .xam-aura span { animation: none !important; }
-  .keo-stage.is-casting .keo-blocks { animation: none !important; }
+  .keo-stage.is-casting .keo-piece { animation: none !important; }
 }
 
 

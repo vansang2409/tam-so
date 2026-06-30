@@ -838,14 +838,15 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(ngocHoangAreas.every(id => DC.locationById(id)), 'DICHUA_LOCATIONS: đủ cụm khu lấy cảm hứng Chùa Ngọc Hoàng')
   ok(DC.locationById('khong-co') === null, 'locationById slug sai → null')
 
-  eq(DC.DICHUA_XAM.length, 16, 'DICHUA_XAM: đủ 16 thẻ')
-  ok(new Set(DC.DICHUA_XAM.map(x => x.so)).size === 16, 'DICHUA_XAM: số thẻ duy nhất')
+  eq(DC.DICHUA_XAM.length, 100, 'DICHUA_XAM: đủ 100 quẻ Xâm Bà')
+  ok(new Set(DC.DICHUA_XAM.map(x => x.so)).size === 100, 'DICHUA_XAM: số quẻ duy nhất')
   ok(DC.DICHUA_XAM.every(x => ['Thượng', 'Trung Bình', 'Hạ'].includes(x.bac)), 'DICHUA_XAM: mỗi thẻ có bậc hợp lệ')
   ok(DC.DICHUA_XAM.every(x => Array.isArray(x.cau) && x.cau.length === 2 && x.dienGiai.length > 10 && x.loiKhuyen.length > 5), 'DICHUA_XAM: mỗi thẻ đủ câu + diễn giải + lời khuyên')
+  ok(DC.DICHUA_XAM.every(x => x.sourceUrl && x.sourceUrl.includes('cohoc.net/que-so-') && x.bacGoc), 'DICHUA_XAM: mỗi quẻ có bậc gốc + link nguồn')
   let drawOk = true; for (let i = 0; i < 200; i++) { const x = DC.rutXam(); if (!x || typeof x.so !== 'number') drawOk = false }
   ok(drawOk, 'rutXam: luôn trả về 1 thẻ hợp lệ (200 lần)')
   ok(DC.xamBySo(1).cau.length === 2 && DC.xamBySo(999) === null, 'xamBySo: tra đúng + số sai → null')
-  { const seq = [0.2, 0.8]; const k = DC.xinKeo(() => seq.shift()); ok(k.id === 'am-duong' && k.mat.join('/') === 'Sấp/Ngửa', 'xinKeo: một sấp một ngửa -> Âm Dương Keo') }
+  { const seq = [0.2, 0.8]; const k = DC.xinKeo(() => seq.shift()); ok(k.id === 'am-duong' && k.mat.length === 2 && k.matCode.join('/') === 'sap/ngua', 'xinKeo: one sap one ngua -> am-duong, matCode matches visual') }
   ok(DC.keoById('hai-sap').ket && DC.keoById('khong-co') === null, 'keoById: tra đúng + id sai -> null')
 
   ok(Array.isArray(DC.loadLoiNguyen()) && DC.loadLoiNguyen().length === 0, 'loadLoiNguyen: chạy trong Node → mảng rỗng')
@@ -862,13 +863,14 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   const sxj = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   const xkj = readFileSync(new URL('../src/components/XinKeo.jsx', import.meta.url), 'utf8')
   ok(sxj.includes('addXamLichSu'), 'ShakeXam.jsx: rút thẻ có lưu vào lịch sử (addXamLichSu)')
-  ok(xkj.includes('xinKeo') && xkj.includes('addKeoLichSu') && xkj.includes('dc-keo-blocks.webp'), 'XinKeo.jsx: gieo keo có lưu lịch sử và dùng asset cặp keo')
+  ok(xkj.includes('xinKeo') && xkj.includes('addKeoLichSu') && xkj.includes('dc-keo-blocks.webp') && xkj.includes('matCode') && xkj.includes('keo-piece'), 'XinKeo.jsx: casts keo, saves history, and renders faces from matCode')
   ok(dcj.includes('IncenseCenser3D') && dcj.includes('<IncenseCenser3D lit=') && !dcj.includes('dc-huong-meter') && !dcj.includes('dc-scene-flash'), 'DiChua.jsx: thap huong dung asset lu huong 3D moi')
   ok(dcj.includes('dc-side-thumb') && dcj.includes('dc-xam-card') && !dcj.includes('dc-slider') && !dcj.includes('setShowInfo'), 'DiChua.jsx: layout bo slider trung lap, sidebar co anh va action ben phai gon')
   ok(sxj.includes('activeRef') && sxj.includes('xam-progress-row-simple') && sxj.includes('xam-hint-simple') && sxj.includes('onKeyDown') && sxj.includes('dc-xam-stick.webp') && !sxj.includes('xam-metrics') && !sxj.includes('xam-sound-toggle'), 'ShakeXam.jsx: giao dien luc lac duoc toi gian hoa va que tre dung asset')
   const dcCssUpgrade = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
   ok(dcCssUpgrade.includes('.dc-censer3d-img') && dcCssUpgrade.includes('.dc-censer3d-ember') && dcCssUpgrade.includes('.xam-aura') && dcCssUpgrade.includes('.xam-progress-row-simple') && dcCssUpgrade.includes('.keo-stage') && !dcCssUpgrade.includes('.xam-sound-toggle'), 'CSS: asset lu huong 3D, lac xam toi gian va xin keo')
   ok(dcCssUpgrade.includes('.dc-side-thumb') && dcCssUpgrade.includes('.dc-xam-card') && !dcCssUpgrade.includes('.dc-slider') && !dcCssUpgrade.includes('.dc-thumb'), 'CSS: layout moi khong con thumbnail slider trung lap')
+  ok(dcCssUpgrade.includes('.spiritual-nav-link') && dcCssUpgrade.includes('.spiritual-prompt-card') && dcCssUpgrade.includes('.spiritual-float-menu'), 'CSS: co style cho nav, prompt va panel noi trai nghiem tam linh')
 
   const mj = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8')
   ok(mj.includes('path="/di-chua"') && mj.includes('DiChua'), 'main.jsx: route /di-chua (full-page) da wire')
@@ -926,6 +928,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(mj.includes('import ErrorBoundary') && mj.includes('<Route path="/di-chua" element={<ErrorBoundary><Suspense'), 'main.jsx: /di-chua lazy route duoc boc ErrorBoundary')
   const lj2 = readFileSync(new URL('../src/components/Layout.jsx', import.meta.url), 'utf8')
   ok(lj2.includes('/di-chua') && lj2.includes('/di-nha-tho'), 'Layout.jsx: menu van co lien ket toi /di-chua va /di-nha-tho')
+  ok(lj2.includes('function SpiritualNav') && lj2.includes('function SpiritualPrompt') && lj2.includes('function SpiritualFloat') && lj2.includes('spiritual-prompt-card'), 'Layout.jsx: co nav/prompt/nut noi goi y Di Chua va Di Nha Tho tren cac trang khac')
   ok(lj2.includes("const PRIMARY = ['/', '/tarot'") && lj2.includes("{ to: '/', label: 'Trang chủ'") && lj2.includes('end={l.end}'), 'Layout.jsx: desktop nav co menu Trang chu ro rang')
   const ts = readFileSync(new URL('../src/components/TempleScene.jsx', import.meta.url), 'utf8')
   const ts3 = readFileSync(new URL('../src/components/TempleScene3D.jsx', import.meta.url), 'utf8')

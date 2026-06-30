@@ -110,7 +110,7 @@ export default function DiChua() {
     <div className="dc-root">
       <div className="dc-page-bg" style={{ backgroundImage: `url(${sceneImage(loc, 'webp')})` }} aria-hidden="true" />
       <SeoTag title="Đi Chùa — Chùa Tam Sở (không gian tâm linh online) | Tam Sở"
-        description="Chùa Tam Sở — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống xin xăm. Trải nghiệm tham khảo, không thay việc hành lễ thật."
+        description="Chùa Tam Sở — không gian chùa online (hư cấu): dạo Cổng Tam Quan, Chánh Điện, Tháp Chuông, vườn Lâm Tỳ Ni; thắp hương, viết lời nguyện và lắc ống Xâm Bà. Trải nghiệm tham khảo, không thay việc hành lễ thật."
         path="/di-chua" breadcrumb={[{ name: 'Trang chủ', path: '/' }, { name: 'Đi chùa' }]} />
 
       {/* HEADER */}
@@ -221,17 +221,17 @@ export default function DiChua() {
           </div>
           <div className="dc-card dc-xam-card">
             <div>
-              <div className="dc-card-title">🎋 Xin Xăm</div>
-              <p className="dc-card-desc">Lắc ống xăm xin một quẻ.</p>
+              <div className="dc-card-title">🎋 Xin Xâm Bà</div>
+              <p className="dc-card-desc">Lắc ống Xâm Bà xin một quẻ.</p>
             </div>
             <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('xam')}>Lắc ngay</button>
           </div>
           <div className="dc-card dc-xam-card dc-keo-card">
             <div>
               <div className="dc-card-title">🪙 Xin Keo</div>
-              <p className="dc-card-desc">Gieo cặp keo âm dương.</p>
+              <p className="dc-card-desc">Ném cặp keo âm dương.</p>
             </div>
-            <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('keo')}>Gieo keo</button>
+            <button type="button" className="dc-btn dc-btn-gold" onClick={() => setModal('keo')}>Ném keo</button>
           </div>
         </aside>
       </div>
@@ -244,23 +244,22 @@ export default function DiChua() {
           <li><b>Danh sách khu</b> : chọn nhanh một không gian trong chùa</li>
           <li><b>Lời Cầu Nguyện</b> : viết & lưu riêng trên máy bạn</li>
           <li><b>Thắp Hương</b> : cử chỉ tượng trưng</li>
-          <li><b>Xin Xăm</b> : <b>lắc ống xăm</b> (kéo qua lại hoặc lắc điện thoại) đến khi que rơi ra</li>
-          <li><b>Xin Keo</b> : gieo cặp keo âm dương để chiêm nghiệm một câu hỏi rõ ràng</li>
+          <li><b>Xin Xâm Bà</b> : <b>lắc ống Xâm Bà</b> (kéo qua lại hoặc lắc điện thoại) đến khi que rơi ra</li>
+          <li><b>Xin Keo</b> : ném cặp keo âm dương để chiêm nghiệm một câu hỏi rõ ràng</li>
         </ul>
       </DcModal>
 
       <DcModal open={modal === 'congduc'} onClose={() => setModal(null)} title="◈ Công Đức">
         <p className="leading-relaxed">Chùa Tam Sở <b>chưa có</b> hình thức cúng dường / công đức thật. Tính năng này cần một cổng thanh toán minh bạch và xác minh rõ ràng, nên Tam Sở chưa triển khai.</p>
-        <p className="dc-card-note" style={{ marginTop: 10 }}>Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, lời nguyện, xin xăm) trước khi thêm bất kỳ tính năng liên quan đến tiền. Sẽ không bao giờ có nút quyên góp giả ở đây.</p>
+        <p className="dc-card-note" style={{ marginTop: 10 }}>Chúng tôi ưu tiên hoàn thiện trải nghiệm thật (thắp hương, lời nguyện, Xâm Bà) trước khi thêm bất kỳ tính năng liên quan đến tiền. Sẽ không bao giờ có nút quyên góp giả ở đây.</p>
       </DcModal>
 
-      <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xăm — hãy lắc ống"
+      <DcModal open={modal === 'xam'} onClose={() => setModal(null)} title="🎋 Xin Xâm Bà — hãy lắc ống"
         bgImage={sceneImage(loc, 'webp')}>
         <ShakeXam />
       </DcModal>
 
-      <DcModal open={modal === 'keo'} onClose={() => setModal(null)} title="🪙 Xin Keo — cặp keo âm dương"
-        bgImage={sceneImage(loc, 'webp')}>
+      <DcModal open={modal === 'keo'} onClose={() => setModal(null)} title="🪙 Xin Keo — cặp keo âm dương">
         <XinKeo />
       </DcModal>
 
@@ -276,12 +275,12 @@ export default function DiChua() {
           )}
         </div>
         <div className="dc-history-section">
-          <div className="dc-history-head"><b>🎋 Thẻ Xăm đã rút ({lichSuXam.length})</b>
+          <div className="dc-history-head"><b>🎋 Xâm Bà đã rút ({lichSuXam.length})</b>
             {lichSuXam.length > 0 && <button type="button" className="dc-history-clear" onClick={onClearXam}>Xoá hết</button>}
           </div>
-          {lichSuXam.length === 0 ? <p className="dc-card-note">Bạn chưa xin thẻ xăm nào.</p> : (
+          {lichSuXam.length === 0 ? <p className="dc-card-note">Bạn chưa xin Xâm Bà lần nào.</p> : (
             <ul className="dc-history-list">
-              {lichSuXam.map((h, i) => { const x = xamBySo(h.so); return <li key={i}><span className="dc-history-time">{fmtT(h.t)}</span>Thẻ số {h.so}{x ? ' · ' + x.bac + ' — “' + x.cau[0] + '”' : ''}</li> })}
+              {lichSuXam.map((h, i) => { const x = xamBySo(h.so); return <li key={i}><span className="dc-history-time">{fmtT(h.t)}</span>Xâm Bà số {h.so}{x ? ' · ' + x.bac + ' — “' + x.cau[0] + '”' : ''}</li> })}
             </ul>
           )}
         </div>

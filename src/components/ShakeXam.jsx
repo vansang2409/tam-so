@@ -3,7 +3,7 @@ import { rutXam, addXamLichSu } from '../data/dichua.js'
 
 const dcAsset = name => (import.meta.env.BASE_URL || '/') + 'dichua/' + name
 
-/* ShakeXam - xin xam bang cach lac. Dem theo thoi gian dang lac that,
+/* ShakeXam - xin Xam Ba bang cach lac. Dem theo thoi gian dang lac that,
  * co luc lac, pointer/keyboard/DeviceMotion va nut phu cho nguoi khong lac duoc. */
 
 const reduced = () =>
@@ -128,7 +128,7 @@ export default function ShakeXam() {
     return (
       <div className="xam-result animate-fade">
         <div className="xam-result-card">
-          <div className="xam-result-badge">Thẻ số {xam.so} · {xam.bac}</div>
+          <div className="xam-result-badge">Xâm Bà số {xam.so} · {xam.bac}</div>
           <p className="xam-result-cau">“{xam.cau[0]}<br />{xam.cau[1]}”</p>
           <div className="xam-result-body">
             <p className="m-0">{xam.dienGiai}</p>
@@ -136,7 +136,7 @@ export default function ShakeXam() {
           </div>
         </div>
         <div className="xam-result-actions">
-          <button type="button" className="dc-btn dc-btn-gold" onClick={reset}>🔄 Xin thẻ khác</button>
+          <button type="button" className="dc-btn dc-btn-gold" onClick={reset}>🔄 Xin Xâm Bà khác</button>
         </div>
         <p className="xam-note">Diễn giải tham khảo theo thể loại dân gian — không phải lời tiên đoán chắc chắn.</p>
       </div>
@@ -154,7 +154,7 @@ export default function ShakeXam() {
   return (
     <div className="xam-wrap">
       <div className={'xam-stage' + (active ? ' is-active' : '') + (progress > 65 ? ' is-charged' : '')} style={xamPowerStyle} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerLeave={onUp} onKeyDown={onKeyDown}
-        role="button" tabIndex={0} aria-label="Lắc ống xăm — kéo qua lại để xin thẻ">
+        role="button" tabIndex={0} aria-label="Lắc ống Xâm Bà — kéo qua lại để xin quẻ">
         <div className="xam-aura" aria-hidden="true"><span /><span /><span /></div>
         <div className={'xam-cyl' + (active ? ' is-shaking' : '') + (dropping ? ' is-dropping' : '')} style={{ transform: `rotate(${tilt}deg)` }}>
           <picture><source srcSet={dcAsset(phase === 'idle' ? 'dc-tube-cutout.webp' : 'dc-tube-cutout-shake.webp')} type="image/webp" /><img src={dcAsset(phase === 'idle' ? 'dc-tube-cutout.png' : 'dc-tube-cutout-shake.png')} alt="" className="xam-tube-real" loading="lazy" decoding="async" /></picture>
@@ -172,13 +172,13 @@ export default function ShakeXam() {
         <div className="xam-bar"><span style={{ width: progress + '%' }} /></div>
       </div>
       <p className="xam-hint xam-hint-simple" aria-live="polite">
-        {dropping ? 'Que xăm đang rơi…'
-          : progress === 0 ? 'Kéo ống xăm qua lại để xin thẻ'
+        {dropping ? 'Que Xâm Bà đang rơi…'
+          : progress === 0 ? 'Kéo ống Xâm Bà qua lại để xin quẻ'
           : progress < 90 ? 'Giữ nhịp lắc đều tay…'
-          : 'Que xăm sắp rơi…'}
+          : 'Que Xâm Bà sắp rơi…'}
       </p>
       {needPerm && <button type="button" className="dc-btn dc-btn-ghost xam-perm" onClick={enableMotion}>📱 Bật cảm biến lắc điện thoại</button>}
-      {!dropping && progress === 0 && <button type="button" className="xam-fallback" onClick={autoShake}>Không lắc được? Bấm để xin thẻ</button>}
+      {!dropping && progress === 0 && <button type="button" className="xam-fallback" onClick={autoShake}>Không lắc được? Bấm để xin Xâm Bà</button>}
     </div>
   )
 }

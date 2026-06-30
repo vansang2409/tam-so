@@ -26,10 +26,15 @@ const links = [
   { to: '/kinh-dich', label: 'Kinh Dịch' },
   { to: '/di-chua', label: 'Đi chùa' },
   { to: '/di-nha-tho', label: 'Đi nhà thờ' },
+  { to: '/bai-viet', label: 'Bài viết' },
   { to: '/nguon', label: 'Nguồn' }
 ]
 const PRIMARY = ['/', '/tarot', '/than-so-hoc', '/tu-vi', '/kinh-dich'].map(to => links.find(l => l.to === to))
-const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/di-nha-tho', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
+const MORE = ['/ho-so', '/dang-nhap', '/la-so-tu-vi', '/so-la-so', '/cung-hoang-dao', '/di-chua', '/di-nha-tho', '/bai-viet', '/tuong-hop', '/nguon'].map(to => links.find(l => l.to === to))
+const SPIRITUAL_LINKS = [
+  { to: '/di-chua', icon: '🙏', title: 'Đi chùa', note: 'Thắp hương, lời nguyện, Xâm Bà' },
+  { to: '/di-nha-tho', icon: '🕯️', title: 'Đi nhà thờ', note: 'Thắp nến, cầu nguyện, tĩnh lặng' }
+]
 
 function prefetchProps(to) {
   return {
@@ -48,6 +53,30 @@ function AuthBtn() {
     <NavLink to="/dang-nhap" {...prefetchProps('/dang-nhap')} aria-label={title} title={title}
       className={({ isActive }) => 'min-w-[40px] text-center px-2.5 sm:px-3 py-2 rounded-full text-[.86rem] font-semibold transition shrink-0 ' + (isActive ? 'text-gold bg-gold/10' : 'text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5')}>
       <span className="hidden sm:inline">{shown}</span><span className="sm:hidden" aria-hidden="true">{compact}</span>
+    </NavLink>
+  )
+}
+
+function adminEmails() {
+  return String(import.meta.env.VITE_ADMIN_EMAILS || '')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean)
+}
+
+function isEnvAdmin(user) {
+  const list = adminEmails()
+  const email = String(user?.email || '').toLowerCase()
+  return Boolean(email && list.includes(email))
+}
+
+function AdminBtn() {
+  const { user } = useAuth()
+  if (!isEnvAdmin(user)) return null
+  return (
+    <NavLink to="/admin" {...prefetchProps('/admin')} aria-label="Admin" title="Admin"
+      className={({ isActive }) => 'min-w-[40px] text-center px-2.5 sm:px-3 py-2 rounded-full text-[.86rem] font-semibold transition shrink-0 ' + (isActive ? 'text-gold bg-gold/10' : 'text-muted hover:text-cream hover:bg-black/5 dark:hover:bg-white/5')}>
+      <span className="hidden sm:inline">Admin</span><span className="sm:hidden" aria-hidden="true">AD</span>
     </NavLink>
   )
 }
@@ -104,6 +133,22 @@ function MoreDropdown({ items }) {
   )
 }
 
+function SpiritualNav() {
+  const loc = useLocation()
+  const active = SPIRITUAL_LINKS.some(i => loc.pathname === i.to || loc.pathname.startsWith(i.to + '/'))
+  return (
+    <div className="spiritual-nav" aria-label="Trải nghiệm tâm linh">
+      {SPIRITUAL_LINKS.map(i => (
+        <NavLink key={i.to} to={i.to} {...prefetchProps(i.to)}
+          className={({ isActive }) => 'spiritual-nav-link' + (isActive ? ' is-active' : '') + (active && !isActive ? ' is-muted' : '')}
+          title={i.note}>
+          <span aria-hidden="true">{i.icon}</span>{i.title}
+        </NavLink>
+      ))}
+    </div>
+  )
+}
+
 function Navbar() {
   const [open, setOpen] = useState(false)
   const loc = useLocation()
@@ -118,12 +163,14 @@ function Navbar() {
         <div className="flex items-center gap-1.5">
           <div className="hidden md:flex md:items-center md:gap-x-[18px]">
             {PRIMARY.map(l => (<NavLink key={l.to} to={l.to} {...prefetchProps(l.to)} end={l.end} className={cls}>{l.label}</NavLink>))}
+            <SpiritualNav />
             <MoreDropdown items={MORE} />
           </div>
           <div id="navmenu" className={`${open ? 'flex' : 'hidden'} md:hidden flex-col gap-0.5 absolute top-[64px] right-3.5 left-3.5 bg-white dark:bg-ink border border-slate-200 dark:border-slate-700 rounded-2xl p-2 shadow-lift z-50`}>
             {links.map(l => (<NavLink key={l.to} to={l.to} {...prefetchProps(l.to)} end={l.end} className={cls}>{l.label}</NavLink>))}
           </div>
           <ThemeToggle />
+          <AdminBtn />
           <AuthBtn />
           <CollBtn />
           <button onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open} aria-controls="navmenu"
@@ -131,6 +178,51 @@ function Navbar() {
         </div>
       </nav>
     </header>
+  )
+}
+
+function SpiritualPrompt() {
+  const { pathname } = useLocation()
+  if (pathname === '/di-chua' || pathname === '/di-nha-tho') return null
+  return (
+    <section className="spiritual-prompt no-print" aria-label="Trải nghiệm tâm linh">
+      <div className="spiritual-prompt-inner">
+        <div>
+          <p className="spiritual-prompt-kicker">Khoảng lặng nhỏ</p>
+          <h2>Muốn tĩnh tâm một chút?</h2>
+          <p>Ghé không gian chùa hoặc nhà thờ online để thắp hương, thắp nến, viết lời nguyện riêng và chiêm nghiệm nhẹ nhàng.</p>
+        </div>
+        <div className="spiritual-prompt-actions">
+          {SPIRITUAL_LINKS.map(i => (
+            <Link key={i.to} to={i.to} {...prefetchProps(i.to)} className="spiritual-prompt-card">
+              <span aria-hidden="true">{i.icon}</span>
+              <b>{i.title}</b>
+              <small>{i.note}</small>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SpiritualFloat() {
+  const { pathname } = useLocation()
+  const hidden = pathname === '/di-chua' || pathname === '/di-nha-tho'
+  if (hidden) return null
+  return (
+    <div className="spiritual-float no-print" aria-label="Trải nghiệm tĩnh tâm">
+      <div className="spiritual-float-menu">
+        <p className="spiritual-float-title">Tĩnh tâm</p>
+        {SPIRITUAL_LINKS.map(i => (
+          <Link key={i.to} to={i.to} {...prefetchProps(i.to)} className="spiritual-float-item">
+            <span aria-hidden="true">{i.icon}</span>
+            <b>{i.title}</b>
+            <small>{i.note}</small>
+          </Link>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -161,7 +253,7 @@ const DESCS = {
   '/cung-hoang-dao': '12 cung hoàng đạo phương Tây: tính cung theo ngày sinh, decan, màu/đá/số may mắn và bảng tương hợp nhanh 12×12.',
   '/tuong-hop': 'Xem tương hợp hai người qua Số Chủ Đạo, Can Chi và cung hoàng đạo — chia sẻ kết quả cho người ấy và bạn bè.',
   '/kinh-dich': 'Gieo quẻ Kinh Dịch bằng 3 đồng xu hoặc Mai Hoa Dịch Số, luận hào động và tra cứu đủ 64 quẻ kèm nguyên văn thoán/hào từ.',
-  '/di-chua': 'Đi chùa Đại Tự Tâm Linh (hư cấu): bước qua cổng, dạo sân, vào chính điện, thắp hương, khấn nguyện và xin thẻ xăm — trải nghiệm tham khảo, không thay việc hành lễ thật.',
+  '/di-chua': 'Đi chùa Đại Tự Tâm Linh (hư cấu): bước qua cổng, dạo sân, vào chính điện, thắp hương, khấn nguyện và xin Xâm Bà — trải nghiệm tham khảo, không thay việc hành lễ thật.',
   '/di-nha-tho': 'Đi nhà thờ Tam Sở (hư cấu): không gian chiêm niệm online với nến cầu nguyện, kính màu, thánh ca tĩnh lặng và ghi chú riêng tư — không thay Thánh lễ hay tư vấn mục vụ thật.',
   '/bo-suu-tap': 'Bộ sưu tập cá nhân: lưu lại trải bài Tarot và quẻ Kinh Dịch yêu thích ngay trong trình duyệt máy bạn để ngẫm lại sau, có thể chép hoặc tải về .txt.',
   '/nguon': 'Nguồn tham khảo và lưu ý của Tam Sở: phân biệt rõ dữ kiện kiểm chứng được và phần luận giải truyền thống; kèm FAQ minh bạch.'
@@ -193,5 +285,5 @@ function PageFallback() {
 
 export default function Layout() {
   const { pathname } = useLocation()
-  return (<><ScrollToTop /><Navbar /><main><motion.div key={pathname} initial={pageInit} animate={pageAnim} transition={pageTr}><ErrorBoundary><Suspense fallback={<PageFallback />}><Outlet /></Suspense></ErrorBoundary></motion.div></main><Footer /><BackToTop /></>)
+  return (<><ScrollToTop /><Navbar /><main><motion.div key={pathname} initial={pageInit} animate={pageAnim} transition={pageTr}><ErrorBoundary><Suspense fallback={<PageFallback />}><Outlet /></Suspense></ErrorBoundary></motion.div><SpiritualPrompt /></main><Footer /><SpiritualFloat /><BackToTop /></>)
 }

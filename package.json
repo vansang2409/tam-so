@@ -12,6 +12,7 @@
     "test": "node tests/run.mjs"
   },
   "dependencies": {
+    "@emotion/is-prop-valid": "^1.4.0",
     "@supabase/supabase-js": "^2.108.2",
     "framer-motion": "^11.18.2",
     "html-to-image": "^1.11.13",

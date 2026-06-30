@@ -1,5 +1,7 @@
 export const routeLoaders = {
   profile: () => import('./pages/Profile.jsx'),
+  admin: () => import('./pages/Admin.jsx'),
+  blog: () => import('./pages/Blog.jsx'),
   auth: () => import('./pages/Auth.jsx'),
   tarot: () => import('./pages/Tarot.jsx'),
   numerology: () => import('./pages/Numerology.jsx'),
@@ -21,6 +23,8 @@ export const routeLoaders = {
 
 export const routePrefetchers = {
   '/ho-so': routeLoaders.profile,
+  '/admin': routeLoaders.admin,
+  '/bai-viet': routeLoaders.blog,
   '/dang-nhap': routeLoaders.auth,
   '/tarot': routeLoaders.tarot,
   '/than-so-hoc': routeLoaders.numerology,
