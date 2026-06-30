@@ -129,6 +129,7 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 ## PHIEN 30/06/2026 - HOME 3D
 | ID | Task | Nhom | Uu tien | TT | Tieu chi xong |
 |---|---|---|---|---|---|
+| H3D06 | Mo rong 3D card/surface sang cac menu khac tru Di Chua | UI/3D | High | Done (v4.3.4) | `route3d-panel/card/chip` dung chung cho Tarot, Than so hoc, Tu vi, La so Tu Vi, So doi la so, Kinh Dich, Cung hoang dao, Hop tuoi, Tuong hop, Ho so, Today; DiChua khong bi ap class; 457 test pass; build `/tmp/b` + Playwright OK |
 | H3D05 | Redesign 3D card sau khi search tham khao HTML/CSS | UI/3D | High | Done (v4.3.3) | Tham khao MDN/daisyUI/Aceternity; bo fake-cube nang, dung premium hover card co accent rieng + tilt/translateZ nhe + CTA pill; 454 test pass; build `/tmp/b` + Playwright OK |
 | H3D04 | Tao khoi 3D cho section khac tren Trang chu | UI/3D | High | Done (v4.3.2) | Luoi Cong cu cua Tam So thanh 9 khoi 3D CSS clickable; Lich/Tu vi hom nay dung `home-depth-panel`; 453 test pass; build `/tmp/b` + Playwright desktop/mobile OK |
 | H3D03 | Sua menu Home 3D bi cat va nang style button | UI/3D | High | Done (v4.3.1) | Noi stage desktop 520px, lui toa do portal vao trong, them padding duoi, polish card portal va `.btn` chung; test CSS/position; build `/tmp/b` + Playwright desktop/mobile OK |

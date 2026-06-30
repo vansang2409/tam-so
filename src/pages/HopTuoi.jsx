@@ -88,7 +88,7 @@ export default function HopTuoi() {
       <section className="wrap pb-10">
         <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))' }}>
           {CONGIAP.map((c, i) => (
-            <Link key={c.ten} style={{ '--i': Math.min(i, 14) }} to={'/hop-tuoi/' + c.slug} className="panel p-4 no-underline block text-center transition hover:-translate-y-1 hover:border-gold/40">
+            <Link key={c.ten} style={{ '--i': Math.min(i, 14) }} to={'/hop-tuoi/' + c.slug} className="panel route3d-card p-4 no-underline block text-center transition hover:-translate-y-1 hover:border-gold/40">
               <div className="text-[2rem]">{EMOJI[c.ten]}</div>
               <div className="font-serif text-[1.1rem] text-cream">Tuổi {c.ten}</div>
               <div className="note">con {c.con}</div>

@@ -203,7 +203,7 @@ function TarotIndex() {
       </section>
 
       <section className="wrap pb-2">
-        <div className="panel p-[26px] flex flex-col md:flex-row items-center gap-6 max-w-[760px] mx-auto">
+        <div className="panel route3d-panel p-[26px] flex flex-col md:flex-row items-center gap-6 max-w-[760px] mx-auto">
           {!quick ? (
             <div className="text-center w-full py-2">
               <h3 className="text-[1.3rem] mb-1">Rút nhanh một lá</h3>
@@ -233,7 +233,7 @@ function TarotIndex() {
       </section>
 
       <section id="rut-bai" className="wrap py-10">
-        <div className="panel p-[26px]">
+        <div className="panel route3d-panel p-[26px]">
           <div className="flex gap-3 flex-wrap items-end justify-center">
             <div className="flex flex-col gap-1.5"><label htmlFor="tquestion" className="text-[.85rem] text-muted font-semibold">Câu hỏi (tùy chọn)</label>
               <input id="tquestion" value={question} onChange={e => setQuestion(e.target.value)} placeholder="VD: Mình nên tập trung vào điều gì lúc này?" className="field-input w-[250px]" /></div>
@@ -293,11 +293,11 @@ function TarotIndex() {
         <p className="note text-center max-w-[640px] mx-auto mb-5">Chọn một câu hợp tâm trạng, Tam Sở tự chọn kiểu trải phù hợp rồi rút bài. Bạn vẫn sửa lại câu hỏi ở ô phía trên được. Chỉ để chiêm nghiệm, không phải lời phán chắc chắn.</p>
         <div className="max-w-[920px] mx-auto grid gap-5">
           {TOPICS.map(g => (
-            <div key={g.title}>
+            <div key={g.title} className="route3d-panel p-4">
               <div className="text-gold font-serif text-[1.05rem] font-semibold mb-2">{g.title}</div>
               <div className="flex flex-wrap gap-2">
                 {g.items.map(([q, sp]) => (
-                  <button key={q} onClick={() => askPreset(q, sp)} className="text-left border border-gold/30 rounded-lg px-3 py-2 text-[.88rem] text-cream hover:border-gold/60 hover:bg-black/5 transition cursor-pointer">{q}</button>
+                  <button key={q} onClick={() => askPreset(q, sp)} className="route3d-chip text-left border border-gold/30 rounded-lg px-3 py-2 text-[.88rem] text-cream hover:border-gold/60 hover:bg-black/5 transition cursor-pointer">{q}</button>
                 ))}
               </div>
             </div>
@@ -316,7 +316,7 @@ function TarotIndex() {
         </div>
         <Reveal base="stagger-parent" className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(116px,1fr))' }}>
           {cards.map((c, i) => (
-            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative bg-gold/5 border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+            <div key={c.id} style={{ '--i': Math.min(i, 18) }} role="button" tabIndex={0} onClick={() => setSel(c)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(c) } }} className="relative route3d-card bg-gold/5 border border-gold/20 rounded-[12px] p-1.5 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <button type="button" aria-label={(isFav(c.id) ? 'Bỏ yêu thích ' : 'Lưu yêu thích ') + c.nameVi} onClick={e => { e.stopPropagation(); toggleFav(c.id) }} className={'absolute top-0 right-0 p-3 text-[1rem] leading-none z-10 bg-transparent border-0 cursor-pointer ' + (isFav(c.id) ? 'text-gold' : 'text-black/25 dark:text-white/25 hover:text-gold')}>{isFav(c.id) ? '★' : '☆'}</button>
               <CardImage card={c} w={200} imgClass="rounded-md w-full h-auto mb-1" fallbackClass="text-[1.7rem] py-4" />
               <div className="text-[.8rem] font-semibold text-cream leading-tight">{c.nameVi}</div>
@@ -364,7 +364,7 @@ function BirthCardsTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">Lá bài chủ đạo <span className="note">(theo ngày sinh)</span></h2>
-      <div className="panel p-[26px] max-w-[760px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[760px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Ngày</label><input type="number" value={d} onChange={e => setD(e.target.value)} placeholder="16" className="field-input w-[90px]" /></div>
           <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Tháng</label><input type="number" value={m} onChange={e => setM(e.target.value)} placeholder="6" className="field-input w-[90px]" /></div>

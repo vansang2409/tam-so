@@ -82,7 +82,7 @@ export default function Numerology() {
           {Object.keys(NUMEROLOGY).map((k, i) => {
             const n = NUMEROLOGY[k]
             return (
-              <details key={k} style={{ '--i': i }} className="bg-gold/5 border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
+              <details key={k} style={{ '--i': i }} className="route3d-card bg-gold/5 border border-gold/20 rounded-xl mb-2.5 overflow-hidden">
                 <summary className="cursor-pointer px-[18px] py-[15px] font-serif text-[1.12rem] font-semibold marker:content-none flex items-center gap-3"><span className="text-gold text-[.9rem]">✦</span>{n.title}</summary>
                 <div className="px-[18px] pb-[18px]"><div className="flex gap-2 flex-wrap mb-2.5">{n.keys.map(x => <Badge key={x}>{x}</Badge>)}</div><p>{n.desc}</p><p className="note">Điểm mạnh: {n.strengths} — Cần lưu ý: {n.watch}</p>{NUM_SAO[k] && <p className="note m-0 mt-1">🪐 Hành tinh liên hệ: {NUM_SAO[k]} <span className="opacity-70">(theo trường phái phổ biến, chỉ tham khảo)</span></p>}<p className="mt-2 mb-0"><Link to={'/than-so-hoc/so/' + k} className="font-semibold text-[.9rem]">Xem trang riêng của số {k} →</Link></p></div>
               </details>
@@ -157,7 +157,7 @@ function LifePathTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">① Số Chủ Đạo <span className="note">(ngày sinh)</span></h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Ngày" value={d} set={setD} ph="22" /><Field label="Tháng" value={m} set={setM} ph="10" /><Field label="Năm" value={y} set={setY} ph="1990" /><button className="btn btn-primary" onClick={calc}>✦ Tính</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
@@ -222,7 +222,7 @@ function NameTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">② Bộ số đầy đủ <span className="note">(họ tên + ngày sinh)</span></h2>
-      <div className="panel p-[26px] max-w-[860px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[860px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Họ và tên</label><input value={name} onChange={e => setName(e.target.value)} placeholder="VD Nguyễn Văn An" className="field-input w-[230px]" /></div>
           <Field label="Ngày" value={d} set={setD} ph="22" /><Field label="Tháng" value={m} set={setM} ph="10" /><Field label="Năm" value={y} set={setY} ph="1990" />

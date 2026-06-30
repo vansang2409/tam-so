@@ -140,7 +140,7 @@ export default function LaSoTuVi() {
       </section>
 
       <section className="wrap pb-4">
-        <div className="panel p-[22px] max-w-[880px] mx-auto">
+        <div className="panel route3d-panel p-[22px] max-w-[880px] mx-auto">
           <div className="flex gap-3 flex-wrap items-end justify-center">
             <Field label="Ngày *" value={d} set={setD} ph="15" w="78px" />
             <Field label="Tháng *" value={m} set={setM} ph="8" w="78px" />
@@ -191,7 +191,7 @@ export default function LaSoTuVi() {
               <span className="badge">Thân cư {ls.thanCu}</span>
               <span className="badge">DL {ls.solar.d}/{ls.solar.m}/{ls.solar.y} · ÂL {ls.lunar.day}/{ls.lunar.month}</span>
             </div>
-            <div className="panel p-[18px] max-w-[820px] mx-auto mb-3 bg-gold/[.05]">
+            <div className="panel route3d-panel p-[18px] max-w-[820px] mx-auto mb-3 bg-gold/[.05]">
               <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">Tóm tắt lá số</div>
               <p className="m-0 leading-relaxed">Mệnh an tại <b className="text-cream">{ls.menhChi}</b> — <b className="text-cream">{menhStars}</b>, thuộc nhóm <b className="text-cream">{ls.menhCach.ten}</b>.{' '}
                 {(() => {

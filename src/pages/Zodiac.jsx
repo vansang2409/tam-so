@@ -151,7 +151,7 @@ export default function Zodiac() {
         <p className="text-muted text-center max-w-[680px] mx-auto mb-7">Mốc ngày theo hệ phổ biến; người sinh sát ranh giới nên kiểm chứng theo năm cụ thể.</p>
         <Reveal base="stagger-parent" className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(250px,1fr))' }}>
           {ZODIAC.map((z, i) => (
-            <Link key={z.en} style={{ '--i': i }} to={'/cung-hoang-dao/' + ZODIAC_SLUG[z.en]} className="panel p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
+            <Link key={z.en} style={{ '--i': i }} to={'/cung-hoang-dao/' + ZODIAC_SLUG[z.en]} className="panel route3d-card p-5 no-underline block transition hover:-translate-y-1 hover:border-gold/40">
               <div className="flex items-center gap-3 mb-1">
                 <span className="text-[2rem]">{z.sym}</span>
                 <div><div className="font-serif text-[1.2rem] text-cream">{z.ten}</div><div className="note">{z.from[1]}/{z.from[0]} – {z.to[1]}/{z.to[0]}</div></div>
@@ -201,7 +201,7 @@ function SignTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">① Xem cung của bạn</h2>
-      <div className="panel p-[26px] max-w-[760px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[760px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <Field label="Ngày" value={d} set={setD} ph="16" /><Field label="Tháng" value={m} set={setM} ph="6" />
           <button className="btn btn-primary" onClick={calc}>♈ Xem cung</button>
@@ -240,7 +240,7 @@ function CompatTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">② Tương hợp hai cung</h2>
-      <div className="panel p-[26px] max-w-[760px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[760px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <Field label="Ngày (người 1)" value={d1} set={setD1} ph="16" /><Field label="Tháng" value={m1} set={setM1} ph="6" />
           <span className="text-gold pb-2">×</span>

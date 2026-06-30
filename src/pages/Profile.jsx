@@ -48,7 +48,7 @@ function compute(name, dd, mm, yy, gender, hour, topic, question) {
 
 function Card({ to, label, children }) {
   return (
-    <Link to={to} className="panel p-5 block no-underline hover:-translate-y-1 hover:border-gold/40 transition">
+    <Link to={to} className="panel route3d-card p-5 block no-underline hover:-translate-y-1 hover:border-gold/40 transition">
       <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-2">{label}</div>
       {children}
     </Link>
@@ -187,7 +187,7 @@ export default function Profile() {
       </section>
 
       <section className="wrap py-6">
-        <div className="panel p-[26px] max-w-[860px] mx-auto">
+        <div className="panel route3d-panel p-[26px] max-w-[860px] mx-auto">
           <div className="flex gap-3 flex-wrap items-end justify-center">
             <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Họ và tên (tùy chọn)</label><input value={name} onChange={e => setName(e.target.value)} placeholder="VD Nguyễn Văn An" className="field-input w-[220px]" /></div>
             <Field label="Ngày" value={d} set={setD} ph="22" />

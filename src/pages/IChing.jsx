@@ -63,7 +63,7 @@ function MaiHoaTool() {
     <section className="wrap py-8">
       <h2 className="text-[clamp(1.7rem,3.4vw,2.3rem)] text-center">Gieo quẻ theo ngày giờ <span className="note">(Mai Hoa Dịch Số)</span></h2>
       <p className="text-muted text-center max-w-[680px] mx-auto mb-5">Lập quẻ từ năm–tháng–ngày–giờ âm lịch theo phép Mai Hoa — tất định, không phụ thuộc may rủi.</p>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <MhField label="Ngày" value={d} set={setD} /><MhField label="Tháng" value={m} set={setM} /><MhField label="Năm" value={y} set={setY} /><MhField label="Giờ (0–23)" value={h} set={setH} />
           <button className="btn btn-primary" onClick={calc}>🌸 Lập quẻ</button>
@@ -107,7 +107,7 @@ export default function IChing() {
       </section>
 
       <section className="wrap py-8">
-        <div className="panel p-[26px] max-w-[760px] mx-auto text-center">
+        <div className="panel route3d-panel p-[26px] max-w-[760px] mx-auto text-center">
           <button className="btn btn-primary" onClick={() => setCast({ ...castHexagram(), _id: Date.now() })}>🪙 Gieo quẻ</button>
           {cast && (
             <div className="mt-6 animate-fade">
@@ -172,7 +172,7 @@ export default function IChing() {
         <Reveal base="stagger-parent" className="grid gap-2.5" style={{ gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))' }}>
           {HEXAGRAMS.map((h, i) => (
             <button key={h.n} style={{ '--i': Math.min(i, 18) }} onClick={() => setSel(h)}
-              className="bg-gold/5 border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
+              className="route3d-card bg-gold/5 border border-gold/20 rounded-xl px-2 py-3 text-center cursor-pointer transition hover:-translate-y-1 hover:border-gold/40">
               <div className="flex justify-center mb-1"><Hexagram up={h.up} lo={h.lo} w={38} /></div>
               <div className="text-muted text-[.72rem] mt-1">Quẻ {h.n}</div>
               <div className="text-[.86rem] font-semibold text-cream leading-tight">{h.ten}</div>

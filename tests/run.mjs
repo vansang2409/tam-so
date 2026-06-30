@@ -893,6 +893,21 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(home3dCss.includes('.home-cube-card') && home3dCss.includes('transform-style: preserve-3d') && home3dCss.includes('backface-visibility: hidden') && home3dCss.includes('perspective(1100px)') && home3dCss.includes('.home-depth-panel'), 'CSS: co khoi 3D tham khao card hover dep hon, khong fake cube day')
   const homeCubeCss = home3dCss.slice(home3dCss.indexOf('.home-depth-panel'), home3dCss.indexOf('@media (max-width: 900px)', home3dCss.indexOf('.home-depth-panel')))
   ok(!homeCubeCss.includes('isolation: isolate') && !homeCubeCss.includes('translateZ(-18px)') && homeCubeCss.includes('border-radius: 999px') && homeCubeCss.includes('.home-cube-card:hover .home-cube-cta'), 'CSS: bo fake cube/flatten cu va CTA dang nut dep hon')
+  const route3dCss = home3dCss
+  const tarot3d = readFileSync(new URL('../src/pages/Tarot.jsx', import.meta.url), 'utf8')
+  const numerology3d = readFileSync(new URL('../src/pages/Numerology.jsx', import.meta.url), 'utf8')
+  const iching3d = readFileSync(new URL('../src/pages/IChing.jsx', import.meta.url), 'utf8')
+  const zodiac3d = readFileSync(new URL('../src/pages/Zodiac.jsx', import.meta.url), 'utf8')
+  const hopTuoi3d = readFileSync(new URL('../src/pages/HopTuoi.jsx', import.meta.url), 'utf8')
+  const tuVi3d = readFileSync(new URL('../src/pages/TuVi.jsx', import.meta.url), 'utf8')
+  const laSo3d = readFileSync(new URL('../src/pages/LaSoTuVi.jsx', import.meta.url), 'utf8')
+  const soLaSo3d = readFileSync(new URL('../src/pages/SoLaSo.jsx', import.meta.url), 'utf8')
+  const tuongHop3d = readFileSync(new URL('../src/pages/TuongHop.jsx', import.meta.url), 'utf8')
+  const profile3d = readFileSync(new URL('../src/pages/Profile.jsx', import.meta.url), 'utf8')
+  const today3d = readFileSync(new URL('../src/components/Today.jsx', import.meta.url), 'utf8')
+  ok(route3dCss.includes('.route3d-card') && route3dCss.includes('.route3d-panel') && route3dCss.includes('.route3d-chip') && route3dCss.includes('perspective(1000px)') && route3dCss.includes('backface-visibility: hidden'), 'CSS: route3d shared surfaces cho cac menu ngoai Di Chua')
+  ok([tarot3d, numerology3d, iching3d, zodiac3d, hopTuoi3d, tuVi3d, laSo3d, soLaSo3d, tuongHop3d, profile3d, today3d].every(src => src.includes('route3d-')), 'Cac menu/trang chinh ngoai DiChua: da gan route3d class')
+  ok(!dcj.includes('route3d-'), 'DiChua.jsx: khong bi ap theme route3d theo yeu cau tru menu Di Chua')
   const loaders = readFileSync(new URL('../src/routeLoaders.js', import.meta.url), 'utf8')
   ok(loaders.includes("tarot: () => import('./pages/Tarot.jsx')") && loaders.includes("iChing: () => import('./pages/IChing.jsx')") && loaders.includes("'/di-chua': routeLoaders.diChua"), 'routeLoaders: map importer dung chung cho route/chunk nang')
   ok(loaders.includes('prefetchRouteChunk') && loaders.includes('saveData') && loaders.includes('inflight'), 'routeLoaders: prefetch idempotent va ton trong navigator.connection.saveData')
@@ -931,7 +946,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.3', 'package.json: bump version v4.3.3 cho Home 3D card redesign')
+  ok(pkgAuth.version === '4.3.4', 'package.json: bump version v4.3.4 cho route 3D menu surfaces')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -968,7 +983,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.3'"), 'sw.js: bump CACHE v4.3.3')
+  ok(sw.includes("const CACHE = 'tamso-v4.3.4'"), 'sw.js: bump CACHE v4.3.4')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')

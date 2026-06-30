@@ -121,7 +121,7 @@ function CanChiTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">① Tra Can Chi <span className="note">(năm sinh)</span></h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Năm sinh *" value={y} set={setY} ph="1990" w="140px" /><Field label="Tháng" value={m} set={setM} ph="(cảnh báo Tết)" w="150px" /><Field label="Ngày" value={d} set={setD} ph="" w="100px" /><button className="btn btn-primary" onClick={calc}>☯ Tra</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
@@ -164,7 +164,7 @@ function CompatTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">② Xem hợp tuổi <span className="note">(hai năm sinh)</span></h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Người 1" value={y1} set={setY1} ph="1990" w="140px" /><Field label="Người 2" value={y2} set={setY2} ph="1992" w="140px" /><button className="btn btn-primary" onClick={calc}>💑 Xem</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
@@ -197,7 +197,7 @@ function DayTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">③ Can Chi ngày &amp; giờ hoàng đạo</h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center"><Field label="Ngày" value={d} set={setD} ph="16" w="90px" /><Field label="Tháng" value={m} set={setM} ph="6" w="90px" /><Field label="Năm" value={y} set={setY} ph="2026" w="110px" /><Field label="Giờ (0–23)" value={h} set={setH} ph="9" w="120px" /><button className="btn btn-primary" onClick={calc}>🕒 Xem ngày</button></div>
         {err && <div className="disclaimer mt-5">{err}</div>}
         {res && (
@@ -231,7 +231,7 @@ function CungPhiTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">④ Cung phi &amp; hướng hợp tuổi <span className="note">(Bát Trạch)</span></h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <Field label="Năm sinh (âm lịch)" value={y} set={setY} ph="1990" w="150px" />
           <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giới tính</label>
@@ -278,7 +278,7 @@ function SaoHanTool() {
   return (
     <section className="wrap py-6">
       <h2 className="text-[clamp(1.5rem,3vw,2rem)] text-center mb-1">⑤ Sao hạn năm nay <span className="note">(Cửu Diệu)</span></h2>
-      <div className="panel p-[26px] max-w-[820px] mx-auto">
+      <div className="panel route3d-panel p-[26px] max-w-[820px] mx-auto">
         <div className="flex gap-3 flex-wrap items-end justify-center">
           <Field label="Năm sinh (âm lịch)" value={y} set={setY} ph="1990" w="150px" />
           <div className="flex flex-col gap-1.5"><label className="text-[.85rem] text-muted font-semibold">Giới tính</label>

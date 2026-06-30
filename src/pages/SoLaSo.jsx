@@ -27,7 +27,7 @@ function person(d, m, y, h, g) {
 
 function PersonCard({ label, p }) {
   return (
-    <div className="panel p-5">
+    <div className="panel route3d-card p-5">
       <div className="text-gold text-[.72rem] uppercase tracking-[.18em] mb-1.5">{label}</div>
       <div className="font-serif text-[1.3rem]">{p.ls.nam} <span className="note">({p.ls.amDuong})</span></div>
       <div className="note mb-2">DL {p.solar.d}/{p.solar.m}/{p.solar.y} · Cục {p.ls.cuc.ten}</div>
@@ -71,7 +71,7 @@ export default function SoLaSo() {
       </section>
 
       <section className="wrap pb-4">
-        <div className="panel p-[22px] max-w-[900px] mx-auto">
+        <div className="panel route3d-panel p-[22px] max-w-[900px] mx-auto">
           <div className="grid md:grid-cols-2 gap-4">
             <PersonForm label="Người thứ nhất" p={a} set={setA} />
             <PersonForm label="Người thứ hai" p={b} set={setB} />
@@ -125,7 +125,7 @@ function PersonForm({ label, p, set }) {
       <input type="number" value={p[k]} onChange={e => u(k, e.target.value)} placeholder={ph} className="field-input" style={{ width: w }} /></div>
   )
   return (
-    <div className="border border-gold/20 rounded-xl p-4">
+    <div className="route3d-card border border-gold/20 rounded-xl p-4">
       <div className="font-semibold text-cream mb-2.5">{label}</div>
       <div className="flex gap-2.5 flex-wrap items-end">
         {fld('d', 'Ngày', '15', '64px')}{fld('m', 'Tháng', '8', '64px')}{fld('y', 'Năm (DL)', '1990', '92px')}

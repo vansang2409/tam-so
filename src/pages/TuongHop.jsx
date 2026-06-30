@@ -86,7 +86,7 @@ export default function TuongHop() {
       </section>
 
       <section className="wrap py-6">
-        <div className="panel p-[26px] max-w-[860px] mx-auto">
+        <div className="panel route3d-panel p-[26px] max-w-[860px] mx-auto">
           <div className="grid md:grid-cols-2 gap-4">
             <PersonFields idx={1} p={p1} set={setP1} />
             <PersonFields idx={2} p={p2} set={setP2} />

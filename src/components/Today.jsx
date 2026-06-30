@@ -12,7 +12,7 @@ import { PERSONAL_DAY_HINT } from '../data/numerology.js'
 import { weaveDay } from '../data/dayWeave.js'
 
 const WD = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
-const tile = 'bg-gold/5 border border-gold/20 rounded-xl p-4 text-center transition hover:-translate-y-1 hover:border-gold/40 block'
+const tile = 'route3d-card bg-gold/5 border border-gold/20 rounded-xl p-4 text-center transition hover:-translate-y-1 hover:border-gold/40 block'
 const cap = 'text-[.7rem] uppercase tracking-[.14em] text-gold mb-2'
 const DAY_MSG = { 1: 'Ngày để khởi sự và dẫn dắt — một bước nhỏ cũng quý.', 2: 'Ngày của kết nối và kiên nhẫn — lắng nghe nhiều hơn.', 3: 'Ngày để biểu đạt và sáng tạo — chia sẻ điều bạn nghĩ.', 4: 'Ngày của nền nếp — làm cho xong một việc nhỏ.', 5: 'Ngày của đổi thay — linh hoạt và cởi mở với cái mới.', 6: 'Ngày của yêu thương — dành sự ấm áp cho người quanh bạn.', 7: 'Ngày để tĩnh lặng và suy ngẫm — cho mình một khoảng lặng.', 8: 'Ngày của thực thi — tập trung vào mục tiêu thiết thực.', 9: 'Ngày để buông và hoàn tất — dọn dẹp điều cũ.' }
 
@@ -55,7 +55,7 @@ export default function Today() {
 
   return (
     <section className="wrap py-8">
-      <div className="panel p-6 md:p-7">
+      <div className="panel route3d-panel p-6 md:p-7">
         <div className="text-center mb-5">
           <div className="text-gold tracking-[.3em] uppercase text-[.72rem] font-semibold">Hôm nay</div>
           <h2 className="text-[clamp(1.4rem,3vw,2rem)] my-1">{WD[now.getDay()]}, {d}/{m}/{y}</h2>

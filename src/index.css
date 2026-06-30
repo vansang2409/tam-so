@@ -454,6 +454,69 @@ input[type=number] {
   .home-cube-cta,
   .home-cube-cta::after { transition: none !important; transform: none !important; }
 }
+
+/* =========================================================================
+ * ROUTE 3D SURFACES - shared depth for non-DiChua menus/cards
+ * ========================================================================= */
+.route3d-panel,
+.route3d-card,
+.route3d-chip {
+  --route3d-accent: rgb(var(--c-gold));
+  position: relative;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.route3d-panel {
+  overflow: visible; border: 1px solid rgb(var(--c-border)); border-radius: 8px;
+  background: linear-gradient(180deg, rgb(var(--c-ink)), rgb(var(--c-ink2) / .9));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 18px 44px -30px rgb(var(--c-shadow) / .5);
+}
+.route3d-panel::before {
+  content: ''; position: absolute; left: 22px; right: 22px; bottom: -12px; height: 22px; z-index: -1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgb(var(--c-shadow) / .15), transparent 70%); filter: blur(13px);
+}
+.route3d-card,
+.route3d-chip {
+  transform: perspective(1000px) translateY(0) rotateX(0) rotateY(0);
+  transition: transform .2s cubic-bezier(.2,.7,.3,1), border-color .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.68), 0 12px 28px -24px rgb(var(--c-shadow) / .48);
+}
+.route3d-card::before {
+  content: ''; position: absolute; left: 12px; right: 12px; top: 0; height: 3px; border-radius: 0 0 999px 999px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--route3d-accent), transparent); opacity: .62; transform: translateZ(12px);
+}
+.route3d-card:hover,
+.route3d-card:focus-visible {
+  transform: perspective(1000px) translateY(-4px) rotateX(2deg);
+  border-color: color-mix(in srgb, var(--route3d-accent) 42%, rgb(var(--c-border)));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.78), 0 20px 42px -28px rgb(var(--c-shadow) / .64);
+  text-decoration: none;
+}
+.route3d-chip:hover,
+.route3d-chip:focus-visible {
+  transform: perspective(1000px) translateY(-2px) rotateX(2deg);
+  border-color: color-mix(in srgb, var(--route3d-accent) 50%, rgb(var(--c-border)));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72), 0 14px 28px -22px rgb(var(--c-shadow) / .56);
+}
+.dark .route3d-panel,
+.dark .route3d-card,
+.dark .route3d-chip { box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 18px 40px -30px rgb(0 0 0 / .72); }
+@media (max-width: 640px) {
+  .route3d-card,
+  .route3d-chip { transform: none; }
+  .route3d-card:hover,
+  .route3d-card:focus-visible,
+  .route3d-chip:hover,
+  .route3d-chip:focus-visible { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route3d-panel,
+  .route3d-panel::before,
+  .route3d-card,
+  .route3d-card::before,
+  .route3d-chip { transition: none !important; transform: none !important; }
+}
+
 /* =========================================================================
  * ĐI CHÙA — Chùa Tam Sở (FULL-PAGE, v3.77). Theme tối RIÊNG, không đụng site sáng.
  * Cảnh chùa do TempleScene vẽ bằng SVG (không ảnh chụp/bản quyền). Xin xăm = lắc.
