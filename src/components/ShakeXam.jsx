@@ -11,6 +11,7 @@ const reduced = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now())
 const pickTarget = () => 3800 + Math.random() * 4200   // ~4s ... 8s
+const XAM_SHAKE_VOLUME_BOOST = 4.5
 
 export default function ShakeXam() {
   const [phase, setPhase] = useState('idle')   // idle | shaking | dropping | result
@@ -27,6 +28,49 @@ export default function ShakeXam() {
   const targetRef = useRef(pickTarget())
   const powerRef = useRef(0), lastFeedRef = useRef(0)
   const shakenRef = useRef(0), lastShakeRef = useRef(0), lastFrameRef = useRef(0), dropped = useRef(false)
+  const audioCtxRef = useRef(null), lastSoundRef = useRef(0)
+
+  const playShakeSound = useCallback(force => {
+    if (typeof window === 'undefined') return
+    const t = now()
+    if (t - lastSoundRef.current < 58) return
+    lastSoundRef.current = t
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext
+      if (!AudioCtx) return
+      const ctx = audioCtxRef.current || new AudioCtx()
+      audioCtxRef.current = ctx
+      if (ctx.state === 'suspended') ctx.resume()
+
+      const duration = 0.07
+      const sampleCount = Math.max(1, Math.floor(ctx.sampleRate * duration))
+      const buffer = ctx.createBuffer(1, sampleCount, ctx.sampleRate)
+      const data = buffer.getChannelData(0)
+      for (let i = 0; i < sampleCount; i += 1) {
+        const fade = 1 - (i / sampleCount)
+        data[i] = (Math.random() * 2 - 1) * fade
+      }
+
+      const source = ctx.createBufferSource()
+      const band = ctx.createBiquadFilter()
+      const gain = ctx.createGain()
+      const impact = Math.min(1, Math.max(.25, force || .7))
+
+      band.type = 'bandpass'
+      band.frequency.value = 1850 + impact * 900
+      band.Q.value = 2.6
+      gain.gain.setValueAtTime(0.001, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime((0.045 + impact * 0.025) * XAM_SHAKE_VOLUME_BOOST, ctx.currentTime + 0.006)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
+
+      source.buffer = buffer
+      source.connect(band)
+      band.connect(gain)
+      gain.connect(ctx.destination)
+      source.start()
+      source.stop(ctx.currentTime + duration)
+    } catch (_) {}
+  }, [])
 
   const startDrop = useCallback(() => {
     if (dropped.current) return
@@ -61,6 +105,7 @@ export default function ShakeXam() {
     setPower(nextPower)
     setPhase(p => (p === 'result' || p === 'dropping') ? p : 'shaking')
     setTilt(dir * (10 + nextPower * 9))
+    playShakeSound(nextPower)
     clearTimeout(tiltTimer.current)
     tiltTimer.current = setTimeout(() => setTilt(0), 140)
     if (!raf.current) { lastFrameRef.current = 0; raf.current = requestAnimationFrame(tick) }
