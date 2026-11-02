@@ -1,5 +1,7 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.7.0 — 02/11/2026:** 9 mẫu quét mới cho các điện còn lại, tổng 11 mẫu có ghi công/giấy phép/link tải. Tượng có bề mặt quét và dáng tự nhiên, giữ nét riêng giữa Hộ Pháp/quan phục/Mẫu/Thổ Địa/Tổ; Thập Điện hai tầng có ghế đỡ. Tải theo khu và giới hạn texture GPU; 493+529 kiểm tra, 11 GLB và 18 nội thất pass, build/single/UI 390/320 OK. Chi tiết WORK_LOG và docs/temple-sculpture-assets.md.
+
 **Cập nhật v4.6.0 — 02/11/2026:** Tượng Phật/Quan Âm dùng GLB quét CC BY có ghi công, bàn thờ/khám/đồ lễ và tượng quan phục/Mẫu chi tiết hơn. Nội thất dựng theo khu, giới hạn vùng cản mới, có fallback tải lỗi. 493 regression + 529 tuyến + kiểm GLB và cả 18 nội thất pass; main/single build OK; UI 1366/390/320 đã xem trực tiếp. Chi tiết WORK_LOG và docs/chua-3d-validation.md.
 
 **Cập nhật v4.5.0 — 02/11/2026:** Chùa 3D có kiến trúc/nội thất riêng cho 18 công trình, vật liệu có vân và bóng đổ, điều khiển chuột trái/phải và chuyển cảnh ngang tầm mắt khi vào điện/nhà. Có Ra sân, đi/nhìn quanh bên trong. Đã sửa các lớp UI che nút và ghim bản đồ mobile chọn nhầm. 493 regression + 529 tuyến và đích chuột pass; main/single build OK. Xem WORK_LOG và docs/chua-3d-validation.md.

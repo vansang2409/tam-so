@@ -2,6 +2,15 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.7.0: Bộ tượng quét cho các điện còn lại
+
+- Bổ sung 9 GLB quét/điêu khắc có giấy phép mở, nâng bộ tượng lên 11 mẫu. Thay tượng quan phục/Mẫu/Hộ Pháp tự ghép khối bằng bề mặt và hình thể quét: Ngọc Hoàng, Thổ Địa, Hộ Pháp, Thành Hoàng, Kim Hoa, Thiên Y Thánh Mẫu, Ông Tơ/Bà Nguyệt, Thập Điện; thêm tượng Tổ ở Nhà Tổ. Giữ 23 khu và điều khiển/chuyển cảnh hiện có.
+- Nguồn sơ cấp được kiểm tra tại Sketchfab: Cleveland Museum of Art (CC0), Minneapolis Institute of Art (CC0/CC BY-SA), St. Cloud State University Archives (CC BY-SA). Bản GLB công khai từ Artheon. Có manifest/SHA-256, tên tác phẩm gốc, tác giả, giấy phép và link tải bản chuyển đổi trong UI; các bản CC BY-SA tiếp tục giữ CC BY-SA. Đây là phỏng tác cho chùa hư cấu, không xác nhận các mẫu tiên nhân/Zuishin/Bishamonten là bản quét đúng tôn tượng Ngọc Hoàng/Thập Điện/Thành Hoàng.
+- Có pipeline tái xuất scripts/prepare-temple-sculptures.mjs và sources.json: đóng skin thành mesh tĩnh, hàn vị trí/UV, giảm lưới, giữ texture màu gốc/bỏ map phụ. Tổng bộ GLB 28577476 byte; mẫu mới 1,53–4,14 MB; tải theo khu, không tải toàn bộ bộ tượng lúc vào chùa. Texture upload GPU giới hạn cạnh 1024px, dùng chung geometry/material/texture giữa các bản đặt và giải phóng theo cảnh. Thập Điện dùng khoảng 14k tam giác/mẫu nhỏ, hai tầng bàn thờ, ghế/đế đỡ; bỏ đồ trang trí cũ che tượng.
+- Kiểm tra: 493 regression pass, 529 tuyến giữa 23 khu pass, giải mã hình học và atlas của 11 GLB, normal/tỷ lệ/SHA/giấy phép/fallback và hủy tải; dựng đủ 18 kiểu nội thất trong giới hạn. Main build + 211 meta route + single build OK, bản HTML 2222686 byte, NUL=0. Bản HTML cần các tệp GLB đi kèm để có tượng quét, thiếu sẽ dùng dự phòng.
+- Browser bản build: xem Hộ Pháp, Thổ Địa, Thập Điện, Nhà Tổ, Kim Hoa và Ngọc Hoàng ở dev; giữ chuyển cảnh inside, mẫu tải thành công, không thấy lỗi JavaScript trong các lượt xem. Kiểm UI 390×844 và 320×740 không overflow ngang; footer không đè hành lễ; ghi công đủ 11 mẫu và 11 link tải, dialog có cuộn dọc và vừa màn. Chỉ điều hướng/xem dialog, không tạo/xóa lịch sử nghi thức. Chưa đo FPS/cảm ứng trên điện thoại thật.
+- Trạng thái commit/push/Vercel và kiểm tra production được báo riêng trong bàn giao. Chi tiết nguồn/pipeline: docs/temple-sculpture-assets.md.
+
 ## 02/11/2026 — v4.6.0: Tượng quét 3D, bàn thờ và nội thất riêng
 
 - Thay tượng Phật/Quan Âm dạng khối đơn giản bằng hai GLB quét được phép CC BY 4.0 (MingEID; Diana Liu/Thunk3D), bản tối ưu từ kentjuno. Tổng 221632 byte, có manifest/SHA-256/nguồn/ghi công và hộp Ghi công 3D ngay trong UI. Không lấy mã game, tranh hay nhân vật của trang nguồn.

@@ -41,3 +41,7 @@ Mọi điểm đến được kiểm tra kết nối tới mọi điểm khác (
 ## v4.6.0
 
 Chánh Điện: cụm Phật ngồi quét 3D, bàn gỗ/kim loại, tượng trắng hai bên, khám và hạc. Phật Bà/Lầu Quán Âm: tượng quét trắng, vòm và bình hoa, đèn. Dược Sư: sắc đồng/xanh trầm, tủ hộc nhỏ và bảy đèn; dùng cụm quét như một bố cục Phật thờ hư cấu, không tuyên bố đúng thủ ấn/tôn tượng Dược Sư. Ngọc Hoàng: ngai, quan phục, tấm ngọc, khung đỏ. Kim Hoa/Thánh Mẫu: mũ, chuỗi hạt và khung hoa; Nhà Tổ: bài vị, gỗ sẫm và đồ lễ. Hộ Pháp có giáp, khí trượng; Ông Tơ có cặp tượng và chỉ đỏ.
+
+## v4.7.0 — Tượng phỏng tác từ mẫu quét
+
+Các tượng quan phục/Hộ Pháp/Mẫu/Tổ/Thổ Địa sử dụng mẫu quét được ghi danh tính và giấy phép gốc. Thập Điện bố trí 5 tượng mỗi tầng trên bàn rộng, có ghế đỡ; Nhà Tổ có tượng giữa bốn bài vị. Đây là phối cảnh phỏng tác đa phong cách, không phải phục dựng tôn tượng lịch sử cụ thể.

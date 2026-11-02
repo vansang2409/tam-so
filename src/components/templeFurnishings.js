@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { SCULPTURE_PROFILES } from '../data/templeSculptures.js'
 // Đồ thờ tự dựng, phân biệt chất liệu gỗ sơn son, đồng cũ, gốm và gấm.
 export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label,curve,models}) {
   const V=(...p)=>new THREE.Vector3(...p),gold=0xb5914e,bronze=0x806c42,lacquer=0x722e27
@@ -92,8 +93,12 @@ export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label
   }
   function figure(type,x,y,z,size,parent) {
     const p=new THREE.Group();p.position.set(x,y,z);p.scale.setScalar(size);parent.add(p)
-    const fallback=new THREE.Group();sculpt(type,fallback)
+    const fallback=new THREE.Group()
+    const fallbackType=['guardian','guardian-right','marshal'].includes(type)?'guardian':['mother','matron'].includes(type)?'mother':type==='quan-am'?'quan-am':'emperor'
+    sculpt(fallbackType,fallback)
+    const profile=SCULPTURE_PROFILES[type]
     if(type==='quan-am')models.place('qa',p,{height:2.4,maxWidth:.9,maxDepth:.8,material:marble},fallback)
+    else if(profile)models.place(profile.file,p,profile,fallback)
     else p.add(fallback)
     return p
   }

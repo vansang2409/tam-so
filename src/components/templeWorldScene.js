@@ -272,7 +272,7 @@ export function createTempleWorld(scene) {
     dispose(){
       models.dispose()
       const gs=new Set(),ms=new Set(),ts=new Set()
-      root.traverse(o=>{if(o.geometry&&!o.geometry.userData.templeAsset)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m){ms.add(m);if(m.map)ts.add(m.map)}})
+      root.traverse(o=>{if(o.geometry&&!o.geometry.userData.templeAsset)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m&&!m.userData.templeAsset){ms.add(m);if(m.map)ts.add(m.map)}})
       for(const g of geometries.values())gs.add(g);for(const g of retired)gs.add(g);
       gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());materialSystem.dispose();scene.remove(root)
     }

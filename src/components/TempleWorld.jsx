@@ -36,7 +36,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       controls.mouseButtons.LEFT=null;controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY
       controls.minDistance=7;controls.maxDistance=240;controls.minPolarAngle=.28;controls.maxPolarAngle=1.43
       world=createTempleWorld(scene);world.avatar.position.set(0,.07,24.8)
-      props.current.onStatus?.({assets:'loading'});world.models.ready.then(assets=>{if(!disposed)props.current.onStatus?.({assets})})
+      world.models.subscribe(assets=>{if(!disposed)props.current.onStatus?.({assets})});world.models.ready.then(assets=>{if(!disposed)props.current.onStatus?.({assets})})
       let path=[],pending=null,moving=false,follow=false,lastRender=0,time=0,statusAt=0,bellAt=-20,lastQuality='',room=null,suppressedEntry=null,yaw=0,pitch=.13,interiorFov=64
       const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),-.07),hit=new THREE.Vector3()
       const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -51,7 +51,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       const reportView=()=>props.current.onStatus?.({view:room?(room.indoor?'inside':'area'):'outside',roomId:room?.id||null,roomName:room?.ten||null,moving})
       function enterArea(spot,instant=false) {
         if(room?.id===spot.id)return
-        room={...spot,indoor:INDOOR_KINDS.has(spot.kind)};yaw=0;pitch=['pond','garden'].includes(spot.kind)?-.3:spot.architecture.style==='duoc-su'?-.06:spot.kind==='main'?.1:.04;interiorFov=64
+        room={...spot,indoor:INDOOR_KINDS.has(spot.kind)};yaw=0;pitch=['pond','garden'].includes(spot.kind)?-.3:['duoc-su','thap-dien'].includes(spot.architecture.style)?-.06:spot.kind==='main'?.1:.04;interiorFov=64
         controls.enabled=false;world.avatar.visible=false
         interiorLight.visible=room.indoor;interiorLight.position.set(spot.x,3,spot.centerZ-.3)
         resize();reportView()

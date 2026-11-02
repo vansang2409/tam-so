@@ -17,3 +17,7 @@ Cập nhật phạm vi theo yêu cầu: đủ 23 khu từ DICHUA_LOCATIONS, mỗ
 - Tượng Phật và Quan Âm từ mẫu quét GLB có ghi công, mặt/nếp áo có chi tiết; tải hỏng vẫn có mẫu dự phòng.
 - Bàn gỗ chạm cuốn lá, khám, hạc, bát hương, chân đèn, mâm quả, chén nước, bình gốm, gấm, đệm hành lễ.
 - Nội thất từng nhóm điện có màu và đồ thờ riêng; tượng quan phục/Mẫu/Hộ Pháp tự dựng có tay, mặt, mũ, nếp áo và ngai.
+
+## v4.7.0 — Bộ tượng của các điện còn lại
+
+9 mẫu bổ sung có bề mặt quét, giữ texture màu và nét mặt/tay/áo tự nhiên; bộ ghi công tổng 11 mẫu. Các điện Ngọc Hoàng, Thổ Địa, Hộ Pháp, Thành Hoàng, Mẫu, Ông Tơ, Thập Điện và Nhà Tổ có bố trí tượng theo nhóm. Thập Điện hai tầng với ghế đỡ; tải mẫu theo khu, có fallback.
