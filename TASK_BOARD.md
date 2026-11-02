@@ -183,3 +183,4 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | DC3D06 | Nâng tượng các điện còn lại lên mẫu quét tự nhiên | Done | v4.7.0: 9 mẫu mới, 11 GLB có giấy phép/ghi công; Thập Điện hai tầng có ghế đỡ, Nhà Tổ có tượng; 493+529 kiểm tra và 18 nội thất pass, build/UI OK |
 
 | DC3D07 | Sửa thanh hành lễ và footer theo ảnh phản hồi | Done | v4.7.1: dock gọn tông tối có icon, menu phụ; 1280/320/390/844×390 không tràn; dialog/classic/focus kiểm tra OK |
+| DC3D08 | Đồng bộ thanh trên và cụm nút phải với dock tối | Done | v4.7.2: icon/nền/viền chung; UI 1280/320/390/844×390, bản đồ/menu/lịch sử/zoom/chất lượng/ra sân/toàn cảnh OK |

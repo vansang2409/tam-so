@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 
 const paths={
+  map:<><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Z"/><path d="M9 3v16m6-14v16"/></>,
+  history:<><path d="M3 5v5h5"/><path d="M3.6 10a9 9 0 1 1 1.5 8M12 7v5l3 2"/></>,
+  sound:<><path d="m11 4-5 4H3v8h3l5 4V4Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></>,
+  muted:<><path d="m11 4-5 4H3v8h3l5 4V4Z"/><path d="m16 9 5 6m0-6-5 6"/></>,
+  plus:<path d="M5 12h14M12 5v14"/>,
+  minus:<path d="M5 12h14"/>,
+  overview:<><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></>,
+  quality:<><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></>,
+  back:<path d="m10 5-7 7 7 7M3 12h18"/>,
+  home:<><path d="m3 10 9-7 9 7M5 9v12h14V9m-9 12v-7h4v7"/></>,
   incense:<><path d="M5 14h14l-2 5H7l-2-5Z"/><path d="M8 14V8m4 6V5m4 9V8M9 21h6"/><path d="M8 5c-2-2 2-2 0-4m8 4c-2-2 2-2 0-4"/></>,
   prayer:<><path d="M6 3h9l3 3v15H6V3Z"/><path d="M14 3v5h4M9 12h6m-6 4h4"/></>,
   xam:<><path d="M6 10h12l-1 11H7L6 10Z"/><path d="m8 10-1-7m5 7V1m4 9 2-7M10 14h4m-4 3h4"/></>,

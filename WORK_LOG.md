@@ -2,6 +2,13 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.7.2: Đồng bộ thanh trên và nút góc nhìn
+
+- Thanh trên thành hai cụm nổi tông đồng tối, dùng chung màu/viền với dock hành lễ. Bản đồ, lịch sử, âm thanh và góc nhìn có icon đồng bộ; bảng tên điện/nút Ra sân, menu phụ, khung danh sách bản đồ và trạng thái tải cùng tông. Giữ sơ đồ giấy sáng để dễ đọc vị trí.
+- Mobile thu nhãn thành icon có tên truy cập, logo ngắn; nút cao 38px. Ở 320px: brand 91,64px, nav 185,91px, không chồng; bảng tên điện cách cụm góc nhìn. Desktop nút 36px, toolbar 46×160px; trạng thái chế độ nhẹ có màu nhấn.
+- Browser bản build 1280×720, 320×740, 390×844, 844×390 không tràn ngang; kiểm bản đồ đủ 23 khu, menu nằm trên drawer/đóng Escape, lịch sử mở/đóng, phóng/thu, đổi chất lượng rồi trả về tiêu chuẩn, Ra sân và toàn cảnh. Không tạo/xóa lịch sử nghi thức. Không có lỗi JavaScript trong lượt QA; chưa thử cảm ứng/FPS trên điện thoại thật.
+- 493 regression + 529 tuyến/11 GLB/18 nội thất pass; main + 211 meta route + single build OK, HTML 2231279 byte, NUL=0. Commit/push/Vercel và xác nhận production báo trong bàn giao.
+
 ## 02/11/2026 — v4.7.1: Thu gọn thanh hành lễ theo ảnh phản hồi
 
 - Bỏ hai dải nền sáng chạy ngang ở đáy cảnh. Cụm hành lễ nổi tông đồng tối, có icon và nhãn ngắn; desktop 1280px đo 501×60px, mobile 320px đo 296×67px với bốn nút cùng hàng, mỗi nút cao 55px. Ngoài điện có phần tên/mô tả gọn riêng; giữ phần giữa cảnh thông thoáng.

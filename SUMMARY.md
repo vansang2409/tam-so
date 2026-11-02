@@ -1,5 +1,7 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.7.2 — 02/11/2026:** Đồng bộ thanh trên, bảng tên điện, menu/bản đồ và nút bên phải sang tông đồng tối của dock mới. Icon gọn, nhãn truy cập đầy đủ; UI 1280/320/390/844×390 và chức năng điều khiển đã kiểm. 493+529 kiểm tra, main/single build pass.
+
 **Cập nhật v4.7.1 — 02/11/2026:** Sửa thanh hành lễ theo ảnh user: bỏ hai dải sáng toàn chiều ngang, đổi dock đồng tối có icon, bốn nút cùng hàng trên mobile; các mục phụ vào menu dấu ba chấm. UI 1280/320/390/844×390, dialog/menu/keyboard/classic đã kiểm; build và 493+529 kiểm tra pass.
 
 **Cập nhật v4.7.0 — 02/11/2026:** 9 mẫu quét mới cho các điện còn lại, tổng 11 mẫu có ghi công/giấy phép/link tải. Tượng có bề mặt quét và dáng tự nhiên, giữ nét riêng giữa Hộ Pháp/quan phục/Mẫu/Thổ Địa/Tổ; Thập Điện hai tầng có ghế đỡ. Tải theo khu và giới hạn texture GPU; 493+529 kiểm tra, 11 GLB và 18 nội thất pass, build/single/UI 390/320 OK. Chi tiết WORK_LOG và docs/temple-sculpture-assets.md.
