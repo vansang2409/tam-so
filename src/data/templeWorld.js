@@ -1,10 +1,11 @@
+import { TEMPLE_ARCHITECTURE } from './templeArchitecture.js'
 import { DICHUA_LOCATIONS } from './dichua.js'
 // Mỗi khu cũ có đúng một vị trí trong cùng khuôn viên; z tăng về phía cổng.
-export const WORLD_BOUNDS = { minX: -26, maxX: 26, minZ: -28, maxZ: 27 }
+export const WORLD_BOUNDS = { minX: -25.5, maxX: 25.5, minZ: -26.5, maxZ: 27 }
 const layout = {
   'cong-tam-quan': [0,23,'gate'], 'chanh-dien': [0,-3,'main'],
   'dien-ngoc-hoang': [-12,-11,'hall'], 'san-ho-rua': [-12,11,'pond'],
-  'mieu-ho-phap': [-5.5,21,'shrine'], 'tien-dien-tho-dia': [-12,21,'shrine'],
+  'mieu-ho-phap': [-5.5,19,'shrine'], 'tien-dien-tho-dia': [-12,19,'shrine'],
   'trung-dien-duoc-su': [12,-11,'hall'], 'dien-thanh-hoang': [-21,-5,'hall'],
   'dien-thap-dien': [-21,-16,'hall'], 'dien-kim-hoa': [21,-16,'hall'],
   'thien-y-thanh-mau': [21,-5,'hall'], 'dien-ong-to': [21,5,'shrine'],
@@ -17,9 +18,10 @@ const layout = {
 }
 export const WORLD_SPOTS = DICHUA_LOCATIONS.map(loc => {
   const [x,z,kind]=layout[loc.id]
-  const depth=kind==='main'?7:kind==='hall'||kind==='house'?4.5:3
+  const architecture=TEMPLE_ARCHITECTURE[loc.id]||{}
+  const width=architecture.width||(kind==='pond'?6:3.4),depth=architecture.depth||3
   const approach=kind==='gate'||kind==='meditate'?0:['main','hall','house','shrine','tower'].includes(kind)?depth/2-.8:kind==='pond'||kind==='garden'?2:depth/2+1
-  return { ...loc, label:loc.ten, short:loc.ten, x, z:z+approach, centerZ:z, kind, depth,
+  return { ...loc, label:loc.ten, short:loc.ten, x, z:z+approach, centerZ:z, kind, width, depth, architecture, censerX:loc.huong&&width<4.5?-width*.2:0,
     action:loc.huong?'incense':kind==='bell'?'bell':kind==='meditate'?'meditate':'visit', note:loc.moTa }
 })
 export const WORLD_TREES = [
@@ -28,22 +30,24 @@ export const WORLD_TREES = [
   ...[[-4,0],[4,-2],[3,3]].map(([dx,dz])=>({x:12+dx,z:14+dz,size:.85})),
   {x:-23,z:3,size:1.4},
 ]
-export const WORLD_OBSTACLES = WORLD_SPOTS.flatMap(s => {
+export const WORLD_OBSTACLES = [[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD_SPOTS.flatMap(s => {
   const {x,centerZ:z,kind,depth}=s
-  if(kind==='gate') return [[-4.4,-3.5,22,24],[3.5,4.4,22,24]]
+  if(kind==='gate')return [-4,-2,2,4].map(x=>[x-.26,x+.26,22.6,23.4])
   if(kind==='garden')return [[x-3.2,x+3.2,z-2.7,z+.7]]
-  if(kind==='statue')return [[x-1,x+1,z-1,z+1]]
+  if(kind==='statue')return [[x-1,x+1,z-1,z+1],[x-.45,x+.45,z+1,z+1.9]]
   if(kind==='meditate')return []
-  const width=kind==='main'?11:kind==='hall'||kind==='house'?6:kind==='pond'?6:3.4
+  const width=s.width
   if(['main','hall','house','shrine','tower'].includes(kind)) return [
+    ...[-1,1].flatMap(side=>[-1,1].map(end=>[x+side*(width/2-.35)-.16,x+side*(width/2-.35)+.16,z+end*(depth/2-.3)-.16,z+end*(depth/2-.3)+.16])),
+    ...(kind==='main'?[-2,2].map(dx=>[x+dx-.16,x+dx+.16,z+depth/2-.56,z+depth/2-.24]):[]),
     [x-width/2-.05,x-width/2+.12,z-depth/2,z+depth/2-.35],
     [x+width/2-.12,x+width/2+.05,z-depth/2,z+depth/2-.35],
     [x-width/2,x+width/2,z-depth/2-.1,z-depth/2+.2],
     [x-width*.27,x+width*.27,z-depth/2+.3,z-depth/2+1.3],
-    ...(s.huong?[[x-.43,x+.43,z+depth/2+.1,z+depth/2+.65]]:[]),
+    ...(s.huong?[[x+s.censerX-.43,x+s.censerX+.43,z+depth/2+.1,z+depth/2+.65]]:[]),
   ]
   return [[x-width/2,x+width/2,z-depth/2,z+depth/2]]
-})
+})]
 export function isWalkable(x, z) {
   if (!Number.isFinite(x) || !Number.isFinite(z)) return false
   const b = WORLD_BOUNDS, r = 0.26
@@ -52,7 +56,7 @@ export function isWalkable(x, z) {
     !WORLD_OBSTACLES.some(([x1,x2,z1,z2]) => x > x1-r && x < x2+r && z > z1-r && z < z2+r)
 }
 export function groundHeight(x, z) {
-  const building=WORLD_SPOTS.find(s=>['main','hall','house','shrine','tower','bell'].includes(s.kind)&&Math.abs(x-s.x)<(s.kind==='main'?5.8:3.2)&&Math.abs(z-s.centerZ)<s.depth/2+.4)
+  const building=WORLD_SPOTS.find(s=>['main','hall','house','shrine','tower','bell'].includes(s.kind)&&Math.abs(x-s.x)<(s.width/2+.2)&&Math.abs(z-s.centerZ)<s.depth/2+.4)
   return building ? .34 : .07
 }
 export function nearestSpot(x,z, radius = 2.2) {
@@ -60,6 +64,10 @@ export function nearestSpot(x,z, radius = 2.2) {
     const d = Math.hypot(x-spot.x,z-spot.z)
     return d < radius && (!best || d < best.distance) ? { ...spot, distance:d } : best
   }, null)
+}
+export function canWalkSegment(a,b) {
+  const steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/.08))
+  for(let i=0;i<=steps;i++){const t=i/steps;if(!isWalkable(a.x+(b.x-a.x)*t,a.z+(b.z-a.z)*t))return false}return true
 }
 let cachedWalkGrid=null
 // BFS trên lưới 0,5 m, chỉ đi bốn hướng để tránh cắt xuyên góc vật cản.
@@ -75,7 +83,7 @@ export function findWorldPath(from, to) {
       const x=cx+dx,z=cz+dz
       if(x<0||x>=cols||z<0||z>=rows) continue
       const id=z*cols+x,q=point(id),d=Math.hypot(q.x-p.x,q.z-p.z)
-      if(isWalkable(q.x,q.z)&&d<distance) {best=id;distance=d}
+      if(isWalkable(q.x,q.z)&&d<distance&&canWalkSegment(p,q)) {best=id;distance=d}
     }
     return best
   }

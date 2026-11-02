@@ -24,7 +24,7 @@ function TempleDialog({title,children,onClose,wide=false}) {
 function TempleMap({activeId,onGo,position}) {
   return <div className="tw-map" aria-label="Sơ đồ đầy đủ 23 khu trong Chùa Tam Sở">
     <div className="tw-map-axis"/><div className="tw-map-cross"/><span className="tw-map-north">BẮC · NỘI ĐIỆN</span>
-    {WORLD_SPOTS.map(s=><button key={s.id} className={'tw-map-place tw-map-'+s.kind+(activeId===s.id?' is-selected':'')} style={{left:((s.x+27)/54*100)+'%',top:((s.centerZ+29)/58*100)+'%'}} onClick={()=>onGo(s.id)} title={s.ten} aria-label={'Đi đến '+s.ten}><span/>{s.ten}</button>)}
+    {WORLD_SPOTS.map((s,i)=><button key={s.id} className={'tw-map-place tw-map-'+s.kind+(activeId===s.id?' is-selected':'')} style={{left:((s.x+27)/54*100)+'%',top:((s.centerZ+29)/58*100)+'%'}} onClick={()=>onGo(s.id)} title={s.ten} aria-label={'Đi đến '+s.ten}><span/><em>{i+1}</em></button>)}
     <span className="tw-map-you" style={{left:((position.x+27)/54*100)+'%',top:((position.z+29)/58*100)+'%'}} title="Vị trí của bạn"/>
     <span className="tw-map-south">NAM · CỔNG VÀO</span>
   </div>
@@ -35,17 +35,18 @@ export default function DiChua() {
   return <TempleExperience onClassic={()=>setParams({view:'classic'})}/>
 }
 function TempleExperience({onClassic}) {
-  const world=useRef(null),audio=useRef(null),timer=useRef(null),flashTimer=useRef(null)
+  const world=useRef(null),audio=useRef(null),timer=useRef(null),flashTimer=useRef(null),ritualTimer=useRef(null)
   const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[mapOpen,setMapOpen]=useState(false)
   const [activeId,setActiveId]=useState('cong-tam-quan'),[modal,setModal]=useState(null)
   const [litIds,setLitIds]=useState(()=>new Set()),[litCount,setLitCount]=useState(()=>countThapHuong())
   const [prayers,setPrayers]=useState(()=>loadLoiNguyen()),[prayer,setPrayer]=useState('')
   const [history,setHistory]=useState({prayers:[],xam:[],keo:[]})
   const [status,setStatus]=useState({moving:false,position:{x:0,z:24.8},near:null})
+  const [ritual,setRitual]=useState(null)
   const [notice,setNotice]=useState(''),[sound,setSound]=useState(false),[quality,setQuality]=useState('standard')
   const [minutes,setMinutes]=useState(1),[remaining,setRemaining]=useState(null),[completed,setCompleted]=useState(false)
   const loc=spotById(activeId),walking=status.moving,meditating=remaining!==null&&remaining>0
-  useEffect(()=>{document.body.classList.add('tw-lock');return ()=>{document.body.classList.remove('tw-lock');clearInterval(timer.current);clearTimeout(flashTimer.current);audio.current?.close()}},[])
+  useEffect(()=>{document.body.classList.add('tw-lock');return ()=>{document.body.classList.remove('tw-lock');clearInterval(timer.current);clearTimeout(flashTimer.current);clearTimeout(ritualTimer.current);audio.current?.close()}},[])
   useEffect(()=>{if(modal!=='meditate'){clearInterval(timer.current);setRemaining(null);setCompleted(false)}},[modal])
   const flash=message=>{setNotice(message);clearTimeout(flashTimer.current);flashTimer.current=setTimeout(()=>setNotice(''),4200)}
   const go=(id,action=null)=>{
@@ -72,7 +73,7 @@ function TempleExperience({onClassic}) {
     else flash(spot.moTa)
   }
   const arrive=(spot,requested)=>{setActiveId(spot.id);setStatus(s=>({...s,moving:false,destination:null,near:spot}));if(requested)action(requested,spot)}
-  const handleStatus=update=>{if(update.message){flash(update.message);setStatus(s=>({...s,moving:false}));return}if(update.near&&!update.moving)setActiveId(update.near.id);setStatus(s=>({...s,...update}))}
+  const handleStatus=update=>{if(update.message){flash(update.message);setStatus(s=>({...s,moving:!!update.moving}));return}if(update.near&&!update.moving)setActiveId(update.near.id);setStatus(s=>({...s,...update}))}
   const actHere=type=>{if(walking)return;if(Math.hypot(status.position.x-loc.x,status.position.z-loc.z)<1)action(type);else go(activeId,type)}
   const openHistory=()=>{setHistory({prayers:loadLoiNguyen(),xam:loadXamLichSu(),keo:loadKeoLichSu()});setModal('history')}
   const toggleSound=async()=>{
@@ -85,16 +86,17 @@ function TempleExperience({onClassic}) {
     timer.current=setInterval(()=>{const left=Math.max(0,Math.ceil((end-Date.now())/1000));setRemaining(left);if(!left){clearInterval(timer.current);setCompleted(true)}},250)
   }
   const close=()=>setModal(null)
-  return <main className="tw-root" data-ready={ready} data-walking={walking} data-location={activeId} data-position={status.position.x.toFixed(1)+","+status.position.z.toFixed(1)}>
+  return <main className="tw-root" data-ready={ready} data-walking={walking} data-location={activeId} data-view={status.view||"outside"} data-position={status.position.x.toFixed(1)+","+status.position.z.toFixed(1)}>
     <SeoTag title="Chùa Tam Sở 3D — Dạo 23 khu, dâng hương và tĩnh tâm | Tam Sở" description="Bước vào Chùa Tam Sở 3D: 23 khu liên thông từ Cổng Tam Quan, Chánh Điện tới hồ sen và vườn thiền. Di chuyển, dâng hương, lời nguyện và xin xăm. Công trình hư cấu." path="/di-chua" breadcrumb={[{name:'Trang chủ',path:'/'},{name:'Đi chùa'}]}/>
-    <TempleWorld ref={world} litIds={litIds} meditating={meditating} paused={!!modal&&modal!=='meditate'} quality={quality} onArrive={arrive} onStatus={handleStatus} onReady={()=>setReady(true)} onError={()=>{setReady(true);setFailed(true)}}/>
+    <TempleWorld ref={world} litIds={litIds} meditating={meditating} ritual={ritual} paused={!!modal&&modal!=='meditate'} quality={quality} onArrive={arrive} onStatus={handleStatus} onReady={()=>setReady(true)} onError={()=>{setReady(true);setFailed(true)}}/>
     <header className="tw-header">
       <Link to="/" className="tw-brand"><Logo size={32}/><span><b>Chùa Tam Sở</b><small>MỘT CHỐN AN YÊN</small></span></Link>
       <nav aria-label="Điều khiển chùa"><button className={mapOpen?'is-active':''} onClick={()=>setMapOpen(v=>!v)} aria-expanded={mapOpen} aria-controls="temple-place-panel">Bản đồ <span className="tw-count">23</span></button><button onClick={openHistory}>Lịch sử</button><button onClick={toggleSound} aria-pressed={sound}>{sound?'Tắt tiếng':'Bật tiếng'}</button><button className="tw-help-button" onClick={()=>setModal('help')}>Hướng dẫn</button><Link className="tw-home-link" to="/">Trang chủ ↗</Link></nav>
     </header>
-    <section className={"tw-intro"+(activeId!=="cong-tam-quan"||walking?" is-away":"")} aria-label="Giới thiệu không gian"><span className="tw-eyebrow">ĐẠI TỰ TÂM LINH · 3D</span><h1>Chậm một bước.<br/>An một lòng.</h1><p>Cùng dạo qua một chốn bình yên.</p></section>
+    <section className={"tw-intro"+(activeId!=="cong-tam-quan"||walking?" is-away":"")} aria-label="Giới thiệu không gian"><span className="tw-eyebrow">ĐẠI TỰ TÂM LINH · 3D</span><h1>Dạo chùa, tĩnh tâm.</h1><p><span className="tw-input-desktop">Bấm chuột trái xuống sân để bắt đầu.</span><span className="tw-input-touch">Chạm xuống sân để bắt đầu dạo chùa.</span></p></section>
+    {status.view&&status.view!=='outside'&&<div className="tw-interior-bar"><div><span>{status.view==='inside'?'BẠN ĐANG Ở BÊN TRONG':'DỪNG CHÂN TẠI'}</span><h2>{status.roomName}</h2></div><button onClick={()=>world.current?.exit()}>← {status.view==='inside'?'Ra sân':'Về khuôn viên'}</button></div>}
     <div className="tw-view-tools" aria-label="Góc nhìn"><button onClick={()=>world.current?.zoom(-7)} disabled={failed||!ready} aria-label="Phóng to">＋</button><button onClick={()=>world.current?.zoom(7)} disabled={failed||!ready} aria-label="Thu nhỏ">−</button><button onClick={()=>world.current?.reset()} disabled={failed||!ready} aria-label="Xem toàn khuôn viên">⌂</button><button onClick={()=>setQuality(q=>q==='low'?'standard':'low')} aria-pressed={quality==='low'} title="Giảm độ nét để máy chạy nhẹ hơn">{quality==='low'?'Nhẹ':'Nét'}</button></div>
-    {mapOpen&&<aside id="temple-place-panel" className="tw-places"><div className="tw-place-heading"><div><span className="tw-eyebrow">KHUÔN VIÊN LIỀN MẠCH</span><h2>23 chốn dừng chân</h2></div><button aria-label="Đóng bản đồ" onClick={()=>setMapOpen(false)}>×</button></div><TempleMap activeId={activeId} onGo={go} position={status.position}/><p className="tw-map-hint">Chọn một khu, nhân vật sẽ đi theo lối trong chùa.</p><nav aria-label="Danh sách 23 khu">{WORLD_SPOTS.map((s,i)=><button key={s.id} onClick={()=>go(s.id)} disabled={failed||!ready} aria-current={activeId===s.id?'location':undefined}><span>{String(i+1).padStart(2,'0')}</span>{s.ten}<i>↗</i></button>)}</nav></aside>}
+    {mapOpen&&<aside id="temple-place-panel" className="tw-places"><div className="tw-place-heading"><div><span className="tw-eyebrow">KHUÔN VIÊN LIỀN MẠCH</span><h2>23 chốn dừng chân</h2></div><button aria-label="Đóng bản đồ" onClick={()=>setMapOpen(false)}>×</button></div><TempleMap activeId={activeId} onGo={go} position={status.position}/><p className="tw-map-hint">Chọn số trên sơ đồ hoặc tên khu bên dưới để đi tới.</p><nav aria-label="Danh sách 23 khu">{WORLD_SPOTS.map((s,i)=><button key={s.id} onClick={()=>go(s.id)} disabled={failed||!ready} aria-current={activeId===s.id?'location':undefined}><span>{String(i+1).padStart(2,'0')}</span>{s.ten}<i>↗</i></button>)}</nav></aside>}
     {!mapOpen&&<button className="tw-open-map" onClick={()=>setMapOpen(true)}><span className="tw-map-symbol">⊞</span><span><b>Khám phá khuôn viên</b><small>23 khu · các lối đi liên thông</small></span><span>↗</span></button>}
     {!ready&&<div className="tw-loading"><div className="tw-loading-ring"/><b>Đang mở cổng chùa…</b><span>Chuẩn bị khuôn viên và 23 khu vực</span></div>}
     <div className="tw-notice" role="status" aria-live="polite">{notice}</div>
@@ -106,9 +108,9 @@ function TempleExperience({onClassic}) {
         {loc.huong&&<><button disabled={walking||!ready||failed} onClick={()=>actHere('xam')}>Xin xăm</button><button disabled={walking||!ready||failed} onClick={()=>actHere('keo')}>Xin keo</button></>}
       </div>
     </section>
-    <footer className="tw-footer"><span>Chạm để đi · Kéo để xoay · Cuộn để phóng to</span><button onClick={onClassic}>Không gian ảnh ↗</button><span>Chùa hư cấu · Trải nghiệm chiêm nghiệm</span></footer>
-    {modal==='help'&&<TempleDialog title="Dạo chùa theo cách của bạn" onClose={close}><p>Chùa Tam Sở được phát triển từ không gian ảnh hiện có. Cả 23 khu nằm trong cùng một khuôn viên, nối bằng sân và lối đi.</p><ul><li><b>Chạm nền sân</b> để nhân vật đi tới. Chạm một công trình hoặc chọn trong Bản đồ để tới khu đó.</li><li><b>Kéo cảnh</b> để xoay; cuộn hoặc dùng nút ＋/− để đổi độ gần. Nút ⌂ đưa về toàn cảnh.</li><li><b>Tới nơi rồi hành lễ</b>: dâng hương tại các điện, thỉnh chuông tại Tháp Chuông, ngồi thiền tại Góc Thiền.</li><li><b>Bàn phím</b>: Tab chọn các nút địa điểm, Enter để đi, Escape để đóng hộp thoại.</li><li><b>Máy chạy chậm?</b> Chọn chế độ Nhẹ hoặc Không gian ảnh.</li></ul><p className="tw-note">Lời nguyện và lịch sử lưu trên trình duyệt này, dùng chung với giao diện ảnh. Không gian hư cấu hỗ trợ chiêm nghiệm, không thay việc hành lễ thật.</p></TempleDialog>}
-    {modal==='incense'&&<TempleDialog title={'Dâng hương · '+loc.ten} onClose={close}><div className="tw-ritual-censer"><IncenseCenser3D lit={litIds.has(activeId)}/></div><p>Một nén hương tượng trưng, gửi một điều an lành.</p><p className="tw-note">Bạn đã dâng {litCount} nén hương trên trình duyệt này.</p><button className="tw-primary tw-full" onClick={()=>{setLitCount(thapHuong());setLitIds(ids=>new Set([...ids,activeId]));setModal(null);flash('Hương đã được dâng tại '+loc.ten+'.')}}>Thành tâm dâng hương</button></TempleDialog>}
+    <footer className="tw-footer"><span className="tw-input-desktop">Trái: đi · Giữ phải: nhìn · Lăn chuột: zoom</span><span className="tw-input-touch">Chạm để đi · Vuốt để nhìn · ＋/− để zoom</span><button onClick={onClassic}>Không gian ảnh ↗</button><span>Chùa hư cấu · Trải nghiệm chiêm nghiệm</span></footer>
+    {modal==='help'&&<TempleDialog title="Dạo chùa theo cách của bạn" onClose={close}><p>Chùa Tam Sở được phát triển từ không gian ảnh hiện có. Cả 23 khu nằm trong cùng một khuôn viên, nối bằng sân và lối đi.</p><ul><li><b>Chạm nền sân</b> để nhân vật đi tới. Chạm một công trình hoặc chọn trong Bản đồ để tới khu đó.</li><li><b>Chuột trái</b> để đi; giữ và rê chuột trái để đổi đích liên tục. <b>Giữ chuột phải</b> để xoay hoặc nhìn quanh khi ở bên trong; cuộn hoặc dùng nút ＋/− để đổi độ gần. Nút ⌂ đưa về toàn cảnh.</li><li><b>Bước vào từng khu</b>: góc nhìn chuyển ngang tầm mắt. Bấm nền để đi trong điện; giữ chuột phải để nhìn quanh, hoặc chọn Ra sân để trở lại khuôn viên.</li><li><b>Tới nơi rồi hành lễ</b>: dâng hương tại các điện, thỉnh chuông tại Tháp Chuông, ngồi thiền tại Góc Thiền.</li><li><b>Bàn phím</b>: Tab chọn các nút địa điểm, Enter để đi, Escape để đóng hộp thoại.</li><li><b>Máy chạy chậm?</b> Chọn chế độ Nhẹ hoặc Không gian ảnh.</li></ul><p className="tw-note">Lời nguyện và lịch sử lưu trên trình duyệt này, dùng chung với giao diện ảnh. Không gian hư cấu hỗ trợ chiêm nghiệm, không thay việc hành lễ thật.</p></TempleDialog>}
+    {modal==='incense'&&<TempleDialog title={'Dâng hương · '+loc.ten} onClose={close}><div className="tw-ritual-censer"><IncenseCenser3D lit={litIds.has(activeId)}/></div><p>Một nén hương tượng trưng, gửi một điều an lành.</p><p className="tw-note">Bạn đã dâng {litCount} nén hương trên trình duyệt này.</p><button className="tw-primary tw-full" onClick={()=>{setRitual(Date.now());clearTimeout(ritualTimer.current);ritualTimer.current=setTimeout(()=>setRitual(null),2800);setLitCount(thapHuong());setLitIds(ids=>new Set([...ids,activeId]));setModal(null);flash('Hương đã được dâng tại '+loc.ten+'.')}}>Thành tâm dâng hương</button></TempleDialog>}
     {modal==='prayer'&&<TempleDialog title="Gửi một lời nguyện an lành" onClose={close}><form onSubmit={e=>{e.preventDefault();if(!prayer.trim())return;const next=addLoiNguyen(prayer);setPrayers(next);setPrayer('');setModal(null);flash('Đã lưu riêng lời nguyện trên trình duyệt của bạn.')}}><label className="tw-field-label" htmlFor="temple-prayer">Điều bạn muốn gửi gắm</label><textarea id="temple-prayer" rows={5} maxLength={500} value={prayer} onChange={e=>setPrayer(e.target.value)} placeholder="Mong cho mình và những người thương…" required/><div className="tw-input-note"><span>Lưu riêng trên trình duyệt · {prayers.length} lời nguyện</span><span>{prayer.length}/500</span></div><button className="tw-primary tw-full" disabled={!prayer.trim()}>Lưu lời nguyện</button></form></TempleDialog>}
     {modal==='xam'&&<TempleDialog title="Xin Xâm Bà" onClose={close}><ShakeXam/></TempleDialog>}
     {modal==='keo'&&<TempleDialog title="Xin keo âm dương" onClose={close}><XinKeo/></TempleDialog>}

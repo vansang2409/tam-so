@@ -24,6 +24,7 @@ export default defineConfig({
     }
   },
   server: {
-    allowedHosts: true
+    allowedHosts: true,
+    watch: { ignored: ['**/.setest/**', '**/tam-so-test.html'] }
   }
 })

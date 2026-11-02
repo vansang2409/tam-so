@@ -1,5 +1,8 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.5.0 — 02/11/2026:** Chùa 3D có kiến trúc/nội thất riêng cho 18 công trình, vật liệu có vân và bóng đổ, điều khiển chuột trái/phải và chuyển cảnh ngang tầm mắt khi vào điện/nhà. Có Ra sân, đi/nhìn quanh bên trong. Đã sửa các lớp UI che nút và ghim bản đồ mobile chọn nhầm. 493 regression + 529 tuyến và đích chuột pass; main/single build OK. Xem WORK_LOG và docs/chua-3d-validation.md.
+
+
 **Cập nhật 02/11/2026 — v4.4.0:** Đi Chùa nay mở khuôn viên 3D với đủ 23 khu từ bản 2D, di chuyển liên thông/tránh vật cản, nội điện mở mái, nghi thức và lịch sử dùng chung, chuông/thiền, chế độ nhẹ và fallback ảnh. 493 regression + 529 tuyến pass; production/single-file build OK. Chi tiết: docs/chua-3d-validation.md và WORK_LOG.
 
 

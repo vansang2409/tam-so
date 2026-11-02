@@ -57,3 +57,22 @@ body.tw-lock { overflow:hidden; }
 
 .tw-intro.is-away{display:none}
 @media(max-width:640px){.tw-open-map{display:none}}
+
+.tw-canvas canvas{cursor:crosshair}.tw-footer>span:first-child{font-size:10px}.tw-root .tw-primary:active{transform:translateY(1px)}
+@media(max-width:360px){.tw-header nav{max-width:150px}.tw-brand b{white-space:nowrap;font-size:13px}.tw-brand small{white-space:nowrap;letter-spacing:1px}}
+
+.tw-intro{padding:14px 16px;background:#faf5e8e8;border:1px solid #fff7e4;border-radius:8px;max-width:280px}.tw-intro h1{font-size:23px!important;letter-spacing:-.7px;margin:8px 0}.tw-intro p{font-size:10px;margin:0}.tw-intro .tw-eyebrow{font-size:8px}
+@media(max-width:640px){.tw-intro{left:14px;top:100px;padding:10px 12px;max-width:220px}.tw-intro h1{font-size:20px!important}.tw-intro p{display:block;font-size:9px}}
+
+.tw-ritual-censer{height:140px;overflow:hidden;pointer-events:none}.tw-ritual-censer .dc-censer3d{width:110px;height:120px;position:relative;transform:none}.tw-ritual-censer picture{display:block;width:100%;height:100%}.tw-ritual-censer .dc-censer3d-img{display:block;width:100%;height:100%;max-height:120px;object-fit:contain;border-radius:8px}
+
+.tw-interior-bar{position:absolute;top:94px;left:28px;z-index:4;display:flex;align-items:center;gap:22px;padding:12px 15px;background:#faf6edea;border:1px solid #e2d4b6;border-radius:9px;max-width:calc(100vw - 110px)}.tw-interior-bar>div{display:grid;gap:4px}.tw-interior-bar span{font-size:8px;letter-spacing:1.5px;color:#8c7959}.tw-interior-bar b{font-size:17px;font-weight:500;color:#4c4c35}.tw-interior-bar button{border:1px solid #cbb895;background:#f6f0df;color:#6b5236;border-radius:6px;font-size:11px;padding:10px 12px;white-space:nowrap}.tw-root[data-view="inside"] .tw-intro,.tw-root[data-view="area"] .tw-intro{display:none}.tw-root[data-view="inside"] .tw-open-map,.tw-root[data-view="area"] .tw-open-map{top:auto;bottom:205px}.tw-scene-transition{position:absolute;inset:0;pointer-events:none;display:grid;place-items:center;background:#1f2a21;color:#e9ddbb;font-size:21px;letter-spacing:.6px;opacity:0;visibility:hidden}.tw-scene-transition.is-changing{visibility:visible;animation:tw-enter .8s ease-out forwards}@keyframes tw-enter{0%{opacity:.9}30%{opacity:.6}100%{opacity:0}}@media(max-width:640px){.tw-interior-bar{left:13px;top:94px;padding:10px;gap:12px;max-width:calc(100vw - 78px)}.tw-interior-bar span{font-size:6px;letter-spacing:.8px}.tw-interior-bar b{font-size:14px}.tw-interior-bar button{font-size:10px;padding:9px}.tw-root[data-view="inside"] .tw-open-map,.tw-root[data-view="area"] .tw-open-map{display:none}}@media(prefers-reduced-motion:reduce){.tw-scene-transition.is-changing{animation-duration:.1s}}
+
+.tw-interior-bar>div{min-width:0}.tw-interior-bar b{text-wrap:balance}
+
+.tw-interior-bar h2{margin:0;font-size:17px;font-weight:500;color:#4c4c35;text-wrap:balance}.tw-root[data-view="inside"] .tw-place-copy,.tw-root[data-view="area"] .tw-place-copy{display:none}.tw-root[data-view="inside"] .tw-place-card,.tw-root[data-view="area"] .tw-place-card{padding:13px 18px;justify-content:center}.tw-root[data-view="inside"] .tw-actions,.tw-root[data-view="area"] .tw-actions{max-width:none;justify-content:center}.tw-root[data-view="inside"] .tw-open-map,.tw-root[data-view="area"] .tw-open-map{display:none}.tw-footer{color:#41523b;background:#f6f0e3c9;padding:3px 7px;border-radius:6px}@media(max-width:640px){.tw-interior-bar h2{font-size:14px}.tw-root[data-view="inside"] .tw-actions,.tw-root[data-view="area"] .tw-actions{margin-top:0}.tw-root[data-view="inside"] .tw-place-card,.tw-root[data-view="area"] .tw-place-card{padding:12px}.tw-footer>span:first-child{font-size:7px}}
+
+.tw-input-touch{display:none}@media(max-width:640px){.tw-input-desktop{display:none}.tw-input-touch{display:inline;font-size:8px}}
+
+/* Ghim đánh số không chồng tên dài; tên đầy đủ ở danh sách và nhãn truy cập. */
+.tw-root .tw-map-place{width:24px;height:26px;min-width:0;min-height:0;transform:translate(-50%,-50%);padding:0;font-family:inherit;font-size:8px;line-height:1;white-space:normal;gap:1px;overflow:hidden}.tw-root .tw-map-place span{width:15px;height:9px;flex-shrink:0;margin:0}.tw-root .tw-map-place em{font-size:8px;line-height:10px;font-style:normal}.tw-root .tw-map-main span{width:21px;height:11px}.tw-root .tw-places nav button{min-height:44px}

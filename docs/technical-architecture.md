@@ -9,3 +9,7 @@ Camera kéo xoay/zoom có giới hạn; bỏ qua click sau drag. Cleanup RAF, Re
 Kiểm tra: logic đường đi và vật cản; bộ regression hiện có; production build; browser desktop/mobile, tương tác, fallback và đổi route. Vercel/GitHub hiện có là đích phát hành; không di chuyển sang hosting mới.
 
 Bản thực thi dùng lưới 0,5 m, BFS và gộp đoạn thẳng; cache các ô có thể đi. Mặt đường và đích đến cùng bản đồ vật cản, kiểm tra cả đoạn đường không chỉ các nút. Các mesh tĩnh gộp theo vật liệu; mái vẫn là nhóm độc lập để mở nội điện.
+
+## v4.5.0
+
+TempleWorld quản lý ba chế độ: outside (OrbitControls/theo nhân vật), inside (camera mắt người, yaw/pitch và đường đi trong điện), area (góc trải nghiệm ngoài trời). Camera/FOV nội suy khi vào khu, giữ mái và thêm ánh sáng ấm khi ở trong. Nút Ra sân đưa nhân vật ra hiên; toàn cảnh có cờ chống tự vào lại ngay. Kiến trúc ở templeArchitecture.js; vật liệu tạo tại máy và chi tiết riêng tách sang templeMaterials.js / templeDetails.js.

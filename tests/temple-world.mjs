@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { DICHUA_LOCATIONS } from '../src/data/dichua.js'
-import { WORLD_SPOTS, WORLD_BOUNDS, isWalkable, findWorldPath, nearestSpot } from '../src/data/templeWorld.js'
+import { WORLD_SPOTS, WORLD_BOUNDS, isWalkable, findWorldPath, nearestSpot, canWalkSegment } from '../src/data/templeWorld.js'
 assert.equal(WORLD_SPOTS.length,23)
 assert.deepEqual(WORLD_SPOTS.map(s=>s.id).sort(),DICHUA_LOCATIONS.map(s=>s.id).sort())
 assert.equal(new Set(WORLD_SPOTS.map(s=>s.id)).size,23)
@@ -32,3 +32,9 @@ assert.ok(start.length,'Từ cổng vào tới chính điện')
 assert.ok(isWalkable(0,-3),'Nội điện có thể đi vào')
 assert.ok(!isWalkable(-12,11),'Hồ rùa là vật cản')
 console.log('Chùa 3D: đủ 23 khu, '+routes+' tuyến liên thông; đường đi không xuyên vật cản.')
+
+// Các đích chuột không nằm đúng ô lưới vẫn phải nối an toàn tới đường đi.
+for(const point of [{x:.15,z:24.8},{x:-.28,z:8.24},{x:16.12,z:8.82},{x:-16.17,z:8.3},{x:.19,z:-12.12},{x:16.22,z:-12.11}]){
+  assert.ok(isWalkable(point.x,point.z));const path=findWorldPath({x:0,z:24.8},point);assert.ok(path.length);let previous={x:0,z:24.8};for(const next of path){assert.ok(canWalkSegment(previous,next),'Đích chuột không xuyên vật cản');previous=next}
+}
+console.log('Đích chuột giữa các ô lưới: đường nối hợp lệ.')

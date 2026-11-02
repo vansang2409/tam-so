@@ -175,3 +175,5 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | DC3D01 | Nâng chùa 2D thành khuôn viên 3D đủ 23 khu liên thông | Done | Tên/ID giữ nguyên, đường đi tránh vật cản; 529 tuyến pass |
 | DC3D02 | Nghi thức, chuông, thiền, lịch sử dùng chung, chuyển lại 2D | Done | Browser E2E các luồng chính, thiền hoàn thành 1 phút, fallback WebGL và chuyển chế độ OK |
 | DC3D03 | Responsive, build và bản xem thử một file | Done | 1366/390/320 không tràn ngang; 493 regression pass, main + single build OK |
+
+| DC3D04 | Chi tiết từng khu, chuột điều khiển như game và chuyển cảnh vào điện | Done | v4.5.0: 18 hồ sơ kiến trúc, camera trong/ngoài, Ra sân; UI 1366/390/320, 23 ghim không chồng, 493+529 kiểm tra pass |
