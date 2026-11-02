@@ -76,3 +76,7 @@ body.tw-lock { overflow:hidden; }
 
 /* Ghim đánh số không chồng tên dài; tên đầy đủ ở danh sách và nhãn truy cập. */
 .tw-root .tw-map-place{width:24px;height:26px;min-width:0;min-height:0;transform:translate(-50%,-50%);padding:0;font-family:inherit;font-size:8px;line-height:1;white-space:normal;gap:1px;overflow:hidden}.tw-root .tw-map-place span{width:15px;height:9px;flex-shrink:0;margin:0}.tw-root .tw-map-place em{font-size:8px;line-height:10px;font-style:normal}.tw-root .tw-map-main span{width:21px;height:11px}.tw-root .tw-places nav button{min-height:44px}
+
+.tw-model-status{position:absolute;left:50%;top:80px;transform:translateX(-50%);max-width:80%;background:#faf6edea;padding:8px 12px;border:1px solid #d8cbae;border-radius:5px;font-size:11px;z-index:5;color:#6a593e;text-align:center}.tw-model-status button{color:#674728;text-decoration:underline;background:none;border:0;margin-left:6px}.tw-dialog a{color:#755729;text-decoration:underline;text-underline-offset:3px}.tw-footer{flex-wrap:wrap;row-gap:3px}
+
+@media(max-width:640px){.tw-footer{display:grid;grid-template-columns:1fr auto;gap:2px 6px;padding:3px 7px}.tw-footer .tw-input-touch{grid-column:1/-1;line-height:1.2}.tw-footer button{padding:3px 5px;line-height:1.2;justify-self:start}.tw-footer button:last-of-type{justify-self:end}.tw-model-status{top:75px;font-size:10px;max-width:calc(100% - 28px);width:max-content}}

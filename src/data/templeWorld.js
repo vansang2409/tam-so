@@ -25,7 +25,7 @@ export const WORLD_SPOTS = DICHUA_LOCATIONS.map(loc => {
     action:loc.huong?'incense':kind==='bell'?'bell':kind==='meditate'?'meditate':'visit', note:loc.moTa }
 })
 export const WORLD_TREES = [
-  ...Array.from({length:10},(_,i)=>-24+i*5).flatMap(z=>[-24,24].map(x=>({x,z,size:.8+Math.abs(Math.sin(z))*.3}))),
+  ...Array.from({length:10},(_,i)=>-24+i*5).flatMap(z=>[-28,28].map(x=>({x,z,size:.8+Math.abs(Math.sin(z))*.3}))),
   ...[[-6,13],[7,20],[-6,-13],[6,-13],[6,5],[-17,-23],[17,-23],[-17,20]].map(([x,z])=>({x,z,size:1})),
   ...[[-4,0],[4,-2],[3,3]].map(([dx,dz])=>({x:12+dx,z:14+dz,size:.85})),
   {x:-23,z:3,size:1.4},
@@ -43,7 +43,8 @@ export const WORLD_OBSTACLES = [[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD
     [x-width/2-.05,x-width/2+.12,z-depth/2,z+depth/2-.35],
     [x+width/2-.12,x+width/2+.05,z-depth/2,z+depth/2-.35],
     [x-width/2,x+width/2,z-depth/2-.1,z-depth/2+.2],
-    [x-width*.27,x+width*.27,z-depth/2+.3,z-depth/2+1.3],
+    // Khoảng chiếm chỗ của bàn thờ, gồm cả khám thờ và đồ lễ hai bên.
+    [x-width*.44,x+width*.44,z-depth/2+.2,z-depth/2+(s.architecture.style==='tam-bao'?2.98:s.architecture.style==='duoc-su'?2.15:1.35)],
     ...(s.huong?[[x+s.censerX-.43,x+s.censerX+.43,z+depth/2+.1,z+depth/2+.65]]:[]),
   ]
   return [[x-width/2,x+width/2,z-depth/2,z+depth/2]]

@@ -36,6 +36,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       controls.mouseButtons.LEFT=null;controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY
       controls.minDistance=7;controls.maxDistance=240;controls.minPolarAngle=.28;controls.maxPolarAngle=1.43
       world=createTempleWorld(scene);world.avatar.position.set(0,.07,24.8)
+      props.current.onStatus?.({assets:'loading'});world.models.ready.then(assets=>{if(!disposed)props.current.onStatus?.({assets})})
       let path=[],pending=null,moving=false,follow=false,lastRender=0,time=0,statusAt=0,bellAt=-20,lastQuality='',room=null,suppressedEntry=null,yaw=0,pitch=.13,interiorFov=64
       const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),-.07),hit=new THREE.Vector3()
       const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -50,7 +51,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       const reportView=()=>props.current.onStatus?.({view:room?(room.indoor?'inside':'area'):'outside',roomId:room?.id||null,roomName:room?.ten||null,moving})
       function enterArea(spot,instant=false) {
         if(room?.id===spot.id)return
-        room={...spot,indoor:INDOOR_KINDS.has(spot.kind)};yaw=0;pitch=['pond','garden'].includes(spot.kind)?-.3:.13;interiorFov=64
+        room={...spot,indoor:INDOOR_KINDS.has(spot.kind)};yaw=0;pitch=['pond','garden'].includes(spot.kind)?-.3:spot.architecture.style==='duoc-su'?-.06:spot.kind==='main'?.1:.04;interiorFov=64
         controls.enabled=false;world.avatar.visible=false
         interiorLight.visible=room.indoor;interiorLight.position.set(spot.x,3,spot.centerZ-.3)
         resize();reportView()
@@ -76,7 +77,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
         world.pathLine.geometry.dispose();world.pathLine.geometry=new THREE.BufferGeometry().setFromPoints([world.avatar.position.clone(),...next.map(p=>new THREE.Vector3(p.x,groundHeight(p.x,p.z)+.06,p.z))])
         props.current.onStatus?.({moving:true,destination:spot?.ten||'Lối đi',position:{x:world.avatar.position.x,z:world.avatar.position.z}})
       }
-      const goTo=(id,action)=>{const spot=WORLD_SPOTS.find(s=>s.id===id);if(spot)setPath(spot,spot,action)}
+      const goTo=(id,action)=>{const spot=WORLD_SPOTS.find(s=>s.id===id);if(spot){world.interiors.find(i=>i.spot.id===id)?.ensure();setPath(spot,spot,action)}}
       api.current={
         goTo,bell(){bellAt=time},
         exit(){const old=room;if(!old)return;leaveArea();setPath({x:old.x,z:old.centerZ+old.depth/2+1.3})},
@@ -160,6 +161,11 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
         for(const b of world.animated.bells)b.mesh.rotation.z=Math.exp(-(time-bellAt)*1.6)*Math.sin((time-bellAt)*14)*.16
         const actorHead=new THREE.Vector3(avatar.position.x,avatar.position.y+1.2,avatar.position.z),viewRay=new THREE.Ray(camera.position,actorHead.clone().sub(camera.position).normalize()),actorDistance=camera.position.distanceTo(actorHead),roofHit=new THREE.Vector3()
         for(const roof of world.animated.roofs){const activeRoom=room&&Math.abs(room.x-roof.x)<.1&&Math.abs(room.centerZ-roof.z)<.1;const inside=Math.abs(avatar.position.x-roof.x)<roof.w/2&&Math.abs(avatar.position.z-roof.z)<roof.d/2;roof.bounds??=new THREE.Box3().setFromObject(roof.mesh);const obstruction=!room&&viewRay.intersectBox(roof.bounds,roofHit);roof.mesh.visible=activeRoom||!(inside||(obstruction&&camera.position.distanceTo(roofHit)<actorDistance-.4))}
+        // Nội thất nằm sau mái và vách: chỉ dựng điện đang ở hoặc các điện gần nhân vật.
+        for(const interior of world.interiors){
+          const visible=room?interior.spot.id===room.id:Math.hypot(avatar.position.x-interior.spot.x,avatar.position.z-interior.spot.centerZ)<13
+          if(visible)interior.ensure();interior.mesh.visible=visible
+        }
         if(!room)controls.update();renderer.render(scene,camera)
         if(import.meta.env.DEV){container.dataset.drawCalls=renderer.info.render.calls;container.dataset.triangles=renderer.info.render.triangles}
         if(now-statusAt>220){statusAt=now;p.onStatus?.({moving,near:room||nearestSpot(avatar.position.x,avatar.position.z,4),position:{x:avatar.position.x,z:avatar.position.z}})}

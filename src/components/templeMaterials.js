@@ -36,17 +36,18 @@ export function createTempleMaterials() {
   for(let i=0;i<7;i++){const x=50+Math.sin(i*2)*18,y=16+i*14,r=15+i*2,g=smokeContext.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba(233,228,211,.3)');g.addColorStop(1,'rgba(233,228,211,0)');smokeContext.fillStyle=g;smokeContext.fillRect(0,0,128,128)}
   const smoke=new THREE.CanvasTexture(smokeCanvas);smoke.colorSpace=THREE.SRGBColorSpace;textures.push(smoke)
   const wood=surface('wood'),roof=surface('roof'),stone=surface('stone'),brick=surface('brick')
+  const painted=new Set([0x8c3e39,0x49625a,0x8b4d30,0x718d82,0xb89953,0xc2a079,0xc4a45e])
   function material(color,extra={}) {
     const key=JSON.stringify([color,extra]);if(cache.has(key))return cache.get(key)
     const kind=extra.surface||
-      ([0x604135,0x764839,...profiles.map(p=>p.wood)].includes(color)?'wood':
+      (painted.has(color)||[0x604135,0x764839,...profiles.map(p=>p.wood)].includes(color)?'wood':
         [0x9b4937,0xb96146,...profiles.map(p=>p.roof)].includes(color)?'roof':
           [0x8e483b,0x9a765b,0xb88d66].includes(color)?'brick':
             [0xc5b496,0xbfad90,0xd7c5a7,0xd4c4a6].includes(color)?'brick':
             [0xd2c8ae,0xb2ae93,0xb5aaa0,0xdcd8c9].includes(color)?'stone':null)
     const {surface:unused,...rest}=extra
     const maps=kind?({wood,roof,stone,brick}[kind]||{}):{}
-    const m=new THREE.MeshStandardMaterial({color,roughness:kind==='wood'?.88:.93,...maps,bumpScale:kind==='wood'?.045:kind==='roof'?.11:.065,...rest})
+    const m=new THREE.MeshStandardMaterial({color,roughness:kind==='wood'?.88:.93,...maps,bumpScale:painted.has(color)?.012:kind==='wood'?.045:kind==='roof'?.11:.065,...rest})
     cache.set(key,m);return m
   }
   return {material,smoke,dispose(){for(const m of cache.values())m.dispose();textures.forEach(t=>t.dispose())}}

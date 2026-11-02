@@ -38,3 +38,15 @@ for(const point of [{x:.15,z:24.8},{x:-.28,z:8.24},{x:16.12,z:8.82},{x:-16.17,z:
   assert.ok(isWalkable(point.x,point.z));const path=findWorldPath({x:0,z:24.8},point);assert.ok(path.length);let previous={x:0,z:24.8};for(const next of path){assert.ok(canWalkSegment(previous,next),'Đích chuột không xuyên vật cản');previous=next}
 }
 console.log('Đích chuột giữa các ô lưới: đường nối hợp lệ.')
+
+// Bàn thờ chi tiết chiếm chiều sâu lớn hơn: không được đi xuyên phần chân phía trước.
+assert.equal(isWalkable(0,-3.8),false,'Chân bàn thờ Chánh Điện là vật cản')
+assert.equal(isWalkable(12,-11.2),false,'Bàn thờ Dược Sư là vật cản')
+assert.ok(isWalkable(0,-2.9),'Còn lối đứng hành lễ trước bàn thờ')
+
+// Hàng cây cảnh quan ngoài tường không được mọc vào các điện sát ranh khuôn viên.
+const {WORLD_TREES}=await import('../src/data/templeWorld.js')
+for(const t of WORLD_TREES.filter(t=>Math.abs(t.x)>25))for(const s of WORLD_SPOTS.filter(s=>s.architecture.style)){
+  const dx=Math.max(0,Math.abs(t.x-s.x)-s.width/2),dz=Math.max(0,Math.abs(t.z-s.centerZ)-s.depth/2)
+  assert.ok(Math.hypot(dx,dz)>2.3*t.size,'Tán cây ngoài ranh không xuyên vào '+s.id)
+}

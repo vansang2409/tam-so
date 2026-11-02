@@ -1,6 +1,6 @@
-const CACHE = 'tamso-v4.5.0'
+const CACHE = 'tamso-v4.6.0'
 const ASSET_RE = /^\/assets\/.+\.(js|css|map)$/
-const MEDIA_RE = /\.(png|jpg|jpeg|webp|gif|svg|ico|woff2?)$/i
+const MEDIA_RE = /\.(png|jpg|jpeg|webp|gif|svg|ico|woff2?|glb)$/i
 
 async function putFresh(req, fresh) {
   if (!fresh || fresh.status !== 200) return

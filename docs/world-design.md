@@ -37,3 +37,7 @@ Cập nhật phạm vi theo yêu cầu: đủ 23 khu từ DICHUA_LOCATIONS, mỗ
 | Cửa Hàng Pháp Bảo | cua-hang-phap-bao | house |
 
 Mọi điểm đến được kiểm tra kết nối tới mọi điểm khác (23 × 23 tuyến); cây, hồ, tường điện, bàn thờ và lư hương có vùng cản tương ứng. Mái được mở khi nhân vật vào điện để nhìn thấy nội thất.
+
+## v4.6.0
+
+Chánh Điện: cụm Phật ngồi quét 3D, bàn gỗ/kim loại, tượng trắng hai bên, khám và hạc. Phật Bà/Lầu Quán Âm: tượng quét trắng, vòm và bình hoa, đèn. Dược Sư: sắc đồng/xanh trầm, tủ hộc nhỏ và bảy đèn; dùng cụm quét như một bố cục Phật thờ hư cấu, không tuyên bố đúng thủ ấn/tôn tượng Dược Sư. Ngọc Hoàng: ngai, quan phục, tấm ngọc, khung đỏ. Kim Hoa/Thánh Mẫu: mũ, chuỗi hạt và khung hoa; Nhà Tổ: bài vị, gỗ sẫm và đồ lễ. Hộ Pháp có giáp, khí trượng; Ông Tơ có cặp tượng và chỉ đỏ.

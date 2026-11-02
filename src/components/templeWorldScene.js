@@ -2,12 +2,14 @@ import * as THREE from 'three'
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createTempleMaterials } from './templeMaterials.js'
 import { createTempleDetails } from './templeDetails.js'
+import { createTempleModels } from './templeModels.js'
 import { WORLD_SPOTS, WORLD_TREES } from '../data/templeWorld.js'
 
 const COLORS = { roof:0x9b4937, edge:0xd59867, wood:0x604135, gold:0xd4a45d, stone:0xd2c8ae, leaf:0x486f53 }
 export function createTempleWorld(scene) {
   const root=new THREE.Group();scene.add(root)
   const materialSystem=createTempleMaterials(), geometries=new Map(), animated={ ponds:[], smoke:[], bells:[], roofs:[], lanterns:[],ripples:[] }, targets=[],retired=new Set()
+  const models=createTempleModels(),interiors=[]
   const mat=materialSystem.material
   const geo=(key,make)=>{if(!geometries.has(key))geometries.set(key,make());return geometries.get(key)}
   function mesh(g,color,x,y,z,parent=root,extra={}) {
@@ -113,8 +115,14 @@ export function createTempleWorld(scene) {
     if(kind==='tower'){const lower=roof(w+1,d+1,3,p,1,a);animated.roofs.push({mesh:lower,x,z,w,d});for(const side of [-1,1]){box(.12,.1,d+.6,a.wood,side*(w/2+.2),3.1,0,p);for(let z=-d/2;z<=d/2;z+=.35)cylinder(.025,.025,.6,a.wood,side*(w/2+.2),2.8,z,p,6)}}
     animated.roofs.push({mesh:r,x,z,w,d})
     label(spot.bienHieu,0,h-.18,d/2+.15,Math.min(w-.5,kind==='main'?5:4.5),p)
-    if(spot.huong){box(w*.5,.8,.8,a.wood,0,.65,-d/2+.85,p);censer(spot.censerX,.25,d/2+.3,p,spot.id)}
-    details.decorate(spot,p,w,d,h)
+    if(spot.huong){censer(spot.censerX,.25,d/2+.3,p,spot.id)}
+    const interior=new THREE.Group();p.add(interior)
+    const item={mesh:interior,spot,built:false,ensure(){
+      if(item.built)return;item.built=true
+      details.decorate(spot,interior,w,d,h)
+      mergeStatic(interior,new Set([...models.anchors,...animated.bells.map(b=>b.mesh),...animated.lanterns]))
+    }}
+    interiors.push(item)
     targets.push({object:p,spot})
   }
   function tree(x,z,size=1) {
@@ -158,7 +166,7 @@ export function createTempleWorld(scene) {
     targets.push({object:p,spot})
     label(spot.ten,0,.7,1.85,3.5,p,true)
   }
-  const details=createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated})
+  const details=createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models})
   // Sân gạch, trục hành lễ, đường ngang và hành lang nối toàn bộ 23 khu.
   const outsideGeometry=new THREE.PlaneGeometry(240,240);for(let i=0;i<outsideGeometry.attributes.uv.count;i++){const uv=outsideGeometry.attributes.uv;uv.setXY(i,uv.getX(i)*100,uv.getY(i)*100)}
   const outside=mesh(outsideGeometry,0x78805f,0,-.06,0,root,{surface:'stone'});outside.rotation.x=-Math.PI/2;outside.castShadow=false
@@ -252,17 +260,19 @@ export function createTempleWorld(scene) {
     // Geometry gốc trong cache vẫn được giải phóng cùng cảnh.
   }
   for(const r of animated.roofs)mergeStatic(r.mesh)
-  const excluded=new Set([avatar,marker,hoverMarker,pathLine,...animated.roofs.map(r=>r.mesh),...animated.smoke.map(s=>s.mesh),...animated.bells.map(b=>b.mesh),...animated.lanterns,...animated.ponds])
+  const excluded=new Set([...models.anchors,avatar,marker,hoverMarker,pathLine,...animated.roofs.map(r=>r.mesh),...animated.smoke.map(s=>s.mesh),...animated.bells.map(b=>b.mesh),...animated.lanterns,...animated.ponds])
+  for(const interior of interiors)excluded.add(interior.mesh)
   mergeStatic(root,excluded)
   for(const target of targets) {
     const s=target.spot,w=s.width
     const hit=new THREE.Mesh(new THREE.BoxGeometry(w,3,s.depth),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}))
     hit.position.set(s.x,1.5,s.centerZ);root.add(hit);target.object=hit
   }
-  return {root,avatar,standing,seated,praying,body,legs,arms,marker,hoverMarker,beacon,animated,targets,pathLine,
+  return {root,models,interiors,avatar,standing,seated,praying,body,legs,arms,marker,hoverMarker,beacon,animated,targets,pathLine,
     dispose(){
+      models.dispose()
       const gs=new Set(),ms=new Set(),ts=new Set()
-      root.traverse(o=>{if(o.geometry)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m){ms.add(m);if(m.map)ts.add(m.map)}})
+      root.traverse(o=>{if(o.geometry&&!o.geometry.userData.templeAsset)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m){ms.add(m);if(m.map)ts.add(m.map)}})
       for(const g of geometries.values())gs.add(g);for(const g of retired)gs.add(g);
       gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());materialSystem.dispose();scene.remove(root)
     }

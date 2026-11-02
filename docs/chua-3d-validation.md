@@ -24,3 +24,12 @@ Nguồn mới: `src/data/templeWorld.js`, `src/components/templeWorldScene.js`, 
 - Phát hành: trạng thái commit/push/deployment báo ở phản hồi bàn giao.
 
 Bổ sung QA cuối: Vườn Lâm Tỳ Ni vào đúng chế độ area sau khi sửa ghim; 23 ghim không có cặp chồng ở 320px. Chủ động mất WebGL vẫn có lối mở chùa ảnh; đợi classic tải xong thấy đủ 23 nút khu và bộ đếm 1 nén từ thử dâng hương ở 3D. Đã trả chế độ mô phỏng cảm ứng về tắt và bỏ override viewport sau QA.
+
+## 02/11/2026 — v4.6.0: Tượng quét 3D, bàn thờ và nội thất riêng
+
+- Thay tượng Phật/Quan Âm dạng khối đơn giản bằng hai GLB quét được phép CC BY 4.0 (MingEID; Diana Liu/Thunk3D), bản tối ưu từ kentjuno. Tổng 221632 byte, có manifest/SHA-256/nguồn/ghi công và hộp Ghi công 3D ngay trong UI. Không lấy mã game, tranh hay nhân vật của trang nguồn.
+- Bàn thờ có gỗ/kim loại, khám cuốn lá, hạc, bát hương, chân đèn, gấm, quả/chén nước, bình gốm và hoa. Ngọc Hoàng, Kim Hoa/Thánh Mẫu, Thập Điện, Hộ Pháp, Ông Tơ, Nhà Tổ có tượng/trang phục/ngai/bài vị và bố cục riêng. Tượng tự dựng thêm mặt, tay/ngón, nếp áo có hình khối và bề mặt sơn gỗ; vẫn là diễn họa hư cấu.
+- Nội thất tạo khi đến gần/chọn khu, gộp trong từng điện; khi vào điện chỉ hiển thị nội thất điện đó. Cache mẫu/cảnh, clone dùng chung geometry, hủy tải/giải phóng khi đóng. Tải hỏng có tượng dự phòng và thông báo; GLB cùng origin được SW cache. Cập nhật vùng cản theo bàn thờ mới và góc nhìn ban đầu theo chiều cao từng nhóm điện.
+- Kiểm tra: 493 regression pass; 529 tuyến liên thông + đích chuột và vùng cản bàn thờ pass. Giải mã thật 2 GLB, kiểm normal/vật liệu/tỷ lệ/ghi công, lỗi tải/hủy tải; dựng cả 18 kiểu nội thất hữu hạn, trong giới hạn điện. Main build + 211 meta route + single build OK; tam-so-test.html 2217599 byte, NUL=0. Bản một file vẫn cần thư mục tài nguyên để có GLB; thiếu tệp dùng fallback.
+- Browser bản build: xem trực tiếp Chánh Điện, Điện Phật Bà, Dược Sư, Ngọc Hoàng, Kim Hoa; điều hướng liên thông chuyển vào góc nhìn trong điện. Desktop 1366×900, 390×844, 320×740 không overflow ngang; footer không đè dải hành lễ, dialog dâng hương và ghi công vừa màn. Chỉ điều hướng/xem dialog, không tạo/xóa lịch sử nghi thức trong lượt QA này. Dời hàng cây ranh ra ngoài tường sau khi phát hiện tán cây xuyên vách Kim Hoa; có kiểm tra khoảng cách tán tới các điện sát ranh. Chưa thử FPS/cảm ứng trên điện thoại thật.
+- Phát hành: commit/push/Vercel và kiểm tra production được báo riêng trong bàn giao, không suy từ build local.

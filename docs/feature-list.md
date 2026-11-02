@@ -8,6 +8,12 @@
 - Chế độ ảnh giữ đủ 23 khu cũ.
 - WebGL lỗi/mất context có lối chuyển sang chế độ ảnh; reduced-motion và tiết kiệm đồ họa.
 
-Để sau: nhiều người, avatar tùy biến, mô hình tượng điêu khắc chi tiết, AI giải quẻ, nhà thờ 3D.
+Để sau: nhiều người, avatar tùy biến, AI giải quẻ, nhà thờ 3D.
 
 Cập nhật phạm vi theo yêu cầu: đủ 23 khu từ DICHUA_LOCATIONS, mỗi khu có vị trí và đường nối trong cùng khuôn viên; không giới hạn 6 khu. Các điện/nhà có mái riêng, sân và cây xanh nối bằng lối đi.
+
+## v4.6.0 — Tượng và nội thất
+
+- Tượng Phật và Quan Âm từ mẫu quét GLB có ghi công, mặt/nếp áo có chi tiết; tải hỏng vẫn có mẫu dự phòng.
+- Bàn gỗ chạm cuốn lá, khám, hạc, bát hương, chân đèn, mâm quả, chén nước, bình gốm, gấm, đệm hành lễ.
+- Nội thất từng nhóm điện có màu và đồ thờ riêng; tượng quan phục/Mẫu/Hộ Pháp tự dựng có tay, mặt, mũ, nếp áo và ngai.

@@ -1,0 +1,26 @@
+[
+  {
+    "file": "altar.glb",
+    "name": "Buddhist Altar in Kōrin-ji Temple",
+    "author": "MingEID",
+    "source": "https://sketchfab.com/3d-models/buddhist-altar-in-korin-ji-temple-44bb389c9a8e4d59b2d7041a7f82acdb",
+    "uid": "44bb389c9a8e4d59b2d7041a7f82acdb",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "derivedFrom": "https://tinhtam.kentjuno.com/3d/models/altar.glb",
+    "bytes": 168432,
+    "sha256": "15a84d93a16aaba2f61086bffa2e9569bb05ac5063aba959e7b283de157f5b11"
+  },
+  {
+    "file": "qa.glb",
+    "name": "Guanyin",
+    "author": "Diana Liu / Thunk3D scanner (Diana123456)",
+    "source": "https://sketchfab.com/3d-models/guanyin-4b0410c196c6475ba85d527966ea00b6",
+    "uid": "4b0410c196c6475ba85d527966ea00b6",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "derivedFrom": "https://tinhtam.kentjuno.com/3d/models/qa.glb",
+    "bytes": 53200,
+    "sha256": "5df1c3e9fc87a073a6402ffc99298a4266cdfddc091f3121185a38ca756f6805"
+  }
+]
