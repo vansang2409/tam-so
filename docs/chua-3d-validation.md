@@ -42,3 +42,10 @@ Bổ sung QA cuối: Vườn Lâm Tỳ Ni vào đúng chế độ area sau khi s
 - Kiểm tra: 493 regression pass, 529 tuyến giữa 23 khu pass, giải mã hình học và atlas của 11 GLB, normal/tỷ lệ/SHA/giấy phép/fallback và hủy tải; dựng đủ 18 kiểu nội thất trong giới hạn. Main build + 211 meta route + single build OK, bản HTML 2222686 byte, NUL=0. Bản HTML cần các tệp GLB đi kèm để có tượng quét, thiếu sẽ dùng dự phòng.
 - Browser bản build: xem Hộ Pháp, Thổ Địa, Thập Điện, Nhà Tổ, Kim Hoa và Ngọc Hoàng ở dev; giữ chuyển cảnh inside, mẫu tải thành công, không thấy lỗi JavaScript trong các lượt xem. Kiểm UI 390×844 và 320×740 không overflow ngang; footer không đè hành lễ; ghi công đủ 11 mẫu và 11 link tải, dialog có cuộn dọc và vừa màn. Chỉ điều hướng/xem dialog, không tạo/xóa lịch sử nghi thức. Chưa đo FPS/cảm ứng trên điện thoại thật.
 - Trạng thái commit/push/Vercel và kiểm tra production được báo riêng trong bàn giao. Chi tiết nguồn/pipeline: docs/temple-sculpture-assets.md.
+
+## 02/11/2026 — v4.7.1: Thu gọn thanh hành lễ theo ảnh phản hồi
+
+- Bỏ hai dải nền sáng chạy ngang ở đáy cảnh. Cụm hành lễ nổi tông đồng tối, có icon và nhãn ngắn; desktop 1280px đo 501×60px, mobile 320px đo 296×67px với bốn nút cùng hàng, mỗi nút cao 55px. Ngoài điện có phần tên/mô tả gọn riêng; giữ phần giữa cảnh thông thoáng.
+- Chuyển Không gian ảnh/Ghi công/Hướng dẫn vào menu dấu ba chấm ở header. Có đóng khi bấm ngoài/Escape, trả focus sau khi đóng dialog; hướng dẫn chuột chỉ còn chip nhỏ ở desktop đủ rộng. Dọn các rule CSS thanh cũ thay vì chồng thêm nền/padding.
+- Browser bản build: 1280×720, 320×740, 390×844, 844×390 không tràn ngang, các nút không chồng chữ. Đã mở dialog dâng hương (không xác nhận nghi thức), mở ghi công rồi Escape trả focus về Tuỳ chọn; chuyển classic thấy đủ 23 khu và quay lại 3D thành công. Không tạo/xóa lịch sử trong lượt QA này.
+- 493 regression + 529 tuyến/11 GLB/18 nội thất pass; main + 211 meta route + single build OK, HTML 2227167 byte, NUL=0. Commit/push/Vercel và xác nhận production báo trong bàn giao.

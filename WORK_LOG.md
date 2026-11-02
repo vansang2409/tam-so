@@ -2,6 +2,13 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.7.1: Thu gọn thanh hành lễ theo ảnh phản hồi
+
+- Bỏ hai dải nền sáng chạy ngang ở đáy cảnh. Cụm hành lễ nổi tông đồng tối, có icon và nhãn ngắn; desktop 1280px đo 501×60px, mobile 320px đo 296×67px với bốn nút cùng hàng, mỗi nút cao 55px. Ngoài điện có phần tên/mô tả gọn riêng; giữ phần giữa cảnh thông thoáng.
+- Chuyển Không gian ảnh/Ghi công/Hướng dẫn vào menu dấu ba chấm ở header. Có đóng khi bấm ngoài/Escape, trả focus sau khi đóng dialog; hướng dẫn chuột chỉ còn chip nhỏ ở desktop đủ rộng. Dọn các rule CSS thanh cũ thay vì chồng thêm nền/padding.
+- Browser bản build: 1280×720, 320×740, 390×844, 844×390 không tràn ngang, các nút không chồng chữ. Đã mở dialog dâng hương (không xác nhận nghi thức), mở ghi công rồi Escape trả focus về Tuỳ chọn; chuyển classic thấy đủ 23 khu và quay lại 3D thành công. Không tạo/xóa lịch sử trong lượt QA này.
+- 493 regression + 529 tuyến/11 GLB/18 nội thất pass; main + 211 meta route + single build OK, HTML 2227167 byte, NUL=0. Commit/push/Vercel và xác nhận production báo trong bàn giao.
+
 ## 02/11/2026 — v4.7.0: Bộ tượng quét cho các điện còn lại
 
 - Bổ sung 9 GLB quét/điêu khắc có giấy phép mở, nâng bộ tượng lên 11 mẫu. Thay tượng quan phục/Mẫu/Hộ Pháp tự ghép khối bằng bề mặt và hình thể quét: Ngọc Hoàng, Thổ Địa, Hộ Pháp, Thành Hoàng, Kim Hoa, Thiên Y Thánh Mẫu, Ông Tơ/Bà Nguyệt, Thập Điện; thêm tượng Tổ ở Nhà Tổ. Giữ 23 khu và điều khiển/chuyển cảnh hiện có.
