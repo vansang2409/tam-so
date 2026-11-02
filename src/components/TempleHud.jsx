@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const paths={
+  people:<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></>,
   map:<><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Z"/><path d="M9 3v16m6-14v16"/></>,
   history:<><path d="M3 5v5h5"/><path d="M3.6 10a9 9 0 1 1 1.5 8M12 7v5l3 2"/></>,
   sound:<><path d="m11 4-5 4H3v8h3l5 4V4Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></>,

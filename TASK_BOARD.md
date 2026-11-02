@@ -184,3 +184,5 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 
 | DC3D07 | Sửa thanh hành lễ và footer theo ảnh phản hồi | Done | v4.7.1: dock gọn tông tối có icon, menu phụ; 1280/320/390/844×390 không tràn; dialog/classic/focus kiểm tra OK |
 | DC3D08 | Đồng bộ thanh trên và cụm nút phải với dock tối | Done | v4.7.2: icon/nền/viền chung; UI 1280/320/390/844×390, bản đồ/menu/lịch sử/zoom/chất lượng/ra sân/toàn cảnh OK |
+| DC3D09 | Mở rộng và sửa bố cục Chánh Điện | Done | v4.8.0: 16×12, năm gian/cột/trục lễ, bàn thờ trung tâm; 529 tuyến và va chạm mới pass |
+| DC3D10 | Cùng online thấy nhân vật và di chuyển | Done | v4.8.0: Presence/Broadcast, biệt danh/danh sách, cùng khu, tối đa 24 khách hiển thị; hai phiên thực tế thấy nhau sau Resume Supabase |

@@ -1,5 +1,7 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.8.0 — 02/11/2026:** Chánh Điện tăng mặt sàn khoảng 2,49 lần, có các gian cột/hiên/bồ đoàn/trục lễ và bố cục bàn thờ trung tâm mới. Thêm người cùng online bằng Supabase Presence/Broadcast, thấy nhân vật/tên/chuyển động trong cùng khu và bảng danh sách ở toolbar. Hai phiên thật đã thấy nhau sau khi user khôi phục Supabase; regression/tuyến/GLB/nội thất/phòng chung pass.
+
 **Cập nhật v4.7.2 — 02/11/2026:** Đồng bộ thanh trên, bảng tên điện, menu/bản đồ và nút bên phải sang tông đồng tối của dock mới. Icon gọn, nhãn truy cập đầy đủ; UI 1280/320/390/844×390 và chức năng điều khiển đã kiểm. 493+529 kiểm tra, main/single build pass.
 
 **Cập nhật v4.7.1 — 02/11/2026:** Sửa thanh hành lễ theo ảnh user: bỏ hai dải sáng toàn chiều ngang, đổi dock đồng tối có icon, bốn nút cùng hàng trên mobile; các mục phụ vào menu dấu ba chấm. UI 1280/320/390/844×390, dialog/menu/keyboard/classic đã kiểm; build và 493+529 kiểm tra pass.

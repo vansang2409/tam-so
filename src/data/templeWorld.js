@@ -4,12 +4,12 @@ import { DICHUA_LOCATIONS } from './dichua.js'
 export const WORLD_BOUNDS = { minX: -25.5, maxX: 25.5, minZ: -26.5, maxZ: 27 }
 const layout = {
   'cong-tam-quan': [0,23,'gate'], 'chanh-dien': [0,-3,'main'],
-  'dien-ngoc-hoang': [-12,-11,'hall'], 'san-ho-rua': [-12,11,'pond'],
+  'dien-ngoc-hoang': [-13,-11,'hall'], 'san-ho-rua': [-12,11,'pond'],
   'mieu-ho-phap': [-5.5,19,'shrine'], 'tien-dien-tho-dia': [-12,19,'shrine'],
-  'trung-dien-duoc-su': [12,-11,'hall'], 'dien-thanh-hoang': [-21,-5,'hall'],
+  'trung-dien-duoc-su': [13,-11,'hall'], 'dien-thanh-hoang': [-21,-5,'hall'],
   'dien-thap-dien': [-21,-16,'hall'], 'dien-kim-hoa': [21,-16,'hall'],
   'thien-y-thanh-mau': [21,-5,'hall'], 'dien-ong-to': [21,5,'shrine'],
-  'dien-phat-ba': [12,-2,'hall'], 'lau-quan-am': [-12,-2,'tower'],
+  'dien-phat-ba': [13,-2,'hall'], 'lau-quan-am': [-12,-2,'tower'],
   'nha-to': [0,-17,'hall'], 'thap-chuong': [-10,4,'bell'],
   'vuon-lam-ty-ni': [12,14,'garden'], 'giang-duong': [11,-23,'house'],
   'nha-khach': [-21,15,'house'], 'thu-vien': [-11,-23,'house'],
@@ -39,12 +39,13 @@ export const WORLD_OBSTACLES = [[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD
   const width=s.width
   if(['main','hall','house','shrine','tower'].includes(kind)) return [
     ...[-1,1].flatMap(side=>[-1,1].map(end=>[x+side*(width/2-.35)-.16,x+side*(width/2-.35)+.16,z+end*(depth/2-.3)-.16,z+end*(depth/2-.3)+.16])),
-    ...(kind==='main'?[-2,2].map(dx=>[x+dx-.16,x+dx+.16,z+depth/2-.56,z+depth/2-.24]):[]),
+    ...(kind==='main'?[-1,1].flatMap(side=>[...[3.9,6.45].map(xx=>[x+side*xx-1.025,x+side*xx+1.025,z+depth/2-.32,z+depth/2-.2]),[x+side*6.65-.5,x+side*6.65+.5,z+1.85,z+2.75]]):[]),
+    ...(s.architecture.pillars||[]).map(([dx,dz])=>[x+dx-.25,x+dx+.25,z+dz-.25,z+dz+.25]),
     [x-width/2-.05,x-width/2+.12,z-depth/2,z+depth/2-.35],
     [x+width/2-.12,x+width/2+.05,z-depth/2,z+depth/2-.35],
     [x-width/2,x+width/2,z-depth/2-.1,z-depth/2+.2],
     // Khoảng chiếm chỗ của bàn thờ, gồm cả khám thờ và đồ lễ hai bên.
-    [x-width*.44,x+width*.44,z-depth/2+.2,z-depth/2+(s.architecture.style==='tam-bao'?2.98:s.architecture.style==='duoc-su'?2.15:1.35)],
+    [x-width*.44,x+width*.44,z-depth/2+.2,z-depth/2+(s.architecture.altarDepth||(s.architecture.style==='duoc-su'?2.15:1.35))],
     ...(s.huong?[[x+s.censerX-.43,x+s.censerX+.43,z+depth/2+.1,z+depth/2+.65]]:[]),
   ]
   return [[x-width/2,x+width/2,z-depth/2,z+depth/2]]

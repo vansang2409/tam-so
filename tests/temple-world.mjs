@@ -34,13 +34,13 @@ assert.ok(!isWalkable(-12,11),'Hồ rùa là vật cản')
 console.log('Chùa 3D: đủ 23 khu, '+routes+' tuyến liên thông; đường đi không xuyên vật cản.')
 
 // Các đích chuột không nằm đúng ô lưới vẫn phải nối an toàn tới đường đi.
-for(const point of [{x:.15,z:24.8},{x:-.28,z:8.24},{x:16.12,z:8.82},{x:-16.17,z:8.3},{x:.19,z:-12.12},{x:16.22,z:-12.11}]){
+for(const point of [{x:.15,z:24.8},{x:-.28,z:8.24},{x:16.12,z:8.82},{x:-16.17,z:8.3},{x:.19,z:-12.12},{x:16.72,z:-12.11}]){
   assert.ok(isWalkable(point.x,point.z));const path=findWorldPath({x:0,z:24.8},point);assert.ok(path.length);let previous={x:0,z:24.8};for(const next of path){assert.ok(canWalkSegment(previous,next),'Đích chuột không xuyên vật cản');previous=next}
 }
 console.log('Đích chuột giữa các ô lưới: đường nối hợp lệ.')
 
 // Bàn thờ chi tiết chiếm chiều sâu lớn hơn: không được đi xuyên phần chân phía trước.
-assert.equal(isWalkable(0,-3.8),false,'Chân bàn thờ Chánh Điện là vật cản')
+assert.equal(isWalkable(0,-5),false,'Chân bàn thờ Chánh Điện là vật cản')
 assert.equal(isWalkable(12,-11.2),false,'Bàn thờ Dược Sư là vật cản')
 assert.ok(isWalkable(0,-2.9),'Còn lối đứng hành lễ trước bàn thờ')
 
@@ -50,3 +50,12 @@ for(const t of WORLD_TREES.filter(t=>Math.abs(t.x)>25))for(const s of WORLD_SPOT
   const dx=Math.max(0,Math.abs(t.x-s.x)-s.width/2),dz=Math.max(0,Math.abs(t.z-s.centerZ)-s.depth/2)
   assert.ok(Math.hypot(dx,dz)>2.3*t.size,'Tán cây ngoài ranh không xuyên vào '+s.id)
 }
+
+// Đại điện mở rộng vẫn có trục đi giữa, cột/cửa và đồ tụng niệm không xuyên được.
+const main=WORLD_SPOTS.find(s=>s.id==='chanh-dien')
+assert.ok(main.width*main.depth>=190)
+for(const [dx,dz] of main.architecture.pillars)assert.equal(isWalkable(main.x+dx,main.centerZ+dz),false,'Cột đại điện có va chạm')
+for(const z of [-3.8,-2,0,2,4.3])assert.ok(isWalkable(0,z),'Trục giữa nối từ sân tới trước bàn thờ')
+for(const x of [-6.65,6.65])assert.equal(isWalkable(x,main.centerZ+2.3),false,'Bục chuông mõ có va chạm')
+for(const x of [-6.45,-3.9,3.9,6.45])assert.equal(isWalkable(x,main.centerZ+main.depth/2-.26),false,'Vách cửa bên có va chạm')
+console.log('Đại điện: 192 m², trục giữa thông thoáng, cột/cửa/bàn thờ và bục chuông mõ có va chạm.')

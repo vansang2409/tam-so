@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { createTempleMainHall } from './templeMainHall.js'
 import { createTempleFurnishings } from './templeFurnishings.js'
 // Chi tiết kiến trúc và đồ thờ được dựng riêng theo vai trò từng khu.
 export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models}) {
@@ -63,17 +64,7 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
       const altarZ=-d/2+.8
       if(!['tam-bao','duoc-su'].includes(style)){altar(0,altarZ,w*(style==='thap-dien'?.88:.54),p,wood,1.04);offerings(0,1.16,altarZ+.32,p,Math.min(2.6,w*.47))}
       if(style==='tam-bao') {
-        scannedAltar(0,.34,-d/2+1.57,3.65,3.1,2.8,p)
-        shrineFrame(0,.37,-d/2+.2,4.3,3.65,p,wood)
-        for(const side of [-1,1]){
-          altar(side*3.4,altarZ,2,p,wood,1.02)
-          figure('quan-am',side*3.4,1.14,altarZ-.08,.73,p)
-          offerings(side*3.4,1.14,altarZ+.25,p,1.7)
-          shrineFrame(side*3.4,1.03,altarZ-.4,1.8,2.05,p,wood)
-          crane(side*2.35,.34,-1.35,p,side)
-        }
-        label('TỪ BI · TRÍ TUỆ',0,4.28,-d/2+.46,3.3,p)
-        for(let x=-3;x<=3;x+=1.5)for(let z=.3;z<2;z+=.85)prayerMat(x,z,p)
+        createTempleMainHall({box,sphere,cylinder,mesh,beam,label,mat,curve,...furnishings,vase}).interior(p,w,d,h,a)
       } else if(['phat-ba','quan-am'].includes(style)) {
         const arch=curve([[-1.05,1.1,altarZ-.18],[-1.05,2.6,altarZ-.18],[0,3.35,altarZ-.18],[1.05,2.6,altarZ-.18],[1.05,1.1,altarZ-.18]],.09,0xd5ccb0,p)
         figure('quan-am',0,1.15,altarZ-.12,.85,p)

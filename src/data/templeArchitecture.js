@@ -1,9 +1,11 @@
 // Kiến trúc hư cấu: mỗi khu dùng tỷ lệ, vật liệu và nội thất riêng.
 export const TEMPLE_ARCHITECTURE = {
   "chanh-dien": {
-    "width": 11,
-    "depth": 7,
-    "height": 4.6,
+    "width": 16,
+    "depth": 12,
+    "height": 6.4,
+    "pillars": [[-5.2,5.6],[-2.6,5.6],[2.6,5.6],[5.2,5.6],[-5.2,0],[5.2,0],[-5.2,-4.6],[5.2,-4.6]],
+    "altarDepth": 4.65,
     "tiers": 2,
     "roof": 7027502,
     "wall": 12758406,

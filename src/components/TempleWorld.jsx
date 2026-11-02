@@ -1,13 +1,14 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { createTempleVisitors } from './templeVisitors.js'
 import { createTempleWorld } from './templeWorldScene.js'
 import { WORLD_SPOTS, findWorldPath, nearestSpot, groundHeight, isWalkable } from '../data/templeWorld.js'
 
 const INDOOR_KINDS=new Set(['main','hall','house','shrine','tower'])
-const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paused,quality,onArrive,onStatus,onReady,onError},ref) {
+const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paused,quality,peers,onPresence,onArrive,onStatus,onReady,onError},ref) {
   const host=useRef(null),api=useRef(null),props=useRef({}),[failed,setFailed]=useState(false)
-  props.current={litIds,meditating,ritual,paused,quality,onArrive,onStatus,onReady,onError}
+  props.current={litIds,meditating,ritual,paused,quality,peers,onPresence,onArrive,onStatus,onReady,onError}
   useImperativeHandle(ref,()=>({
     goTo(id,action){api.current?.goTo(id,action)},
     reset(){api.current?.reset()},
@@ -17,7 +18,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
   }),[])
   useEffect(()=>{
     const container=host.current
-    let renderer,world,controls,observer,frame,disposed=false,contextLost=false,transitionTimer=null
+    let renderer,world,visitors,controls,observer,frame,disposed=false,contextLost=false,transitionTimer=null
     try {
       renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'})
       renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,props.current.quality==='low'?1:1.5))
@@ -35,7 +36,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       controls=new OrbitControls(camera,renderer.domElement);controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.075
       controls.mouseButtons.LEFT=null;controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;controls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY
       controls.minDistance=7;controls.maxDistance=240;controls.minPolarAngle=.28;controls.maxPolarAngle=1.43
-      world=createTempleWorld(scene);world.avatar.position.set(0,.07,24.8)
+      world=createTempleWorld(scene);visitors=createTempleVisitors(world);world.avatar.position.set(0,.07,24.8)
       world.models.subscribe(assets=>{if(!disposed)props.current.onStatus?.({assets})});world.models.ready.then(assets=>{if(!disposed)props.current.onStatus?.({assets})})
       let path=[],pending=null,moving=false,follow=false,lastRender=0,time=0,statusAt=0,bellAt=-20,lastQuality='',room=null,suppressedEntry=null,yaw=0,pitch=.13,interiorFov=64
       const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),-.07),hit=new THREE.Vector3()
@@ -53,7 +54,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
         if(room?.id===spot.id)return
         room={...spot,indoor:INDOOR_KINDS.has(spot.kind)};yaw=0;pitch=['pond','garden'].includes(spot.kind)?-.3:['duoc-su','thap-dien'].includes(spot.architecture.style)?-.06:spot.kind==='main'?.1:.04;interiorFov=64
         controls.enabled=false;world.avatar.visible=false
-        interiorLight.visible=room.indoor;interiorLight.position.set(spot.x,3,spot.centerZ-.3)
+        interiorLight.visible=room.indoor;interiorLight.intensity=spot.kind==='main'?38:12;interiorLight.distance=spot.kind==='main'?25:16;interiorLight.position.set(spot.x,spot.kind==='main'?4.5:3,spot.centerZ-.3)
         resize();reportView()
         // Màn chuyển nhẹ đánh dấu bước qua cửa, sau đó trả ngay quyền nhìn/đi trong cảnh.
         transition.textContent=(room.indoor?'Bước vào ':'Dừng chân tại ')+spot.ten
@@ -166,17 +167,18 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
           const visible=room?interior.spot.id===room.id:Math.hypot(avatar.position.x-interior.spot.x,avatar.position.z-interior.spot.centerZ)<13
           if(visible)interior.ensure();interior.mesh.visible=visible
         }
+        container.dataset.visitors=visitors.update(p.peers||[],room?.indoor?room.id:'courtyard',avatar.position,dt,time,reduced)
         if(!room)controls.update();renderer.render(scene,camera)
         if(import.meta.env.DEV){container.dataset.drawCalls=renderer.info.render.calls;container.dataset.triangles=renderer.info.render.triangles}
-        if(now-statusAt>220){statusAt=now;p.onStatus?.({moving,near:room||nearestSpot(avatar.position.x,avatar.position.z,4),position:{x:avatar.position.x,z:avatar.position.z}})}
+        if(now-statusAt>220){statusAt=now;p.onPresence?.({x:Math.round(avatar.position.x*100)/100,z:Math.round(avatar.position.z*100)/100,yaw:room?Math.atan2(Math.sin(yaw+Math.PI),Math.cos(yaw+Math.PI)):avatar.rotation.y,space:room?.indoor?room.id:'courtyard',moving});p.onStatus?.({moving,near:room||nearestSpot(avatar.position.x,avatar.position.z,4),position:{x:avatar.position.x,z:avatar.position.z}})}
       }
       frame=requestAnimationFrame(animate);props.current.onReady?.()
       return ()=>{
         disposed=true;cancelAnimationFrame(frame);clearTimeout(transitionTimer);observer.disconnect();controls.dispose();api.current=null
         for(const [type,fn,capture] of [['pointerdown',down,true],['pointermove',move,true],['pointerup',up,true],['pointercancel',cancel],['pointerleave',leave],['contextmenu',context],['wheel',wheel],['webglcontextlost',lost]])renderer.domElement.removeEventListener(type,fn,!!capture)
-        world.dispose();renderer.dispose();renderer.domElement.remove();transition.remove()
+        visitors?.dispose();world.dispose();renderer.dispose();renderer.domElement.remove();transition.remove()
       }
-    } catch(error){disposed=true;cancelAnimationFrame(frame);clearTimeout(transitionTimer);observer?.disconnect();controls?.dispose();world?.dispose();renderer?.dispose();renderer?.domElement.remove();api.current=null;setFailed(true);props.current.onError?.();console.error('Không khởi tạo được cảnh chùa 3D:',error)}
+    } catch(error){disposed=true;cancelAnimationFrame(frame);clearTimeout(transitionTimer);observer?.disconnect();controls?.dispose();visitors?.dispose();world?.dispose();renderer?.dispose();renderer?.domElement.remove();api.current=null;setFailed(true);props.current.onError?.();console.error('Không khởi tạo được cảnh chùa 3D:',error)}
   },[])
   return <div ref={host} className="tw-canvas" role={failed?undefined:'img'} aria-label="Khuôn viên Chùa Tam Sở 3D. Chuột trái để đi; giữ chuột phải để nhìn quanh. Tới các điện sẽ chuyển sang góc nhìn bên trong.">{failed&&<div className="tw-webgl-error"><h2>Thiết bị chưa mở được cảnh 3D</h2><p>Bạn vẫn có thể đi chùa bằng giao diện ảnh với đầy đủ các khu và nghi thức.</p><a href="?view=classic">Mở không gian ảnh</a></div>}</div>
 })

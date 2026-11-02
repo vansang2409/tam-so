@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createTempleMaterials } from './templeMaterials.js'
 import { createTempleDetails } from './templeDetails.js'
+import { createTempleMainHall } from './templeMainHall.js'
 import { createTempleModels } from './templeModels.js'
 import { WORLD_SPOTS, WORLD_TREES } from '../data/templeWorld.js'
 
@@ -107,10 +108,11 @@ export function createTempleWorld(scene) {
         cylinder(.14,.19,h,a.wood,side*(w/2-.35),h/2+.25,Math.sign(zz)*(d/2-.3),p)
         cylinder(.23,.27,.22,COLORS.stone,side*(w/2-.35),.4,zz*.83,p)
       }
-      if(kind==='main') cylinder(.16,.2,h,COLORS.wood,side*2,h/2+.25,d/2-.4,p)
+      if(kind==='main')for(const [xx,zz] of a.pillars.filter(([xx])=>Math.sign(xx)===side)){cylinder(.2,.25,h,a.wood,xx,h/2+.25,zz,p,20);cylinder(.33,.38,.25,COLORS.stone,xx,.4,zz,p,20)}
       lantern(side*(w/2-.65),h-.4,d/2+.3,p)
     }
     box(w,.23,.22,a.wood,0,h+.12,d/2-.35,p)
+    if(kind==='main')createTempleMainHall({box,sphere,cylinder,mesh,beam,label,mat}).exterior(p,w,d,h,a)
     const r=roof(w+1.5,d+1.9,h+.15,p,kind==='tower'?1:a.tiers,a)
     if(kind==='tower'){const lower=roof(w+1,d+1,3,p,1,a);animated.roofs.push({mesh:lower,x,z,w,d});for(const side of [-1,1]){box(.12,.1,d+.6,a.wood,side*(w/2+.2),3.1,0,p);for(let z=-d/2;z<=d/2;z+=.35)cylinder(.025,.025,.6,a.wood,side*(w/2+.2),2.8,z,p,6)}}
     animated.roofs.push({mesh:r,x,z,w,d})

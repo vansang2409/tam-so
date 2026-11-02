@@ -2,6 +2,14 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.8.0: Đại điện rộng và người cùng dạo chùa
+
+- Chánh Điện mở từ 11×7 lên 16×12 đơn vị cảnh (mặt sàn khoảng 2,49 lần), cao 6,4; có năm gian mặt tiền, cột/chân đá và hệ xà, hiên/bậc, cửa gỗ, trục đi giữa, 24 bồ đoàn, đèn lồng bát giác, chuông/mõ. Tượng chính/bệ/khám lớn hơn, bàn lễ phía trước, tủ kinh và đèn hai bên; bỏ hai tượng Quan Âm lặp ở điện chính. Dời ba điện lân cận để giữ khe mái và lối đi. Cập nhật va chạm cột/cửa/bục và bệ thờ.
+- Thêm phòng chung Supabase Presence + Broadcast, không thêm bảng DB hay sửa RLS. Mỗi tab có ID ngẫu nhiên và biệt danh khách; không gửi email/tài khoản/lời nguyện/lịch sử. Vị trí gửi tối đa 4Hz khi đổi, heartbeat 5 giây, bỏ gói cũ/tọa độ sai và khách không còn phản hồi. Tên giới hạn 24 ký tự, hiển thị bằng React text/canvas; chỉ dựng tối đa 24 khách gần trong cùng điện hoặc cùng khuôn viên, nội suy chuyển động, dùng chung geometry nhân vật và giải phóng nhãn/vật liệu khi rời.
+- Nút người ở cuối toolbar phải mở số người, danh sách khu và đổi biệt danh; có trạng thái thiếu cấu hình/mất kết nối, tự nối lại. Người trùng vị trí trong nội điện được ẩn khi quá sát camera. Đây là phòng công khai cho khách, chưa có chat/tài khoản nhân vật/đồng bộ nghi thức hoặc máy chủ kiểm soát chống gian lận.
+- Supabase ban đầu không phân giải được tên miền; ảnh user xác nhận dự án bị Paused. Sau hướng dẫn Resume, tên miền và Realtime hoạt động trở lại. Hai phiên thật dùng cùng dự án công khai đã thấy nhau trong Chánh Điện, cập nhật chuyển động/tên/khu; Ra sân chuyển khách khỏi nội điện và danh sách về Khuôn viên. Đã quan sát tự kết nối lại sau khi dự án khởi động. Không thay cấu hình dự án, mật khẩu hay khóa của Supabase; không ghi/copy khóa secret/service_role.
+- 493 regression, 529 tuyến/đích chuột, va chạm mới, 11 GLB/18 nội thất và kiểm tra phòng chung (gói sai, gói cũ, 4Hz, đổi khu/tên, timeout, tái kết nối/cleanup) pass. UI desktop và 320/390px đã xem, dialog vừa màn. Không tạo/xóa lịch sử nghi thức; chưa thử tải đông/FPS/cảm ứng trên điện thoại thật. Trạng thái bản build cuối/phát hành xem bàn giao.
+
 ## 02/11/2026 — v4.7.2: Đồng bộ thanh trên và nút góc nhìn
 
 - Thanh trên thành hai cụm nổi tông đồng tối, dùng chung màu/viền với dock hành lễ. Bản đồ, lịch sử, âm thanh và góc nhìn có icon đồng bộ; bảng tên điện/nút Ra sân, menu phụ, khung danh sách bản đồ và trạng thái tải cùng tông. Giữ sơ đồ giấy sáng để dễ đọc vị trí.
@@ -155,3 +163,5 @@ thientue.vn: SEO programmatic quy mô lớn + tử vi ngày + render sẵn HTML;
 - ĐÃ code+wire+test (224 pass) nhưng CHƯA build/bump/present: **M04 Bộ sưu tập** (Collection.jsx + collection.js + route /bo-suu-tap + nút lưu Tarot/Kinh Dịch + badge nav) & **A01 SEO từng trang** (useSeo.js/SeoTag.jsx + usePageSeo gắn 8 trang).
 - File mới (untracked): src/pages/Collection.jsx, src/data/collection.js, src/components/useSeo.js, src/components/SeoTag.jsx, src/data/seo.js.
 - VIỆC CÒN LẠI: chỉ cần BUILD /tmp/b (verify dist IDENTICAL + NUL=0) + bump sw/package + present. CHƯA build-verify JSX → build 1 lần trước khi deploy. ĐỪNG làm lại M04/A01 (đã xong).
+
+Bổ sung bản cuối v4.8.0: main build + 211 meta route + single build pass; tam-so-test.html 2245009 byte, trùng bản single và NUL=0. Bản build có đèn lồng bát giác; 1280×720, 320×740, 390×844 và 844×390 đã kiểm bố cục. Không ghi nhận lỗi JavaScript trong lượt xem bản build. Supabase đã nhận lại kết nối thật sau Resume; trạng thái Git/Vercel và kiểm tra production báo riêng trong bàn giao.
