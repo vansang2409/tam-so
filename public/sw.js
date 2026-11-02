@@ -1,4 +1,4 @@
-const CACHE = 'tamso-v4.8.0'
+const CACHE = 'tamso-v4.8.1'
 const ASSET_RE = /^\/assets\/.+\.(js|css|map)$/
 const MEDIA_RE = /\.(png|jpg|jpeg|webp|gif|svg|ico|woff2?|glb)$/i
 

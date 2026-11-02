@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const paths={
+  camera:<><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/><circle cx="8" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></>,
   people:<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m20 0v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></>,
   map:<><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Z"/><path d="M9 3v16m6-14v16"/></>,
   history:<><path d="M3 5v5h5"/><path d="M3.6 10a9 9 0 1 1 1.5 8M12 7v5l3 2"/></>,
@@ -23,7 +24,7 @@ const paths={
 export function TempleActionIcon({type}) {
   return <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type]||paths.visit}</svg>
 }
-export function TempleOptions({onHelp,onClassic,onCredits}) {
+export function TempleOptions({onHelp,onClassic,onCredits,onHistory,onSound,sound}) {
   const [open,setOpen]=useState(false),ref=useRef(null),trigger=useRef(null)
   useEffect(()=>{
     if(!open)return
@@ -35,6 +36,6 @@ export function TempleOptions({onHelp,onClassic,onCredits}) {
   const choose=handler=>{setOpen(false);trigger.current?.focus();handler()}
   return <div className="tw-options" ref={ref}>
     <button ref={trigger} type="button" className="tw-options-trigger" aria-label="Tuỳ chọn không gian" aria-expanded={open} aria-controls="temple-options" onClick={()=>setOpen(v=>!v)}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
-    {open&&<nav id="temple-options" className="tw-options-panel" aria-label="Tuỳ chọn không gian"><button onClick={()=>choose(onHelp)}>Hướng dẫn di chuyển</button><button onClick={()=>choose(onClassic)}>Không gian ảnh ↗</button><button onClick={()=>choose(onCredits)}>Ghi công 3D</button><p>Chùa hư cấu · Một không gian chiêm nghiệm</p></nav>}
+    {open&&<nav id="temple-options" className="tw-options-panel" aria-label="Tuỳ chọn không gian"><button className="tw-options-mobile" onClick={()=>choose(onHistory)}>Lịch sử hành lễ</button><button className="tw-options-mobile" onClick={()=>choose(onSound)}>{sound?'Tắt âm thanh':'Bật âm thanh'}</button><button onClick={()=>choose(onHelp)}>Hướng dẫn di chuyển</button><button onClick={()=>choose(onClassic)}>Không gian ảnh ↗</button><button onClick={()=>choose(onCredits)}>Ghi công 3D</button><p>Chùa hư cấu · Một không gian chiêm nghiệm</p></nav>}
   </div>
 }

@@ -2,6 +2,14 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.8.1: UI mobile cho chùa 3D
+
+- Thanh trên mobile giữ logo, Bản đồ, người online và menu; Lịch sử/âm thanh chuyển vào menu. Vùng chạm chính 44–57px; tên điện/Ra sân và thanh hành lễ gọn hơn, rút mô tả ngoài sân thành một dòng địa điểm. Cụm bốn nút góc nhìn thu thành một nút 46px, mở bảng 2×2 khi cần; desktop vẫn hiện trực tiếp các nút.
+- Bản đồ mobile mở từ đáy màn hình, có Danh sách/Sơ đồ, tìm tên không dấu/không phân biệt hoa thường, trạng thái không kết quả và đủ 23 khu. Danh sách một cột, hàng cao 50px. Có nền che cảnh, nút đóng, Escape, giữ vòng Tab trong bảng và trả focus khi đóng. Tách TemplePlacePanel/TempleViewControls và CSS mobile riêng.
+- Hộp thoại hành lễ/lịch sử/phòng chung thành bảng đáy, nội dung có cuộn, nút đóng 44px; input/textarea 16px. Bổ sung safe-area và theo dõi visualViewport để chừa chiều cao khi bàn phím hiện. Chỉ đặt viewport-fit=cover khi ở chùa và khôi phục meta cũ khi rời. Bổ sung xử lý hai ngón phóng/thu trong nội điện, tránh nhả ngón thành click đi.
+- UI bản build: 320×740, 390×844, 844×390, desktop 1280×720 không tràn ngang. 320px đo Bản đồ/online/menu/Ra sân cao 44px, góc nhìn 46px, hành lễ 57px. 844×390: toolbar y76–122, dock y324–380, không chồng. Đã thử tìm DIEN, tìm không có kết quả, đổi Sơ đồ/chọn Chánh Điện, zoom/đổi chất lượng/Escape, menu lịch sử, dialog dâng hương và phòng chung; Shift+Tab trong bảng vòng về mục cuối, Escape trả focus Bản đồ. Chỉ xem dialog, không xác nhận nghi thức, không tạo/xóa lịch sử hay đổi biệt danh.
+- 493 regression + 529 tuyến/đích chuột, phòng chung, 11 GLB/18 nội thất pass. Main + 211 meta route + single build OK; tam-so-test.html 2259123 byte, trùng single, NUL=0. Chưa kiểm bằng bàn phím ảo/cảm ứng hai ngón hoặc đo FPS trên điện thoại thật; kiểm kích thước trình duyệt không thay cho các thử nghiệm đó. Trạng thái Git/Vercel/production báo trong bàn giao.
+
 ## 02/11/2026 — v4.8.0: Đại điện rộng và người cùng dạo chùa
 
 - Chánh Điện mở từ 11×7 lên 16×12 đơn vị cảnh (mặt sàn khoảng 2,49 lần), cao 6,4; có năm gian mặt tiền, cột/chân đá và hệ xà, hiên/bậc, cửa gỗ, trục đi giữa, 24 bồ đoàn, đèn lồng bát giác, chuông/mõ. Tượng chính/bệ/khám lớn hơn, bàn lễ phía trước, tủ kinh và đèn hai bên; bỏ hai tượng Quan Âm lặp ở điện chính. Dời ba điện lân cận để giữ khe mái và lối đi. Cập nhật va chạm cột/cửa/bục và bệ thờ.

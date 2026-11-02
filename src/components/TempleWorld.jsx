@@ -86,7 +86,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
         reset(){leaveArea();follow=false;camera.fov=47;camera.position.set(43,47,60).normalize().multiplyScalar(Math.max(96,100/camera.aspect));controls.target.set(0,0,1);resize();controls.update()},
       }
       controls.addEventListener('start',()=>{follow=false})
-      let press=null,lastAim=0,lastDrag=0;const activePointers=new Set()
+      let press=null,lastAim=0,lastDrag=0;const activePointers=new Map();let pinchDistance=null
       const pick=e=>{
         const rect=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1)
         ray.setFromCamera(pointer,camera)
@@ -105,11 +105,13 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
       }
       const navigate=result=>{if(!result||props.current.paused)return;if(result.spot)goTo(result.spot.id);else setPath(result.point)}
       const down=e=>{
-        activePointers.add(e.pointerId);press={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,pointer:e.pointerId,button:e.button,dragged:activePointers.size>1}
+        activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(activePointers.size===2){const [a,b]=[...activePointers.values()];pinchDistance=Math.hypot(a.x-b.x,a.y-b.y)}press={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,pointer:e.pointerId,button:e.button,dragged:activePointers.size>1}
         if(room||(e.pointerType==='mouse'&&e.button===0))renderer.domElement.setPointerCapture(e.pointerId)
       }
       const move=e=>{
         if(props.current.paused)return
+        if(activePointers.has(e.pointerId))activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY})
+        if(room&&e.pointerType==='touch'&&activePointers.size===2){const [a,b]=[...activePointers.values()],distance=Math.hypot(a.x-b.x,a.y-b.y);if(pinchDistance>0&&distance>0)interiorFov=THREE.MathUtils.clamp(interiorFov*pinchDistance/distance,42,82);pinchDistance=distance;if(press)press.dragged=true;return}
         if(press&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>7)press.dragged=true
         if(room&&press&&activePointers.size===1&&(e.buttons===2||e.pointerType==='touch')){
           yaw-=(e.clientX-press.lastX)*.0045;pitch=THREE.MathUtils.clamp(pitch-(e.clientY-press.lastY)*.003,-.7,.8);press.lastX=e.clientX;press.lastY=e.clientY;return
@@ -117,8 +119,8 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,ritual,paus
         const now=performance.now();if(now-lastAim<45)return;lastAim=now;const target=aim(e)
         if(e.pointerType==='mouse'&&e.buttons===1&&press?.dragged&&now-lastDrag>220){lastDrag=now;navigate(target)}
       }
-      const up=e=>{activePointers.delete(e.pointerId);if(!press||press.dragged||e.pointerId!==press.pointer||props.current.paused||e.button!==0){press=null;return}press=null;navigate(aim(e))}
-      const cancel=()=>{press=null;activePointers.clear();world.hoverMarker.visible=false}
+      const up=e=>{activePointers.delete(e.pointerId);pinchDistance=null;if(!press||press.dragged||e.pointerId!==press.pointer||props.current.paused||e.button!==0){press=null;return}press=null;navigate(aim(e))}
+      const cancel=()=>{press=null;pinchDistance=null;activePointers.clear();world.hoverMarker.visible=false}
       const leave=()=>{world.hoverMarker.visible=false}
       const context=e=>e.preventDefault()
       const wheel=e=>{if(room){e.preventDefault();interiorFov=THREE.MathUtils.clamp(interiorFov+e.deltaY*.035,42,82)}}
