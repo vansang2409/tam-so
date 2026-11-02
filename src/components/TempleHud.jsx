@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const paths={
+  bow:<><circle cx="9" cy="5" r="2"/><path d="m7 10 5 3 5-1 2 3M7 10l-2 6 5 5H3m7-8 3 7h7M2 23h20"/></>,
   person:<><circle cx="12" cy="5" r="3"/><path d="M6 21v-4a6 6 0 0 1 12 0v4M9 13v8m6-8v8"/></>,
   eye:<><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></>,
   camera:<><path d="M4 7h16M4 17h16M8 4v6m8 4v6"/><circle cx="8" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></>,

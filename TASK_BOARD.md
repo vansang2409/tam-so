@@ -188,3 +188,5 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | DC3D10 | Cùng online thấy nhân vật và di chuyển | Done | v4.8.0: Presence/Broadcast, biệt danh/danh sách, cùng khu, tối đa 24 khách hiển thị; hai phiên thực tế thấy nhau sau Resume Supabase |
 | DC3D11 | Tối ưu UI mobile chùa 3D | Done | v4.8.1: HUD gọn/nút lớn, map tìm kiếm và bảng đáy, safe-area; 320/390/844×390/1280 và luồng dialog/menu kiểm tra OK |
 | DC3D12 | Mặc định góc thứ ba và nút đổi góc | Done | v4.8.2: Góc 3/Góc 1 luôn hiện, giữ khi chuyển khu; camera có khoảng lùi/giới hạn, 408 góc thử và UI 1280/320/390 OK |
+| DC3D13 | Ngồi thiền và lễ ba lạy trong cảnh, đồng bộ tư thế online | Done | v4.9.0: thiền 1/3/5 phút, ba lạy 12s, đứng/dừng/đi tự đứng; 241 khung rig và hai phiên nhận pose |
+| DC3D14 | Góc thứ ba dễ nhìn hơn và xử lý mặt tiền che camera | Done | v4.9.0: cao/lùi/rộng/lệch vai, điện nhỏ tránh trụ cổng; 408 góc thử, 320/390/844×390/1280 và thanh ngang 56px |

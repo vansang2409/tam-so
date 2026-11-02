@@ -1,5 +1,7 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.9.0 — 02/11/2026:** Góc thứ ba cao/rộng/lệch vai hơn, mặt tiền không chắn camera trong điện; nút Ngồi thiền và Lễ Phật trong cảnh có đứng/dừng, ba lạy 12 giây và đồng bộ tư thế online. Mobile ngang gom sáu nút một hàng. Kiểm camera/rig/Presence, 493+529 regression và main/single pass.
+
 **Cập nhật v4.8.2 — 02/11/2026:** Chùa mặc định góc thứ ba trong/ngoài điện; có nút Góc 3/Góc 1 luôn hiện để đổi, giữ lựa chọn khi chuyển khu. Camera nội điện có khoảng lùi/giới hạn vách-trần; 408 tổ hợp camera, 493+529 kiểm tra và main/single build pass.
 
 **Cập nhật v4.8.1 — 02/11/2026:** UI mobile chùa: góc nhìn thu gọn, nút 44–57px, online lên thanh trên, bảng địa điểm có tìm kiếm/Danh sách/Sơ đồ và dialog mở từ đáy. Safe-area/visualViewport và pinch nội điện được bổ sung; 320/390/844×390/1280 đã kiểm, 493+529 kiểm tra và main/single build pass. Cảm ứng/bàn phím ảo trên điện thoại thật chưa kiểm.

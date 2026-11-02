@@ -2,6 +2,14 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.9.0: Camera thoáng hơn, ngồi thiền và lễ Phật trong cảnh
+
+- Nâng/lùi camera thứ ba, góc rộng 78° trên portrait (88° cho điện nhỏ), nhìn lệch qua vai và nhắm về khoảng phía trước nhân vật. Zoom có khoảng lùi 2,8–10 đơn vị. Giữ giới hạn vách/trần và chặn lùi sau trụ cổng phía nam. Mặt tiền gồm cột/cửa/biển hiệu, đèn ngoài hiên và lư hương tách khỏi phần tĩnh để ẩn khi đang trong chính điện đó; trở ra sân hiện lại. Gộp geometry riêng các nhóm để hạn chế draw call.
+- Có nút Ngồi thiền và Lễ Phật ngay trên cảnh. Thiền 1/3/5 phút, đóng hộp thoại thiết lập để thấy nhân vật ngồi và đồng hồ trên nút Đứng dậy. Lễ Phật gồm ba lạy trong 12 giây: chắp tay, cúi sát sàn, nâng người; rig thân/tay/đầu có khớp. Có dừng, tự kết thúc và tự đứng khi đi/chuyển khu/toàn cảnh; tự hướng nhân vật về bàn thờ trước hành lễ. Ngoài điện, Lễ Phật tự dẫn tới một điện phù hợp. Chế độ giảm chuyển động dùng tư thế quỳ tĩnh.
+- Đồng bộ tư thế/nhịp lạy qua phòng chung đang có, giới hạn 4Hz; khách bản cũ vẫn đứng bình thường, bỏ tư thế/nhịp sai. Tái sử dụng geometry cho khách, chỉ dựng tư thế đang cần thấy; giải phóng vật liệu/nhãn khi rời. Kết thúc tư thế vẫn được gửi khi hộp thoại tạm dừng renderer. Không ghi lịch sử cho thiền/lạy; lời nguyện/tài khoản vẫn riêng tư.
+- Hai nút mới cao 44px. Mobile portrait giữ hai hàng gọn; ngang 844×390 gom sáu hành động thành một hàng, dock cao 56px, tránh che chân nhân vật. Kiểm 390×844, 320×740, 844×390 và desktop 1280×720 không tràn ngang. Đã thử thiền một phút kết thúc thật, 3 phút rồi đứng dậy, click nền tự đứng, ba lạy/tự kết thúc/dừng giữa chừng, hai phiên thật nhận pose, và điện nhỏ. Không dâng hương/gửi lời nguyện/tạo/xóa lịch sử trong QA. Chưa đo FPS/cảm ứng trên điện thoại thật.
+- 493 regression + 529 tuyến + 408 góc camera + 241 khung rig/bản sao và kiểm phòng chung/11 GLB/18 nội thất pass. Main, 211 meta route và single build pass; tam-so-test.html 2270738 byte, trùng single, NUL=0. Trạng thái Git/Vercel/production báo trong bàn giao.
+
 ## 02/11/2026 — v4.8.2: Mặc định góc thứ ba và nút đổi góc
 
 - Mỗi lần mở chùa mặc định góc nhìn thứ ba, thấy nhân vật cả ngoài sân và khi vào điện; không tự đổi sang thứ nhất lúc hành lễ/chuyển khu. Nút Góc 3/Góc 1 luôn hiện ngoài bảng zoom trên desktop/mobile, có nhãn truy cập, trạng thái nhấn và bị vô hiệu khi cảnh chưa sẵn sàng. Giữ lựa chọn khi đi giữa các khu; Toàn cảnh đưa về góc thứ ba.

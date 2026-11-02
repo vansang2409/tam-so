@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { bindTempleBowRig } from './templeBowRig.js'
+import { bowFrame } from '../data/templeRituals.js'
 import { groundHeight } from '../data/templeWorld.js'
 import { MAX_VISIBLE_VISITORS } from '../data/templePresence.js'
 // Dùng lại geometry nhân vật, chỉ thêm vật liệu áo và nhãn tên cho từng khách.
@@ -17,10 +19,11 @@ export function createTempleVisitors(world) {
       for(const id of visitors.keys())if(!ids.has(id))remove(id)
       for(const p of visible){
         let v=visitors.get(p.id)
-        if(!v){const root=new THREE.Group(),body=world.standing.clone(true),shirt=world.body.material.clone();shirt.color.setHex(palette[p.color]);body.children[world.standing.children.indexOf(world.body)].material=shirt;body.visible=true;root.add(body);const tag=nameTag(p.name);root.add(tag);root.position.set(p.x,groundHeight(p.x,p.z),p.z);world.root.add(root);v={root,body,shirt,tag,name:p.name};visitors.set(p.id,v)}
+        if(!v){const root=new THREE.Group(),body=world.standing.clone(true),seated=world.seated.clone(true),praying=world.praying.clone(true),shirt=world.body.material.clone();shirt.color.setHex(palette[p.color]);for(const pose of [body,seated,praying]){pose.traverse(o=>{if(o.isMesh&&o.material===world.body.material)o.material=shirt});root.add(pose)}const rig=bindTempleBowRig(praying),tag=nameTag(p.name);root.add(tag);root.position.set(p.x,groundHeight(p.x,p.z),p.z);world.root.add(root);v={root,body,seated,praying,rig,shirt,tag,name:p.name,progress:0};visitors.set(p.id,v)}
         if(v.name!==p.name){v.root.remove(v.tag);v.tag.material.map.dispose();v.tag.material.dispose();v.tag=nameTag(p.name);v.root.add(v.tag);v.name=p.name}
         const blend=reduced?1:1-Math.exp(-dt*12);v.root.position.lerp(new THREE.Vector3(p.x,groundHeight(p.x,p.z),p.z),blend)
         v.root.rotation.y+=Math.atan2(Math.sin(p.yaw-v.root.rotation.y),Math.cos(p.yaw-v.root.rotation.y))*blend
+        v.body.visible=p.pose!=='meditating'&&p.pose!=='bowing';v.seated.visible=p.pose==='meditating';v.praying.visible=p.pose==='bowing';if(p.pose==='bowing'){v.progress=THREE.MathUtils.lerp(v.progress,p.bowProgress||0,blend);v.rig.apply(reduced?0:v.progress)}else v.progress=0;v.tag.position.y=p.pose==='meditating'?1.65:p.pose==='bowing'?1.7-bowFrame(v.progress).amount*.6:2.12
         const gait=p.moving&&!reduced?Math.sin(time*12)*.42:0;v.body.children[legIndices[0]].rotation.x=gait;v.body.children[legIndices[1]].rotation.x=-gait
         v.root.visible=space==='courtyard'||Math.hypot(p.x-position.x,p.z-position.z)>.65
       }

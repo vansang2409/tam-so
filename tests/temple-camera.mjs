@@ -11,7 +11,8 @@ for(const s of WORLD_SPOTS.filter(s=>['main','hall','house','shrine','tower'].in
     assert.ok(p.x>=s.x-s.width/2+.239&&p.x<=s.x+s.width/2-.239,s.id+' không xuyên vách bên')
     assert.ok(p.z>=s.centerZ-s.depth/2+.279&&p.z<=s.centerZ+s.depth/2+3.201,s.id+' không xuyên vách sau')
     assert.ok(p.y<=s.architecture.height-.279,s.id+' không xuyên trần')
-    assert.ok(pose.fov>=60&&pose.fov<=70);poses++
+    assert.ok(p.z<=22.101,s.id+' không lùi ra sau trụ cổng/tường sân phía nam')
+    assert.ok(pose.fov>=60&&pose.fov<=88);poses++
   }
   const initial=thirdPersonPose(position,room,{aspect:.46})
   assert.ok(initial.position.z-position.z>1.8,s.id+' mặc định đủ lùi để thấy nhân vật')

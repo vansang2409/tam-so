@@ -7,7 +7,9 @@ export function readVisitor(value) {
   if(!value||typeof value!=='object'||typeof value.id!=='string'||!/^[a-zA-Z0-9-]{8,64}$/.test(value.id))return null
   const {x,z,yaw,seq}=value,b=WORLD_BOUNDS
   if(![x,z,yaw,seq].every(Number.isFinite)||x<b.minX||x>b.maxX||z<b.minZ||z>b.maxZ||Math.abs(yaw)>Math.PI*4||!Number.isSafeInteger(seq)||seq<0||!spaces.has(value.space))return null
-  return {id:value.id,name:visitorName(value.name),x,z,yaw,seq,space:value.space,moving:value.moving===true,color:Math.abs([...value.id].reduce((a,c)=>a+c.charCodeAt(0),0))%5}
+  if(value.pose!==undefined&&!['standing','meditating','bowing'].includes(value.pose))return null
+  if(value.bowProgress!==undefined&&(!Number.isFinite(value.bowProgress)||value.bowProgress<0||value.bowProgress>1))return null
+  return {pose:value.pose||'standing',bowProgress:value.bowProgress||0,id:value.id,name:visitorName(value.name),x,z,yaw,seq,space:value.space,moving:value.moving===true,color:Math.abs([...value.id].reduce((a,c)=>a+c.charCodeAt(0),0))%5}
 }
 // Presence chỉ giữ danh sách chậm thay đổi; chuyển động dùng Broadcast tối đa 4 lần/giây.
 export function connectTemplePresence(client,{id,name,onChange,now=()=>Date.now(),schedule=setInterval,cancel=clearInterval}) {
@@ -48,7 +50,7 @@ export function connectTemplePresence(client,{id,name,onChange,now=()=>Date.now(
   },125)
   emit()
   return {
-    update(p){const next=readVisitor({...local,...p,id,seq});if(!next)return;dirty=dirty||['x','z','yaw','space','moving'].some(k=>next[k]!==local[k]);local=next},
+    update(p){const next=readVisitor({...local,...p,id,seq});if(!next)return;dirty=dirty||['x','z','yaw','space','moving','pose','bowProgress'].some(k=>next[k]!==local[k]);local=next},
     rename(value){local.name=visitorName(value);lastTrack='';dirty=true;track();send()},
     close(){if(stopped)return;stopped=true;joined=false;cancel(timer);client.removeChannel(channel).catch(()=>{});members.clear();peers.clear()}
   }
