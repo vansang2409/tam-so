@@ -1,5 +1,7 @@
 # SUMMARY — Tam Sở (cập nhật 30/06/2026)
 
+**Cập nhật v4.8.2 — 02/11/2026:** Chùa mặc định góc thứ ba trong/ngoài điện; có nút Góc 3/Góc 1 luôn hiện để đổi, giữ lựa chọn khi chuyển khu. Camera nội điện có khoảng lùi/giới hạn vách-trần; 408 tổ hợp camera, 493+529 kiểm tra và main/single build pass.
+
 **Cập nhật v4.8.1 — 02/11/2026:** UI mobile chùa: góc nhìn thu gọn, nút 44–57px, online lên thanh trên, bảng địa điểm có tìm kiếm/Danh sách/Sơ đồ và dialog mở từ đáy. Safe-area/visualViewport và pinch nội điện được bổ sung; 320/390/844×390/1280 đã kiểm, 493+529 kiểm tra và main/single build pass. Cảm ứng/bàn phím ảo trên điện thoại thật chưa kiểm.
 
 **Cập nhật v4.8.0 — 02/11/2026:** Chánh Điện tăng mặt sàn khoảng 2,49 lần, có các gian cột/hiên/bồ đoàn/trục lễ và bố cục bàn thờ trung tâm mới. Thêm người cùng online bằng Supabase Presence/Broadcast, thấy nhân vật/tên/chuyển động trong cùng khu và bảng danh sách ở toolbar. Hai phiên thật đã thấy nhau sau khi user khôi phục Supabase; regression/tuyến/GLB/nội thất/phòng chung pass.

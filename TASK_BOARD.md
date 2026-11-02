@@ -187,3 +187,4 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | DC3D09 | Mở rộng và sửa bố cục Chánh Điện | Done | v4.8.0: 16×12, năm gian/cột/trục lễ, bàn thờ trung tâm; 529 tuyến và va chạm mới pass |
 | DC3D10 | Cùng online thấy nhân vật và di chuyển | Done | v4.8.0: Presence/Broadcast, biệt danh/danh sách, cùng khu, tối đa 24 khách hiển thị; hai phiên thực tế thấy nhau sau Resume Supabase |
 | DC3D11 | Tối ưu UI mobile chùa 3D | Done | v4.8.1: HUD gọn/nút lớn, map tìm kiếm và bảng đáy, safe-area; 320/390/844×390/1280 và luồng dialog/menu kiểm tra OK |
+| DC3D12 | Mặc định góc thứ ba và nút đổi góc | Done | v4.8.2: Góc 3/Góc 1 luôn hiện, giữ khi chuyển khu; camera có khoảng lùi/giới hạn, 408 góc thử và UI 1280/320/390 OK |

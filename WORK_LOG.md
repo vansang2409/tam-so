@@ -2,6 +2,13 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.8.2: Mặc định góc thứ ba và nút đổi góc
+
+- Mỗi lần mở chùa mặc định góc nhìn thứ ba, thấy nhân vật cả ngoài sân và khi vào điện; không tự đổi sang thứ nhất lúc hành lễ/chuyển khu. Nút Góc 3/Góc 1 luôn hiện ngoài bảng zoom trên desktop/mobile, có nhãn truy cập, trạng thái nhấn và bị vô hiệu khi cảnh chưa sẵn sàng. Giữ lựa chọn khi đi giữa các khu; Toàn cảnh đưa về góc thứ ba.
+- Camera sau lưng trong điện có góc rộng phù hợp portrait/desktop, zoom theo khoảng lùi, xoay bằng chuột phải/vuốt; giới hạn camera theo vách bên/vách hậu và trần của điện, chừa khoảng qua cửa trước mở. Tượng nhân vật hướng vào bàn thờ khi tới nơi, ẩn dấu chỉ vị trí trên đầu khi ở trong khu để không che điện thờ. Góc thứ nhất vẫn đi/nhìn/zoom được ngoài sân và trong điện; đổi qua lại không dựng lại renderer hay đổi vị trí nhân vật.
+- Tách templeCamera.js để kiểm tra vị trí camera: 408 tổ hợp góc/tỷ lệ/elevation ở 17 công trình có chế độ inside, hữu hạn và không vượt giới hạn vách/trần đã định nghĩa. 493 regression, 529 tuyến, phòng chung, 11 GLB/18 hồ sơ nội thất pass. Main + 211 meta route + single build OK; HTML 2263709 byte, NUL=0.
+- Browser: thử mặc định thứ ba ở cổng/Chánh Điện, đổi sang thứ nhất/ẩn nhân vật, đổi lại thứ ba/hiện nhân vật; giữ thứ nhất khi Ra sân và tới Miếu Hộ Pháp; nút Toàn cảnh từ thứ nhất trở về thứ ba/outside. UI desktop 1280 và mobile 320/390 đã kiểm. Đi bằng click trong Chánh Điện tới -1,3/-0,5; đổi 3→1→3 giữ nguyên vị trí, nhân vật hiện lại đúng và không thấy lỗi JavaScript. Không tạo/xóa nghi thức/lịch sử, không đổi biệt danh; cảm ứng/FPS trên máy thật chưa kiểm. Trạng thái Git/Vercel/production báo trong bàn giao.
+
 ## 02/11/2026 — v4.8.1: UI mobile cho chùa 3D
 
 - Thanh trên mobile giữ logo, Bản đồ, người online và menu; Lịch sử/âm thanh chuyển vào menu. Vùng chạm chính 44–57px; tên điện/Ra sân và thanh hành lễ gọn hơn, rút mô tả ngoài sân thành một dòng địa điểm. Cụm bốn nút góc nhìn thu thành một nút 46px, mở bảng 2×2 khi cần; desktop vẫn hiện trực tiếp các nút.

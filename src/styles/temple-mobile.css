@@ -33,3 +33,9 @@
 @keyframes tw-mobile-sheet-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:640px),(max-width:1000px) and (max-height:500px){.tw-places,.tw-dialog[open]{animation:tw-mobile-sheet-in .18s ease-out}}
 @media(prefers-reduced-motion:reduce){.tw-places,.tw-dialog[open]{animation:none}}
+
+/* Đổi góc nhìn luôn hiện, tách khỏi bảng zoom/độ nét. */
+.tw-view-tools .tw-perspective-button{width:44px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:8px;background:#ffffff07;color:var(--tw-hud-text)}.tw-perspective-button svg{width:18px!important;height:18px!important}.tw-perspective-button>span{font-size:9px;line-height:1.2;font-weight:600}
+@media(max-width:640px),(max-width:1000px) and (max-height:500px){.tw-view-tools{flex-direction:row;gap:8px}.tw-view-tools .tw-perspective-button{width:46px;height:46px;border:1px solid var(--tw-hud-border);border-radius:12px;background:var(--tw-hud);box-shadow:var(--tw-hud-shadow);backdrop-filter:blur(12px)}.tw-view-tools .tw-perspective-button[aria-pressed="true"]{background:#705438;color:#ffebc8}.tw-perspective-button>span{font-size:10px}.tw-interior-bar{max-width:calc(100vw - 138px - env(safe-area-inset-left) - env(safe-area-inset-right))}.tw-intro{max-width:calc(100vw - 138px)}}
+
+@media(max-width:640px),(max-width:1000px) and (max-height:500px){.tw-view-tools .tw-perspective-button:hover:not(:disabled),.tw-view-tools .tw-camera-toggle:hover:not(:disabled){background:#3c3024}.tw-view-tools .tw-perspective-button[aria-pressed="true"]:hover:not(:disabled),.tw-view-tools .tw-camera-toggle[aria-expanded="true"]:hover:not(:disabled){background:#705438}}
