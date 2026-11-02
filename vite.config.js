@@ -6,6 +6,8 @@ import react from '@vitejs/plugin-react'
 // thi asset o route con (vd /con-giap) se phan giai sai. Vercel tu dat env VERCEL=1 khi build.
 export default defineConfig({
   plugins: [react()],
+  // Chỉ quét entry ứng dụng, không quét bản HTML đóng gói dùng để chia sẻ offline.
+  optimizeDeps: { entries: ['index.html'] },
   base: process.env.VERCEL ? '/' : './',
   build: {
     // Three.js duoc tach rieng cho /di-chua 3D; raw chunk >500KB la co chu dich.

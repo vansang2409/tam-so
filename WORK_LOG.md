@@ -2,6 +2,16 @@
 
 > Log chi tiết cũ đã gom thành changelog gọn bên dưới. Chi tiết kiến trúc/gotcha: CLAUDE.md · bàn giao: SUMMARY.md · backlog: TASK_BOARD.md.
 
+## 02/11/2026 — v4.4.0: Chùa Tam Sở 3D liên thông
+
+- Phát triển từ chùa 2D: ánh xạ đủ 23 ID/tên khu hiện có thành một khuôn viên Three.js, có sân/lối đi/tường bao, điện thờ, tháp chuông, hồ rùa, hồ sen và vườn thiền.
+- Nhân vật áo lam chạm để đi, tìm đường tránh tường/bàn thờ/lư hương/cây/hồ; vào điện mở mái để thấy nội thất. Bản đồ 23 khu, xoay/zoom/toàn cảnh, chế độ nhẹ.
+- Dâng hương, lời nguyện, xin xăm, xin keo và lịch sử dùng thành phần/key lưu cũ; thêm chuông tổng hợp (mặc định tắt tiếng) và phiên thiền 1/3/5 phút. Giữ nguyên chùa ảnh qua ?view=classic, có đường quay lại 3D.
+- Kiểm tra: 493 regression pass; 529 tuyến giữa 23 khu không xuyên vật cản; build production + 211 meta route; bản một file khoảng 2,06 MB, NUL=0.
+- Browser bản build: 1366×900, 390×844, 320×740 không overflow ngang; đi giữa các khu, xin xăm/keo trả kết quả, lịch sử xăm/keo có ở bản 2D; dâng hương/lời nguyện đã kiểm tra ở dev; thiền 1 phút hoàn thành thật. Chủ động làm mất WebGL → fallback → mở bản 2D → quay lại 3D thành công.
+- Mô hình stylized tự dựng bằng geometry; không dùng model/tài nguyên của trang tham khảo. Chưa đo FPS trên điện thoại thật.
+- Trạng thái Git/phát hành: xem phản hồi bàn giao và trạng thái deployment; build cục bộ không đồng nghĩa đã lên production.
+
 ## Changelog theo version
 - **v4.3.10** - **Bo popup giua Di Nha Tho**: theo feedback, bo nen/border/shadow/backdrop cua card chinh giua scene, an thumbnail anh trong card; giu anh tung khu lam scene chinh, them gradient doc chu nhe va de CTA noi truc tiep tren anh. Bump cache `tamso-v4.3.10`.
 - **v4.3.9** - **Anh rieng cho tung khu Di Nha Tho**: sinh them 5 anh AI cho nen cau nguyen, kinh mau, thanh ca, sach suy niem va san chuong; toi uu PNG/WebP/JPG; them `image` cho `NHATHO_SPACES`; `/di-nha-tho` doi background + khung anh 3D theo khu dang chon; mobile ha cum nen de khong che CTA; bump cache `tamso-v4.3.9`; `node tests/run.mjs` **490 pass**; build `/tmp/b439` main+single va Playwright desktop/mobile/single OK.

@@ -1,3 +1,4 @@
+import './temple-world.mjs'
 /* Bộ kiểm thử logic Tam Sở (thuần Node ESM, không cần framework).
  * Chạy: npm test   (hoặc: node tests/run.mjs)
  * Bảo vệ các mốc tính toán đã kiểm chứng khỏi hồi quy. */
@@ -858,7 +859,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
   ok(DC.addXamLichSu({ so: 3 }).length === 1 && DC.addXamLichSu({ so: 3 })[0].so === 3, 'addXamLichSu: trả về danh sách có thẻ vừa thêm (không lưu được trong Node nhưng vẫn tính đúng trong bộ nhớ, giống addLoiNguyen)')
   ok(DC.addKeoLichSu({ id: 'am-duong', mat: ['Sấp', 'Ngửa'] }).length === 1 && DC.addKeoLichSu({ id: 'am-duong', mat: ['Sấp', 'Ngửa'] })[0].id === 'am-duong', 'addKeoLichSu: trả về danh sách có keo vừa thêm')
 
-  const dcj = readFileSync(new URL('../src/pages/DiChua.jsx', import.meta.url), 'utf8')
+  const dcj = readFileSync(new URL('../src/pages/DiChuaClassic.jsx', import.meta.url), 'utf8')
   ok(dcj.includes('loadXamLichSu') && dcj.includes('loadKeoLichSu') && dcj.includes('clearLoiNguyen') && dcj.includes('clearKeoLichSu') && dcj.includes("setModal('lichsu')"), 'DiChua.jsx: có nút + modal Lịch Sử (lời nguyện + xăm + keo đã xin) wire đủ')
   const sxj = readFileSync(new URL('../src/components/ShakeXam.jsx', import.meta.url), 'utf8')
   const xkj = readFileSync(new URL('../src/components/XinKeo.jsx', import.meta.url), 'utf8')
@@ -973,7 +974,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // Supabase Auth: đăng ký/đăng nhập tuỳ chọn
 {
   const pkgAuth = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-  ok(pkgAuth.version === '4.3.10', 'package.json: bump version v4.3.10 cho Di Nha Tho bo popup giua')
+  ok(pkgAuth.version === '4.4.0', 'package.json: bump version v4.4.0 cho chua lien thong 3D')
   ok(Boolean(pkgAuth.dependencies?.['@supabase/supabase-js']), 'package.json: co dependency @supabase/supabase-js')
   ok(Boolean(pkgAuth.dependencies?.three), 'package.json: co dependency three cho Di Chua 3D')
   const envEx = readFileSync(new URL('../.env.example', import.meta.url), 'utf8')
@@ -1010,7 +1011,7 @@ ok(['pages/Home.jsx','pages/Numerology.jsx','pages/ConGiap.jsx','pages/HopTuoi.j
 // PWA runtime cache: route chunks sau code-split phai cache duoc khi offline/doi deploy
 {
   const sw = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8')
-  ok(sw.includes("const CACHE = 'tamso-v4.3.10'"), 'sw.js: bump CACHE v4.3.10')
+  ok(sw.includes("const CACHE = 'tamso-v4.4.0'"), 'sw.js: bump CACHE v4.4.0')
   ok(sw.includes('ASSET_RE') && sw.includes('^\\/assets\\/.+\\.(js|css|map)$'), 'sw.js: nhan dien Vite hashed assets/chunks')
   ok(sw.includes('staleWhileRevalidate(req)') && sw.includes('cacheFirst(req)') && sw.includes('networkFirst(req)'), 'sw.js: tach strategy navigation/chunk/media')
   ok(sw.includes('if (ASSET_RE.test(url.pathname))') && sw.includes('if (MEDIA_RE.test(url.pathname))'), 'sw.js: chunk dung stale-while-revalidate, media dung cache-first')

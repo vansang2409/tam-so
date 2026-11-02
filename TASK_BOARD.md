@@ -167,3 +167,11 @@ Chủ dự án yêu cầu: (1) giống ảnh mockup 100%, (2) tự tạo hình �
 | AUTH03 | Dang nhap bang Google OAuth | Account/Supabase | High | Done (v4.1.2) | Nut Google tren `/dang-nhap`; `signInWithOAuth` provider google + redirect ve `/dang-nhap`; loi than thien khi chua bat provider; 408 test pass; build `/tmp/b` main+single OK, single NUL=0 |
 | AUTH04 | Sync Ho so tong hop bang Supabase DB/RLS | Account/Supabase | High | Done (v4.1.4) | `supabase/schema.sql` tao `public.profiles` lien ket `auth.users(id)` + RLS owner-only; `/ho-so` tai/luu profile khi da dang nhap, fallback localStorage cho khach; an banner sync ky thuat o trang thai binh thuong, chi canh bao khi loi; 421 test pass; build `/tmp/b` main+single OK, single NUL=0 |
 | NAV01 | Bo sung menu Trang chu tren desktop nav | UX/Nav | High | Done (v4.1.5) | `Trang chu` hien ro trong nav desktop, van giu logo link; mobile da co san; 422 test pass; build `/tmp/b` main+single OK, single NUL=0 |
+
+## Đi Chùa 3D — 02/11/2026
+
+| ID | Task | TT | Kết quả |
+|---|---|---|---|
+| DC3D01 | Nâng chùa 2D thành khuôn viên 3D đủ 23 khu liên thông | Done | Tên/ID giữ nguyên, đường đi tránh vật cản; 529 tuyến pass |
+| DC3D02 | Nghi thức, chuông, thiền, lịch sử dùng chung, chuyển lại 2D | Done | Browser E2E các luồng chính, thiền hoàn thành 1 phút, fallback WebGL và chuyển chế độ OK |
+| DC3D03 | Responsive, build và bản xem thử một file | Done | 1366/390/320 không tràn ngang; 493 regression pass, main + single build OK |
