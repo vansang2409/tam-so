@@ -27,7 +27,7 @@ const paths={
 export function TempleActionIcon({type}) {
   return <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[type]||paths.visit}</svg>
 }
-export function TempleOptions({onHelp,onClassic,onCredits,onHistory,onSound,sound}) {
+export function TempleOptions({onHelp,onClassic,onCredits,onHistory,onSound,onCharacter,sound}) {
   const [open,setOpen]=useState(false),ref=useRef(null),trigger=useRef(null)
   useEffect(()=>{
     if(!open)return
@@ -39,6 +39,6 @@ export function TempleOptions({onHelp,onClassic,onCredits,onHistory,onSound,soun
   const choose=handler=>{setOpen(false);trigger.current?.focus();handler()}
   return <div className="tw-options" ref={ref}>
     <button ref={trigger} type="button" className="tw-options-trigger" aria-label="Tuỳ chọn không gian" aria-expanded={open} aria-controls="temple-options" onClick={()=>setOpen(v=>!v)}><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
-    {open&&<nav id="temple-options" className="tw-options-panel" aria-label="Tuỳ chọn không gian"><button className="tw-options-mobile" onClick={()=>choose(onHistory)}>Lịch sử hành lễ</button><button className="tw-options-mobile" onClick={()=>choose(onSound)}>{sound?'Tắt âm thanh':'Bật âm thanh'}</button><button onClick={()=>choose(onHelp)}>Hướng dẫn di chuyển</button><button onClick={()=>choose(onClassic)}>Không gian ảnh ↗</button><button onClick={()=>choose(onCredits)}>Ghi công 3D</button><p>Chùa hư cấu · Một không gian chiêm nghiệm</p></nav>}
+    {open&&<nav id="temple-options" className="tw-options-panel" aria-label="Tuỳ chọn không gian"><button className="tw-options-mobile" onClick={()=>choose(onHistory)}>Lịch sử hành lễ</button><button className="tw-options-mobile" onClick={()=>choose(onSound)}>{sound?'Tắt âm thanh':'Bật âm thanh'}</button>{onCharacter&&<button onClick={()=>choose(onCharacter)}>Chọn nhân vật</button>}<button onClick={()=>choose(onHelp)}>Hướng dẫn di chuyển</button><button onClick={()=>choose(onClassic)}>Không gian ảnh ↗</button><button onClick={()=>choose(onCredits)}>Ghi công 3D</button><p>Chùa hư cấu · Một không gian chiêm nghiệm</p></nav>}
   </div>
 }

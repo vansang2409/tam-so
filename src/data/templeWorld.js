@@ -1,6 +1,8 @@
 import { TEMPLE_ARCHITECTURE } from './templeArchitecture.js'
 import { DICHUA_LOCATIONS } from './dichua.js'
+import { LANDSCAPE_OBSTACLES } from './templeLandscape.js'
 // Mỗi khu cũ có đúng một vị trí trong cùng khuôn viên; z tăng về phía cổng.
+export const TEMPLE_CENSER_HALF=.45, TEMPLE_CENSER_FRONT_OFFSET=1.1, TEMPLE_COURTYARD_BASE_TOP=.04
 export const WORLD_BOUNDS = { minX: -25.5, maxX: 25.5, minZ: -26.5, maxZ: 27 }
 const layout = {
   'cong-tam-quan': [0,23,'gate'], 'chanh-dien': [0,-3,'main'],
@@ -21,7 +23,7 @@ export const WORLD_SPOTS = DICHUA_LOCATIONS.map(loc => {
   const architecture=TEMPLE_ARCHITECTURE[loc.id]||{}
   const width=architecture.width||(kind==='pond'?6:3.4),depth=architecture.depth||3
   const approach=kind==='gate'||kind==='meditate'?0:['main','hall','house','shrine','tower'].includes(kind)?depth/2-.8:kind==='pond'||kind==='garden'?2:depth/2+1
-  return { ...loc, label:loc.ten, short:loc.ten, x, z:z+approach, centerZ:z, kind, width, depth, architecture, censerX:loc.huong&&width<4.5?-width*.2:0,
+  return { ...loc, label:loc.ten, short:loc.ten, x, z:z+approach, centerZ:z, kind, width, depth, architecture, censerX:loc.id==='chanh-dien'?-1.15:loc.huong&&width<4.5?-width*.2:0,
     action:loc.huong?'incense':kind==='bell'?'bell':kind==='meditate'?'meditate':'visit', note:loc.moTa }
 })
 export const WORLD_TREES = [
@@ -30,10 +32,14 @@ export const WORLD_TREES = [
   ...[[-4,0],[4,-2],[3,3]].map(([dx,dz])=>({x:12+dx,z:14+dz,size:.85})),
   {x:-23,z:3,size:1.4},
 ]
-export const WORLD_OBSTACLES = [[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD_SPOTS.flatMap(s => {
+// The garden basin sits one metre behind its map destination. Share this origin
+// with rendering so water, its stone rim and navigation cannot drift apart.
+export const templeBasinCenterZ=spot=>spot.centerZ-(spot.kind==='garden'?1:0)
+
+export const WORLD_OBSTACLES = [...LANDSCAPE_OBSTACLES,[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD_SPOTS.flatMap(s => {
   const {x,centerZ:z,kind,depth}=s
   if(kind==='gate')return [-4,-2,2,4].map(x=>[x-.26,x+.26,22.6,23.4])
-  if(kind==='garden')return [[x-3.2,x+3.2,z-2.7,z+.7]]
+  if(kind==='garden'||kind==='pond'){const basinZ=templeBasinCenterZ(s);return [[x-3.2,x+3.2,basinZ-1.7,basinZ+1.7]]}
   if(kind==='statue')return [[x-1,x+1,z-1,z+1],[x-.45,x+.45,z+1,z+1.9]]
   if(kind==='meditate')return []
   const width=s.width
@@ -45,8 +51,10 @@ export const WORLD_OBSTACLES = [[-26,-4.5,22.8,23.2],[4.5,26,22.8,23.2],...WORLD
     [x+width/2-.12,x+width/2+.05,z-depth/2,z+depth/2-.35],
     [x-width/2,x+width/2,z-depth/2-.1,z-depth/2+.2],
     // Khoảng chiếm chỗ của bàn thờ, gồm cả khám thờ và đồ lễ hai bên.
-    [x-width*.44,x+width*.44,z-depth/2+.2,z-depth/2+(s.architecture.altarDepth||(s.architecture.style==='duoc-su'?2.15:1.35))],
-    ...(s.huong?[[x+s.censerX-.43,x+s.censerX+.43,z+depth/2+.1,z+depth/2+.65]]:[]),
+    [x-width*.44,x+width*.44,z-depth/2+.2,z-depth/2+(s.architecture.altarDepth||(s.architecture.style==='duoc-su'?2.15:s.huong?1.60:1.35))],
+    // The reading table projects beyond the rear furniture block into the library aisle.
+    ...(s.architecture.style==='thu-vien'?[[x-1.2,x+1.2,z-1.025,z-.375]]:[]),
+    ...(s.huong?[[x+s.censerX-TEMPLE_CENSER_HALF,x+s.censerX+TEMPLE_CENSER_HALF,z+depth/2+TEMPLE_CENSER_FRONT_OFFSET-TEMPLE_CENSER_HALF,z+depth/2+TEMPLE_CENSER_FRONT_OFFSET+TEMPLE_CENSER_HALF]]:[]),
   ]
   return [[x-width/2,x+width/2,z-depth/2,z+depth/2]]
 })]
@@ -59,7 +67,18 @@ export function isWalkable(x, z) {
 }
 export function groundHeight(x, z) {
   const building=WORLD_SPOTS.find(s=>['main','hall','house','shrine','tower','bell'].includes(s.kind)&&Math.abs(x-s.x)<(s.width/2+.2)&&Math.abs(z-s.centerZ)<s.depth/2+.4)
-  return building ? .34 : .07
+  if(building)return .34
+  const meditation=WORLD_SPOTS.find(s=>s.kind==='meditate'&&Math.hypot(x-s.x,z-s.centerZ)<=2.3+1e-8)
+  if(meditation){
+    // Match the circular platform and the tapered cushions built by createTempleWorld.
+    const dx=x-meditation.x,dz=z-meditation.centerZ
+    for(const [cx,cz]of [[0,0],[-1,1],[1,1]]){
+      const radius=Math.hypot(dx-cx,dz-cz)
+      if(radius<.6)return .16+.12*Math.min(1,(.6-radius)/.08)
+    }
+    return .16
+  }
+  return .07
 }
 export function nearestSpot(x,z, radius = 2.2) {
   return WORLD_SPOTS.reduce((best, spot) => {

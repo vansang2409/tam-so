@@ -1,4 +1,7 @@
 export const BOW_DURATION=12000
+// The page also publishes this state while a dialog pauses the renderer.
+export const templePose=({moving=false,bowing=false,meditating=false,ritual=false}={})=>
+  !moving&&(bowing||ritual)?'bowing':!moving&&meditating?'meditating':'standing'
 const clamp=n=>Math.max(0,Math.min(1,n))
 const smooth=n=>{const t=clamp(n);return t*t*(3-2*t)}
 // Ba nhịp: chắp tay, cúi/chạm trán gần sàn, nâng người về tư thế quỳ.

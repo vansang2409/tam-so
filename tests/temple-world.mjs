@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict'
 import { DICHUA_LOCATIONS } from '../src/data/dichua.js'
-import { WORLD_SPOTS, WORLD_BOUNDS, isWalkable, findWorldPath, nearestSpot, canWalkSegment } from '../src/data/templeWorld.js'
+import { LANDSCAPE_PROPS } from '../src/data/templeLandscape.js'
+import { WORLD_SPOTS, WORLD_BOUNDS, templeBasinCenterZ, TEMPLE_CENSER_HALF, TEMPLE_CENSER_FRONT_OFFSET, isWalkable, findWorldPath, nearestSpot, canWalkSegment, groundHeight } from '../src/data/templeWorld.js'
 assert.equal(WORLD_SPOTS.length,23)
 assert.deepEqual(WORLD_SPOTS.map(s=>s.id).sort(),DICHUA_LOCATIONS.map(s=>s.id).sort())
 assert.equal(new Set(WORLD_SPOTS.map(s=>s.id)).size,23)
 assert.equal(isWalkable(NaN,0),false)
 assert.equal(isWalkable(Infinity,0),false)
+for(const prop of LANDSCAPE_PROPS)assert.equal(isWalkable(prop.x,prop.z),false,prop.id+' is represented by a navigation obstacle')
 assert.equal(isWalkable(WORLD_BOUNDS.maxX+1,0),false)
 assert.deepEqual(findWorldPath({x:0,z:24.8},{x:100,z:0}),[])
 assert.equal(nearestSpot(100,100),null)
@@ -55,7 +57,36 @@ for(const t of WORLD_TREES.filter(t=>Math.abs(t.x)>25))for(const s of WORLD_SPOT
 const main=WORLD_SPOTS.find(s=>s.id==='chanh-dien')
 assert.ok(main.width*main.depth>=190)
 for(const [dx,dz] of main.architecture.pillars)assert.equal(isWalkable(main.x+dx,main.centerZ+dz),false,'Cột đại điện có va chạm')
-for(const z of [-3.8,-2,0,2,4.3])assert.ok(isWalkable(0,z),'Trục giữa nối từ sân tới trước bàn thờ')
+for(let z=-3.8;z<=5;z+=.1)assert.ok(isWalkable(0,z),'Trục giữa nối từ sân tới trước bàn thờ, không bị bệ lư chắn')
 for(const x of [-6.65,6.65])assert.equal(isWalkable(x,main.centerZ+2.3),false,'Bục chuông mõ có va chạm')
 for(const x of [-6.45,-3.9,3.9,6.45])assert.equal(isWalkable(x,main.centerZ+main.depth/2-.26),false,'Vách cửa bên có va chạm')
 console.log('Đại điện: 192 m², trục giữa thông thoáng, cột/cửa/bàn thờ và bục chuông mõ có va chạm.')
+
+const library=WORLD_SPOTS.find(s=>s.id==='thu-vien')
+assert.equal(isWalkable(library.x,library.centerZ-.5),false,'The front half of the library reading table blocks walking')
+assert.ok(isWalkable(library.x,library.centerZ+.15),'A reading position remains in front of the table')
+assert.ok(isWalkable(library.x+1.55,library.centerZ-.5),'The side aisle stays open around the reading table')
+
+const meditation=WORLD_SPOTS.find(s=>s.kind==='meditate')
+assert.equal(groundHeight(meditation.x,meditation.centerZ),.28,'The center cushion supports the visitor at its top')
+for(const [x,z]of [[-1,1],[1,1]])assert.equal(groundHeight(meditation.x+x,meditation.centerZ+z),.28,'Both side cushions support the visitor')
+assert.ok(Math.abs(groundHeight(meditation.x+.56,meditation.centerZ)-.22)<1e-10,'Cushion slope matches its tapered side')
+assert.equal(groundHeight(meditation.x+.6,meditation.centerZ),.16,'Cushion edge returns to the platform')
+assert.equal(groundHeight(meditation.x+1.8,meditation.centerZ),.16,'The circular stone platform is above the courtyard')
+assert.equal(groundHeight(meditation.x+2.3,meditation.centerZ),.16,'The circular platform includes its edge')
+assert.equal(groundHeight(meditation.x+2.31,meditation.centerZ),.07,'Outside the platform uses the courtyard height')
+assert.equal(groundHeight(meditation.x+2,meditation.centerZ+2),.07,'Square corners outside the circular platform stay on the courtyard')
+
+for(const spot of WORLD_SPOTS.filter(s=>s.kind==='pond'||s.kind==='garden')){
+  const basinZ=templeBasinCenterZ(spot)
+  for(const dz of [-1.4,1.4])assert.equal(isWalkable(spot.x,basinZ+dz),false,spot.id+' water and both stone rims follow the rendered basin offset')
+  if(spot.kind==='garden')assert.equal(isWalkable(spot.x,spot.centerZ+1.4),true,'Garden dry approach stays open ahead of its offset basin')
+  assert.equal(isWalkable(spot.x,spot.z),true,spot.id+' approach remains reachable outside the stone rim')
+}
+
+for(const spot of WORLD_SPOTS.filter(s=>s.huong&&s.architecture.style)){
+  const x=spot.x+spot.censerX,z=spot.centerZ+spot.depth/2+TEMPLE_CENSER_FRONT_OFFSET
+  for(const dx of [-TEMPLE_CENSER_HALF,0,TEMPLE_CENSER_HALF])for(const dz of [-TEMPLE_CENSER_HALF,0,TEMPLE_CENSER_HALF])assert.equal(groundHeight(x+dx,z+dz),.07,spot.id+' outdoor censer plinth stands on flat courtyard, not across the stair transition')
+  assert.equal(isWalkable(x,z),false,spot.id+' censer plinth matches its obstacle')
+  assert.ok(z-TEMPLE_CENSER_HALF>spot.centerZ+(spot.depth+1.2)/2,'Censer base clears the entire fitted shell envelope, including steps')
+}

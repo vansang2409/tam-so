@@ -1,16 +1,17 @@
 import * as THREE from 'three'
+import { createVisitorAnatomy } from './templeAvatar.js'
 import {bowFrame} from '../data/templeRituals.js'
-export function createTempleBowRig({cylinder,sphere},parent) {
+export function createTempleBowRig({mesh,cylinder,sphere},parent) {
   const root=new THREE.Group();parent.add(root);root.name='temple-bow-rig'
   const upper=new THREE.Group();upper.name='bow-upper';root.add(upper)
-  cylinder(.23,.32,.66,0x819b99,0,.31,0,upper,16)
-  sphere(.24,0xd9b49a,0,.91,0,upper);sphere(.245,0x3f3832,0,1,-.025,upper,1,.68,1)
-  cylinder(.33,.4,.3,0x819b99,0,.29,-.12,root,16)
+  const anatomy=createVisitorAnatomy({mesh,cylinder,sphere})
+  anatomy.torso(upper,{y:0,height:.66});anatomy.head(0,.82,0,upper)
+  anatomy.cloth([[.27,0],[.29,.08],[.24,.26],[.20,.30]],0,.20,-.08,root,.85)
   for(const side of [-1,1]){
     sphere(.15,0x617d7a,side*.2,.15,.18,root,1.1,1,1.5)
     sphere(.1,0x425858,side*.17,.09,-.35,root,.9,.7,1.8)
     for(const part of ['upper','lower']){const arm=cylinder(.085,.105,1,0x819b99,0,0,0,root,12);arm.name='bow-arm-'+part+'-'+side}
-    const hand=sphere(.065,0xd9b49a,0,0,0,root,.6,1.5,.7);hand.name='bow-hand-'+side
+    const hand=sphere(.055,0xc99e83,0,0,0,root,.6,1.5,.7);hand.name='bow-hand-'+side
   }
   const rig=bindTempleBowRig(root);rig.apply(0);return rig
 }

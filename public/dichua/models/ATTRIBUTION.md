@@ -136,3 +136,105 @@ Các GLB dưới đây là các tài nguyên độc lập; phần mềm Tam Sở
 - SHA-256: cdc089cb474f43a0f6a73c763d119e196b0ec8bcc98ab3753cae305eed8d54c8
 
 Tượng trong các điện là phỏng tác, có kết hợp dáng và chất liệu từ nhiều nguồn văn hóa. Tên điện không thay đổi danh tính tác phẩm gốc được ghi công ở đây; không tuyên bố các mẫu tiên nhân, Zuishin hoặc Bishamonten là bản quét tôn tượng Ngọc Hoàng, Thập Điện hay Thành Hoàng của một chùa cụ thể. Không gắn tên tác giả như sự bảo trợ Tam Sở.
+
+## Kiến trúc và nhân vật chi tiết — 03/11/2026
+
+### Cổng Tam Quan
+
+- Tệp: gate.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/tamquan2.glb
+- SHA-256: ffa4fbdabf45db7dee76018056f841ef90b53e705b7e776aa7a6f99382e22cde
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Vỏ Chánh Điện
+
+- Tệp: main-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/cdngoai.glb
+- SHA-256: 2941d52038c4d2656f1def428f987f4599934f2b10ea9cea1a7f4fc6dab8a1f8
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Vỏ nhà thờ Tổ
+
+- Tệp: ancestor-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/nhato2.glb
+- SHA-256: 12dab48158d216cbe9e32510ef6cb2c94a0d379b13a73af1eaccdcfe27ab8847
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Gác chuông
+
+- Tệp: bell-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/gacchuong.glb
+- SHA-256: 97c24eb035e766c33a4d6882ae10f645ff6bc9ec435358a4ead4d4e3114651ac
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Giảng đường
+
+- Tệp: lecture-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/giangduong.glb
+- SHA-256: e97ecd9238c123c12160420e51c445b87efe6320b1c48131511d41b98a32d9bb
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Nhà khách
+
+- Tệp: guest-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/nhakhach.glb
+- SHA-256: bd2e70a4b3ffedf834eeb7a812ca8c21507f3927752012d5805c1478d32a883b
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Tàng Kinh Các
+
+- Tệp: library-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/tangkinh.glb
+- SHA-256: 02c2573122bbe767a11d89ebad3bed8b5adbcc49d80cb98509a1b61569ce77e5
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+### Thiền đường
+
+- Tệp: meditation-shell.glb
+- Tác giả/nguồn: Kent Juno — https://tinhtam.kentjuno.com/
+- Giấy phép: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); bằng chứng: https://tinhtam.kentjuno.com/3d/models/CREDITS.txt
+- Tải gốc: https://tinhtam.kentjuno.com/3d/models/m/thienduong.glb
+- SHA-256: efaba1e954fcd4825a5967e182a7ef849f6c5f58003e090ff315f9f4955ca26d
+- Thay đổi: Giữ mesh và texture gốc; đổi tỷ lệ theo mặt bằng Tam Sở; vỏ ngoài được ẩn khi chuyển vào nội điện.
+
+## Nhân vật nam/nữ trẻ · đồ lam riêng — 03/11/2026
+
+Model nam trung niên cũ đã được thay thế. Model nền mới có giấy phép CC0 và được tạo bằng AI theo công bố của Grab3D. Tam Sở giữ mặt, tóc, cổ và bàn tay; ẩn toàn bộ trang phục nền và tạo áo lam/quần suông bằng mesh skinned riêng, có vạt áo dài, cổ đứng, nẹp cài, tay dài và giày tối màu.
+
+### Khách nam trẻ · đồ lam
+
+- Tệp: visitor-male.glb
+- Nguồn: https://grab3d.com/models/characters/man-base-character/
+- Giấy phép: CC0 1.0 — https://grab3d.com/dl/man-base-character/LICENSE.txt
+- GLB gốc: https://grab3d.com/dl/man-base-character-rigged/man-base-character-rigged.glb
+- SHA-256 gốc: 3038f56e1225d0ef9692189ed19ff688f1424e669281148a4cc6995fed568496
+- SHA-256 bản tối ưu: e7f6ae5734029ec5e55266f079a7ff7f1ba9568e76255339de9738eeb8fcb6e7
+- Thay đổi: Giảm lưới, nén meshopt, texture WebP 1024; giữ mặt/tóc/tay trẻ và skeleton/Walk. Khi chạy, thay toàn bộ trang phục nền bằng bộ đồ lam skinned riêng: áo rộng vạt dài, cổ đứng, nẹp cài, tay dài và quần suông.
+
+### Khách nữ trẻ · đồ lam
+
+- Tệp: visitor-female.glb
+- Nguồn: https://grab3d.com/models/characters/woman-base-character/
+- Giấy phép: CC0 1.0 — https://grab3d.com/dl/woman-base-character/LICENSE.txt
+- GLB gốc: https://grab3d.com/dl/woman-base-character-rigged/woman-base-character-rigged.glb
+- SHA-256 gốc: ea49ef6644dfcaa503b2e009f37b43cf6b2069501201552dc10a5b5ab1fc8bfa
+- SHA-256 bản tối ưu: f2ec89e770a890dee204010c486de5b0340021316d1cc5fa7b5c9f6328812bab
+- Thay đổi: Giảm lưới, nén meshopt, texture WebP 1024; giữ mặt/tóc/tay trẻ và skeleton/Walk. Khi chạy, thay toàn bộ trang phục nền bằng bộ đồ lam skinned riêng: áo rộng vạt dài, cổ đứng, nẹp cài, tay dài và quần suông.
+
+Bản GLB tải trong hộp thoại là model nền đã tối ưu; bộ đồ lam được dựng và skin khi chạy bởi templeVisitorClothing.js. Pipeline tối ưu được cố định ở glTF Transform CLI 4.5.1; xem scripts/fetch-temple-detail-models.mjs.
+
+Cập nhật nếp vải và tư thế: Tam Sở bổ sung nếp rủ trên mesh trang phục, 5 morph target kèm normal để thay đổi theo động tác và dáng đứng thư giãn. Các thay đổi chạy trong templeVisitorClothing.js, templeClothDeformation.js và templeDetailedVisitors.js; không thay các tệp GLB nguồn hay checksum.

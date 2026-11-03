@@ -1,25 +1,42 @@
 import * as THREE from 'three'
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 import { createTempleMaterials } from './templeMaterials.js'
+import { createTempleSprigGeometry, populateTempleSprigs } from './templeFoliage.js'
+import { createTempleIncense } from './templeIncense.js'
+import { createTempleAtmosphere } from './templeAtmosphere.js'
+import { createTemplePetalGeometry } from './templeFlowers.js'
+import { createTempleGardenFurniture } from './templeGardenFurniture.js'
 import { createTempleDetails } from './templeDetails.js'
 import { createTempleMainHall } from './templeMainHall.js'
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
+import { createDetailedVisitors } from './templeDetailedVisitors.js'
+import { createTempleAvatar } from './templeAvatar.js'
 import { createTempleBowRig } from './templeBowRig.js'
 import { createTempleModels } from './templeModels.js'
-import { WORLD_SPOTS, WORLD_TREES } from '../data/templeWorld.js'
+import { WORLD_SPOTS, WORLD_TREES, templeBasinCenterZ, TEMPLE_CENSER_HALF, TEMPLE_CENSER_FRONT_OFFSET, TEMPLE_COURTYARD_BASE_TOP } from '../data/templeWorld.js'
 
 const COLORS = { roof:0x9b4937, edge:0xd59867, wood:0x604135, gold:0xd4a45d, stone:0xd2c8ae, leaf:0x486f53 }
+export function createTempleBoxGeometry(w,h,d) {
+    // Small bevels catch light on stone steps, door frames and timber edges.
+    const g=new RoundedBoxGeometry(w,h,d,1,Math.min(.035,w*.12,h*.12,d*.12)),uv=g.attributes.uv,a=g.attributes.position,n=g.attributes.normal
+    for(let i=0;i<uv.count;i++){
+      const nx=Math.abs(n.getX(i)),ny=Math.abs(n.getY(i)),nz=Math.abs(n.getZ(i))
+      const u=nx>ny&&nx>nz?a.getZ(i):a.getX(i),v=ny>nx&&ny>nz?a.getZ(i):a.getY(i)
+      uv.setXY(i,u*.5,v*.5)
+    }const indexed=mergeVertices(g);g.dispose();return indexed
+}
 export function createTempleWorld(scene) {
   const root=new THREE.Group();scene.add(root)
-  const materialSystem=createTempleMaterials(), geometries=new Map(), animated={ ponds:[], smoke:[], bells:[], roofs:[], lanterns:[],ripples:[] }, targets=[],retired=new Set()
-  const models=createTempleModels(),interiors=[],porchItems=[]
+  const materialSystem=createTempleMaterials(), geometries=new Map(), animated={ incenseTips:[], ponds:[], bells:[], roofs:[], lanterns:[],ripples:[] }, targets=[],retired=new Set()
+  const incense=createTempleIncense(root,materialSystem.smoke)
+  const models=createTempleModels(),interiors=[],porchItems=[],shells=[]
   const mat=materialSystem.material
   const geo=(key,make)=>{if(!geometries.has(key))geometries.set(key,make());return geometries.get(key)}
   function mesh(g,color,x,y,z,parent=root,extra={}) {
     const m=new THREE.Mesh(g,mat(color,extra));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m
   }
   const box=(w,h,d,c,x,y,z,p=root,extra={})=>mesh(geo('b'+[w,h,d],()=>{
-    const g=new THREE.BoxGeometry(w,h,d),uv=g.attributes.uv
-    for(let i=0;i<uv.count;i++){const face=Math.floor(i/4),sx=face<2?d:w,sy=face<2?h:face<4?d:h;uv.setXY(i,uv.getX(i)*Math.max(.15,sx*.5),uv.getY(i)*Math.max(.15,sy*.5))}return g
+    return createTempleBoxGeometry(w,h,d)
   }),c,x,y,z,p,extra)
   const sphere=(r,c,x,y,z,p=root,sx=1,sy=1,sz=1)=>{const m=mesh(geo('s'+r,()=>new THREE.SphereGeometry(r,14,10)),c,x,y,z,p);m.scale.set(sx,sy,sz);return m}
   const cylinder=(r1,r2,h,c,x,y,z,p=root,n=12)=>mesh(geo('c'+[r1,r2,h,n],()=>new THREE.CylinderGeometry(r1,r2,h,n)),c,x,y,z,p)
@@ -64,6 +81,15 @@ export function createTempleWorld(scene) {
           const curve=new THREE.CatmullRomCurve3(points)
           mesh(new THREE.TubeGeometry(curve,9,.024,4,false),palette.roof||0xb96146,0,0,0,roofs)
         }
+        // Overlapping courses interrupt the smooth roof plane like individual clay tiles.
+        for(let row=1;row<=7;row++){
+          const v=row/8,points=[]
+          for(let i=0;i<=40;i++){
+            const u=i/40*2-1
+            points.push(new THREE.Vector3(u*tw/2,base+1.25*(1-v)**1.7+.42*Math.abs(u)**6*v**2+.18*v**8+.018,side*v*td/2))
+          }
+          mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),40,.014,4,false),palette.roof||COLORS.roof,0,0,0,roofs)
+        }
         const edge=[]
         for(let i=0;i<=20;i++){const u=i/20*2-1;edge.push(new THREE.Vector3(u*tw/2,base+.18+.42*Math.abs(u)**6,side*td/2))}
         mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge),22,.075,6,false),COLORS.edge,0,0,0,roofs)
@@ -76,23 +102,25 @@ export function createTempleWorld(scene) {
     }
     return roofs
   }
-  function lantern(x,y,z,parent) {
+  function lantern(x,y,z,parent,ceiling=y+.6,supportZ=z) {
     const l=sphere(.21,0xbd5d3f,x,y,z,parent,1,1.4,1)
     cylinder(.08,.08,.08,COLORS.gold,x,y+.3,z,parent)
+    const cordTop=Math.max(y+.34,ceiling);beam(new THREE.Vector3(x,y+.34,z),new THREE.Vector3(x,cordTop,supportZ),.008,0x574b37,parent)
     cylinder(.03,.03,.25,COLORS.gold,x,y-.4,z,parent,6);animated.lanterns.push(l)
   }
   function buddha(x,y,z,size,parent){return details.figure('buddha',x,y,z,size,parent)}
   function censer(x,y,z,parent,id) {
-    cylinder(.38,.29,.42,0x8b7050,x,y+.4,z,parent,18)
+    const bowl=cylinder(.38,.29,.42,0x8b7050,x,y+.4,z,parent,18)
+    bowl.geometry.computeBoundingBox();const baseTop=bowl.position.y+bowl.geometry.boundingBox.min.y
+    box(TEMPLE_CENSER_HALF*2,baseTop-TEMPLE_COURTYARD_BASE_TOP,TEMPLE_CENSER_HALF*2,COLORS.stone,x,(baseTop+TEMPLE_COURTYARD_BASE_TOP)/2,z,parent,{surface:'stone'})
     cylinder(.43,.43,.08,COLORS.gold,x,y+.64,z,parent,20)
+    const tipMaterial=mat(0x563a2d,{name:"Incense tip · "+id,emissive:0xe09447,emissiveIntensity:0})
+    animated.incenseTips.push({id,material:tipMaterial,lit:false})
     for(const dx of [-.18,0,.18]) {
       cylinder(.017,.017,.63,0x7d3426,x+dx,y+1,z,parent,5)
-      sphere(.03,0xff9a4c,x+dx,y+1.32,z,parent)
+      sphere(.03,0x563a2d,x+dx,y+1.32,z,parent).material=tipMaterial
     }
-    for(let i=0;i<5;i++) {
-      const puff=new THREE.Sprite(new THREE.SpriteMaterial({map:materialSystem.smoke,color:0xeee8d9,transparent:true,opacity:0,depthWrite:false}));puff.position.set(x,y+1.5+i*.17,z);parent.add(puff)
-      animated.smoke.push({mesh:puff,x,y:y+1.5+i*.17,phase:i*1.3,id})
-    }
+    incense.register(id,'outside',parent,{x,y:y+1.35,z})
   }
   function building(spot) {
     const {x,centerZ:z,kind,depth:d,width:w,architecture:a}=spot
@@ -102,6 +130,21 @@ export function createTempleWorld(scene) {
     box(w+.7,.24,d+.8,COLORS.stone,0,.13,0,p)
     box(w+.3,.1,.55,0xe1d4b6,0,.08,d/2+.6,p)
     box(w,.1,d,0xb29a78,0,.28,0,p)
+    for(const side of [-1,1]){
+      box(.22,.09,d+.5,0xa49b87,side*(w/2+.12),.29,0,p,{surface:'stone'})
+      for(const zz of [-d/2+.3,d/2-.3]){
+        const xx=side*(w/2-.35),g=zz>0?facade:p
+        cylinder(.28,.31,.13,COLORS.stone,xx,.39,zz,g,24)
+        cylinder(.20,.28,.16,COLORS.stone,xx,.53,zz,g,24)
+        cylinder(.21,.16,.14,a.wood,xx,h-.06,zz,g,24)
+        box(.5,.13,.43,a.wood,xx,h+.05,zz,g)
+      }
+    }
+    // Deep eaves: rafters and purlins make the roof read as assembled timber.
+    for(const side of [-1,1]){
+      box(w+.25,.16,.16,a.wood,0,h-.10,side*(d/2+.15),p)
+      for(let xx=-w/2;xx<=w/2;xx+=.55)box(.065,.1,.85,a.wood,xx,h+.02,side*(d/2+.14),p)
+    }
     // Bỏ vách trước để nhìn được nội điện, các vách bên vẫn có cửa sổ.
     box(w,kind==='bell'?.9:h-.25,.18,a.wall,0,kind==='bell'?.75:.3+(h-.25)/2,-d/2,p)
     for(const side of [-1,1]) {
@@ -112,7 +155,7 @@ export function createTempleWorld(scene) {
         cylinder(.23,.27,.22,COLORS.stone,side*(w/2-.35),.4,zz*.83,zz>0?facade:p)
       }
       if(kind==='main')for(const [xx,zz] of a.pillars.filter(([xx])=>Math.sign(xx)===side)){cylinder(.2,.25,h,a.wood,xx,h/2+.25,zz,zz>5?facade:p,20);cylinder(.33,.38,.25,COLORS.stone,xx,.4,zz,zz>5?facade:p,20)}
-      lantern(side*(w/2-.65),h-.4,d/2+.3,facade)
+      lantern(side*(w/2-.65),h-.6,d/2+.3,facade,h-.1,d/2+.15)
     }
     box(w,.23,.22,a.wood,0,h+.12,d/2-.35,facade)
     if(kind==='main')createTempleMainHall({box,sphere,cylinder,mesh,beam,label,mat}).exterior(facade,w,d,h,a)
@@ -120,7 +163,7 @@ export function createTempleWorld(scene) {
     if(kind==='tower'){const lower=roof(w+1,d+1,3,p,1,a);animated.roofs.push({mesh:lower,x,z,w,d});for(const side of [-1,1]){box(.12,.1,d+.6,a.wood,side*(w/2+.2),3.1,0,p);for(let z=-d/2;z<=d/2;z+=.35)cylinder(.025,.025,.6,a.wood,side*(w/2+.2),2.8,z,p,6)}}
     animated.roofs.push({mesh:r,x,z,w,d})
     label(spot.bienHieu,0,h-.18,d/2+.15,Math.min(w-.5,kind==='main'?5:4.5),facade)
-    if(spot.huong){const porch=new THREE.Group();p.add(porch);censer(spot.censerX,.25,d/2+.3,porch,spot.id);porchItems.push({mesh:porch,id:spot.id})}
+    if(spot.huong){const porch=new THREE.Group();porch.position.set(x,0,z);root.add(porch);censer(spot.censerX,.25,d/2+TEMPLE_CENSER_FRONT_OFFSET,porch,spot.id);porchItems.push({mesh:porch,id:spot.id})}
     const interior=new THREE.Group();p.add(interior)
     const item={mesh:interior,spot,built:false,ensure(){
       if(item.built)return;item.built=true
@@ -128,6 +171,12 @@ export function createTempleWorld(scene) {
       mergeStatic(interior,new Set([...models.anchors,...animated.bells.map(b=>b.mesh),...animated.lanterns]))
     }}
     interiors.push(item)
+    const files={'chanh-dien':'main-shell','nha-to':'ancestor-shell','thap-chuong':'bell-shell','giang-duong':'lecture-shell','nha-khach':'guest-shell','thu-vien':'library-shell','cua-hang-phap-bao':'guest-shell'}
+    const file=files[spot.id]||(['hall','shrine'].includes(kind)?'ancestor-shell':kind==='house'?'meditation-shell':null)
+    if(file){
+      const anchor=models.place(file,root,{height:h+1.8,width:w+1.2,depth:d+1.2,position:[x,0,z]})
+      shells.push({anchor,fallback:p,id:spot.id})
+    }
     targets.push({object:p,spot})
   }
   function tree(x,z,size=1) {
@@ -137,47 +186,55 @@ export function createTempleWorld(scene) {
       const a=i*2.4,dx=Math.cos(a)*.7,dz=Math.sin(a)*.7
       beam(new THREE.Vector3(0,1.7,0),new THREE.Vector3(dx,3.2+(i%2)*.3,dz),.075,0x79604b,p)
     }
-    for(let i=0;i<13;i++) {
-      const a=i*2.399,rr=.45+(i%4)*.22
-      const g=geo('leaf'+i,()=>{
-        const leaf=new THREE.IcosahedronGeometry(.72,2),v=leaf.attributes.position
-        for(let j=0;j<v.count;j++){const xx=v.getX(j),yy=v.getY(j),zz=v.getZ(j),n=1+Math.sin(xx*15+zz*11+i)*.11;v.setXYZ(j,xx*n,yy*n,zz*n)}const smooth=mergeVertices(leaf,.001);smooth.computeVertexNormals();leaf.dispose();return smooth
-      })
-      const m=mesh(g,[0x3e5e3c,0x536f45,0x667c4b,0x455d38][i%4],Math.cos(a)*rr,3.2+Math.sin(i*1.7)*.55,Math.sin(a)*rr,p)
-      m.scale.set(1,.75+(i%3)*.12,1)
-    }
+    // Small leaf sprays on curved cards; one instanced draw per tree.
+    const leaves=populateTempleSprigs(new THREE.InstancedMesh(geo('leaf-sprig',createTempleSprigGeometry),materialSystem.foliage,240))
+    leaves.castShadow=true;leaves.receiveShadow=true;p.add(leaves)
     cylinder(.55,.65,.08,0x626c4b,0,.07,0,p,12)
   }
-  function lotus(x,z,parent=root) {
-    const leaf=cylinder(.3,.3,.025,0x587d5d,x,.18,z,parent,16)
-    leaf.rotation.y=x
-    for(let i=0;i<6;i++) {
-      const a=i*Math.PI/3,petal=sphere(.12,0xe4b8b7,x+Math.cos(a)*.1,.27,z+Math.sin(a)*.1,parent,.7,1.2,1.8)
-      petal.rotation.y=-a;petal.rotation.z=.35
-    }
-    sphere(.065,0xe7c474,x,.31,z,parent)
+  function lotus(x,z,parent=root,index=0) {
+    const variation=.85+(Math.sin(index*4.71)+1)*.13
+    const leaf=mesh(geo('lotus-leaf',()=>new THREE.CircleGeometry(.25,24)),index%3?0x587d5d:0x698568,x,.287,z,parent,{side:THREE.DoubleSide,roughness:.9})
+    leaf.rotation.x=-Math.PI/2;leaf.scale.setScalar(variation)
+    const flowerX=x+.045*Math.sin(index*2.4),flowerZ=z+.04*Math.cos(index*2.4),baseY=.37+(index%3)*.015
+    cylinder(.004,.005,baseY+.015-.27,0x60794c,flowerX,(baseY+.015+.27)/2,flowerZ,parent,6)
+    const bloom=mesh(geo('lotus-petals',createTemplePetalGeometry),index%3?0xe4b8b7:0xead1c1,flowerX,baseY,flowerZ,parent,{vertexColors:true,side:THREE.DoubleSide,roughness:.85})
+    bloom.scale.setScalar(1.7*variation);bloom.rotation.y=index*2.39996
+    sphere(.026,0xd1af62,flowerX,baseY+.02,flowerZ,parent,1,.55,1)
   }
   function pond(spot,sen=false) {
-    const p=new THREE.Group();p.position.set(spot.x,0,spot.centerZ);root.add(p)
-    box(6.4,.25,3.4,0xb2ae93,0,.13,0,p)
-    const water=box(5.9,.035,2.9,0x639c95,0,.28,0,p)
-    water.material=mat(sen?0x456d62:0x4e6656,{metalness:.3,roughness:.19});animated.ponds.push(water)
-    if(sen)for(let i=0;i<19;i++)lotus(-2.35+(i%6)*.86,-.85+Math.floor(i/6)*.55,p)
-    for(let i=0;i<4;i++){const ripple=new THREE.Mesh(new THREE.RingGeometry(.3,.313,40),new THREE.MeshBasicMaterial({color:0xaec2a1,transparent:true,opacity:.15,side:THREE.DoubleSide,depthWrite:false}));ripple.rotation.x=-Math.PI/2;ripple.position.set(-2+i*1.2,.31,Math.sin(i)*.7);p.add(ripple);animated.ripples.push({mesh:ripple,phase:i*.8})}
+    const p=new THREE.Group();p.position.set(spot.x,0,templeBasinCenterZ(spot));root.add(p)
+    // A basin with open water volume, not a closed stone block under floating fish.
+    box(6.4,.12,3.4,0x73806c,0,.01,0,p,{surface:'stone'})
+    for(const side of [-1,1]){box(.25,.30,3.4,0xb2ae93,side*3.075,.21,0,p);box(5.9,.30,.25,0xb2ae93,0,.21,side*1.575,p)}
+    const water=mesh(geo('pond-water',()=>new THREE.PlaneGeometry(5.9,2.9)),sen?0x456d62:0x4e6656,0,.285,0,p,{metalness:0,roughness:.22,transparent:true,opacity:.72,depthWrite:false})
+    water.rotation.x=-Math.PI/2;water.castShadow=false;animated.ponds.push(water)
+    if(sen)for(let i=0;i<19;i++)lotus(-2.35+(i%6)*.86+Math.sin(i*4.3)*.12,-.85+Math.floor(i/6)*.55+Math.cos(i*3.7)*.09,p,i)
+    for(let i=0;i<4;i++){const ripple=new THREE.Mesh(new THREE.RingGeometry(.3,.313,40),new THREE.MeshBasicMaterial({color:0xaec2a1,transparent:true,opacity:.15,side:THREE.DoubleSide,depthWrite:false}));ripple.rotation.x=-Math.PI/2;ripple.position.set(-2+i*1.2,.291,Math.sin(i)*.7);p.add(ripple);animated.ripples.push({mesh:ripple,phase:i*.8})}
     for(let i=0;i<20;i++){const a=i*Math.PI/10;const rock=sphere(.23,0x929686,Math.cos(a)*3.05,.22,Math.sin(a)*1.53,p,1.4,.65,1);rock.rotation.y=a}
-    for(let i=0;i<3;i++){const fish=sphere(.1,0xbd8961,-1.3+i*1.2,.3,Math.sin(i)*.6,p,.5,.2,2.7)}
+    for(let i=0;i<3;i++)sphere(.1,0xbd8961,-1.3+i*1.2,.18,Math.sin(i)*.6,p,.5,.2,2.7)
 
-    if(!sen) { sphere(.25,0x526c46,1.7,.4,.5,p,1,.4,1.3);sphere(.09,0x526c46,1.7,.4,.85,p) }
+    if(!sen) {
+      sphere(.25,0x526c46,1.7,.355,.5,p,1,.4,1.3);sphere(.09,0x526c46,1.7,.36,.87,p)
+      for(const side of [-1,1]){
+        sphere(.008,0x242c20,1.7+side*.071,.39,.91,p)
+        for(const zz of [.28,.69])sphere(.055,0x526c46,1.7+side*.20,.28,zz,p,1.2,.3,1.7)
+      }
+      const shellRing=mesh(geo('turtle-shell-ring',()=>new THREE.TorusGeometry(.18,.004,4,24)),0x354b31,1.7,.425,.5,p);shellRing.rotation.x=-Math.PI/2
+    }
     targets.push({object:p,spot})
-    label(spot.ten,0,.7,1.85,3.5,p,true)
+    // A small supported placard on the rim leaves the pond visible at eye level.
+    box(1.66,.27,.04,0x604135,-2,.7,1.6,p)
+    for(const x of [-2.58,-1.42])box(.035,.53,.035,0x604135,x,.335,1.6,p)
+    label(spot.ten,-2,.7,1.625,1.6,p,true)
   }
-  const details=createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models})
+  const details=createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models,incense})
   // Sân gạch, trục hành lễ, đường ngang và hành lang nối toàn bộ 23 khu.
-  const outsideGeometry=new THREE.PlaneGeometry(240,240);for(let i=0;i<outsideGeometry.attributes.uv.count;i++){const uv=outsideGeometry.attributes.uv;uv.setXY(i,uv.getX(i)*100,uv.getY(i)*100)}
-  const outside=mesh(outsideGeometry,0x78805f,0,-.06,0,root,{surface:'stone'});outside.rotation.x=-Math.PI/2;outside.castShadow=false
+  // Extend the backdrop beyond the fog distance so the meadow has no visible table edge.
+  const outsideGeometry=new THREE.PlaneGeometry(600,600);for(let i=0;i<outsideGeometry.attributes.uv.count;i++){const uv=outsideGeometry.attributes.uv;uv.setXY(i,uv.getX(i)*250,uv.getY(i)*250)}
+  const outside=mesh(outsideGeometry,0x78805f,0,-.06,0,root,{surface:'grass'});outside.rotation.x=-Math.PI/2;outside.castShadow=false
   box(50,.1,53,0x7d8069,0,-.1,0)
   box(5.5,.035,19,0xb4aa8c,0,-.035,35,root,{surface:'brick'})
-  box(50,.08,53,0xb8aa8a,0,0,0)
+  box(50,TEMPLE_COURTYARD_BASE_TOP*2,53,0xb8aa8a,0,0,0)
   for(const x of [-24,24])box(1.7,.025,50,0x667449,x,.06,0)
   for(let x=-24;x<=24;x+=2)for(let z=-25;z<=25;z+=2) {
     box(1.94,.015,1.94,((x+z)%6===0?0xc5b496:0xbfad90),x,.048,z)
@@ -199,10 +256,12 @@ export function createTempleWorld(scene) {
       for(const side of [-1,1]){box(2.1,.4,.65,0x624936,side*3,2.9,0,p);roof(2.8,2.4,3.1,p,1,{roof:0x714a36});label('AN LẠC',side*3,2.9,.42,1.4,p)}
       label('CHÙA TAM SỞ',0,3.8,.5,3.5,p)
       for(const x of [-2,2])for(let j=0;j<4;j++)label(['TỪ','BI','HỶ','XẢ'][j],x,2.8-j*.42,.43,.24,p)
+      const anchor=models.place('gate',root,{height:5.3,width:8.9,depth:2.8,position:[0,0,spot.centerZ]})
+      shells.push({anchor,fallback:p,id:spot.id})
       targets.push({object:p,spot})
     } else if(spot.kind==='pond') pond(spot)
     else if(spot.kind==='garden') {
-      pond({...spot,centerZ:spot.centerZ-1},true)
+      pond(spot,true)
 
     } else if(spot.kind==='meditate') {
       const p=new THREE.Group();p.position.set(spot.x,0,spot.centerZ);root.add(p)
@@ -216,24 +275,12 @@ export function createTempleWorld(scene) {
     } else building(spot)
   }
   for(const t of WORLD_TREES)tree(t.x,t.z,t.size)
-  // Nhân vật khách áo lam; mô hình gốc tạo trong mã.
+  createTempleGardenFurniture(root,{box,mesh})
+  // Shared adult visitor anatomy and articulated limbs, also cloned by online visitors.
   const avatar=new THREE.Group();root.add(avatar)
-  const standing=new THREE.Group();avatar.add(standing)
-  const body=cylinder(.24,.38,.77,0x819b99,0,.86,0,standing,16)
-  sphere(.24,0xd9b49a,0,1.48,0,standing)
-  sphere(.245,0x3f3832,0,1.57,-.025,standing,1,.68,1)
-  const legs=[cylinder(.09,.1,.44,0x425858,-.13,.29,0,standing),cylinder(.09,.1,.44,0x425858,.13,.29,0,standing)]
-  const arms=[cylinder(.09,.12,.55,0x819b99,-.31,.91,0,standing),cylinder(.09,.12,.55,0x819b99,.31,.91,0,standing)]
-  for(const dx of [-.13,.13])sphere(.12,0x3a4037,dx,.09,.07,standing,1,.5,1.6)
-  const seated=new THREE.Group();avatar.add(seated);seated.visible=false
-  cylinder(.22,.38,.55,0x819b99,0,.57,0,seated,16)
-  sphere(.24,0xd9b49a,0,1.08,0,seated);sphere(.245,0x3f3832,0,1.17,-.025,seated,1,.68,1)
-  for(const side of [-1,1]) {
-    const knee=sphere(.25,0x617d7a,side*.23,.23,.14,seated,1.4,.65,1)
-    const arm=cylinder(.08,.1,.48,0x819b99,side*.25,.54,.07,seated);arm.rotation.z=side*.5
-    sphere(.08,0xd9b49a,side*.14,.34,.2,seated)
-  }
-  const bowRig=createTempleBowRig({cylinder,sphere},avatar),praying=bowRig.root;praying.visible=false
+  const {standing,seated,body,legs,arms}=createTempleAvatar({mesh,sphere,cylinder},avatar)
+  const bowRig=createTempleBowRig({mesh,cylinder,sphere},avatar),praying=bowRig.root;praying.visible=false
+  const detailedVisitors=createDetailedVisitors(models,avatar,[standing,seated,praying])
   const ring=mesh(new THREE.RingGeometry(.47,.52,40),0xf6e2ad,0,.09,0,avatar,{side:THREE.DoubleSide,emissive:0xa6884b,emissiveIntensity:.4});ring.rotation.x=-Math.PI/2
   const marker=mesh(new THREE.RingGeometry(.28,.43,40),0xf8e0a6,0,.14,0,root,{side:THREE.DoubleSide,transparent:true,opacity:.9});marker.rotation.x=-Math.PI/2;marker.visible=false
   const hoverMarker=new THREE.Mesh(new THREE.RingGeometry(.3,.35,40),new THREE.MeshBasicMaterial({color:0xd8e3b9,transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}));hoverMarker.rotation.x=-Math.PI/2;hoverMarker.visible=false;root.add(hoverMarker)
@@ -245,7 +292,7 @@ export function createTempleWorld(scene) {
     group.updateWorldMatrix(true,true)
     const inverse=group.matrixWorld.clone().invert(),buckets=new Map(),remove=[]
     function collect(o) {
-      if(exclusions.has(o))return
+      if(exclusions.has(o)||o.isInstancedMesh)return
       if(o.isMesh && !Array.isArray(o.material)) {
         retired.add(o.geometry);const g=o.geometry.clone();g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inverse,o.matrixWorld))
         const key=o.material;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(g);remove.push(o)
@@ -262,20 +309,23 @@ export function createTempleWorld(scene) {
     // Geometry gốc trong cache vẫn được giải phóng cùng cảnh.
   }
   for(const r of animated.roofs)mergeStatic(r.mesh)
-  for(const item of porchItems)mergeStatic(item.mesh,new Set([...animated.smoke.map(s=>s.mesh),...animated.lanterns]))
-  const excluded=new Set([...models.anchors,avatar,marker,hoverMarker,pathLine,...animated.roofs.map(r=>r.mesh),...porchItems.map(r=>r.mesh),...animated.smoke.map(s=>s.mesh),...animated.bells.map(b=>b.mesh),...animated.lanterns,...animated.ponds])
+  for(const item of porchItems)mergeStatic(item.mesh,new Set(animated.lanterns))
+  const excluded=new Set([incense.root,...shells.map(s=>s.fallback),...models.anchors,avatar,marker,hoverMarker,pathLine,...animated.roofs.map(r=>r.mesh),...porchItems.map(r=>r.mesh),...animated.bells.map(b=>b.mesh),...animated.lanterns,...animated.ponds,...animated.ripples.map(r=>r.mesh)])
   for(const interior of interiors)excluded.add(interior.mesh)
+  for(const shell of shells)mergeStatic(shell.fallback,excluded)
   mergeStatic(root,excluded)
   for(const target of targets) {
-    const s=target.spot,w=s.width
-    const hit=new THREE.Mesh(new THREE.BoxGeometry(w,3,s.depth),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}))
-    hit.position.set(s.x,1.5,s.centerZ);root.add(hit);target.object=hit
+    const s=target.spot,basin=s.kind==='pond'||s.kind==='garden',w=basin?6.4:s.width
+    const hit=new THREE.Mesh(new THREE.BoxGeometry(w,3,basin?3.4:s.depth),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}))
+    hit.position.set(s.x,1.5,basin?templeBasinCenterZ(s):s.centerZ);root.add(hit);target.object=hit
   }
-  return {root,models,interiors,porchItems,avatar,standing,seated,praying,bowRig,body,legs,arms,marker,hoverMarker,beacon,animated,targets,pathLine,
+  // Dynamic sky objects are created after static batching so flight transforms stay intact.
+  const atmosphere=createTempleAtmosphere(root)
+  return {root,models,interiors,porchItems,shells,detailedVisitors,avatar,standing,seated,praying,bowRig,body,legs,arms,marker,hoverMarker,beacon,animated,targets,pathLine,atmosphere,incense,
     dispose(){
-      models.dispose()
+      incense.dispose();atmosphere.dispose();detailedVisitors.dispose();models.dispose()
       const gs=new Set(),ms=new Set(),ts=new Set()
-      root.traverse(o=>{if(o.geometry&&!o.geometry.userData.templeAsset)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m&&!m.userData.templeAsset){ms.add(m);if(m.map)ts.add(m.map)}})
+      root.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.geometry&&!o.geometry.userData.templeAsset)gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])if(m&&!m.userData.templeAsset){ms.add(m);if(m.map)ts.add(m.map)}})
       for(const g of geometries.values())gs.add(g);for(const g of retired)gs.add(g);
       gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());ts.forEach(t=>t.dispose());materialSystem.dispose();scene.remove(root)
     }

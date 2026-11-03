@@ -1,18 +1,30 @@
 import * as THREE from 'three'
 import { createTempleMainHall } from './templeMainHall.js'
 import { createTempleFurnishings } from './templeFurnishings.js'
+import { createTempleBouquets } from './templeFlowers.js'
 // Chi tiết kiến trúc và đồ thờ được dựng riêng theo vai trò từng khu.
-export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models}) {
+export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lantern,animated,models,incense}) {
   const V=(x,y,z)=>new THREE.Vector3(x,y,z)
   function curve(points,r,color,parent) {
     return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>V(...p))),16,r,6,false),color,0,0,0,parent)
   }
+  const bouquets=createTempleBouquets({mesh,curve})
   function lotusBase(x,y,z,r,parent,color=0xbda77e) {
     cylinder(r,r*1.1,.16,color,x,y,z,parent,32)
     for(let i=0;i<16;i++){const a=i*Math.PI/8;const petal=sphere(r*.19,color,x+Math.cos(a)*r*.8,y+.12,z+Math.sin(a)*r*.8,parent,.8,1.3,.5);petal.rotation.y=-a;petal.rotation.z=.4}
     cylinder(r*.84,r*.95,.13,color,x,y+.22,z,parent,28)
   }
-  const furnishings=createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label,curve,models})
+  const registerIncense=vessel=>{
+    if(!incense)return
+    let room=vessel.parent
+    while(room&&!room.userData.templeSpotId)room=room.parent
+    if(!room)return
+    room.updateWorldMatrix(true,false)
+    const ceiling=room.localToWorld(V(0,room.userData.templeCeiling,0)).y
+    // The tip is .765 in vessel space; the 2cm gap also follows its .7 scale.
+    incense.register(room.userData.templeSpotId,'inside',vessel,{x:0,y:.785,z:0,ceiling})
+  }
+  const furnishings=createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label,curve,models,registerIncense})
   const {figure,scannedAltar,altar,offerings,shrineFrame,crane,candle,prayerMat,scroll}=furnishings
   function lattice(x,y,z,w,h,parent,color=0x5c4031) {
     box(w+.12,h+.12,.07,color,x,y,z,parent)
@@ -24,13 +36,16 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
     mesh(new THREE.LatheGeometry([[.09,0],[.1,.025],[.15,.08],[.16,.2],[.14,.28],[.07,.35],[.07,.41],[.095,.43]].map(p=>new THREE.Vector2(...p)),32),color,x,y,z,parent,{roughness:.32})
     for(const yy of [.045,.13,.27,.39]){const r=yy<.07?.11:yy<.3?.153:.076;const ring=mesh(new THREE.TorusGeometry(r,.006,6,24),0x596b7c,x,y+yy,z,parent);ring.rotation.x=Math.PI/2}
     for(let i=0;i<8;i++){const a=i*Math.PI/4;for(let j=0;j<3;j++)sphere(.013,0x647b87,x+Math.cos(a)*.155,y+.15+j*.025,z+Math.sin(a)*.155,parent,.7,1.5,.7)}
-    if(flowers)for(let i=0;i<5;i++){const a=i*2.4,dx=Math.cos(a)*.13,dz=Math.sin(a)*.13;beam(V(x,y+.3,z),V(x+dx,y+.7+i%2*.1,z+dz),.009,0x5e7751,parent);for(let j=0;j<6;j++){const a=j*Math.PI/3,o=sphere(.04,i%2?0xc5939a:0xe1c9b4,x+dx+Math.cos(a)*.055,y+.7+i%2*.1,z+dz+Math.sin(a)*.055,parent,.8,.6,1.4);o.rotation.y=-a} sphere(.025,0xcbb47c,x+dx,y+.7+i%2*.1,z+dz,parent)}
+    if(flowers)bouquets.place(x,y,z,parent)
   }
   function table(x,z,w,parent,color=0x60432c,y=.75) {
-    box(w,.09,.65,color,x,y,z,parent)
-    for(const side of [-1,1])for(const zz of [-.23,.23])box(.07,y-.3,.07,color,x+side*(w/2-.1),y/2+.12,z+zz,parent)
+    const top=box(w,.09,.65,color,x,y,z,parent)
+    const legHeight=y-.045-.34
+    for(const side of [-1,1])for(const zz of [-.23,.23]){const leg=box(.07,legHeight,.07,color,x+side*(w/2-.1),.34+legHeight/2,z+zz,parent);leg.name='Furniture table leg'}
+    top.geometry.computeBoundingBox();return top.position.y+top.geometry.boundingBox.max.y
   }
   function decorate(spot,p,w,d,h) {
+    p.userData.templeSpotId=spot.id;p.userData.templeCeiling=h
     const a=spot.architecture,style=a.style,wood=a.wood||0x604135
     // Cột có chân đá, đai đồng, đầu cột và hệ đấu đỡ mái.
     for(const side of [-1,1])for(const zz of [-d/2+.3,d/2-.3]) {
@@ -61,31 +76,36 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
       for(let i=0;i<4;i++)scroll(side*(w/2-.6),1.5+i*.25,-d/2+.23,.065,p)
     }
     if(spot.huong) {
-      const altarZ=-d/2+.8
-      if(!['tam-bao','duoc-su'].includes(style)){altar(0,altarZ,w*(style==='thap-dien'?.88:.54),p,wood,1.04);offerings(0,1.16,altarZ+.32,p,Math.min(2.6,w*.47))}
+      const altarZ=-d/2+.8,altarWidth=w*(style==='thap-dien'?.88:.54),altarY=1.04
+      // Vases beside the cloth runner rest on the gilt tabletop; central ones rest on the cloth.
+      const tabletopY=altarY+.0875,clothY=altarY+.1125
+      const vaseSupportY=(x,dz)=>Math.abs(x)<=altarWidth*.31&&dz>=-.2&&dz<=.36?clothY:tabletopY
+      if(!['tam-bao','duoc-su'].includes(style)){const support=altar(0,altarZ,altarWidth,p,wood,altarY,{frontExtension:.24});offerings(0,1.16,altarZ+.32,p,Math.min(2.6,w*.47),support)}
       if(style==='tam-bao') {
         createTempleMainHall({box,sphere,cylinder,mesh,beam,label,mat,curve,...furnishings,vase}).interior(p,w,d,h,a)
       } else if(['phat-ba','quan-am'].includes(style)) {
         const arch=curve([[-1.05,1.1,altarZ-.18],[-1.05,2.6,altarZ-.18],[0,3.35,altarZ-.18],[1.05,2.6,altarZ-.18],[1.05,1.1,altarZ-.18]],.09,0xd5ccb0,p)
         figure('quan-am',0,1.15,altarZ-.12,.85,p)
         shrineFrame(0,1.05,altarZ-.4,2.3,2.05,p,0x847962,0xc6b795)
-        for(const side of [-1,1]){crane(side*1.25,.34,altarZ+.65,p,side);candle(side*.6,1.17,altarZ+.35,p,0xe0cfaa)}
-        for(const side of [-1,1])vase(side*.9,1.08,altarZ+.3,p,0xc8cbbd,true)
+        // Offerings already supplies the candle pair; a second pair occupied the same footprint.
+        for(const side of [-1,1])crane(side*1.25,.34,altarZ+.65,p,side)
+        const narrowAltar=altarWidth<2.4,vaseX=narrowAltar?altarWidth/2+.25:Math.max(.9,altarWidth*.31+.1)
+        for(const side of [-1,1])vase(side*vaseX,narrowAltar?.34:tabletopY,altarZ+(narrowAltar?.15:0),p,0xc8cbbd,true)
       } else if(style==='ngoc-hoang') {
         box(2.7,2.1,.07,0x742d27,0,2.1,altarZ-.47,p)
         shrineFrame(0,1.02,altarZ-.42,2.7,2.1,p,wood)
         label('NGỌC HOÀNG',0,3.3,altarZ-.3,2.25,p)
         figure('emperor',0,1.1,altarZ,.89,p)
         for(const side of [-1,1])figure('marshal',side*1.6,1.05,altarZ,.62,p)
-        for(let i=-2;i<=2;i++)lantern(i*.8,h-.5,d/2+.15,p)
+        for(let i=-2;i<=2;i++)lantern(i*.8,h-.5,d/2+.15,p,h+.12,d/2-.35)
       } else if(style==='duoc-su') {
         scannedAltar(0,.34,-d/2+1.11,2.48,2.3,2.02,p,0x9c9e72)
         shrineFrame(0,.38,-d/2+.18,2.8,2.55,p,0x496355,0xb3a679)
         for(const side of [-1,1]){
-          table(side*2,altarZ,.9,p,0x496355)
+          const topY=table(side*2,altarZ,.9,p,0x496355)
           box(.87,.44,.46,0x496355,side*2,.52,altarZ,p)
           for(let row=0;row<3;row++)for(let col=0;col<3;col++){box(.24,.11,.025,0x82907a,side*2+(col-1)*.27,.38+row*.13,altarZ+.25,p);sphere(.018,0xbba16b,side*2+(col-1)*.27,.38+row*.13,altarZ+.275,p)}
-          for(let i=0;i<3;i++)vase(side*2+(i-1)*.24,.81,altarZ,p,0x9ba994)
+          for(const offset of [-.2,.2])vase(side*2+offset,topY,altarZ,p,0x9ba994)
         }
         for(let i=-3;i<=3;i++)candle(i*.28,.35,-.05,p,0x719188)
         for(const x of [-1.3,0,1.3])prayerMat(x,.75,p,0x6f8270)
@@ -106,7 +126,7 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
         shrineFrame(0,1.02,altarZ-.4,2.5,2.13,p,0x823a35,0xc69b60)
         label('KIM HOA THÁNH MẪU',0,3.22,altarZ-.26,2.7,p)
         for(const side of [-1,1])for(let i=0;i<6;i++)figure('mother',side*(.85+i*.25),1.08,altarZ,.22,p)
-        for(const x of [-2,2])vase(x,1.05,altarZ,p,0xb69081,true)
+        for(const side of [-1,1])vase(side*altarWidth*.4,tabletopY,altarZ+.38,p,0xb69081,true)
       } else if(style==='ong-to') {
         for(const side of [-1,1])figure(side<0?'matchmaker':'matron',side*.45,1.12,altarZ,.55,p)
         shrineFrame(0,1.04,altarZ-.37,1.8,1.5,p,0x79372d)
@@ -122,7 +142,16 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
         figure('mother',0,1.13,altarZ,.8,p)
         shrineFrame(0,1.03,altarZ-.38,2.5,1.85,p,0x53644a,0xa99c68)
         label('THIÊN Y THÁNH MẪU',0,2.96,altarZ-.22,2.8,p)
-        for(let i=-2;i<=2;i++){vase(i*.43,1.08,altarZ+.4,p,0x6f8a70);for(let j=0;j<3;j++)sphere(.045,0x6d8052,i*.43,1.6+j*.06,altarZ+.4,p,1,.5,2)}
+        for(const side of [-1,1]){
+          const x=side*altarWidth*.4,z=altarZ+.38,baseY=tabletopY
+          vase(x,baseY,z,p,0x6f8a70)
+          curve([[x,baseY+.38,z],[x+.012,baseY+.54,z],[x-.012,baseY+.69,z]],.006,0x637449,p)
+          for(let j=0;j<3;j++){
+            const side=j%2?-1:1,y=baseY+.51+j*.06,leafX=x+side*.038
+            beam(V(x,y-.015,z),V(leafX,y,z+.02),.004,0x637449,p)
+            const leaf=sphere(.045,0x6d8052,leafX,y,z+.045,p,1,.24,1.55);leaf.rotation.z=side*.22
+          }
+        }
       } else if(['ho-phap','thanh-hoang'].includes(style)) {
         for(const side of [-1,1]){figure(style==='thanh-hoang'?'marshal':side<0?'guardian':'guardian-right',side*w*.23,1.05,altarZ,style==='ho-phap'?.65:.8,p)}
         shrineFrame(0,1.04,altarZ-.35,w*.64,Math.min(1.8,h-1.22),p,wood)
@@ -131,18 +160,28 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
         shrineFrame(0,1.04,altarZ-.3,w*.57,1.25,p,wood)
         cylinder(.12,.14,.08,0x9b8b64,.4,1.18,altarZ+.2,p,20)
       }
-      for(const side of [-1,1])vase(side*w*.38,1.05,altarZ+.2,p,0xbab6a0,true)
+      // Specialized arrangements already include their own supported vases.
+      if(!['tam-bao','duoc-su','phat-ba','quan-am','kim-hoa','thanh-mau'].includes(style))for(const side of [-1,1])vase(side*(altarWidth<2.4?altarWidth/2+.25:altarWidth*.4),altarWidth<2.4?.34:tabletopY,altarZ+(altarWidth<2.4?.15:.38),p,0xbab6a0,true)
     } else if(style==='bell') {
       // Đại hồng chung: thân loe, vành dày, đai nổi, quai treo và chày gỗ.
-      const pivot=new THREE.Group();pivot.position.set(0,h-.5,0);p.add(pivot)
+      const pivot=new THREE.Group();pivot.name='Stationary temple bell';pivot.position.set(0,h-.68,0);p.add(pivot)
       const points=[[.16,0],[.24,-.12],[.48,-.3],[.55,-1.1],[.7,-1.55],[.74,-1.65],[.61,-1.68],[.5,-.45]]
       mesh(new THREE.LatheGeometry(points.map(q=>new THREE.Vector2(...q)),32),0x8f7851,0,0,0,pivot,{metalness:.6,roughness:.6})
       for(const y of [-.4,-.55,-1.25,-1.5]){const r=y<-.8?.6:.49;const ring=mesh(new THREE.TorusGeometry(r,.025,8,32),0xb39b65,0,y,0,pivot);ring.rotation.x=Math.PI/2}
       for(let i=0;i<8;i++){const a=i*Math.PI/4;sphere(.065,0xb39b65,Math.cos(a)*.55,-.9,Math.sin(a)*.55,pivot,.6,1.4,.6)}
-      animated.bells.push({mesh:pivot,id:spot.id})
       beam(V(-1.1,h-.35,0),V(1.1,h-.35,0),.13,wood,p)
-      beam(V(-.85,1.6,.7),V(.85,1.6,.7),.12,0x71513a,p)
-      for(const x of [-.7,.7])beam(V(x,1.6,.7),V(x,h-.2,.7),.014,0x4d493a,p)
+      const hanger=mesh(new THREE.TorusGeometry(.1,.025,8,20),0x8f7851,0,h-.57,0,p,{metalness:.6,roughness:.6})
+      hanger.name='Bell suspension loop'
+      // A separate suspended log strikes the raised boss; the heavy bell stays still.
+      const length=1.35,halfLog=.45,contactAngle=.1
+      const restZ=.57+length*Math.sin(contactAngle)+halfLog*Math.cos(contactAngle)
+      const strikeY=h-.2-length*Math.cos(contactAngle)+halfLog*Math.sin(contactAngle)
+      const boss=sphere(.06,0xb39b65,0,strikeY,.54,p,1,1,.5);boss.name='Bell striking boss'
+      beam(V(0,h-.2,0),V(0,h-.2,1.7),.07,wood,p)
+      const striker=new THREE.Group();striker.name='Temple bell striker';striker.position.set(0,h-.2,restZ);p.add(striker)
+      const log=beam(V(0,-length,-halfLog),V(0,-length,halfLog),.09,0x71513a,striker);log.name='Bell wooden log'
+      for(const z of [-.28,.28]){const rope=beam(V(0,0,z),V(0,-length,z),.014,0x4d493a,striker);rope.name='Bell striker rope'}
+      animated.bells.push({mesh:striker,id:spot.id,axis:'x'})
     } else if(style==='thu-vien') {
       for(let i=-1;i<=1;i++) {
         const x=i*1.6;box(1.35,1.7,.3,wood,x,1.14,-d/2+.45,p)
@@ -154,12 +193,12 @@ export function createTempleDetails({box,sphere,cylinder,mesh,beam,label,mat,lan
       label('LẮNG NGHE · HIỂU THƯƠNG',0,2.1,-d/2+.14,3.3,p)
       for(let x=-2;x<=2;x+=1)for(let z=-.2;z<1.5;z+=.7)box(.64,.035,.44,0x8b7a5e,x,.35,z,p)
     } else if(style==='nha-khach') {
-      for(const x of [-1.8,1.8]){table(x,-d/2+.7,1,p);for(const side of [-1,1]){box(.3,.3,.35,wood,x+side*.6,.5,-d/2+.7,p);box(.32,.48,.05,wood,x+side*.6,.83,-d/2+.86,p)}vase(x,.81,-d/2+.7,p,0xb8c0aa,true)}
+      for(const x of [-1.8,1.8]){const topY=table(x,-d/2+.7,1,p);for(const side of [-1,1]){box(.3,.3,.35,wood,x+side*.6,.5,-d/2+.7,p);box(.32,.48,.05,wood,x+side*.6,.83,-d/2+.86,p)}vase(x,topY,-d/2+.7,p,0xb8c0aa,true)}
       for(const side of [-1,1])box(.6,1,.08,0x516d5b,side*w*.36,1.6,-d/2+.18,p)
     } else if(style==='phap-bao') {
-      table(0,-d/2+.85,4,p)
-      for(let i=-3;i<=3;i++){const x=i*.5;vase(x,.8,-d/2+.85,p,[0x98a18d,0xb29977,0x858d8a][Math.abs(i)%3]);const chain=mesh(new THREE.TorusGeometry(.1,.021,6,16),0x74563b,x,.91,-d/2+1.1,p);chain.rotation.x=Math.PI/2}
-      for(const x of [-1.5,0,1.5])lantern(x,2.1,-d/2+.5,p)
+      const topY=table(0,-d/2+.85,4,p)
+      for(let i=-3;i<=3;i++){const x=i*.5;vase(x,topY,-d/2+.85,p,[0x98a18d,0xb29977,0x858d8a][Math.abs(i)%3]);const chain=mesh(new THREE.TorusGeometry(.1,.021,6,16),0x74563b,x+.23,topY+.021,-d/2+1.02,p);chain.name='Phap bao bracelet';chain.rotation.x=Math.PI/2;chain.geometry.computeBoundingBox();chain.position.y=topY+chain.geometry.boundingBox.max.z}
+      for(const x of [-1.5,0,1.5])lantern(x,2.1,-d/2+.7,p,h+.08)
     }
   }
   return {decorate,figure,lattice,lotusBase,curve,vase}

@@ -46,12 +46,13 @@ export function createTempleMainHall({box,sphere,cylinder,mesh,beam,label,mat,cu
       shrineFrame(x,.64,rear+.4,2.15,3.3,p,wood,gold)
       for(let row=0;row<3;row++)for(let j=-1;j<=1;j++)candle(x+j*.46,2.04+row*.33,altarZ-.6-row*.12,p,0xa86e37)
       crane(side*3.6,.64,rear+3.65,p,side)
-      vase(side*5.75,.64,rear+3.4,p,0xbac3b4,true)
+      vase(side*5.75,.625,rear+3.4,p,0xbac3b4,true)
       // Câu đối dọc trên trụ khám, giữ chữ Việt rõ nét ở góc nhìn gần.
       for(const [i,t] of (side<0?['TỪ','BI','HỶ','XẢ']:['TRÍ','TUỆ','AN','NHIÊN']).entries())label(t,side*3.32,4.65-i*.54,rear+.55,.33,p)
     }
-    altar(0,rear+3.75,5.4,p,wood,1.16);offerings(0,1.28,rear+3.85,p,3.65)
-    for(const side of [-1,1])vase(side*2.15,1.28,rear+3.7,p,0xc0c5b3,true)
+    // Keep the offering cluster in front of the scanned altar's projecting cushion.
+    const frontAltar=altar(0,rear+4.1,5.4,p,wood,1.16,{legBaseY:.625,frontLegInset:.2});offerings(0,1.28,rear+4.2,p,3.65,frontAltar)
+    for(const side of [-1,1])vase(side*2.15,1.2475,rear+4.05,p,0xc0c5b3,true)
     // Nền gạch, đường viền và các hàng bồ đoàn để nhận ra chiều sâu thực.
     box(w-.4,.018,d-4.8,0xb6a184,0,.344,2.15,p,{surface:'stone'})
     for(let z=-.1;z<d/2;z+=.85)box(w-.45,.012,.018,0x796b57,0,.36,z,p)

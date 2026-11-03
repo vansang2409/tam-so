@@ -1,14 +1,16 @@
 import * as THREE from 'three'
+import { prepareTempleVisitorClothing } from './templeVisitorClothing.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 
 // Mẫu quét CC BY 4.0; nguồn, tác giả và thay đổi ở /dichua/models/ATTRIBUTION.md.
-export function fitTempleModel(source,{height,maxWidth=Infinity,maxDepth=Infinity,rotation=0}) {
+export function fitTempleModel(source,{height,width,depth,maxWidth=Infinity,maxDepth=Infinity,rotation=0}) {
   const object=new THREE.Group(),copy=source.clone(true);copy.rotation.y+=rotation;object.add(copy)
   const bounds=new THREE.Box3().setFromObject(object),size=bounds.getSize(new THREE.Vector3())
   if(!size.y||!Number.isFinite(size.length()))throw new Error('Mô hình không có kích thước hợp lệ')
   object.scale.multiplyScalar(Math.min(height/size.y,maxWidth/size.x,maxDepth/size.z))
+  if(width)object.scale.x=width/size.x;if(depth)object.scale.z=depth/size.z
   bounds.setFromObject(object);const center=bounds.getCenter(new THREE.Vector3())
   object.position.x-=center.x;object.position.z-=center.z;object.position.y-=bounds.min.y
   return object
@@ -44,10 +46,14 @@ export function createTempleModels() {
         const response=await fetch((import.meta.env?.BASE_URL||'/')+'dichua/models/'+file+'.glb',{signal:controller.signal})
         if(!response.ok)throw new Error('Không tải được mô hình '+file)
         const gltf=await loader.parseAsync(await response.arrayBuffer(),'')
+        gltf.scene.animations=gltf.animations
+        if(file==='visitor'||file.startsWith('visitor-'))prepareTempleVisitorClothing(gltf.scene)
         prepareTempleAsset(gltf.scene,file)
         gltf.scene.traverse(o=>{if(o.isMesh){
           resources.add(o.geometry)
           for(const m of Array.isArray(o.material)?o.material:[o.material]){
+            // Source character exports fabric as emissive metal; keep its atlas, restore diffuse cloth/skin.
+            if(file==='visitor'||file.startsWith('visitor-')){m.metalness=0;m.roughness=.92;m.emissive?.setHex(0);m.emissiveIntensity=0;if('specularIntensity'in m)m.specularIntensity=.25;if(m.map){m.map.generateMipmaps=false;m.map.minFilter=THREE.LinearFilter;m.map.needsUpdate=true}m.needsUpdate=true}
             resources.add(m);m.userData.templeAsset=true
             for(const value of Object.values(m))if(value?.isTexture&&!textures.has(value)){
               textures.add(value);resources.add(value)
@@ -59,7 +65,7 @@ export function createTempleModels() {
           }
           o.castShadow=true;o.receiveShadow=true
         }})
-        if(disposed){resources.forEach(g=>g.dispose());throw new Error('Cảnh đã đóng')}
+        if(disposed){resources.forEach(g=>g.dispose());textures.forEach(t=>t.image?.close?.());throw new Error('Cảnh đã đóng')}
         return gltf.scene
       } catch(error){failures.add(file);throw error} finally {clearTimeout(timer);controllers.delete(controller);pending--;report()}
     })())
@@ -78,5 +84,5 @@ export function createTempleModels() {
     }).catch(()=>{anchor.userData.failed=true;report()})
     jobs.push(task);return anchor
   }
-  return {place,anchors,subscribe(fn){listener=fn;report()},get ready(){return Promise.allSettled([load('altar'),load('qa'),...jobs]).then(()=>failures.size?'partial':pending?'loading':'ready')},dispose(){disposed=true;controllers.forEach(c=>c.abort());resources.forEach(g=>g.dispose());textures.forEach(t=>t.image?.close?.())}}
+  return {load,place,anchors,subscribe(fn){listener=fn;report()},get ready(){return Promise.allSettled([load('altar'),load('qa'),...jobs]).then(()=>failures.size?'partial':pending?'loading':'ready')},dispose(){disposed=true;controllers.forEach(c=>c.abort());resources.forEach(g=>g.dispose());textures.forEach(t=>t.image?.close?.())}}
 }

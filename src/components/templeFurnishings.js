@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { SCULPTURE_PROFILES } from '../data/templeSculptures.js'
 // Đồ thờ tự dựng, phân biệt chất liệu gỗ sơn son, đồng cũ, gốm và gấm.
-export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label,curve,models}) {
+export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label,curve,models,registerIncense}) {
   const V=(...p)=>new THREE.Vector3(...p),gold=0xb5914e,bronze=0x806c42,lacquer=0x722e27
   const marble=mat(0xd8d4c3,{roughness:.62})
   function ring(r,t,x,y,z,p,c=gold,flat=false){const o=mesh(new THREE.TorusGeometry(r,t,8,36),c,x,y,z,p);if(flat)o.rotation.x=Math.PI/2;return o}
@@ -103,21 +103,27 @@ export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label
     return p
   }
   function scannedAltar(x,y,z,height,width,depth,p,tint=0xb49a5e) {
-    const fallback=new THREE.Group();altar(0,0,width*.9,fallback,0x593a29);const statue=new THREE.Group();statue.position.y=1;statue.scale.setScalar(Math.max(.5,(height-1)/2.3));fallback.add(statue);sculpt('buddha',statue)
+    const fallback=new THREE.Group();altar(0,0,width*.9,fallback,0x593a29,.97,{legBaseY:0});const statue=new THREE.Group();statue.position.y=1;statue.scale.setScalar(Math.max(.5,(height-1)/2.3));fallback.add(statue);sculpt('buddha',statue)
     return models.place('altar',p,{position:[x,y,z],height,maxWidth:width,maxDepth:depth,material:[mat(tint,{metalness:.56,roughness:.47}),mat(0x593a28,{surface:'wood',roughness:.7,metalness:.08})]},fallback)
   }
-  function altar(x,z,w,p,wood=0x593a29,y=.97) {
-    box(w+.12,.09,.9,wood,x,y,z,p);box(w+.18,.045,.96,gold,x,y+.065,z,p)
-    box(w,.46,.09,wood,x,y-.29,z+.37,p)
-    for(let xx=-w/2+.22;xx<w/2;xx+=.35){scroll(x+xx,y-.28,z+.43,.09,p);lotus(x+xx,y-.39,z+.44,.07,p)}
-    for(const side of [-1,1])for(const zz of [-.3,.3]){
-      const px=x+side*(w/2-.12);lathe([[.055,0],[.085,.05],[.06,.16],[.05,.4],[.085,.55]],wood,px,.34,z+zz,p)
-      curve([[px,.42,z+zz],[px+side*.06,.37,z+zz+.04],[px+side*.08,.34,z+zz+.1]],.04,wood,p)
+  function altar(x,z,w,p,wood=0x593a29,y=.97,{frontExtension=0,legBaseY=.34,frontLegInset=0}={}) {
+    const extension=Number.isFinite(frontExtension)?Math.max(0,frontExtension):0
+    box(w+.12,.09,.9+extension,wood,x,y,z+extension/2,p)
+    const tabletop=box(w+.18,.045,.96+extension,gold,x,y+.065,z+extension/2,p)
+    tabletop.name='Offering tabletop'
+    box(w,.46,.09,wood,x,y-.29,z+.37+extension,p)
+    for(let xx=-w/2+.22;xx<w/2;xx+=.35){scroll(x+xx,y-.28,z+.43+extension,.09,p);lotus(x+xx,y-.39,z+.44+extension,.07,p)}
+    for(const side of [-1,1])for(const zz of [-.3,.3+extension-frontLegInset]){
+      const px=x+side*(w/2-.12),height=(y-.045-legBaseY)/.55
+      const leg=lathe([[.055,0],[.085,.05],[.06,.16],[.05,.4],[.085,.55]].map(([r,h])=>[r,h*height]),wood,px,legBaseY,z+zz,p);leg.name='Offering table leg'
+      curve([[px,legBaseY+.08,z+zz],[px+side*.06,legBaseY+.03,z+zz+.04],[px+side*.08,legBaseY,z+zz+.1]],.04,wood,p)
     }
     // Tấm gấm phủ mặt và tua vàng; không dùng mảng hộp đơn sắc ở mặt bàn.
-    box(w*.62,.025,.56,lacquer,x,y+.1,z+.08,p)
-    box(w*.62,.24,.018,lacquer,x,y-.025,z+.37,p)
-    for(let i=-3;i<=3;i++){scroll(x+i*w*.075,y-.03,z+.385,.035,p);cylinder(.009,.009,.1,gold,x+i*w*.075,y-.18,z+.4,p,6)}
+    const cloth=box(w*.62,.025,.56+extension,lacquer,x,y+.1,z+.08+extension/2,p)
+    cloth.name='Offering cloth runner'
+    const frontCloth=box(w*.62,.24,.018,lacquer,x,y-.025,z+.37+extension,p)
+    for(let i=-3;i<=3;i++){scroll(x+i*w*.075,y-.03,z+.385+extension,.035,p);cylinder(.009,.009,.1,gold,x+i*w*.075,y-.18,z+.4+extension,p,6)}
+    return {tabletop,cloth,frontCloth}
   }
   function vessel(x,y,z,p,scale=1) {
     const g=new THREE.Group();g.position.set(x,y,z);g.scale.setScalar(scale);p.add(g)
@@ -127,19 +133,34 @@ export function createTempleFurnishings({box,sphere,cylinder,mesh,beam,mat,label
     for(let i=0;i<3;i++){const a=i*Math.PI*2/3;beam(V(Math.cos(a)*.16,.12,Math.sin(a)*.16),V(Math.cos(a)*.23,0,Math.sin(a)*.23),.025,bronze,g)}
     cylinder(.22,.22,.016,0x766851,0,.415,0,g,24)
     for(let i=-1;i<=1;i++)cylinder(.006,.006,.35,0x8e4d32,i*.06,.59,0,g,6)
+    registerIncense?.(g)
+    return g
   }
   function candle(x,y,z,p,c=0x9f3e2f) {
-    lathe([[.11,0],[.13,.04],[.06,.09],[.033,.28],[.08,.34],[.08,.37]],bronze,x,y,z,p)
+    const stand=lathe([[.11,0],[.13,.04],[.06,.09],[.033,.28],[.08,.34],[.08,.37]],bronze,x,y,z,p)
     cylinder(.037,.037,.25,c,x,y+.5,z,p,16)
     const flame=mesh(new THREE.SphereGeometry(.035,12,12),0xf7cb7c,x,y+.66,z,p,{emissive:0xf6a84b,emissiveIntensity:1.3,roughness:.5});flame.scale.set(.55,1.6,.55)
+    return stand
   }
-  function offerings(x,y,z,p,w=2.2) {
-    vessel(x,y,z,p,.7)
+  function offerings(x,y,z,p,w=2.2,support) {
+    const localBounds=o=>{o.updateMatrix();o.geometry.computeBoundingBox();return o.geometry.boundingBox.clone().applyMatrix4(o.matrix)}
+    const top=support?localBounds(support.tabletop):null,runner=support?localBounds(support.cloth):null,lip=support?.frontCloth?localBounds(support.frontCloth):null,compact=!!top&&top.max.x-top.min.x<2.4
+    const heightAt=(px,pz)=>!top?y:runner&&px>=runner.min.x&&px<=runner.max.x&&pz>=runner.min.z&&pz<=runner.max.z?runner.max.y:top.max.y
+    const inset=(bounds,px,pz,r)=>({x:THREE.MathUtils.clamp(px,bounds.min.x+r+.002,bounds.max.x-r-.002),z:THREE.MathUtils.clamp(pz,bounds.min.z+r+.002,bounds.max.z-r-.002)})
+    const censer=vessel(x,heightAt(x,z),z,p,.7);censer.name='Offering incense vessel'
     for(const side of [-1,1]){
-      candle(x+side*w*.38,y,z+.02,p)
-      cylinder(.19,.13,.045,0xd6d1b8,x+side*w*.23,y+.02,z+.15,p,24)
-      for(let i=0;i<4;i++){const a=i*2.4;sphere(.067,i%2?0xa9a35c:0xc18c46,x+side*w*.23+Math.cos(a)*.08,y+.09+(i===3?.06:0),z+.15+Math.sin(a)*.07,p)}
-      for(let i=0;i<3;i++){lathe([[.032,0],[.035,.045],[.025,.07]],0xdbd2b9,x+side*(.14+i*.09),y,z+.32,p)}
+      const light=runner?inset(runner,x+side*w*.38,z+(compact?.08:.02),.11):{x:x+side*w*.38,z:z+.02}
+      const stand=candle(light.x,heightAt(light.x,light.z),light.z,p);stand.name='Offering candle foot'
+      const plate=compact?{x:side<0?top.min.x+.20:top.max.x-.20,z:top.max.z-.20}:runner?inset(runner,x+side*w*.23,z+.15,.19):{x:x+side*w*.23,z:z+.15}
+      if(runner&&!compact)plate.x=x+side*Math.min(Math.abs(plate.x-x),Math.abs(light.x-x)-.335)
+      const plateY=heightAt(plate.x,plate.z),dish=cylinder(.19,.13,.045,0xd6d1b8,plate.x,plateY+.0225,plate.z,p,24);dish.name='Offering fruit plate'
+      for(let i=0;i<4;i++){
+        const a=i*Math.PI*2/3,stack=i===3,fruit=sphere(.067,i%2?0xa9a35c:0xc18c46,plate.x+(stack?0:Math.cos(a)*.08),plateY+.112+(stack?Math.sqrt((.067*2)**2-.08**2):0),plate.z+(stack?0:Math.sin(a)*.08),p);fruit.name='Offering fruit'
+      }
+      for(let i=0;i<3;i++){
+        const cup=top?inset(top,x+side*(.14+i*.09),Math.max(z+.32,lip?lip.max.z+.037:-Infinity),.035):{x:x+side*(.14+i*.09),z:z+.32}
+        const o=lathe([[.032,0],[.035,.045],[.025,.07]],0xdbd2b9,cup.x,heightAt(cup.x,cup.z),cup.z,p);o.name='Offering cup'
+      }
     }
   }
   function shrineFrame(x,y,z,w,h,p,wood=0x5a3027,accent=gold) {

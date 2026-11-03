@@ -1,4 +1,11 @@
-# SUMMARY — Tam Sở (cập nhật 30/06/2026)
+# SUMMARY — Tam Sở (cập nhật 04/11/2026)
+
+
+**Bản chốt local v4.10.0 — 04/11/2026:** Model kiến trúc và nam/nữ có giấy phép, đồ lam sát thân/morph theo tư thế; kiểm 23 khu và sửa mặt đỡ bàn lễ, lư bị GLB che, khói, chuông/chày, thư viện/camera, nước/rùa/sen, cành lá/dây đèn. Thêm chim/mây và ghế/chậu cảnh, giữ instancing/geometry dùng chung. Chuột trái xoay/nhìn, phải đi. Presence giới hạn 4Hz ở mọi đường gửi, lọc gói sai, không hồi sinh khách từ snapshot cũ, đồng bộ ngoại hình/tư thế. Test 493 pass và production-style build/prerender 211 route đạt trong lượt; quyền commit/push/deploy một lần và tắt máy tại mốc ghi ở `docs/di-chua-release-2026-11-03.md`. Chưa coi test là đạt photorealism hoặc benchmark điện thoại. Các cập nhật local dưới đây là lịch sử trước bản chốt này.
+
+**Cập nhật local 03/11/2026 — nếp vải/dáng người:** Đồ lam có nếp rủ và biến dạng theo tư thế, vạt áo theo nhịp đi, nếp dồn khi thiền/lạy; nam/nữ đứng thư giãn với trọng tâm và chân lệch nhẹ. Giảm chuyển động có tư thế tĩnh. Test/build đạt, chưa commit/push/deploy; chưa kiểm FPS điện thoại. Chi tiết docs/chua-3d-validation.md.
+
+**Cập nhật local 03/11/2026 — model chi tiết:** Đi Chùa dùng 8 GLB kiến trúc có texture tại 18 vị trí và 2 nhân vật nam/nữ trẻ có skeleton/Walk và bộ đồ lam skinned riêng; thêm tư thế thiền/lạy trên mesh thật và menu chọn nhân vật, lưu local/đồng bộ online. Có nguồn/giấy phép/checksum và UI ghi công. Nội điện giữ kiến trúc tương tác hiện có. Test/build đạt; chưa commit/push/deploy và chưa đo FPS điện thoại. Xem docs/chua-3d-validation.md.
 
 **Cập nhật v4.9.0 — 02/11/2026:** Góc thứ ba cao/rộng/lệch vai hơn, mặt tiền không chắn camera trong điện; nút Ngồi thiền và Lễ Phật trong cảnh có đứng/dừng, ba lạy 12 giây và đồng bộ tư thế online. Mobile ngang gom sáu nút một hàng. Kiểm camera/rig/Presence, 493+529 regression và main/single pass.
 
