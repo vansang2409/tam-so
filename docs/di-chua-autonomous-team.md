@@ -49,7 +49,7 @@ Baseline hiện tại có nhiều thay đổi local chưa commit: kiến trúc G
 
 Chủ dự án đã yêu cầu làm tiếp2 giờ rồi commit/push production, đóng ứng dụng và tắt máy. Phiên đó đã được xử lý trước phiên4 giờ mới; phạm vi/mốc/đích ở `di-chua-release-2026-11-03.md`. Không tái sử dụng quyền này để deploy/shutdown ở lần mở máy sau.
 
-## Ngoại lệ phiên4 giờ04→05/11/2026 — quyền chốt hiện tại
+## Ngoại lệ phiên4 giờ04→05/11/2026 — đã chốt, không chạy lại
 
 Yêu cầu trực tiếp mới: làm tiếp4 giờ rồi commit/push, đóng ứng dụng và tắt máy. Bắt đầu15:52:35UTC04/11, chốt19:52:35UTC tức02:52:35ngày05/11 Asia/Bangkok. Không chốt/tắt sớm. Phạm vi là Đi Chùa trong nhánh `codex/di-chua-character-realism-20261104`, giữ thay đổi có trước; không forcepush, không suy ra quyền merge/deploy production từ phiên mới này. Đóng/tắt bình thường, không forcekill hoặc Discard dữ liệu chưa lưu. Xóa lịch chốt một lần sau xử lý để không lặp khi khởi động. Checkpoint hiện tại: `di-chua-team-run-2026-11-04-08.md`.
 
@@ -61,3 +61,5 @@ Ngoại lệ chỉ áp dụng phiên có hạn này, không cấp quyền commit
 - Authored human giữ PBR/trang phục source; không chạy nhánh cắt/thay áo legacy. Bone rest/skin/morph/clone độc lập, alpha mắt/mi và source-license cần kiểm trên asset đã tối ưu.
 - Floor/finite test không phát hiện da xuyên áo. Cần ảnh/camera/magenta/ray kiểm cả Idle/Walk và nghi thức; oracle24pose vùng nách chỉ chứng minh vùng/mẫu đã kiểm, không bảo đảm mọi va chạm vải.
 - Body có clothing mask ở bàn chân; không ẩn giày trước khi phục hồi sourcefoot. Skin nguồn hiện thiếu normal/roughness khớp UV; không bịa pores hoặc gọi scalar shader là skin scan. Giữ thử nghiệm không có lợi ích rõ ở ngoài bản phát hành.
+
+Phiên4 giờ đã kết thúc đúng hạn: implementation commit `5822268f9b3859db1b9e793b93b5a794e69d896c` đã push nhánh `codex/di-chua-character-realism-20261104` và đối chiếu remoteSHA lúc19:52UTC04/11. Không merge/deploy production. Lịch chốt một lần đã xóa; không lặp commit/push/shutdown theo quyền phiên này khi mở máy lại. DC-A14 vẫn Doing; dừng phiên phát triển theo timebox của chủ dự án. Đóng ứng dụng/tắt máy bình thường là bước OS tiếp theo, không ghi thành đã tắt máy trước khi có bằng chứng.
