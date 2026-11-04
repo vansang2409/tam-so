@@ -53,7 +53,11 @@ export function createTempleModels() {
           resources.add(o.geometry)
           for(const m of Array.isArray(o.material)?o.material:[o.material]){
             // Source character exports fabric as emissive metal; keep its atlas, restore diffuse cloth/skin.
-            if(file==='visitor'||file.startsWith('visitor-')){m.metalness=0;m.roughness=.92;m.emissive?.setHex(0);m.emissiveIntensity=0;if('specularIntensity'in m)m.specularIntensity=.25;if(m.map){m.map.generateMipmaps=false;m.map.minFilter=THREE.LinearFilter;m.map.needsUpdate=true}m.needsUpdate=true}
+            if(file==='visitor'||file.startsWith('visitor-')){
+              m.metalness=0;m.emissive?.setHex(0);m.emissiveIntensity=0
+              if(!m.userData.visitorClothing){m.roughness=.7;m.normalScale?.setScalar(.65);if('specularIntensity'in m)m.specularIntensity=.35}
+              if(m.map){m.map.generateMipmaps=true;m.map.minFilter=THREE.LinearMipmapLinearFilter;m.map.needsUpdate=true}m.needsUpdate=true
+            }
             resources.add(m);m.userData.templeAsset=true
             for(const value of Object.values(m))if(value?.isTexture&&!textures.has(value)){
               textures.add(value);resources.add(value)

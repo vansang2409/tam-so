@@ -22,6 +22,12 @@ export function createDetailedVisitor(source,parent) {
     delta.setFromUnitVectors(from.normalize(),to.normalize());b.getWorldQuaternion(worldQ);worldQ.premultiply(delta)
     b.parent.getWorldQuaternion(q).invert();b.quaternion.copy(q.multiply(worldQ));b.updateWorldMatrix(false,true)
   }
+  function orientHand(name,direction){
+    const hand=bones.get(name);hand.getWorldQuaternion(worldQ)
+    const from=V(0,1,0).applyQuaternion(worldQ),to=direction.clone().transformDirection(holder.matrixWorld)
+    delta.setFromUnitVectors(from.normalize(),to.normalize());worldQ.premultiply(delta)
+    hand.parent.getWorldQuaternion(q).invert();hand.quaternion.copy(q.multiply(worldQ));hand.updateWorldMatrix(false,true)
+  }
   function limb(upper,lower,end,target,hint){
     const a=position(upper),b=position(lower),c=position(end),dest=worldPoint(target),l1=a.distanceTo(b),l2=b.distanceTo(c)
     const direction=dest.clone().sub(a),distance=THREE.MathUtils.clamp(direction.length(),Math.abs(l1-l2)+.001,l1+l2-.001);direction.normalize()
@@ -40,10 +46,10 @@ export function createDetailedVisitor(source,parent) {
       updateTempleCloth(garment,{pose,moving,time,phase:action.time/walk.duration*Math.PI*2,dt,reduced});return
     }
     const amount=pose==='bowing'?bowFrame(reduced?0:progress).amount:0,seated=pose==='meditating',kneeling=pose==='bowing'
-    holder.position.y=(kneeling?.065:.012)+amount*.05
-    const hipY=seated?.48:kneeling?.56-amount*.22:.954+(reduced?0:Math.sin(time*1.35)*.001)
+    holder.position.y=kneeling?.035+amount*.04:.012
+    const hipY=seated?.32:kneeling?.56-amount*.20:.954+(reduced?0:Math.sin(time*1.35)*.001)
     holder.updateWorldMatrix(true,true);hip.position.copy(hip.parent.worldToLocal(worldPoint(V(!seated&&!kneeling?.018:0,hipY,0))));model.updateWorldMatrix(true,true)
-    const angle=amount*1.32,relaxed=!seated&&!kneeling,up=relaxed?V(-.018,1,.014).normalize():V(0,Math.cos(angle),Math.sin(angle))
+    const angle=amount*1.85,relaxed=!seated&&!kneeling,up=relaxed?V(-.018,1,.014).normalize():V(0,Math.cos(angle),Math.sin(angle))
     for(const [a,b]of [['Hips','Spine02'],['Spine02','Spine01'],['Spine01','Spine'],['Spine','neck']]){
       const direction=a==='Hips'?(relaxed?V(.022,1,-.01).normalize():V(0,Math.cos(angle*.2),Math.sin(angle*.2))):up
       const target=holder.worldToLocal(position(a)).add(direction);aim(a,b,target)
@@ -55,12 +61,15 @@ export function createDetailedVisitor(source,parent) {
       const armPoint=holder.worldToLocal(position(prefix+'Arm')),elbowPoint=holder.worldToLocal(position(prefix+'ForeArm')),wristPoint=holder.worldToLocal(position(prefix+'Hand'))
       const armLength=armPoint.distanceTo(elbowPoint)+elbowPoint.distanceTo(wristPoint)
       const standingHand=armPoint.clone().add(V(side*.10,-armLength*.96,side>0?.025:.05))
-      const hand=seated?V(side*.075,.47,.36):kneeling?V(side*(.035+.22*amount),.86-.76*amount,.26+.91*amount):standingHand
-      limb(prefix+'Arm',prefix+'ForeArm',prefix+'Hand',hand,V(side*.55,seated?.55:kneeling?.85:1.15,.15))
-      // Hands have no finger bones; retain the model's shape and orient palm with the forearm.
+      const hand=seated?V(side*.075,.31,.36):kneeling?V(side*(.035+.16*amount),.86-.78*amount,.26+.44*amount):standingHand
+      const elbowHint=kneeling?V(side*.32,.57-amount*.34,.24+amount*.28):seated?V(side*.32,.36,.20):V(side*.55,1.15,.15)
+      limb(prefix+'Arm',prefix+'ForeArm',prefix+'Hand',hand,elbowHint)
+      // Giữ hình bàn tay gốc; ngón hướng vào lòng khi thiền, dựng lên/chạm sàn khi lạy.
       const wrist=bones.get(prefix+'Hand');wrist.quaternion.copy(rest.get(prefix+'Hand').quaternion)
-      const foot=seated?V(-side*.18,.13,.32):kneeling?V(side*.14,.10,-.34):V(side*(side>0?.110:.105),.11,side>0?.055:-.025)
-      limb(prefix+'UpLeg',prefix+'Leg',prefix+'Foot',foot,V(side*(seated?.65:.18),seated?.20:.45,kneeling?.65:.22))
+      if(seated)orientHand(prefix+'Hand',V(-side,.10,.28))
+      else if(kneeling)orientHand(prefix+'Hand',V(0,1-amount,amount))
+      const foot=seated?V(-side*.18,.13,.32):kneeling?V(side*.14,.10,-.34+.22*amount):V(side*(side>0?.110:.105),.11,side>0?.055:-.025)
+      limb(prefix+'UpLeg',prefix+'Leg',prefix+'Foot',foot,V(side*(seated?.65:.18),seated?.10:kneeling?.28-.06*amount:.45,kneeling?.40:.22))
       aim(prefix+'Foot',prefix+'ToeBase',foot.clone().add(V(relaxed?side*.032:0,0,seated?.14:kneeling?-.15:.15)))
     }
     if(relaxed&&!reduced)bones.get('Head').quaternion.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(.012,-.035+Math.sin(time*.32)*.012,.012)))

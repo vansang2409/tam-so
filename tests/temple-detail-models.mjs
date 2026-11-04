@@ -36,6 +36,38 @@ const garment=visitor.getObjectByName('Ao lam garment');assert.ok(garment?.isSki
 assert.equal(garment.material[0].userData.visitorClothing,'ao-lam');assert.equal(garment.material[1].userData.visitorClothing,'trousers');assert.equal(garment.material[0].map,null)
 assert.equal(garment.geometry.groups.reduce((n,g)=>n+g.count,0),garment.geometry.index.count)
 const geometry=garment.geometry
+assert.ok(garment.material.every(m=>m.userData.visitorClothing),'Mọi vật liệu trang phục, kể cả nẹp/cổ, phải tách khỏi da/tóc')
+// Một thành phần liên thông ở thân–nách–tay, kể cả các đỉnh trùng tại đường UV.
+const parent=Array.from({length:geometry.attributes.position.count},(_,i)=>i)
+function leader(id){while(parent[id]!==id){parent[id]=parent[parent[id]];id=parent[id]}return id}
+function join(a,b){parent[leader(a)]=leader(b)}
+for(const [a,b]of geometry.userData.clothSeams)join(a,b)
+const shirtGroups=geometry.groups.filter(g=>g.materialIndex===0),shirtVertices=new Set(),edges=new Map()
+for(const group of shirtGroups)for(let i=group.start;i<group.start+group.count;i+=3){
+ const ids=[0,1,2].map(k=>geometry.index.getX(i+k));ids.forEach(id=>shirtVertices.add(id));join(ids[0],ids[1]);join(ids[1],ids[2])
+}
+assert.equal(new Set([...shirtVertices].map(leader)).size,1,'Thân và hai tay áo phải được may liền bằng topology')
+// Kiểm riêng đường biên, không dùng kết quả liên thông (nó đã gộp toàn bộ thân áo).
+const weld=Array.from({length:parent.length},(_,i)=>i),canonical=id=>{while(weld[id]!==id)id=weld[id];return id}
+for(const [a,b]of geometry.userData.clothSeams)weld[canonical(a)]=canonical(b)
+for(const group of shirtGroups)for(let i=group.start;i<group.start+group.count;i+=3){
+ const ids=[0,1,2].map(k=>canonical(geometry.index.getX(i+k)))
+ for(let k=0;k<3;k++){const a=ids[k],b=ids[(k+1)%3],key=a<b?a+':'+b:b+':'+a;edges.set(key,(edges.get(key)||0)+1)}
+}
+const baseBounds=new THREE.Box3().setFromObject(visitor),basePoint=new THREE.Vector3()
+for(const [key,count]of edges)if(count===1){
+ const ids=key.split(':').map(Number),points=ids.map(id=>new THREE.Vector3().fromBufferAttribute(geometry.attributes.position,id)),y=points.reduce((n,p)=>n+(p.y-baseBounds.min.y)/sourceHeight,0)/2
+ assert.ok(y<.69||y>.80,'Không được có biên hở trong vùng vai–nách: '+y)
+}
+// Mỗi tiết diện tay chạy đúng một vòng; chiếu lỗ nách sai sẽ tạo nửa vòng gập ngược.
+const torsoVertices=new Set(geometry.index.array.slice(shirtGroups[0].start,shirtGroups[0].start+shirtGroups[0].count))
+for(const group of shirtGroups.slice(1)){
+ const ids=[...new Set([...geometry.index.array.slice(group.start,group.start+group.count)])].filter(id=>!torsoVertices.has(id)&&Math.abs(geometry.attributes.uv.getY(id)-.5)<1e-5).sort((a,b)=>geometry.attributes.uv.getX(a)-geometry.attributes.uv.getX(b))
+ assert.ok(ids.length>=16)
+ const points=ids.map(id=>new THREE.Vector3().fromBufferAttribute(geometry.attributes.position,id)),center=points.reduce((sum,p)=>sum.add(p),new THREE.Vector3()).divideScalar(points.length),area=new THREE.Vector3(),turns=[]
+ for(let j=0;j<points.length;j++){const turn=new THREE.Vector3().crossVectors(points[j].clone().sub(center),points[(j+1)%points.length].clone().sub(center));turns.push(turn);area.add(turn)}
+ assert.ok(turns.every(turn=>turn.dot(area)>0),'Tiết diện tay áo không tự gập/xoắn')
+}
 // Front fastenings must remain a sewn layer, not a rigid bar floating away from the chest.
 const torsoGroup=geometry.groups[0],frontGroup=geometry.groups.at(-1),frontVertices=[...new Set([...geometry.index.array.slice(frontGroup.start,frontGroup.start+frontGroup.count)])]
 const sampleVertices=frontVertices.filter((_id,i)=>i<66||i%7===0),closest=new THREE.Vector3(),point=new THREE.Vector3()
@@ -59,11 +91,20 @@ const localCloth=local.model.getObjectByName('Ao lam garment'),remoteCloth=remot
 assert.equal(localCloth.geometry,remoteCloth.geometry,'Visitors share immutable cloth geometry')
 assert.notEqual(localCloth.morphTargetInfluences,remoteCloth.morphTargetInfluences,'Cloth state is independent per visitor')
 local.update({pose:'standing',time:1,reduced:true})
+local.root.updateMatrixWorld(true)
+for(const group of geometry.groups.filter(g=>g.materialIndex===2)){
+ const shoeBounds=new THREE.Box3()
+ for(let i=group.start;i<group.start+group.count;i++)shoeBounds.expandByPoint(localCloth.getVertexPosition(geometry.index.getX(i),basePoint).applyMatrix4(localCloth.matrixWorld))
+ const shoeSize=shoeBounds.getSize(new THREE.Vector3())
+ assert.ok(shoeSize.y<Math.max(shoeSize.x,shoeSize.z)*.8,'Giày phải dài theo gót–mũi thay vì dựng đứng: '+JSON.stringify(shoeBounds))
+ assert.ok(shoeBounds.min.y>=-.005&&shoeBounds.min.y<.035,'Đế giày đứng chạm gần mặt sàn: '+shoeBounds.min.y)
+}
 const neutral=localCloth.morphTargetInfluences.slice(),head=local.bones.get('Head').quaternion.toArray()
 local.update({pose:'standing',time:70,reduced:true});assert.deepEqual(localCloth.morphTargetInfluences,neutral);assert.deepEqual(local.bones.get('Head').quaternion.toArray(),head,'Reduced motion disables idle movement')
 const left=local.bones.get('LeftFoot').getWorldPosition(new THREE.Vector3()),right=local.bones.get('RightFoot').getWorldPosition(new THREE.Vector3())
 assert.ok(Math.abs(left.z-right.z)>.03,'Relaxed stance staggers the feet')
 for(let i=0;i<40;i++)local.update({pose:'meditating',dt:.016,time:i/60})
+assert.ok(local.bones.get('Hips').getWorldPosition(new THREE.Vector3()).y<.36,'Thiền hạ hông xuống dáng ngồi')
 assert.ok(localCloth.morphTargetInfluences[localCloth.morphTargetDictionary.kneeFold]>.9,'Bent knees gather trouser fabric')
 assert.ok(localCloth.morphTargetInfluences[localCloth.morphTargetDictionary.seatedDrape]>.9,'Seated tunic drapes over the legs')
 assert.ok(remoteCloth.morphTargetInfluences.every(v=>v===0),'Updating one visitor cannot animate another visitor cloth')

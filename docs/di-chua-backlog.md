@@ -18,7 +18,7 @@ Nguồn điều phối ưu tiên cho Đi Chùa từ 03/11/2026. TASK_BOARD.md v�
 
 - DC-A10 — Audit chi tiết23 khu: đã xem ảnh thực, kiểm source/529 tuyến/18 nội thất và sửa finding trong lượt; xem `di-chua-detail-audit-2026-11-03.md`. Đây là audit hữu hạn, không phải chứng nhận mọi chi tiết hoàn hảo.
 - DC-A11 (P1, Todo): làm mẫu PBR một cụm cổng. Atlas hiện nhòe khi gần, roughness các bề mặt còn tương tự. Cần phân vùng vữa/gỗ/ngói/đá, tỷ lệ texture theo mét; ảnh cùng camera/ánh sáng, đo texture memory/draw calls. Không tăng texture hoặc chia material toàn chùa một lần.
-- DC-A12 (P1, Todo): tái tạo vùng vai–nách/skin weights, silhouette tay/quần và đầu/tóc có chọn lọc; nam/nữ đứng/đi/quỳ phải giữ khớp, sàn và sharing tài nguyên. Chưa có model áo lam miễn phí phù hợp được xác minh để thay trực tiếp.
+- DC-A12 (P1, Done — lát cắt local 04/11/2026): nối topology vai–nách/tay, chỉnh weights, dáng/cuff/cổ áo, nếp tay/quần, giày theo trục bàn chân và tư thế thiền/lạy cho nam/nữ; giữ model mặt/tóc nguồn, chỉnh vật liệu. Test/build, ảnh nhiều tư thế, chế độ nhẹ/reduced-motion, tải lỗi và review độc lập đạt trong phạm vi đã kiểm. Chưa deploy, chưa làm model mặt/tóc riêng; xem `di-chua-avatar-upgrade-2026-11-04.md`.
 - DC-A13 (P2, Todo): 2–3 biến thể lá sen cong/nụ/hoa nở thay silhouette lặp; giữ sửa nước/cao độ và geometry dùng chung. Đo overdraw/tam giác trước khi nhân rộng.
 - Texture ứng viên cho nghiên cứu A11: Poly Haven có [license CC0](https://polyhaven.com/license); [Painted Plaster Wall](https://polyhaven.com/a/painted_plaster_wall), [Floor Tiles 06](https://polyhaven.com/a/floor_tiles_06). Chưa chọn hoặc tải; không coi ảnh nguồn là asset đã tích hợp.
 
@@ -30,3 +30,5 @@ Nguồn điều phối ưu tiên cho Đi Chùa từ 03/11/2026. TASK_BOARD.md v�
 
 
 - 04/11/2026 — Lát cắt 4.10.0: A02 đồ lam/trim tiếp xúc/morph, A03 bàn lễ và chi tiết cơ học, A05/A06 presence đã có source/mock và hai phiên QA riêng live; rename/appearance/thiền/lạy, join→leave→join và cleanup quan sát được. Reconnect/malformed/stale packet kiểm bằng mock, chưa ngắt mạng thực. A08 ảnh standard/low và budget instancing đạt. A07 chưa gắn Done cho toàn bộ gesture/thiết bị thật; Chrome viewport390×844/844×390 đã kiểm thành công sau khi IAB override không áp dụng. A09 vẫn mở; không tuyên bố bóng tiếp xúc/photorealism đã giải quyết. Bản chốt/release theo quyền một lần ở release doc, không mở quyền deploy định kỳ cho heartbeat.
+
+- 04/11/2026 — Theo phản hồi nhân vật còn xấu, hoàn thành lát cắt A12 local trên baseline `715cd9e`. Dựng áo liền nách, sửa giày dựng đứng, cuff/cổ/nẹp và tư thế; giữ đầu/tóc CC0. Runner 493 pass/0 fail, build và diff-check đạt; review độc lập đã xử lý finding vật liệu nẹp. Ảnh trước/sau và QA ở `.setest/di-chua-team/avatar-upgrade-2026-11-04/`; chi tiết/nguồn/giới hạn ở `di-chua-avatar-upgrade-2026-11-04.md`. Không commit/push/deploy.

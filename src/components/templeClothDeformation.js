@@ -13,8 +13,8 @@ export function addTempleClothMorphs(geometry,vertices,seams,height) {
     for(let i=0;i<vertices.length;i++){
       const m=vertices[i];if(!m)continue
       let radial=0,dx=0,dy=0,dz=0
-      if(name==='elbowFold'&&m.kind==='sleeve')radial=height*.006*bell(m.t,.5,.19)*Math.sin(m.t*38+m.angle*2)
-      if(name==='kneeFold'&&m.kind==='pants')radial=height*.007*bell(m.t,.52,.16)*Math.sin(m.t*43-m.angle*2)
+      if(name==='elbowFold'&&m.kind==='sleeve')radial=height*.0022*bell(m.t,.5,.19)*Math.sin(m.t*30+m.angle*2)
+      if(name==='kneeFold'&&m.kind==='pants')radial=height*.003*bell(m.t,.52,.20)*Math.sin(m.t*32-m.angle*2)
       if(m.kind==='torso'){
         const hem=1-THREE.MathUtils.smoothstep(m.y,.49,.64),front=Math.max(0,Math.cos(m.angle))
         if(name==='seatedDrape'){dx=height*.012*hem*Math.sin(m.angle);dy=-height*.014*hem*(.65+.35*front);dz=height*.023*hem*front}
