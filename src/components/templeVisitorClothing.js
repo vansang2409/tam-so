@@ -2,14 +2,14 @@ import * as THREE from 'three'
 import {addTempleClothMorphs,smoothClothNormals} from './templeClothDeformation.js'
 
 // A separate, fully skinned lay-practitioner outfit, not a recolored fitted base shirt.
-export function prepareTempleVisitorClothing(root) {
+export function prepareTempleVisitorClothing(root,{female=false}={}) {
   root.updateMatrixWorld(true,true)
   const body=[];root.traverse(o=>{if(o.isSkinnedMesh)body.push(o)})
   if(!body.length)throw Error('Visitor has no skinned body')
   const bounds=new THREE.Box3().setFromObject(root),height=bounds.max.y-bounds.min.y,center=bounds.getCenter(new THREE.Vector3())
   const skeleton=body[0].skeleton,bones=skeleton.bones,ids=new Map(bones.map((b,i)=>[b.name,i])),pos=name=>bones[ids.get(name)].getWorldPosition(new THREE.Vector3())
   const chestZ=(pos('Spine').z-center.z)/height,fitWidth=THREE.MathUtils.clamp((pos('LeftArm').x-pos('RightArm').x)/height/.235,.90,1.04)
-  const shirt=new THREE.MeshStandardMaterial({color:0x929eaa,roughness:.93}),pants=new THREE.MeshStandardMaterial({color:0x818d9a,roughness:.96}),shoe=new THREE.MeshStandardMaterial({color:0x393b3a,roughness:.82}),edge=new THREE.MeshStandardMaterial({color:0x8894a1,roughness:.94})
+  const shirt=new THREE.MeshStandardMaterial({color:female?0x87949d:0x929eaa,roughness:.93}),pants=new THREE.MeshStandardMaterial({color:female?0x7e8a94:0x818d9a,roughness:.96}),shoe=new THREE.MeshStandardMaterial({color:0x393b3a,roughness:.82}),edge=new THREE.MeshStandardMaterial({color:female?0x839099:0x8894a1,roughness:.94})
   // Fine cotton weave; deterministic and local, with no external image dependency.
   const weaveData=new Uint8Array(128*128)
   for(let y=0;y<128;y++)for(let x=0;x<128;x++)weaveData[y*128+x]=128+Math.round(Math.sin(x*Math.PI/2)*22+Math.sin(y*Math.PI/2)*18)
@@ -31,13 +31,29 @@ export function prepareTempleVisitorClothing(root) {
     g.setIndex(keep);g.clearGroups();g.addGroup(0,keep.length,0);g.computeBoundingBox();g.computeBoundingSphere()
     // Thu phần chân cổ nằm dưới cổ áo vào trong; không để mép cắt tam giác lộ ra ngoài.
     const point=new THREE.Vector3(),inverse=mesh.matrixWorld.clone().invert(),a=g.attributes.position
+    const skinMatrix=new THREE.Matrix4(),boneMatrix=new THREE.Matrix4()
     for(const id of new Set(keep)){
-      point.fromBufferAttribute(a,id).applyMatrix4(mesh.matrixWorld)
+      // Quantized GLB skins may store their position decode in inverse bind matrices.
+      // Female neckline edits must measure the rendered bind position, then undo skinning.
+      if(female)mesh.getVertexPosition(id,point).applyMatrix4(mesh.matrixWorld)
+      else point.fromBufferAttribute(a,id).applyMatrix4(mesh.matrixWorld)
       const y=(point.y-bounds.min.y)/height
-      if(y<.76||y>.85)continue
-      const blend=1-THREE.MathUtils.smoothstep(y,.832,.85),x=(point.x-center.x)/height,z=(point.z-center.z)/height-chestZ
-      const radius=Math.hypot(x/.037,z/.033)
-      if(radius>1){const factor=THREE.MathUtils.lerp(1,1/radius,blend);point.x=center.x+x*factor*height;point.z=center.z+(chestZ+z*factor)*height;point.applyMatrix4(inverse);a.setXYZ(id,point.x,point.y,point.z)}
+      if(y<.76||y>(female?.845:.85))continue
+      const blend=1-THREE.MathUtils.smoothstep(y,female?.826:.832,female?.845:.85),x=(point.x-center.x)/height,z=(point.z-center.z)/height-chestZ
+      const radius=Math.hypot(x/(female?.033:.037),z/(female?.030:.033))
+      if(radius>1){
+        const factor=THREE.MathUtils.lerp(1,1/radius,blend);point.x=center.x+x*factor*height;point.z=center.z+(chestZ+z*factor)*height;point.applyMatrix4(inverse)
+        if(female){
+          skinMatrix.elements.fill(0)
+          for(let k=0;k<4;k++){
+            const joint=g.attributes.skinIndex.getComponent(id,k),w=g.attributes.skinWeight.getComponent(id,k)
+            boneMatrix.multiplyMatrices(mesh.skeleton.bones[joint].matrixWorld,mesh.skeleton.boneInverses[joint])
+            for(let e=0;e<16;e++)skinMatrix.elements[e]+=boneMatrix.elements[e]*w
+          }
+          skinMatrix.premultiply(mesh.bindMatrixInverse).multiply(mesh.bindMatrix).invert();point.applyMatrix4(skinMatrix)
+        }
+        a.setXYZ(id,point.x,point.y,point.z)
+      }
     }
     a.needsUpdate=true;g.computeBoundingBox();g.computeBoundingSphere()
   }
@@ -76,7 +92,9 @@ export function prepareTempleVisitorClothing(root) {
     return rows
   }
   // A loose lay-practitioner jacket ending just below the hips, not a continuous robe tube.
-  const profile=[[.838,.049,.045],[.811,.048,.046],[.785,.104,.068],[.758,.126,.078],[.70,.126,.082],[.63,.122,.083],[.57,.128,.086],[.53,.135,.089],[.49,.137,.089]]
+  const profile=female
+    ?[[.822,.044,.040],[.805,.046,.043],[.785,.086,.058],[.758,.102,.064],[.70,.104,.071],[.63,.100,.070],[.57,.109,.076],[.53,.117,.079],[.49,.121,.080]]
+    :[[.838,.049,.045],[.811,.048,.046],[.785,.104,.068],[.758,.126,.078],[.70,.126,.082],[.63,.122,.083],[.57,.128,.086],[.53,.135,.089],[.49,.137,.089]]
   function radiiAt(y){
     for(let i=0;i<profile.length-1;i++){
       const a=profile[i],b=profile[i+1]
@@ -92,6 +110,13 @@ export function prepareTempleVisitorClothing(root) {
     return [profile.at(-1)[1]*fitWidth,profile.at(-1)[2]]
   }
   function drapedPoint(y,angle){
+    if(female){
+      // Round the rectangular construction grid into an oval sewn armhole.
+      // Blend out over neighboring rows so the body panel stays continuous.
+      const side=Math.sin(angle)>=0?Math.PI/2:Math.PI*1.5,u=Math.atan2(Math.sin(angle-side),Math.cos(angle-side))/(Math.PI/4),w=(y-.7425)/.0425
+      const falloff=(1-THREE.MathUtils.smoothstep(Math.abs(u),1,1.6))*(1-THREE.MathUtils.smoothstep(Math.abs(w),1,1.65))
+      if(falloff>0){const nu=u*Math.sqrt(1-Math.min(w*w,1)*.5),nw=w*Math.sqrt(1-Math.min(u*u,1)*.5);angle=THREE.MathUtils.lerp(angle,angle+(nu-u)*Math.PI/4,falloff);y+=.0425*(nw-w)*falloff}
+    }
     const [rx,rz]=radiiAt(y),hanging=1-THREE.MathUtils.smoothstep(y,.73,.80),hem=1-THREE.MathUtils.smoothstep(y,.49,.55),front=Math.max(0,Math.cos(angle))
     const distance=a=>Math.atan2(Math.sin(angle-a),Math.cos(angle-a))
     // A few broad folds fall from the underarms and hips; they are not evenly spaced flutes.
@@ -99,11 +124,16 @@ export function prepareTempleVisitorClothing(root) {
     for(const [a,width,depth]of [[.68,.14,-.0038],[-.76,.18,-.0048],[2.35,.20,-.003],[-2.45,.16,-.0035]]){
       const d=distance(a+.08*Math.sin(y*7+a));ridge+=depth*Math.exp(-Math.pow(d/width,2))
     }
-    ridge*=hanging
+    ridge*=hanging*(female?1.45:1)
     const shoulderCrease=-.0015*Math.exp(-Math.pow((y-(.738-.033*Math.abs(Math.sin(angle))+.006*Math.sin(angle)))/.018,2))*front
     const waistCrease=.0012*Math.sin((y-.57)*48+angle)*Math.exp(-Math.pow((y-.59)/.055,2))*front
     const ripple=ridge+shoulderCrease+waistCrease,drape=hem*.002*(Math.sin(angle*3)+.35*Math.sin(angle*7+.4))
-    return v(Math.sin(angle)*(rx+ripple),y+drape,chestZ+Math.cos(angle)*(rz+ripple))
+    // Patterned front/back ease: loose over the chest, then hanging from the shoulder.
+    // Dropping the outer shoulder avoids a horizontal shelf under the sleeve cap.
+    const shoulderDrop=female?.012*Math.pow(Math.abs(Math.sin(angle)),3)*THREE.MathUtils.smoothstep(y,.74,.785)*(1-THREE.MathUtils.smoothstep(y,.785,.811)):0
+    const frontEase=female?.004*Math.exp(-Math.pow((y-.72)/.045,2))*front**2:0
+    const collarNotch=female?.007*Math.pow(front,18)*THREE.MathUtils.smoothstep(y,.805,.822):0
+    return v(Math.sin(angle)*(rx+ripple),y+drape-shoulderDrop-collarNotch,chestZ+Math.cos(angle)*(rz+ripple)+frontEase)
   }
   let torsoRows
   const armhole={top:6,bottom:12}
@@ -116,8 +146,9 @@ export function prepareTempleVisitorClothing(root) {
     rows.push(angle=>drapedPoint(profile.at(-1)[0],angle))
     torsoRows=rings(rows,p=>{
       const base=torsoWeight(p),x=(p.x-center.x)/height,y=(p.y-bounds.min.y)/height
-      const sleeveBlend=THREE.MathUtils.smoothstep(Math.abs(x),.085,.14)*THREE.MathUtils.smoothstep(y,.70,.78)*.22
-      return [...base.map(([id,w])=>[id,w*(1-sleeveBlend)]),[ids.get((x>=0?'Left':'Right')+'Arm'),sleeveBlend]]
+      const sleeveBlend=THREE.MathUtils.smoothstep(Math.abs(x),female?.058:.085,female?.098:.14)*THREE.MathUtils.smoothstep(y,.70,.78)*(female?.65:.22)
+      const side=x>=0?'Left':'Right'
+      return female?[...base.map(([id,w])=>[id,w*(1-sleeveBlend)]),[ids.get(side+'Shoulder'),sleeveBlend*.35],[ids.get(side+'Arm'),sleeveBlend*.65]]:[...base.map(([id,w])=>[id,w*(1-sleeveBlend)]),[ids.get(side+'Arm'),sleeveBlend]]
     },64,'torso',null,true,(r,j)=>r>=armhole.top&&r<armhole.bottom&&((j>=8&&j<24)||(j>=40&&j<56)))
   })
   function tube(points,radii,weightAt,kind='sleeve'){
@@ -156,9 +187,9 @@ export function prepareTempleVisitorClothing(root) {
         const blend=THREE.MathUtils.smoothstep(t,.36,.65),w=[[ids.get(prefix+'Arm'),1-blend],[ids.get(prefix+'ForeArm'),blend]],ring=[]
         for(let j=0;j<segments;j++){
           const angle=angles[j],fold=.025*Math.exp(-Math.pow((t-.5)/.17,2))*Math.sin(t*32+angle*2)
-          const radius=height*THREE.MathUtils.lerp(.043*fitWidth,.025,t)*(1+fold)
+          const radius=height*THREE.MathUtils.lerp((female?.029:.043)*fitWidth,female?.020:.025,t)*(1+fold)
           const target=p.clone().addScaledVector(axis,Math.cos(angle)*radius).addScaledVector(cross,Math.sin(angle)*radius)
-          const cap=THREE.MathUtils.smoothstep(t,0,.22),start=new THREE.Vector3().fromArray(positions,boundary[j]*3),point=start.clone().lerp(target,cap)
+          const cap=THREE.MathUtils.smoothstep(t,0,female?.26:.22),start=new THREE.Vector3().fromArray(positions,boundary[j]*3),point=start.clone().lerp(target,cap)
           const initial=[];for(let k=0;k<4;k++)if(weights[boundary[j]*4+k])initial.push([joints[boundary[j]*4+k],weights[boundary[j]*4+k]*(1-cap)])
           const combined=new Map();for(const [id,value]of [...initial,...w.map(([id,value])=>[id,value*cap])])combined.set(id,(combined.get(id)||0)+value)
           const skin=[...combined].filter(([,value])=>value>0).sort((a,b)=>b[1]-a[1]).slice(0,4),total=skin.reduce((n,[,value])=>n+value,0)
@@ -178,7 +209,7 @@ export function prepareTempleVisitorClothing(root) {
     const hip=pos(prefix+'UpLeg'),knee=pos(prefix+'Leg'),ankle=pos(prefix+'Foot'),legPoints=[],legRadii=[],legWeights=[]
     for(let i=0;i<=32;i++){
       const t=i/32,p=t<.5?hip.clone().add(new THREE.Vector3(0,height*.045,0)).lerp(knee,t*2):knee.clone().lerp(ankle,(t-.5)*2)
-      legPoints.push(p);legRadii.push(height*THREE.MathUtils.lerp(.063,.043,t));const blend=THREE.MathUtils.smoothstep(t,.36,.65);legWeights.push([[ids.get(prefix+'UpLeg'),1-blend],[ids.get(prefix+'Leg'),blend]])
+      legPoints.push(p);legRadii.push(height*THREE.MathUtils.lerp(female?.055:.063,female?.037:.043,t));const blend=THREE.MathUtils.smoothstep(t,.36,.65);legWeights.push([[ids.get(prefix+'UpLeg'),1-blend],[ids.get(prefix+'Leg'),blend]])
     }
     part(1,()=>tube(legPoints,legRadii,(_p,row)=>legWeights[row],'pants'))
     // Dựng giày theo trục gót–mũi trong bind pose để bàn chân hạ xuống đúng mặt đất.
@@ -187,13 +218,40 @@ export function prepareTempleVisitorClothing(root) {
       up.addScaledVector(forward,-up.dot(forward)).normalize();const right=new THREE.Vector3().crossVectors(up,forward).normalize()
       const sections=[[-.050,.023,.040],[-.035,.035,.053],[.025,.038,.049],[.083,.035,.038],[.100,.022,.027],[.106,.001,.017]],rows=[]
       for(const [z,width,upper]of sections){const ring=[];for(let j=0;j<=24;j++){
-        const a=j/24*Math.PI*2,s=Math.sin(a),y=s>=0?-.057+s*upper:-.057+s*.013
-        const point=ankle.clone().addScaledVector(forward,z*height).addScaledVector(right,Math.cos(a)*width*height).addScaledVector(up,y*height)
+        const a=j/24*Math.PI*2,s=Math.sin(a),y=s>=0?-.057+s*upper*(female?.85:1):-.057+s*.013
+        const point=ankle.clone().addScaledVector(forward,z*height*(female?.88:1)).addScaledVector(right,Math.cos(a)*width*height*(female?.75:1)).addScaledVector(up,y*height)
         ring.push(vertex(point,weight(prefix+'Foot'),j/24,z));
       }seams.push([ring[0],ring[24]]);rows.push(ring)}
       for(let row=0;row<rows.length-1;row++)for(let j=0;j<24;j++){const a=rows[row][j],b=rows[row+1][j],c=rows[row][j+1],d=rows[row+1][j+1];indices.push(a,c,b,c,d,b)}
       for(const [row,reverse]of [[rows[0],true],[rows.at(-1),false]])for(let j=1;j<23;j++)indices.push(row[0],row[reverse?j+1:j],row[reverse?j:j+1])
     })
+  }
+  if(female){
+    // Fair the sewn sleeve cap together with its armhole, including the skin-weight field.
+    // This is an offline authoring step for the baked female GLB, not per-frame cloth physics.
+    const adjacency=new Map(),affected=new Map()
+    for(const group of groups.filter(g=>g.materialIndex===0))for(let i=group.start;i<group.start+group.count;i+=3){
+      const triangle=indices.slice(i,i+3)
+      for(const id of triangle){if(!adjacency.has(id))adjacency.set(id,new Set());for(const other of triangle)if(other!==id)adjacency.get(id).add(other)}
+    }
+    for(const [id]of adjacency){
+      const m=clothVertices[id],x=Math.abs((positions[id*3]-center.x)/height)
+      if(!m)continue
+      const mask=m.kind==='sleeve'?1-THREE.MathUtils.smoothstep(m.t,.18,.42):THREE.MathUtils.smoothstep(x,.055,.09)*THREE.MathUtils.smoothstep(m.y,.69,.72)*(1-THREE.MathUtils.smoothstep(m.y,.78,.80))
+      if(mask>0)affected.set(id,mask*.38)
+    }
+    for(let iteration=0;iteration<12;iteration++){
+      const next=positions.slice(),nextWeights=weights.slice(),nextJoints=joints.slice()
+      for(const [id,amount]of affected){
+        const neighbors=adjacency.get(id),field=new Map()
+        for(let k=0;k<4;k++)field.set(joints[id*4+k],(field.get(joints[id*4+k])||0)+weights[id*4+k]*(1-amount))
+        for(let axis=0;axis<3;axis++){let sum=0;for(const n of neighbors)sum+=positions[n*3+axis];next[id*3+axis]=THREE.MathUtils.lerp(positions[id*3+axis],sum/neighbors.size,amount)}
+        for(const n of neighbors)for(let k=0;k<4;k++)field.set(joints[n*4+k],(field.get(joints[n*4+k])||0)+weights[n*4+k]*amount/neighbors.size)
+        const skin=[...field].filter(([,w])=>w>1e-8).sort((a,b)=>b[1]-a[1]).slice(0,4),total=skin.reduce((n,[,w])=>n+w,0)
+        for(let k=0;k<4;k++){nextJoints[id*4+k]=skin[k]?.[0]||0;nextWeights[id*4+k]=(skin[k]?.[1]||0)/total}
+      }
+      for(const [id]of affected){for(let k=0;k<3;k++)positions[id*3+k]=next[id*3+k];for(let k=0;k<4;k++){weights[id*4+k]=nextWeights[id*4+k];joints[id*4+k]=nextJoints[id*4+k]}}
+    }
   }
   // Nẹp and cloth-covered buttons share the torso surface, weights and morphs, not a floating rail.
   function frontPoint(y,x,offset=0){
@@ -202,7 +260,7 @@ export function prepareTempleVisitorClothing(root) {
     return {p,cloth:{kind:'torso',t:0,angle,y:(p.y-bounds.min.y)/height,radial}}
   }
   part(3,()=>{
-    const rows=[];for(let i=0;i<=32;i++)rows.push(THREE.MathUtils.lerp(.810,.491,i/32))
+    const rows=[];for(let i=0;i<=32;i++)rows.push(THREE.MathUtils.lerp(female?.803:.810,.491,i/32))
     const start=positions.length/3
     for(const y of rows)for(const x of [-.0045,.0045]){const {p,cloth}=frontPoint(y,x,.0008);vertex(p,torsoWeight(p),0,0,cloth)}
     for(let i=0;i<rows.length-1;i++){const a=start+i*2;indices.push(a,a+2,a+1,a+1,a+2,a+3)}
@@ -211,7 +269,7 @@ export function prepareTempleVisitorClothing(root) {
     for(let row=0;row<3;row++){
       const ring=[]
       for(let j=0;j<=64;j++){
-        const angle=j/64*Math.PI*2,y=row===2?.818:.838,p=drapedPoint(y,angle),radial=new THREE.Vector3(Math.sin(angle),0,Math.cos(angle))
+        const angle=j/64*Math.PI*2,y=row===2?(female?.805:.818):(female?.822:.838),p=drapedPoint(y,angle),radial=new THREE.Vector3(Math.sin(angle),0,Math.cos(angle))
         if(row)p.addScaledVector(radial,-height*.002)
         ring.push(vertex(p,torsoWeight(p),j/64,row/2,{kind:'torso',t:0,angle,y,radial}))
       }
@@ -222,10 +280,21 @@ export function prepareTempleVisitorClothing(root) {
       const button=frontPoint(.777-i*.058,0,.0012),g=new THREE.SphereGeometry(height*.0025,10,6),a=g.attributes.position,start=positions.length/3
       for(let k=0;k<a.count;k++){const p=new THREE.Vector3().fromBufferAttribute(a,k).add(button.p);vertex(p,torsoWeight(p),0,0,button.cloth)}for(const id of g.index.array)indices.push(start+id);g.dispose()
     }
+    if(female)for(const side of [-1,1]){
+      // Two shallow patch pockets sewn to the hanging front panels.
+      const start=positions.length/3,columns=12,rows=16
+      for(let row=0;row<=rows;row++)for(let col=0;col<=columns;col++){
+        const u=col/columns,t=row/rows,x=side*.058+(u-.5)*.050,y=.61-t*.073
+        const ease=.0012+.0010*Math.sin(u*Math.PI)*Math.sin(t*Math.PI),{p,cloth}=frontPoint(y,x,ease)
+        vertex(p,torsoWeight(p),u,t,cloth)
+      }
+      for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){const a=start+row*(columns+1)+col,b=a+columns+1;indices.push(a,b,a+1,a+1,b,b+1)}
+    }
   })
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(joints,4));geometry.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));geometry.setIndex(indices);for(const g of groups)geometry.addGroup(g.start,g.count,g.materialIndex);smoothClothNormals(geometry,seams);addTempleClothMorphs(geometry,clothVertices,seams,height)
   const outfit=new THREE.SkinnedMesh(geometry,[shirt,pants,shoe,edge]);outfit.name='Ao lam garment';root.add(outfit)
   // Garment is authored in the current rest pose, independently of the source mesh's bind space.
   const outfitSkeleton=new THREE.Skeleton(bones,bones.map(b=>b.matrixWorld.clone().invert()));outfit.bind(outfitSkeleton,new THREE.Matrix4());outfit.castShadow=true;outfit.receiveShadow=true
   root.userData.templeOutfit=true
+  if(female)root.userData.templeCharacterProfile='female-lam-v1'
 }

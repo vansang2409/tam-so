@@ -14,6 +14,7 @@ import { createTempleAvatar } from './templeAvatar.js'
 import { createTempleBowRig } from './templeBowRig.js'
 import { createTempleModels } from './templeModels.js'
 import { WORLD_SPOTS, WORLD_TREES, templeBasinCenterZ, TEMPLE_CENSER_HALF, TEMPLE_CENSER_FRONT_OFFSET, TEMPLE_COURTYARD_BASE_TOP } from '../data/templeWorld.js'
+import { createTempleLotusLeafGeometry, createTempleLotusBudGeometry } from './templeLotusLeaves.js'
 
 const COLORS = { roof:0x9b4937, edge:0xd59867, wood:0x604135, gold:0xd4a45d, stone:0xd2c8ae, leaf:0x486f53 }
 export function createTempleBoxGeometry(w,h,d) {
@@ -193,13 +194,18 @@ export function createTempleWorld(scene) {
   }
   function lotus(x,z,parent=root,index=0) {
     const variation=.85+(Math.sin(index*4.71)+1)*.13
-    const leaf=mesh(geo('lotus-leaf',()=>new THREE.CircleGeometry(.25,24)),index%3?0x587d5d:0x698568,x,.287,z,parent,{side:THREE.DoubleSide,roughness:.9})
-    leaf.rotation.x=-Math.PI/2;leaf.scale.setScalar(variation)
+    const leaf=mesh(geo('lotus-leaf-'+index%3,()=>createTempleLotusLeafGeometry(index%3)),index%3?0x587d5d:0x698568,x,.287,z,parent,{vertexColors:true,side:THREE.DoubleSide,roughness:.9})
+    leaf.rotation.y=index*2.39996;leaf.scale.setScalar(variation)
     const flowerX=x+.045*Math.sin(index*2.4),flowerZ=z+.04*Math.cos(index*2.4),baseY=.37+(index%3)*.015
     cylinder(.004,.005,baseY+.015-.27,0x60794c,flowerX,(baseY+.015+.27)/2,flowerZ,parent,6)
-    const bloom=mesh(geo('lotus-petals',createTemplePetalGeometry),index%3?0xe4b8b7:0xead1c1,flowerX,baseY,flowerZ,parent,{vertexColors:true,side:THREE.DoubleSide,roughness:.85})
-    bloom.scale.setScalar(1.7*variation);bloom.rotation.y=index*2.39996
-    sphere(.026,0xd1af62,flowerX,baseY+.02,flowerZ,parent,1,.55,1)
+    if(index%4===1){
+      const bud=mesh(geo('lotus-bud',createTempleLotusBudGeometry),0xe4b8b7,flowerX,baseY,flowerZ,parent,{vertexColors:true,side:THREE.DoubleSide,roughness:.85})
+      bud.scale.set(variation,1,variation);bud.rotation.y=index*2.39996
+    }else{
+      const bloom=mesh(geo('lotus-petals',createTemplePetalGeometry),index%3?0xe4b8b7:0xead1c1,flowerX,baseY,flowerZ,parent,{vertexColors:true,side:THREE.DoubleSide,roughness:.85})
+      bloom.scale.setScalar(1.7*variation);bloom.rotation.y=index*2.39996
+      sphere(.026,0xd1af62,flowerX,baseY+.02,flowerZ,parent,1,.55,1)
+    }
   }
   function pond(spot,sen=false) {
     const p=new THREE.Group();p.position.set(spot.x,0,templeBasinCenterZ(spot));root.add(p)

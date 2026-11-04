@@ -1,0 +1,80 @@
+{
+  "file": "visitor-female-human.glb",
+  "bytes": 2394136,
+  "sha256": "c740f83afb1396dbdfbf622749b92141baeda17508648e88d47793aa73ae37d2",
+  "sourceSha256": "36bceaf59b140feeebd9401bd93f3c27abe1fc7dd9bb619927d5c57bebd4b8db",
+  "profile": "female-human-v1",
+  "rig": "mpfb-gameengine",
+  "height": 1.65,
+  "walkSpeedSource": 0.9704703225507183,
+  "materials": [
+    {
+      "name": "TempleFemaleV4_shirt",
+      "part": "shirt"
+    },
+    {
+      "name": "TempleFemaleV2_eyebrows",
+      "part": "eyebrows"
+    },
+    {
+      "name": "TempleFemaleV2_eyelashes",
+      "part": "eyelashes"
+    },
+    {
+      "name": "TempleFemaleV2_eyes",
+      "part": "eyes"
+    },
+    {
+      "name": "TempleFemaleV2_shoes",
+      "part": "shoes"
+    },
+    {
+      "name": "TempleFemaleV2_teeth",
+      "part": "teeth"
+    },
+    {
+      "name": "TempleFemaleV2_pants",
+      "part": "pants"
+    },
+    {
+      "name": "TempleFemaleV2_tongue.001",
+      "part": "tongue"
+    },
+    {
+      "name": "TempleFemaleV2_skin",
+      "part": "skin"
+    },
+    {
+      "name": "TempleHair_toigo_curled_under_bob_material",
+      "part": "hair"
+    }
+  ],
+  "joints": [
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53
+  ],
+  "blinks": [
+    [
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    [
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ]
+  ],
+  "animations": [
+    "Walk",
+    "Idle"
+  ],
+  "build": "node scripts/build-temple-human-avatar.mjs",
+  "optimizer": "@gltf-transform/cli@4.5.1 WebP92; meshopt medium POSITION16 NORMAL12 WEIGHT16"
+}

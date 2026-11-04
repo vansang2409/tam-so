@@ -235,6 +235,22 @@ Model nam trung niên cũ đã được thay thế. Model nền mới có giấy
 - SHA-256 bản tối ưu: f2ec89e770a890dee204010c486de5b0340021316d1cc5fa7b5c9f6328812bab
 - Thay đổi: Giảm lưới, nén meshopt, texture WebP 1024; giữ mặt/tóc/tay trẻ và skeleton/Walk. Khi chạy, thay toàn bộ trang phục nền bằng bộ đồ lam skinned riêng: áo rộng vạt dài, cổ đứng, nẹp cài, tay dài và quần suông.
 
-Bản GLB tải trong hộp thoại là model nền đã tối ưu; bộ đồ lam được dựng và skin khi chạy bởi templeVisitorClothing.js. Pipeline tối ưu được cố định ở glTF Transform CLI 4.5.1; xem scripts/fetch-temple-detail-models.mjs.
+Bản nam tải trong hộp thoại là model nền đã tối ưu, bộ đồ lam dựng và skin khi chạy bởi templeVisitorClothing.js. Lựa chọn nữ hiện dùng `visitor-female-human.glb` mô tả cuối tài liệu; các bản Grab3D nữ giữ làm nguồn/đối chiếu. Pipeline tối ưu nền được cố định ở glTF Transform CLI4.5.1; xem scripts/fetch-temple-detail-models.mjs.
 
-Cập nhật nếp vải và tư thế: Tam Sở bổ sung nếp rủ trên mesh trang phục, 5 morph target kèm normal để thay đổi theo động tác và dáng đứng thư giãn. Các thay đổi chạy trong templeVisitorClothing.js, templeClothDeformation.js và templeDetailedVisitors.js; không thay các tệp GLB nguồn hay checksum.
+Cập nhật nếp vải và tư thế: Tam Sở bổ sung nếp rủ trên mesh trang phục, 5 morph target kèm normal để thay đổi theo động tác và dáng đứng thư giãn. Authoring/runtime ở templeVisitorClothing.js, templeClothDeformation.js và templeDetailedVisitors.js; giữ các tệp GLB nền và checksum, bản nữ derivative có manifest riêng.
+
+### Mẫu nữ áo lam v1 — 04/11/2026
+
+- Bản thử nghiệm cũ để đối chiếu: `visitor-female-lam.glb`, đã bị chủ dự án bác bỏ về ngoại hình; không còn là lựa chọn nữ mặc định. Đây là derivative của `visitor-female.glb` CC0 nêu trên, giữ mặt/tóc/bàn tay và Walk; không phải model MakeHuman/Yinn hoặc tài nguyên mới mua.
+- Tam Sở dựng riêng silhouette áo/quần nữ, vai dốc và chuyển tiếp nách, fairing mesh/weights vùng cap; nẹp/cổ/khuy và5 morph được bake vào GLB. Dáng đứng tay gần hông được điều khiển bởi runtime profile `female-lam-v1`; chưa có rig mặt/ngón mới hoặc mô phỏng vải vật lý.
+- Script tái tạo: `node scripts/build-temple-female-avatar.mjs`, glTF Transform4.5.1 meshopt medium. Nguồn/hash/bytes bản cuối tại `female-lam-manifest.json`; bản nền và checksum gốc giữ nguyên.
+- Vật liệu áo/quần/viền/giày riêng, normal weave nhúng tự tạo. Da/mắt/tóc vẫn dùng atlas nguồn; chưa tách thành shader chuyên biệt.
+
+### Mẫu nữ human — ứng viên đang cải tiến
+
+- File runtime/download: `visitor-female-human.glb`; report `visitor-female-human.json` ghi hash/bytes/rig/clips. Source sửa được trong `assets-src/temple/female-human-source.glb`; hướng dẫn và nguồn/license đầy đủ ở `assets-src/temple/README.md` và `provenance.json` trong repository.
+- Body/rig, skin young_asian_female, eyes/eyebrows/eyelashes/teeth/tongue/shoes: MakeHuman core/system assets CC0. Source: https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html ; license https://github.com/makehumancommunity/mpfb2/blob/v2.0.18/LICENSE.ASSETS.md . Code của công cụ Blender/MPFB không được đóng gói trong GLB.
+- Áo/quần sửa từ Toigo fisherman sweater/wool pants CC0; tóc Toigo Curled Under Bob (header MRT) CC0. Nguồn chính thức: https://static.makehumancommunity.org/assets/assetpacks/shirts01.html , https://static.makehumancommunity.org/assets/assetpacks/pants01.html , https://static.makehumancommunity.org/assets/assetpacks/hair01.html . Tam Sở sửa form/cổ/nẹp/nút/cuff/weights, bake nếp rủ, màu/tóc/skin AO và cotton normal.
+- Hai morph mí mắt trên body/lashes và nét miệng khép dịu nhẹ(bake bilateral mouthSmile.12) từ faceunits01 của Mika Suominen CC0: https://static.makehumancommunity.org/assets/assetpacks/faceunits01.html . Rig53joints và ngón thật; loader giữ PBR/áo authoring, không thay trang phục procedural. Mắt dùng đúng brown_eyeCC0 với alphaBLEND, không đổi màu sclera hoặc tạo map da giả.
+- **Motion không phải CC0.** Walk CMU35_01, Idle CMU77_02 từ http://mocap.cs.cmu.edu/ ; BVH conversion bởi cgspeed: https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/the-motionbuilder-friendly-bvh-conversion-release-of-cmus-motion-capture-database . CMU cho phép dùng miễn phí trong sản phẩm kể cả thương mại, nhưng không bán lại motion data kể cả đã đổi định dạng. Giữ credit và điều kiện này khi phân phối derivative; không bán GLB này như gói motion độc lập.
+- Không sử dụng model/texture/animation PUBG. PUBG là mốc tham chiếu chất lượng do chủ dự án yêu cầu, chưa phải kết quả đã nghiệm thu. Nghi thức dùng IK runtime, không gắn nhãn motion capture cho thiền/lạy.

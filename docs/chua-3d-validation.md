@@ -166,3 +166,18 @@ Giới hạn hình ảnh còn lại: atlas kiến trúc nhòe khi nhìn sát, ro
 
 
 Bổ sung source cuối18:12 UTC: bình trên bàn lấy mặt đỡ mesh thực; vòng tay Pháp Bảo dùng bounds sau xoay và nằm trọn trên bàn.14 lư ngoài sân có bệ từ nền tới đáy bát; lư điện nằm trước toàn shell, Chánh Điện lệch trái1.15m giữ trục giữa thông. Geometry/collider/529 tuyến và review độc lập đạt; full test493 pass/0 fail, Vercel build562 modules/211 route chạy lại sau sửa. Browser kiểm đúng entry mới `index-CS1ngI7m.js`, ảnh bệ Chánh Điện/Tượng trong final-build. Budget cổng nam1280×720 source cuối: standard430calls/1.761.870tri, low234calls/876.577tri; không phải benchmark thiết bị thật. Xem release doc để phân biệt kiểm local và kết quả production.
+
+
+## 04/11/2026 — Hồ sen local sau05a13d3
+
+3 lá khum nhẹ và5 nụ xen14 hoa, dùng shared geometry/material, không texture/collider mới. Test493pass/0fail và build đạt; reviewer source/ảnh standard/low không có finding chặn. Standard377calls không đổi,tri+1448; low183calls không đổi,tri+724. Ảnh gần chỉ so định tính do camera lệch nhẹ; không có benchmark FPS/overdraw/điện thoại hoặc delta texture memory đáng tin. Chưa commit/push/deploy. Chi tiết/bằng chứng/giới hạn: `di-chua-team-run-2026-11-04-05.md`.
+
+## Phiên đêm04→05/11/2026 — nhân vật nữ humanV10
+
+Mặc định nữ dùng model authoring mới53joints, áo lam mesh riêng, tóc/da/mắt/mi tách PBR, ngón tay và blink; nguồn sửa được/provenance/build tại `assets-src/temple/README.md`. Public model2,394,136bytes; checksum cuối ở report`visitor-female-human.json`. CC0 graphical source và custom CMU motion được ghi riêng. Mẫu nữ cũ bị chủ dự án bác bỏ, không còn là mặc định. V10 chưa đạt mục tiêu hình ảnh PUBG.
+
+Đã kiểm actualGLB/optimizedWebGL: macro-body export roundtrip, bind/morph/weights/clone/dispose, đứng/Idle/Walk/thiền/chắp tay/fullbow, sourceeyealpha và faceclosed/head30. Đã sửa nách/gối lộ da, cuffs/gấu/cổ, chân/seat thiền và palm/thumb; oracle vùng nách bắt lỗi V8trước(19/24pose lộ) và V9/V10sau(24/24che), không thay bằng chỉ kiểm finite/floor. Test này không chứng minh mọi frame/va chạm vải. Independent reviewer không có P1/P2 cụ thể trong bản cuối đã xem.
+
+BrowserDEVroom riêng kiểm2tab count1→2→1sauTTL, local/remote nam-nữ/đi/thiền/lạy và Chánh Điện, standard/low; server QA riêng trả404femaleGLB xác nhận cảnh báo/fallback vẫn đi được rồi dừng server. Không đổi schema/RLS/hostedbusinessdata. Viewport390×844/844×390 đã xác minh kích thướcDOM và reset sau kiểm, chưa phải thiết bị cảm ứng thật. Cùngcamera390standard313calls/1,452,954tri;low119calls/536,967tri/shadowsfalse; đây là rendercounter, không phải FPS/GPU.
+
+`npm test` full sau V10 đạt(runner493/0 cùng các assert suite mới), `VERCEL=1 npm run build` đạt/211routes. Nguồn/công cụ QA riêng không nằm trong productionbuild; rawsource không phải payload web. Giới hạn còn lại: da thiếu normal/roughnessmap khớp nguồn, tóc còn rigid/bakedshine, nếp quần nhọn, thiền authoredIK không phải runtimeclothphysics. Chi tiết bằng chứng và bước commit/push/đóng máy theo hạn phiên ở `di-chua-team-run-2026-11-04-08.md`.

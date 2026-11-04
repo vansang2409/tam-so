@@ -10,6 +10,7 @@ import { DEFAULT_PERSPECTIVE, thirdPersonPose, thirdPersonCameraStep } from '../
 import { templeBellAngle } from './templeBell.js'
 import { pickTempleGround } from './templeGroundPicking.js'
 import { TEMPLE_MOUSE_BUTTONS, isTempleNavigateClick, isTempleNavigateDrag, isTempleLookDrag } from './templePointerInput.js'
+import {TEMPLE_WALK_SPEED,TEMPLE_FALLBACK_GAIT_RATE} from '../data/templeMotion.js'
 
 const INDOOR_KINDS=new Set(['main','hall','house','shrine','tower'])
 const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,bowing,ritual,paused,quality,appearance,peers,onPresence,onMove,onArrive,onStatus,onReady,onError},ref) {
@@ -191,26 +192,27 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,bowing,ritu
         if(p.quality!==lastQuality){renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,p.quality==='low'?1:1.5));renderer.shadowMap.enabled=p.quality!=='low';resize();lastQuality=p.quality}
         if(p.quality==='low'&&now-lastRender<32)return
         const elapsed=Math.min(1,(now-lastRender)/1000||.016),dt=Math.min(.1,elapsed);lastRender=now;time+=dt
-        const avatar=world.avatar
+        const avatar=world.avatar,previousX=avatar.position.x,previousZ=avatar.position.z
         if(path.length){
-          let budget=5.8*elapsed
+          let budget=TEMPLE_WALK_SPEED*elapsed
           while(path.length&&budget>0){const next=path[0],dx=next.x-avatar.position.x,dz=next.z-avatar.position.z,d=Math.hypot(dx,dz);if(d>.001)avatar.rotation.y=Math.atan2(dx,dz);if(d<=budget){avatar.position.x=next.x;avatar.position.z=next.z;budget-=d;path.shift()}else{avatar.position.x+=dx/d*budget;avatar.position.z+=dz/d*budget;budget=0}}
           avatar.position.y=groundHeight(avatar.position.x,avatar.position.z)
           if(!path.length){moving=false;world.marker.visible=false;world.pathLine.geometry.dispose();world.pathLine.geometry=new THREE.BufferGeometry();if(pending){enterArea(pending.spot,!!pending.action);p.onArrive?.(pending.spot,pending.action);pending=null}}
         }
         // Bấm nền đi qua cửa cũng vào điện, không bắt buộc chọn nút địa điểm.
         if((!room||!room.indoor)&&!moving){const entered=WORLD_SPOTS.find(s=>INDOOR_KINDS.has(s.kind)&&Math.abs(avatar.position.x-s.x)<s.width/2-.4&&Math.abs(avatar.position.z-s.centerZ)<s.depth/2-.5);if(!entered)suppressedEntry=null;if(entered&&entered.id!==suppressedEntry)enterArea(entered)}
-        const gait=moving&&!reduced?Math.sin(time*12)*.45:0
+        const gait=moving&&!reduced?Math.sin(time*TEMPLE_FALLBACK_GAIT_RATE)*.45:0
         world.legs[0].rotation.x=gait;world.legs[1].rotation.x=-gait;world.arms[0].rotation.x=-gait*.6;world.arms[1].rotation.x=gait*.6
         const showingRitual=!!p.ritual&&!moving&&!p.meditating&&!p.bowing
         currentBowProgress=p.bowing?THREE.MathUtils.clamp((Date.now()-p.bowing.at)/BOW_DURATION,0,1):showingRitual?THREE.MathUtils.clamp((Date.now()-p.ritual)/2800,0,1)/3:0
         currentPose=templePose({moving,bowing:p.bowing,meditating:p.meditating,ritual:showingRitual})
         currentBowAmount=world.bowRig.apply(reduced?0:currentBowProgress)
         world.standing.visible=currentPose==='standing';world.seated.visible=currentPose==='meditating';world.praying.visible=currentPose==='bowing'
-        container.dataset.detailedVisitor=world.detailedVisitors.updateSelf({appearance:p.appearance,pose:currentPose,moving,progress:currentBowProgress,time,dt,reduced})
+        const walkingSpeed=moving?Math.hypot(avatar.position.x-previousX,avatar.position.z-previousZ)/elapsed:0
+        container.dataset.detailedVisitor=world.detailedVisitors.updateSelf({appearance:p.appearance,pose:currentPose,moving,speed:walkingSpeed,progress:currentBowProgress,time,dt,reduced})
         container.dataset.appearance=world.detailedVisitors.appearance||p.appearance
         world.beacon.position.y=2.4+(reduced?0:Math.sin(time*2)*.1)
-        world.avatar.visible=perspective==='third';world.beacon.visible=!room&&perspective==='third'&&currentPose==='standing';if(perspective==='first')world.avatar.rotation.y=yaw+Math.PI
+        world.avatar.visible=perspective==='third';world.beacon.visible=!room&&perspective==='third'&&currentPose==='standing'&&camera.position.distanceToSquared(avatar.position)>144;if(perspective==='first')world.avatar.rotation.y=yaw+Math.PI
         if(room||perspective==='first'){
           placeLocalCamera(false,reduced?1:1-Math.exp(-dt*7))
         } else if(follow){
@@ -239,6 +241,7 @@ const TempleWorld=forwardRef(function TempleWorld({litIds,meditating,bowing,ritu
         if(!room&&perspective==='third')controls.update();renderer.render(scene,camera)
         if(import.meta.env.DEV){
           container.dataset.drawCalls=renderer.info.render.calls;container.dataset.triangles=renderer.info.render.triangles;container.dataset.shadows=renderer.shadowMap.enabled;container.dataset.geometries=renderer.info.memory.geometries;container.dataset.textures=renderer.info.memory.textures
+          container.dataset.cameraPosition=camera.position.toArray().map(v=>v.toFixed(4)).join(',');container.dataset.cameraQuaternion=camera.quaternion.toArray().map(v=>v.toFixed(4)).join(',');container.dataset.cameraFov=camera.fov.toFixed(2)
           if(!frameStatsAt)frameStatsAt=now
           frameStatsFrames++
           if(now-frameStatsAt>=1000){container.dataset.fps=(frameStatsFrames*1000/(now-frameStatsAt)).toFixed(1);container.dataset.frameMs=((now-frameStatsAt)/frameStatsFrames).toFixed(1);frameStatsAt=now;frameStatsFrames=0}

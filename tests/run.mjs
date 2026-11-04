@@ -4,6 +4,13 @@ import './temple-rituals.mjs'
 import './temple-presence.mjs'
 import './temple-models.mjs'
 import './temple-detail-models.mjs'
+import './temple-female-avatar.mjs'
+import './temple-humanoid-hands.mjs'
+import './temple-kneeling-contact.mjs'
+import './temple-face-motion.mjs'
+import './temple-human-avatar.mjs'
+import './temple-thumb-pose.mjs'
+import './temple-human-clothing.mjs'
 /* Bộ kiểm thử logic Tam Sở (thuần Node ESM, không cần framework).
  * Chạy: npm test   (hoặc: node tests/run.mjs)
  * Bảo vệ các mốc tính toán đã kiểm chứng khỏi hồi quy. */

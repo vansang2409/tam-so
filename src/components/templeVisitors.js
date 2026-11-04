@@ -3,6 +3,7 @@ import { bindTempleBowRig } from './templeBowRig.js'
 import { bowFrame } from '../data/templeRituals.js'
 import { groundHeight } from '../data/templeWorld.js'
 import { MAX_VISIBLE_VISITORS } from '../data/templePresence.js'
+import {TEMPLE_WALK_SPEED,TEMPLE_FALLBACK_GAIT_RATE} from '../data/templeMotion.js'
 // Dùng lại geometry nhân vật, chỉ thêm vật liệu áo và nhãn tên cho từng khách.
 export function createTempleVisitors(world) {
   const visitors=new Map(),palette=[0x829b99,0xa79980,0x8c9b7b,0x9790a7,0xad8a77],legIndices=world.legs.map(o=>world.standing.children.indexOf(o)),armIndices=world.arms.map(o=>world.standing.children.indexOf(o))
@@ -21,11 +22,12 @@ export function createTempleVisitors(world) {
         let v=visitors.get(p.id)
         if(!v){const root=new THREE.Group(),body=world.standing.clone(true),seated=world.seated.clone(true),praying=world.praying.clone(true),shirt=world.body.material.clone();shirt.color.setHex(palette[p.color]);for(const pose of [body,seated,praying]){pose.traverse(o=>{if(o.isMesh&&(o.material===world.body.material||o.material.color?.getHex()===0x819b99))o.material=shirt});root.add(pose)}const rig=bindTempleBowRig(praying),tag=nameTag(p.name);root.add(tag);root.position.set(p.x,groundHeight(p.x,p.z),p.z);world.root.add(root);v={root,body,seated,praying,rig,shirt,tag,name:p.name,progress:0};visitors.set(p.id,v)}
         if(v.name!==p.name){v.root.remove(v.tag);v.tag.material.map.dispose();v.tag.material.dispose();v.tag=nameTag(p.name);v.root.add(v.tag);v.name=p.name}
-        const blend=reduced?1:1-Math.exp(-dt*12);v.root.position.lerp(new THREE.Vector3(p.x,groundHeight(p.x,p.z),p.z),blend)
+        const oldX=v.root.position.x,oldZ=v.root.position.z,blend=reduced?1:1-Math.exp(-dt*12);v.root.position.lerp(new THREE.Vector3(p.x,groundHeight(p.x,p.z),p.z),blend)
+        const speed=p.moving&&dt>0?Math.min(TEMPLE_WALK_SPEED*2,Math.hypot(v.root.position.x-oldX,v.root.position.z-oldZ)/dt):0
         v.root.rotation.y+=Math.atan2(Math.sin(p.yaw-v.root.rotation.y),Math.cos(p.yaw-v.root.rotation.y))*blend
         v.body.visible=p.pose!=='meditating'&&p.pose!=='bowing';v.seated.visible=p.pose==='meditating';v.praying.visible=p.pose==='bowing';if(p.pose==='bowing'){v.progress=THREE.MathUtils.lerp(v.progress,p.bowProgress||0,blend);v.rig.apply(reduced?0:v.progress)}else v.progress=0;v.tag.position.y=p.pose==='meditating'?1.65:p.pose==='bowing'?1.7-bowFrame(v.progress).amount*.6:2.12
-        const gait=p.moving&&!reduced?Math.sin(time*12)*.42:0;v.body.children[legIndices[0]].rotation.x=gait;v.body.children[legIndices[1]].rotation.x=-gait;v.body.children[armIndices[0]].rotation.x=-gait*.6;v.body.children[armIndices[1]].rotation.x=gait*.6
-        const detailed=world.detailedVisitors?.updateRemote(p.id,v.root,{appearance:p.appearance,pose:p.pose||'standing',moving:p.moving,progress:v.progress,time,dt,reduced});if(detailed){v.body.visible=false;v.seated.visible=false;v.praying.visible=false}
+        const gait=p.moving&&!reduced?Math.sin(time*TEMPLE_FALLBACK_GAIT_RATE)*.42:0;v.body.children[legIndices[0]].rotation.x=gait;v.body.children[legIndices[1]].rotation.x=-gait;v.body.children[armIndices[0]].rotation.x=-gait*.6;v.body.children[armIndices[1]].rotation.x=gait*.6
+        const detailed=world.detailedVisitors?.updateRemote(p.id,v.root,{appearance:p.appearance,pose:p.pose||'standing',moving:p.moving,speed,progress:v.progress,time,dt,reduced});if(detailed){v.body.visible=false;v.seated.visible=false;v.praying.visible=false}
         v.root.visible=Math.hypot(p.x-position.x,p.z-position.z)>.65
       }
       return visible.length

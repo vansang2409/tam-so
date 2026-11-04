@@ -1,0 +1,12 @@
+{
+  "file": "visitor-female-lam.glb",
+  "bytes": 632964,
+  "sha256": "25ef021614ad7217a3231f0c21dd474bb5dfc81f7bb91a2f87e0815d27baf530",
+  "source": "visitor-female.glb",
+  "sourceSha256": "f2ec89e770a890dee204010c486de5b0340021316d1cc5fa7b5c9f6328812bab",
+  "license": "CC0-1.0 base; project-authored garment",
+  "profile": "female-lam-v1",
+  "build": "node scripts/build-temple-female-avatar.mjs",
+  "optimizer": "@gltf-transform/cli@4.5.1 meshopt --level medium",
+  "changes": "Retained reviewed CC0 head/hair/hands/Walk; authored female jacket/trousers silhouette, shoulder skinning and baked garment mesh/morphs/materials."
+}

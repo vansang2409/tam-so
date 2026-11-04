@@ -47,13 +47,23 @@ export function createTempleModels() {
         if(!response.ok)throw new Error('Không tải được mô hình '+file)
         const gltf=await loader.parseAsync(await response.arrayBuffer(),'')
         gltf.scene.animations=gltf.animations
-        if(file==='visitor'||file.startsWith('visitor-'))prepareTempleVisitorClothing(gltf.scene)
+        const authoredHuman=gltf.scene.userData.templeCharacterProfile==='female-human-v1'
+        if(file==='visitor'||file.startsWith('visitor-')){
+          if(authoredHuman){
+            if(gltf.scene.userData.templeRig!=='mpfb-gameengine')throw Error('Authored human rig profile missing')
+          }else if(gltf.scene.userData.templeCharacterProfile==='female-lam-v1'){
+            // The authored GLB already contains its skinned outfit; never cut/dress it again.
+            const garment=gltf.scene.getObjectByName('Ao_lam_garment')
+            if(!garment)throw Error('Authored visitor outfit missing')
+            garment.name='Ao lam garment'
+          }else prepareTempleVisitorClothing(gltf.scene)
+        }
         prepareTempleAsset(gltf.scene,file)
         gltf.scene.traverse(o=>{if(o.isMesh){
           resources.add(o.geometry)
           for(const m of Array.isArray(o.material)?o.material:[o.material]){
             // Source character exports fabric as emissive metal; keep its atlas, restore diffuse cloth/skin.
-            if(file==='visitor'||file.startsWith('visitor-')){
+            if((file==='visitor'||file.startsWith('visitor-'))&&!authoredHuman){
               m.metalness=0;m.emissive?.setHex(0);m.emissiveIntensity=0
               if(!m.userData.visitorClothing){m.roughness=.7;m.normalScale?.setScalar(.65);if('specularIntensity'in m)m.specularIntensity=.35}
               if(m.map){m.map.generateMipmaps=true;m.map.minFilter=THREE.LinearMipmapLinearFilter;m.map.needsUpdate=true}m.needsUpdate=true
@@ -63,7 +73,8 @@ export function createTempleModels() {
               textures.add(value);resources.add(value)
               // Giữ texture màu quét, giới hạn kích thước upload GPU cho cả máy nhỏ.
               const image=value.image,w=image?.width||0,h=image?.height||0
-              if(Math.max(w,h)>1024){const ratio=1024/Math.max(w,h),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*ratio));canvas.height=Math.max(1,Math.round(h*ratio));canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);value.image=canvas;value.needsUpdate=true;image.close?.()}
+              const limit=authoredHuman&&m.userData.templePart==='skin'&&value===m.map?2048:1024
+              if(Math.max(w,h)>limit){const ratio=limit/Math.max(w,h),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*ratio));canvas.height=Math.max(1,Math.round(h*ratio));canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);value.image=canvas;value.needsUpdate=true;image.close?.()}
               value.anisotropy=4
             }
           }

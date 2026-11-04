@@ -41,6 +41,7 @@ export function smoothClothNormals(geometry,seams) {
 }
 
 export function updateTempleCloth(garment,{pose,moving,time=0,phase=0,amount=0,dt=.016,reduced=false}) {
+  if(garment?.isGroup){for(const child of garment.children)updateTempleCloth(child,{pose,moving,time,phase,amount,dt,reduced});return}
   if(!garment?.morphTargetDictionary)return
   const seated=pose==='meditating',bowing=pose==='bowing'
   const targets={

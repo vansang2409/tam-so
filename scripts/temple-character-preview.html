@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Kiểm hình thể nhân vật — nội bộ</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#e7e5e0;color:#353b3a;font:15px system-ui}
+    header{padding:12px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}h1{font-size:18px;margin:0 auto 0 0}
+    button{font:inherit;padding:7px 12px;border:1px solid #a7aaa4;background:#faf9f5;border-radius:5px;cursor:pointer}button[aria-pressed=true]{background:#d3d9d0}
+    main{display:flex;justify-content:center;gap:16px;padding:0 16px}figure{margin:0;width:min(46vw,580px)}figcaption{text-align:center;padding:8px}
+    canvas{display:block;width:100%;height:min(740px,calc(100vh - 150px));min-height:400px}footer{padding:8px;text-align:center;font-size:12px}
+    #error{white-space:pre-wrap;color:#9d251e}#metrics{font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body>
+  <header><h1>So sánh cùng camera / ánh sáng</h1><button data-pose="standing">Đứng</button><button data-pose="idle">Đứng tự nhiên</button><button data-pose="meditating">Thiền</button><button data-pose="prayer">Chắp tay</button><button data-pose="bowing">Cúi lạy</button><button data-pose="walk">Đi bộ</button><button data-pose="rest">Bind pose</button><button id="turn">Đổi góc</button><button id="closeup">Xem gần</button></header>
+  <main><figure><figcaption>Mẫu đối chiếu</figcaption><canvas id="before" aria-label="Mẫu đối chiếu"></canvas></figure><figure><figcaption>Mẫu đang kiểm — chưa nghiệm thu</figcaption><canvas id="after" aria-label="Mẫu đang kiểm"></canvas></figure></main>
+  <footer><span id="status">Đang tải…</span><br><span id="metrics"></span></footer><pre id="error"></pre>
+  <script type="module" src="./temple-character-preview.js"></script>
+</body>
+</html>
