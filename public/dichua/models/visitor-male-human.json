@@ -1,0 +1,80 @@
+{
+  "file": "visitor-male-human.glb",
+  "bytes": 1838324,
+  "sha256": "45dbc2e216e71d8ac5337779059fb1e114b1a620194b2225cc987c86641ff3af",
+  "sourceSha256": "3d5f0d97e8aa50ab01a62f2b0ea1d4938a93c593cc4d227555985187cba79556",
+  "profile": "male-human-v1",
+  "rig": "mpfb-gameengine",
+  "height": 1.72,
+  "walkSpeedSource": 1.0869267612568045,
+  "materials": [
+    {
+      "name": "TempleMaleV3_shirt",
+      "part": "shirt"
+    },
+    {
+      "name": "TempleMaleV2_eyebrows",
+      "part": "eyebrows"
+    },
+    {
+      "name": "TempleMaleV2_eyelashes",
+      "part": "eyelashes"
+    },
+    {
+      "name": "TempleMaleV2_eyes",
+      "part": "eyes"
+    },
+    {
+      "name": "TempleMaleV2_shoes",
+      "part": "shoes"
+    },
+    {
+      "name": "TempleMaleV2_hair",
+      "part": "hair"
+    },
+    {
+      "name": "TempleMaleV2_teeth",
+      "part": "teeth"
+    },
+    {
+      "name": "TempleMaleV2_pants",
+      "part": "pants"
+    },
+    {
+      "name": "TempleMaleV2_tongue.001",
+      "part": "tongue"
+    },
+    {
+      "name": "TempleMaleV2_skin",
+      "part": "skin"
+    }
+  ],
+  "joints": [
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53,
+    53
+  ],
+  "blinks": [
+    [
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ],
+    [
+      "eyeBlinkLeft",
+      "eyeBlinkRight"
+    ]
+  ],
+  "animations": [
+    "Walk",
+    "Idle"
+  ],
+  "build": "node scripts/build-temple-human-avatar.mjs --male",
+  "optimizer": "@gltf-transform/cli@4.5.1 WebP92; meshopt medium POSITION16 NORMAL12 WEIGHT16"
+}

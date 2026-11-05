@@ -235,7 +235,7 @@ Model nam trung niên cũ đã được thay thế. Model nền mới có giấy
 - SHA-256 bản tối ưu: f2ec89e770a890dee204010c486de5b0340021316d1cc5fa7b5c9f6328812bab
 - Thay đổi: Giảm lưới, nén meshopt, texture WebP 1024; giữ mặt/tóc/tay trẻ và skeleton/Walk. Khi chạy, thay toàn bộ trang phục nền bằng bộ đồ lam skinned riêng: áo rộng vạt dài, cổ đứng, nẹp cài, tay dài và quần suông.
 
-Bản nam tải trong hộp thoại là model nền đã tối ưu, bộ đồ lam dựng và skin khi chạy bởi templeVisitorClothing.js. Lựa chọn nữ hiện dùng `visitor-female-human.glb` mô tả cuối tài liệu; các bản Grab3D nữ giữ làm nguồn/đối chiếu. Pipeline tối ưu nền được cố định ở glTF Transform CLI4.5.1; xem scripts/fetch-temple-detail-models.mjs.
+Bản nam Grab3D dự phòng dùng model nền đã tối ưu, bộ đồ lam dựng và skin khi chạy bởi templeVisitorClothing.js. Lựa chọn nữ hiện dùng `visitor-female-human.glb` mô tả cuối tài liệu; các bản Grab3D nữ giữ làm nguồn/đối chiếu. Pipeline tối ưu nền được cố định ở glTF Transform CLI4.5.1; xem scripts/fetch-temple-detail-models.mjs.
 
 Cập nhật nếp vải và tư thế: Tam Sở bổ sung nếp rủ trên mesh trang phục, 5 morph target kèm normal để thay đổi theo động tác và dáng đứng thư giãn. Authoring/runtime ở templeVisitorClothing.js, templeClothDeformation.js và templeDetailedVisitors.js; giữ các tệp GLB nền và checksum, bản nữ derivative có manifest riêng.
 
@@ -254,3 +254,8 @@ Cập nhật nếp vải và tư thế: Tam Sở bổ sung nếp rủ trên mesh
 - Hai morph mí mắt trên body/lashes và nét miệng khép dịu nhẹ(bake bilateral mouthSmile.12) từ faceunits01 của Mika Suominen CC0: https://static.makehumancommunity.org/assets/assetpacks/faceunits01.html . Rig53joints và ngón thật; loader giữ PBR/áo authoring, không thay trang phục procedural. Mắt dùng đúng brown_eyeCC0 với alphaBLEND, không đổi màu sclera hoặc tạo map da giả.
 - **Motion không phải CC0.** Walk CMU35_01, Idle CMU77_02 từ http://mocap.cs.cmu.edu/ ; BVH conversion bởi cgspeed: https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/the-motionbuilder-friendly-bvh-conversion-release-of-cmus-motion-capture-database . CMU cho phép dùng miễn phí trong sản phẩm kể cả thương mại, nhưng không bán lại motion data kể cả đã đổi định dạng. Giữ credit và điều kiện này khi phân phối derivative; không bán GLB này như gói motion độc lập.
 - Không sử dụng model/texture/animation PUBG. PUBG là mốc tham chiếu chất lượng do chủ dự án yêu cầu, chưa phải kết quả đã nghiệm thu. Nghi thức dùng IK runtime, không gắn nhãn motion capture cho thiền/lạy.
+### Mẫu nam human V13
+
+- File runtime: `visitor-male-human.glb`; source chỉnh sửa: `assets-src/temple/male-human-source.glb`. Báo cáo `visitor-male-human.json` ghi SHA256, kích thước và rig. `visitor-male.glb` của Grab3D là bản dự phòng.
+- MakeHuman core/system CC0: body/rig, da `young_asian_male`, tóc `short02`, mắt, mi, răng, lưỡi và giày. Áo/quần sửa từ Toigo CC0. Hai morph mí/mi từ faceunits01 CC0 của Mika Suominen. Nguồn các gói và giấy phép như phần mẫu nữ, ngoại trừ tóc nam lấy từ system pack.
+- Walk CMU35_01 và Idle CMU77_02 được retarget từ bản nữ sang rig nam; điều kiện CMU không bán lại motion data vẫn áp dụng. Nghi thức thiền/lạy dùng IK runtime.

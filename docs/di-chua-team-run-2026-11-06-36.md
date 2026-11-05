@@ -1,0 +1,7 @@
+# DC-A14 — đo chuyển bước nam và sàng lọc V64–V66
+
+Đo lại V63 và quét mười hệ số nhịp ở 1,35 m/s trên đường thẳng và hai cung. Hệ số 1,00 giữ trung vị tốt nhất ở đường thẳng và cung −0,65 trong lưới thử. Các hệ số khác chuyển lợi ích giữa P50/P90 và hai chiều cung. Ứng viên V64–V66 fit thêm offset trên sáu track Walk. V64 giảm P50/P90 ở đường thẳng 1,35 m/s từ 0,147/0,668 xuống 0,137/0,635 m/s, nhưng ở cung +0,95 P50 tăng từ 0,233 lên 0,239. V65 và V66 vẫn tăng ít nhất một chỉ số ở các cung dương. Giữ các ứng viên tách khỏi runtime.
+
+Thêm mô phỏng khởi bước, rẽ góc 0,8 rad, dừng và khởi bước lần hai ở 120 Hz. Cùng seed 47, P90 điểm đế gần sàn khi dừng là 3,178 m/s ở nam và 0,658 ở nữ trong cửa sổ 45 khung. Góc đổi tức thời cũng tạo đỉnh vận tốc chung cho cả hai. Thử hãm đồng hồ Walk hoặc làm dịu xương chân khi dừng. Review độc lập xác nhận cấu hình làm dịu hệ số 8 giảm P90 cả hai lần dừng ở bốn seed, nhưng tăng P50 ở một số seed. Các lượt thử này đều nạp GLB V63, tên `transitions-v64` chỉ là tên harness. Giữ controller hiện tại. Mô phỏng chỉ đo controller trên nền phẳng và chưa chạy qua đường điều hướng thật.
+
+Bằng chứng riêng ở `.setest/male-walk-parity/` và `.setest/male-walk-residual/`. V63 vẫn là GLB phục vụ local. Lượt này không đổi runtime, nên không chạy lại build/test. DC-A14 vẫn Doing. Phần thiếu rõ ở Walk là chuyển sang đứng yên, cần giữ chân đang trụ trong đoạn hòa Walk/Idle thay vì tiếp tục quét hệ số nhịp hoặc hãm toàn clip.

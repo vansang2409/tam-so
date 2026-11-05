@@ -116,3 +116,30 @@ try{
  assert.ok(verifiedByMode.Idle>0&&verifiedByMode.Walk>0,'Neither animation may pass by skipping all self-occluded samples')
  console.log(`Human clothing: ${verified}/24 verified underarm witnesses covered, ${selfOccluded} self-occluded samples skipped; at most48 rays, ${(performance.now()-started).toFixed(0)}ms. Bounded Idle/Walk visibility only, not universal cloth collision proof.`)
 }finally{initial.rig.dispose()}
+
+// Same camera as the seated portrait that exposed the two inward-folded
+// armhole patches. Test the photographed sightlines, independently of indices.
+const seated=createDetailedVisitor(gltf.scene,parent)
+try{
+ seated.update({pose:'meditating',reduced:true})
+ const {meshes,body}=prepare(seated)
+ const shirts=meshes.filter(mesh=>mesh.material.userData.templePart==='shirt')
+ if(shirts.some(mesh=>mesh.morphTargetDictionary?.templeSeatedShirt!==undefined)){
+  const camera=new THREE.PerspectiveCamera(40,580/570,.03,50)
+  camera.position.set(0,.86,1.65)
+  camera.lookAt(0,.48,.10)
+  camera.updateMatrixWorld(true)
+  const ray=new THREE.Raycaster(),screen=new THREE.Vector2(),normal=new THREE.Vector3()
+  const foldedPixels=[[260,323],[260,324],[260,325],[260,326],[261,327],[403,318],[403,319]]
+  for(const [x,y] of foldedPixels){
+   screen.set((x-45)/572*2-1,1-(y-95)/563*2)
+   ray.setFromCamera(screen,camera)
+   const shirt=ray.intersectObjects(shirts,false)[0]
+   const skin=ray.intersectObject(body,false)[0]
+   assert.ok(shirt&&(!skin||shirt.distance<skin.distance),'The seated armhole patch covers the visible skin')
+   normal.copy(shirt.face.normal).transformDirection(shirt.object.matrixWorld)
+   assert.ok(normal.dot(ray.ray.direction)<0,`The shirt faces outward at seated witness ${x},${y}`)
+  }
+  console.log('Human clothing: seated shirt covers all seven previously folded sightlines with outward faces.')
+ }
+}finally{seated.dispose()}

@@ -1,7 +1,7 @@
 {
   "status": "Work in progress; PUBG quality target not accepted",
   "source": "female-human-source.glb",
-  "sourceSha256": "36bceaf59b140feeebd9401bd93f3c27abe1fc7dd9bb619927d5c57bebd4b8db",
+  "sourceSha256": "ef5046d15ed5639b8f3128a9e2bb91dc2441466bd98f38bfc11271a519b75ef1",
   "output": "../../public/dichua/models/visitor-female-human.glb",
   "outputReport": "../../public/dichua/models/visitor-female-human.json",
   "rights": "Mixed: graphical components CC0-1.0; CMU motion custom terms, not CC0",
@@ -480,7 +480,13 @@
     "V9 local armpit subdivision/weights/ease fixes confirmed Idle and Walk skin exposure; +2460 triangles, other9meshes/rest/materials unchanged; rawSHA b2bcb71d35e8a81c80af1ad07cdc54e159f54e3f7dd68fd7d30ca886893d4bbf",
     "V10 bilateral official mouthSmileLeft/Right .12 baked into lowerface Basis+blinkkeys; max2.203mm, upperfaceY>=1.36 unchanged; blinkPOSITION unchanged, lowerface blinkNORMAL recomputed maxdifference.001176; rawSHA9f98db82695e8100c782027108bd4260d8e155feb912445a9b10f49c0375b30b"
   ],
-  "currentAuthoring": "V10 selected: V9 armpit fix/V8 trousers/V7 drape plus subtle closed-lip lowerface rest, official bilateral mouthSmile0.12; upperface and eye/hair fit unchanged",
+  "walkContactRevision": {"parentSourceSha256":"36bceaf59b140feeebd9401bd93f3c27abe1fc7dd9bb619927d5c57bebd4b8db","method":"Per-foot bounded periodic translation fitted to near-floor sole slip, solved as leg IK and baked to the six existing Walk rotation tracks at their 137 key times. Left foot jitter within keys 45–59 replaced by quaternion interpolation.","maxTargetTranslationMeters":0.032,"sourceRights":"CMU35_01 derivative; same CMU motion terms apply."},
+  "seatedPantsRevision": {"parentSourceSha256":"6068d3cbe31f997d9c02e91ca59b546825d15c28545b50085d6c5b52f833c709","target":"templeSeatedPants","method":"Reconstruct two folded knee patches from fixed boundary loops in the seated controller pose, then inverse-skin POSITION and NORMAL deltas. Retains source topology, bind positions and motion clips.","weldedVerticesMoved":30,"defaultWeight":0},
+  "seatedShirtRevision": {"parentSourceSha256":"8857fb4959b43730d0e1d291dd72a50e5baaa5bdbc5aff38712d3c3658658d43","target":"templeSeatedShirt","method":"Reconstruct the single-ring patches at two inverted armhole marks in seated pose. Inverse-skin POSITION and NORMAL deltas and preserve the pants morph, base geometry and motion clips.","weldedVerticesMoved":7,"defaultWeight":0},
+  "bobCollarRevision": {"parentSourceSha256":"1107af59f749a1cf870d459c12be6fc9bd65e55f55172a9ded958c91f244840a","method":"Lift lower bob tips by up to 22 mm in source units and taper width by up to 13 percent locally. Transform normals with inverse transpose of the deformation derivative. Only hair positions, normals and bounds change.","sourceRights":"Toigo Curled Under Bob derivative; existing CC0 source credit applies."},
+  "bobTempleRevision": {"parentSourceSha256":"5be8ae6e20bf2fda77099ddec9562e8cd8d72597dc3913e2e7afd5e21a628c7e","method":"Offset the crown part and sweep the upper temple on one side. Keep the lower edge close to the baseline to preserve ear coverage. Only hair POSITION and NORMAL accessors change.","sourceRights":"Toigo Curled Under Bob derivative; existing CC0 source credit applies."},
+  "shoeColorRevision": {"parentSourceSha256":"a53ce910be0e2386a07ed03600679c323f379bbf192efbe90f735988b31b29f5","method":"Remap shoes01 diffuse to warm charcoal using luminance while retaining alpha. Mesh, normal map and rig are unchanged.","sourceRights":"Existing MakeHuman shoes01 CC0 attribution applies."},
+  "currentAuthoring": "V10 geometry with revised Walk and seated cloth correctives: V9 armpit fix/V8 trousers/V7 drape plus subtle closed-lip lowerface rest, official bilateral mouthSmile0.12; upperface and eye/hair fit unchanged",
   "limitations": [
     "Not PUBG-equivalent or photorealism accepted",
     "Hair remains rigid head-bound geometry",

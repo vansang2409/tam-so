@@ -47,16 +47,31 @@ export function createTempleModels() {
         if(!response.ok)throw new Error('Không tải được mô hình '+file)
         const gltf=await loader.parseAsync(await response.arrayBuffer(),'')
         gltf.scene.animations=gltf.animations
-        const authoredHuman=gltf.scene.userData.templeCharacterProfile==='female-human-v1'
+        const profile=gltf.scene.userData.templeCharacterProfile
+        const authoredHuman=profile==='female-human-v1'||profile==='male-human-v1'
+        if((file==='visitor-male-human'&&profile!=='male-human-v1')||
+            (authoredHuman&&gltf.scene.userData.templeRig!=='mpfb-gameengine')){
+          const rejected=new Set(),images=new Set()
+          gltf.scene.traverse(mesh=>{
+            if(!mesh.isMesh)return
+            rejected.add(mesh.geometry)
+            if(mesh.skeleton)rejected.add(mesh.skeleton)
+            for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material]){
+              rejected.add(material)
+              for(const value of Object.values(material))if(value?.isTexture){rejected.add(value);images.add(value.image)}
+            }
+          })
+          rejected.forEach(resource=>resource.dispose())
+          images.forEach(image=>image?.close?.())
+          throw Error('Authored human profile or rig missing')
+        }
         if(file==='visitor'||file.startsWith('visitor-')){
-          if(authoredHuman){
-            if(gltf.scene.userData.templeRig!=='mpfb-gameengine')throw Error('Authored human rig profile missing')
-          }else if(gltf.scene.userData.templeCharacterProfile==='female-lam-v1'){
+          if(profile==='female-lam-v1'){
             // The authored GLB already contains its skinned outfit; never cut/dress it again.
             const garment=gltf.scene.getObjectByName('Ao_lam_garment')
             if(!garment)throw Error('Authored visitor outfit missing')
             garment.name='Ao lam garment'
-          }else prepareTempleVisitorClothing(gltf.scene)
+          }else if(!authoredHuman)prepareTempleVisitorClothing(gltf.scene)
         }
         prepareTempleAsset(gltf.scene,file)
         gltf.scene.traverse(o=>{if(o.isMesh){

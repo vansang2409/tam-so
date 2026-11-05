@@ -25,7 +25,8 @@ export function createTempleRigContact(model,holder){
     holder.parent?.updateWorldMatrix(true,false);holder.updateMatrixWorld(true)
     let minimum=Infinity
     for(const {mesh,ids,position,joints,weights,used,rows}of supports){
-      if(mesh.geometry.morphAttributes.position?.length){
+      const morphPositions=mesh.geometry.morphAttributes.position
+      if(morphPositions?.some((_,index)=>mesh.morphTargetInfluences?.[index])){
         for(const id of ids){mesh.getVertexPosition(id,point).applyMatrix4(mesh.matrixWorld);holder.parent.worldToLocal(point);minimum=Math.min(minimum,point.y)}
         continue
       }

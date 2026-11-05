@@ -66,11 +66,12 @@ export const TEMPLE_DETAIL_CREDITS = [
   },
   {
     "file": "visitor-male.glb",
+    "downloadFile": "visitor-male-human.glb",
     "name": "Khách nam trẻ · đồ lam",
-    "author": "Grab3D",
-    "source": "https://grab3d.com/models/characters/man-base-character/",
-    "license": "CC0 1.0",
-    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+    "author": "MakeHuman · Toigo · Mika Suominen · CMU · Tâm Sở",
+    "source": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+    "license": "Mesh/texture CC0 · motion CMU (không bán lại motion data)",
+    "licenseUrl": "http://mocap.cs.cmu.edu/"
   },
   {
     "file": "visitor-female.glb",

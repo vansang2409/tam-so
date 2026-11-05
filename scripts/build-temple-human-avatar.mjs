@@ -8,8 +8,11 @@ import {deflateSync} from 'node:zlib'
 
 const workspace=fileURLToPath(new URL('../',import.meta.url)),args=process.argv.slice(2)
 function option(name,fallback){const i=args.indexOf(name);if(i<0)return fallback;if(!args[i+1]||args[i+1].startsWith('--'))throw Error('Missing '+name);return path.resolve(workspace,args[i+1])}
-const sourcePath=option('--source',path.join(workspace,'assets-src/temple/female-human-source.glb'))
-const outputPath=option('--output',path.join(workspace,'public/dichua/models/visitor-female-human.glb'))
+const variant=args.includes('--male')?'male':'female'
+const height=variant==='male'?1.72:1.65
+const walkSpeedSource=variant==='male'?1.0869267612568045:.9704703225507183
+const sourcePath=option('--source',path.join(workspace,`assets-src/temple/${variant}-human-source.glb`))
+const outputPath=option('--output',path.join(workspace,`public/dichua/models/visitor-${variant}-human.glb`))
 if(!/\.glb$/i.test(outputPath)||sourcePath.toLowerCase()===outputPath.toLowerCase())throw Error('Write a separate .glb output; never overwrite the reviewed source')
 const source=await fs.readFile(sourcePath),sha=bytes=>createHash('sha256').update(bytes).digest('hex')
 if(source.toString('utf8',0,4)!=='glTF'||source.readUInt32LE(4)!==2)throw Error('Expected reviewed GLB2 source')
@@ -52,7 +55,7 @@ for(let index=0;index<json.materials.length;index++){
   if(part==='eyes')material.pbrMetallicRoughness.roughnessFactor=.18
 }
 const scene=json.scenes[json.scene||0]
-scene.extras={...scene.extras,templeOutfit:true,templeCharacterProfile:'female-human-v1',templeRig:'mpfb-gameengine',templeHeight:1.65,templeWalkSpeed:.9704703225507183}
+scene.extras={...scene.extras,templeOutfit:true,templeCharacterProfile:`${variant}-human-v1`,templeRig:'mpfb-gameengine',templeHeight:height,templeWalkSpeed:walkSpeedSource}
 json.asset.extras={...json.asset.extras,templeSourceSha256:sha(source),buildPipeline:'Tam So human avatar; glTF Transform4.5.1 WebP92/meshopt-medium'}
 const bin=Buffer.concat([binary,Buffer.alloc(padding),weave]);json.buffers[0].byteLength=bin.length
 function pack(document,bytes){
@@ -60,7 +63,7 @@ function pack(document,bytes){
   h.write('glTF');h.writeUInt32LE(2,4);h.writeUInt32LE(28+text.length+jp+bytes.length+bp,8);h.writeUInt32LE(text.length+jp,12);h.writeUInt32LE(0x4e4f534a,16);bh.writeUInt32LE(bytes.length+bp);bh.writeUInt32LE(0x004e4942,4)
   return Buffer.concat([h,text,Buffer.alloc(jp,32),bh,bytes,Buffer.alloc(bp)])
 }
-const cache=path.join(workspace,'.setest/human-avatar-build');await fs.mkdir(cache,{recursive:true});await fs.mkdir(path.dirname(outputPath),{recursive:true})
+const cache=path.join(workspace,`.setest/${variant}-human-avatar-build`);await fs.mkdir(cache,{recursive:true});await fs.mkdir(path.dirname(outputPath),{recursive:true})
 await fs.writeFile(path.join(cache,'prepared.glb'),pack(json,bin))
 function cli(command){
   const prefix=['--yes','--package','@gltf-transform/cli@4.5.1','gltf-transform'],npm=path.join(path.dirname(process.execPath),'node_modules/npm/bin/npx-cli.js')
@@ -71,6 +74,6 @@ cli(['prune',path.join(cache,'prepared.glb'),path.join(cache,'pruned.glb'),'--ke
 cli(['webp',path.join(cache,'pruned.glb'),path.join(cache,'webp.glb'),'--quality','92','--effort','50'])
 cli(['meshopt',path.join(cache,'webp.glb'),outputPath,'--level','medium','--quantize-position','16','--quantize-normal','12','--quantize-weight','16'])
 const output=await fs.readFile(outputPath),jn=output.readUInt32LE(12),result=JSON.parse(output.toString('utf8',20,20+jn))
-const report={file:path.basename(outputPath),bytes:output.length,sha256:sha(output),sourceSha256:sha(source),profile:scene.extras.templeCharacterProfile,rig:'mpfb-gameengine',height:1.65,walkSpeedSource:.9704703225507183,materials:result.materials.map(material=>({name:material.name,part:material.extras?.templePart})),joints:result.skins.map(skin=>skin.joints.length),blinks:result.meshes.filter(mesh=>mesh.extras?.targetNames?.includes('eyeBlinkLeft')).map(mesh=>mesh.extras.targetNames),animations:result.animations.map(clip=>clip.name),build:'node scripts/build-temple-human-avatar.mjs',optimizer:'@gltf-transform/cli@4.5.1 WebP92; meshopt medium POSITION16 NORMAL12 WEIGHT16'}
+const report={file:path.basename(outputPath),bytes:output.length,sha256:sha(output),sourceSha256:sha(source),profile:scene.extras.templeCharacterProfile,rig:'mpfb-gameengine',height,walkSpeedSource,materials:result.materials.map(material=>({name:material.name,part:material.extras?.templePart})),joints:result.skins.map(skin=>skin.joints.length),blinks:result.meshes.filter(mesh=>mesh.extras?.targetNames?.includes('eyeBlinkLeft')).map(mesh=>mesh.extras.targetNames),animations:result.animations.map(clip=>clip.name),build:'node scripts/build-temple-human-avatar.mjs'+(variant==='male'?' --male':''),optimizer:'@gltf-transform/cli@4.5.1 WebP92; meshopt medium POSITION16 NORMAL12 WEIGHT16'}
 await fs.writeFile(outputPath.replace(/\.glb$/i,'.json'),JSON.stringify(report,null,2)+'\n')
 console.log(JSON.stringify(report,null,2))

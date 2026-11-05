@@ -134,8 +134,104 @@ assert.equal(await failed.ready,false);assert.equal(failed.updateSelf({}),false)
 let release;const lateRoot=new THREE.Group(),late=createDetailedVisitors({load:()=>new Promise(resolve=>{release=resolve})},lateRoot,[])
 late.dispose();release(visitor);await late.ready;assert.equal(lateRoot.children.length,0,'Late loading after unmount cannot add a skeleton')
 
-const requestedFiles=[],selectedRoot=new THREE.Group(),selected=createDetailedVisitors({load:async file=>{requestedFiles.push(file);return variants[file==='visitor-female-human'?1:0]}},selectedRoot,[])
+const maleBytes=fs.readFileSync(new URL('../public/dichua/models/visitor-male-human.glb',import.meta.url))
+const maleReport=JSON.parse(fs.readFileSync(new URL('../public/dichua/models/visitor-male-human.json',import.meta.url)))
+assert.equal(maleReport.bytes,maleBytes.length)
+assert.equal(maleReport.sha256,createHash('sha256').update(maleBytes).digest('hex'))
+assert.equal(maleReport.sourceSha256,createHash('sha256').update(fs.readFileSync(new URL('../assets-src/temple/male-human-source.glb',import.meta.url))).digest('hex'))
+const male=await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).parseAsync(geometryOnly(maleBytes),'')
+male.scene.animations=male.animations
+assert.equal(male.scene.userData.templeCharacterProfile,'male-human-v1')
+assert.deepEqual(male.animations.map(a=>a.name),['Walk','Idle'])
+const maleWalk=male.animations.find(clip=>clip.name==='Walk')
+const leftToe=maleWalk.tracks.find(track=>track.name==='ball_l.quaternion')
+assert.ok(leftToe?.times.length>1,'The authored Walk includes left toe flex')
+const previousToe=new THREE.Quaternion(),nextToe=new THREE.Quaternion()
+for(let key=1;key<leftToe.times.length;key++){
+ previousToe.fromArray(leftToe.values,(key-1)*4).normalize()
+ nextToe.fromArray(leftToe.values,key*4).normalize()
+ assert.ok(previousToe.angleTo(nextToe)<THREE.MathUtils.degToRad(8),`Left toe flex changes smoothly at key ${key}`)
+}
+previousToe.fromArray(leftToe.values).normalize()
+assert.ok(previousToe.angleTo(nextToe)<.01,'Left toe flex closes across the Walk loop')
+// The geometry-only decoder strips browser materials; restore the clothing semantics.
+const maleJson=JSON.parse(maleBytes.toString('utf8',20,20+maleBytes.readUInt32LE(12)))
+const seatedClothing={templeSeatedPants:'pants',templeSeatedShirt:'shirt'}
+for(const [target,part] of Object.entries(seatedClothing)){
+ const mesh=maleJson.meshes.find(mesh=>mesh.extras?.targetNames?.includes(target))
+ assert.ok(mesh,`Male avatar includes ${target}`)
+ assert.equal(maleJson.materials[mesh.primitives[0].material].extras.templePart,part)
+ male.scene.traverse(object=>{
+  if(object.morphTargetDictionary?.[target]===undefined)return
+  object.material=object.material.clone()
+  object.material.userData.templePart=part
+ })
+}
+const authoredRig=createDetailedVisitor(male.scene,new THREE.Group())
+authoredRig.update({pose:'meditating',reduced:true})
+let closedEyes=0
+authoredRig.model.traverse(mesh=>{
+ for(const name of ['eyeBlinkLeft','eyeBlinkRight']){
+  const i=mesh.morphTargetDictionary?.[name]
+  if(i!==undefined){assert.equal(mesh.morphTargetInfluences[i],1);closedEyes++}
+ }
+})
+assert.equal(closedEyes,4)
+function checkSeatedClothing(weight){
+ for(const target of Object.keys(seatedClothing)){
+  let matches=0
+  authoredRig.model.traverse(mesh=>{
+   const index=mesh.morphTargetDictionary?.[target]
+   if(index===undefined)return
+   assert.equal(mesh.morphTargetInfluences[index],weight,target)
+   matches++
+  })
+  assert.equal(matches,1,target)
+ }
+}
+checkSeatedClothing(1)
+for(const state of [{pose:'standing'},{pose:'standing',moving:true},{pose:'bowing',progress:1/6}]){
+ authoredRig.update(state)
+ checkSeatedClothing(0)
+ authoredRig.update({pose:'meditating',reduced:true})
+ checkSeatedClothing(1)
+}
+authoredRig.dispose()
+const idleActors=Array.from({length:4},()=>createDetailedVisitor(male.scene,new THREE.Group()))
+const headRotations=idleActors.map(actor=>{
+ actor.update({pose:'standing',dt:0,time:0})
+ return actor.bones.get('Head').quaternion.clone().normalize()
+})
+assert.ok(headRotations.some(rotation=>rotation.angleTo(headRotations[0])>.001),'Authored male visitors start at independent idle phases')
+const calmActor=idleActors[0]
+const reference=male.scene.clone(true)
+const mixer=new THREE.AnimationMixer(reference)
+const idle=male.animations.find(clip=>clip.name==='Idle')
+const action=mixer.clipAction(idle).play()
+action.time=parseInt(calmActor.root.uuid.slice(0,8),16)/0x100000000*idle.duration
+let authoredAmplitude=0,referenceAmplitude=0
+for(let frame=0;frame<100;frame++){
+ calmActor.update({pose:'standing',dt:.1,time:frame*.1})
+ mixer.update(.1)
+ const rest=male.scene.getObjectByName('head').quaternion
+ authoredAmplitude+=calmActor.bones.get('Head').quaternion.clone().normalize().angleTo(rest.clone().normalize())
+ referenceAmplitude+=reference.getObjectByName('head').quaternion.clone().normalize().angleTo(rest.clone().normalize())
+}
+assert.ok(referenceAmplitude>1&&authoredAmplitude/referenceAmplitude>.55&&authoredAmplitude/referenceAmplitude<.65,'Male idle retains motion while reducing head excursion')
+for(const actor of idleActors)actor.dispose()
+const maleFallbackFiles=[]
+const maleFallback=createDetailedVisitors({load:async file=>{
+ maleFallbackFiles.push(file)
+ if(file==='visitor-male-human')throw Error('New asset unavailable')
+ return variants[0]
+}},new THREE.Group(),[])
+assert.equal(await maleFallback.ready,true)
+assert.equal(maleFallback.updateSelf({appearance:'male'}),true)
+assert.deepEqual(maleFallbackFiles,['visitor-male-human','visitor-male'])
+maleFallback.dispose()
+
+const requestedFiles=[],selectedRoot=new THREE.Group(),selected=createDetailedVisitors({load:async file=>{requestedFiles.push(file);return file==='visitor-female-human'?variants[1]:male.scene}},selectedRoot,[])
 await selected.ready;assert.equal(selected.updateSelf({appearance:'male'}),true);assert.equal(selected.appearance,'male')
 selected.updateSelf({appearance:'female'});await Promise.resolve();await Promise.resolve();assert.equal(selected.updateSelf({appearance:'female'}),true);assert.equal(selected.appearance,'female');assert.equal(selectedRoot.children.length,1,'Switching avatar removes the old skeleton')
-assert.deepEqual(requestedFiles,['visitor-male','visitor-female-human'],'Female appearance requests the authored humanoid outfit, male retains reviewed source')
+assert.deepEqual(requestedFiles,['visitor-male-human','visitor-female-human'],'Each appearance requests its authored humanoid outfit')
 const peerRoot=new THREE.Group();assert.equal(selected.updateRemote('peer',peerRoot,{appearance:'male'}),true);assert.equal(selected.updateRemote('peer',peerRoot,{appearance:'female'}),true);assert.equal(peerRoot.children.length,1);selected.removeRemote('peer');assert.equal(peerRoot.children.length,0);selected.dispose();assert.equal(selectedRoot.children.length,0)

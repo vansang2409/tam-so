@@ -26,7 +26,9 @@ export function createDetailedVisitor(source,parent) {
   const idle=anatomical?source.animations?.find(a=>/idle/i.test(a.name)):null,idleAction=idle?mixer.clipAction(idle).play():null
   if(idleAction){action?.setEffectiveWeight(0);idleAction.setEffectiveWeight(1)}
   const actorSeed=parseInt(holder.uuid.slice(0,8),16)/0x100000000
-  if(source.userData.templeCharacterProfile==='female-human-v1'){
+  const profile=source.userData.templeCharacterProfile
+  const authoredHuman=profile==='female-human-v1'||profile==='male-human-v1'
+  if(authoredHuman){
     if(action&&walk)action.time=actorSeed*walk.duration
     if(idleAction&&idle)idleAction.time=actorSeed*idle.duration
   }
@@ -62,6 +64,17 @@ export function createDetailedVisitor(source,parent) {
   const groundContact=anatomical?createTempleRigContact(model,holder):null
   const face=anatomical?createTempleFaceMotion(model,actorSeed):null
   const thumbs=anatomical?createTempleThumbPose(bones,holder,model):null
+  const seatedCloth=[]
+  if(anatomical)model.traverse(mesh=>{
+    if(!mesh.isSkinnedMesh)return
+    const part=mesh.material?.userData?.templePart
+    const target=part==='pants'?'templeSeatedPants':part==='shirt'?'templeSeatedShirt':null
+    if(!target)return
+    const index=mesh.morphTargetDictionary?.[target]
+    const weights=mesh.morphTargetInfluences
+    if(weights&&Number.isInteger(index)&&index>=0&&index<weights.length)
+      seatedCloth.push({weights,index})
+  })
   // PropertyMixer intentionally skips unchanged samples. Restore its previous unmodified
   // pose before sampling, rather than resetting animated joints to rest behind its cache.
   const animationState=[...new Set(bones.values())].map(bone=>({bone,position:bone.position.clone(),quaternion:bone.quaternion.clone()}))
@@ -75,6 +88,7 @@ export function createDetailedVisitor(source,parent) {
     const cacheMeditation=anatomical&&pose==='meditating'&&!garment
     if(cacheMeditation&&staticMeditation)return
     staticMeditation=false
+    for(const {weights,index}of seatedCloth)weights[index]=pose==='meditating'?1:0
     if(anatomical&&!reduced&&pose==='standing'&&(moving?action:idleAction)){
       restoreAnimation()
       holder.position.y=0
@@ -85,7 +99,7 @@ export function createDetailedVisitor(source,parent) {
       // parent rotates local axes, so overwriting local Z would erase vertical contact.
       mixer.update(dt);model.updateWorldMatrix(true,true)
       captureAnimation()
-      if(idleAction&&source.userData.templeCharacterProfile==='female-human-v1'){
+      if(idleAction&&authoredHuman){
         // Preserve the sampled mocap above; soften only Idle looks for this quiet
         // setting. Walk smoothly regains its full head motion through the blend.
         const calm=.4*(1-locomotionBlend)
@@ -156,7 +170,15 @@ export function createDetailedVisitors(models,avatar,fallbacks) {
   const appearance=value=>value==='female'?'female':'male'
   function load(value){
     const key=appearance(value)
-    if(!jobs.has(key))jobs.set(key,models.load(key==='female'?'visitor-female-human':'visitor-male').then(asset=>{if(!disposed)sources.set(key,asset);return !disposed}).catch(()=>false))
+    if(!jobs.has(key)){
+      const request=key==='female'
+        ? models.load('visitor-female-human')
+        : models.load('visitor-male-human').catch(error=>{
+          if(disposed)throw error
+          return models.load('visitor-male')
+        })
+      jobs.set(key,request.then(asset=>{if(!disposed)sources.set(key,asset);return !disposed}).catch(()=>false))
+    }
     return jobs.get(key)
   }
   const ready=load('male')

@@ -1,8 +1,8 @@
 {
   "file": "visitor-female-human.glb",
-  "bytes": 2394136,
-  "sha256": "c740f83afb1396dbdfbf622749b92141baeda17508648e88d47793aa73ae37d2",
-  "sourceSha256": "36bceaf59b140feeebd9401bd93f3c27abe1fc7dd9bb619927d5c57bebd4b8db",
+  "bytes": 2278196,
+  "sha256": "09f44beecda7de50b53f8e7c609367057cdaaf26cc36fe89c9c396bd02b02dfc",
+  "sourceSha256": "ef5046d15ed5639b8f3128a9e2bb91dc2441466bd98f38bfc11271a519b75ef1",
   "profile": "female-human-v1",
   "rig": "mpfb-gameengine",
   "height": 1.65,

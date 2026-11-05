@@ -46,3 +46,117 @@ Nguồn điều phối ưu tiên cho Đi Chùa từ 03/11/2026. TASK_BOARD.md v�
 - 04/11/2026 — Lượt05 hoàn tất A13 trong phạm vi local:3 lá khum,5 nụ xen14 hoa; geometry tests, full493test/build, source và ảnh standard/low qua review độc lập. Calls377/183 không tăng; tam giác tăng1448standard/724low. Ảnh gần chỉ so định tính vì camera lệch nhẹ; đã sửa nhãn ảnh reset bị capture khung cũ. Chưa benchmark FPS/GPU/overdraw thực. Xem `di-chua-team-run-2026-11-04-05.md`; không commit/push/deploy.
 
 - 04/11/2026 — A09 thử radius3→1.5 với camera position/quaternion/FOV trùng qua telemetry DEV. Reviewer xác nhận bóng cây sắc hơn nhưng chưa đủ lợi ích contact chân; đã loại candidate, trả radius3 và giữ nguyên bias/ánh sáng. Giữ camera telemetry DEV cho QA. A09 Doing; xem `di-chua-team-run-2026-11-04-06.md`.
+
+- 05/11/2026 — DC-A14 tiếp tục từ V10. Đã kiểm GLB thử hai hướng mắt trong WebGL studio và dùng 12 mốc lưới thật để loại phép chiếu vật liệu Rocketbox toàn mặt theo điểm gần nhất. Thử riêng viền tóc và lưu ảnh cùng góc. Kết quả, giới hạn và bằng chứng ở `di-chua-team-run-2026-11-05-01.md`. Giữ Doing.
+
+- 05/11/2026 — DC-A14: đã tích hợp clip Walk giảm trượt và làm mượt cổ chân trái trong GLB nữ cục bộ. Các ứng viên da/tóc vẫn tách riêng. Kiểm kỹ thuật, ảnh WebGL và giới hạn ở `di-chua-team-run-2026-11-05-02.md`. Mục tiêu ngoại hình vẫn Doing.
+
+- 05/11/2026 — DC-A14: đã bổ sung khung cận thiền/lạy cho studio và xác định vết tối ở gối là mặt quần gập ngược tại các tia đã kiểm. Ba mẫu morph chưa qua nghiệm thu hình ảnh, giữ bản runtime trước. Xem `di-chua-team-run-2026-11-05-03.md`.
+
+- 05/11/2026 — DC-A14: tích hợp cục bộ morph quần dành cho dáng thiền, giảm các mặt gập ngược tại hai vùng gối trong WebGL. Walk và rig giữ nguyên, kiểm kỹ thuật và review đạt trong phạm vi. Vòng nách áo ở dáng thiền và tóc vẫn cần cải thiện. Xem `di-chua-team-run-2026-11-05-04.md`.
+
+- 05/11/2026 — DC-A14: tích hợp cục bộ shape áo khi thiền để làm dịu hai vết gập vòng nách. Kiểm WebGL, chế độ nhẹ, che phủ và chuyển tư thế. Tóc buộc thử cần atlas riêng. Xem `di-chua-team-run-2026-11-05-05.md`.
+
+- 05/11/2026 — DC-A14: tích hợp chỉnh đuôi bob để tách khỏi cổ áo. Kiểm giao cắt trên 768 cặp khung Idle/Walk, ảnh WebGL cận/toàn thân và review đạt trong phạm vi. Atlas tóc buộc vẫn là mẫu thử. Xem `di-chua-team-run-2026-11-05-06.md`.
+
+- 05/11/2026 — DC-A14: A/B roughness và relief da qua WebGL cho hiệu quả nhỏ, giữ da runtime hiện tại. Có ảnh tham chiếu ba góc cho tạo hình khuôn mặt và tóc. Xem `di-chua-team-run-2026-11-05-07.md`.
+
+- 05/11/2026 — DC-A14: thử khối má trên 132 đỉnh và so sánh hai góc cận Blender. Giữ riêng vì mức cải thiện còn nhỏ. Xem di-chua-team-run-2026-11-05-08.md.
+
+- 05/11/2026 — DC-A14: thử patch mí dưới trực tiếp trong GLB và kiểm hai góc cận. Giữ riêng vì góc nghiêng dễ đọc thành bọng mắt. Xem di-chua-team-run-2026-11-05-09.md.
+
+- 05/11/2026 — DC-A14: thử hai độ vuốt tóc lệch, kiểm ảnh cận/toàn thân và 192 khung giao tóc/cổ áo cho từng bản. Giữ riêng do điểm nghi xuyên tai. Xem di-chua-team-run-2026-11-05-10.md.
+
+- 05/11/2026 — DC-A14: xác định vệt da qua tia và thu hẹp vùng vuốt tóc lên thái dương cao. Bản thử hết hit da trong mẫu 25 tia, đang giữ riêng. Xem di-chua-team-run-2026-11-05-11.md.
+
+- 05/11/2026 — DC-A14: tích hợp tóc lệch ngôi sau WebGL A/B và review, không tăng draw call; 493 test pass và build đạt. Xem di-chua-team-run-2026-11-05-12.md.
+
+- 05/11/2026 — DC-A14: lập baseline giao cắt áo–quần khi cúi lạy. Nâng và xòe vạt thử giảm giao áo–quần nhưng tăng áo tự giao ở cúi sâu. Xem di-chua-team-run-2026-11-05-13.md.
+
+- 05/11/2026 — DC-A14: WebGL màu chẩn đoán xác định vùng quần lộ khi cúi sâu. Tia với bounds skinned đã cập nhật xác định thứ tự các lớp. Xem di-chua-team-run-2026-11-05-14.md.
+
+- 05/11/2026 — DC-A14: thử độ rủ vạt áo khi cúi sâu qua WebGL có đối chứng. Bản đưa vạt ra trước giảm vùng quần lộ ở góc trước nhưng vẫn có mép gấp ở góc bên. Xem di-chua-team-run-2026-11-05-15.md.
+
+- 05/11/2026 — DC-A14: thử thư giãn lưới vạt áo và kiểm ảnh giữa pha cúi. Cạnh bớt gãy nhẹ nhưng vạt vẫn nhô, giữ prototype riêng. Xem di-chua-team-run-2026-11-05-16.md.
+
+- 05/11/2026 — DC-A14: thử đổi hướng rủ bằng xoay vạt theo độ cúi. Vẫn thấy mép gấp hoặc giao cắt, giữ thử nghiệm riêng. Xem di-chua-team-run-2026-11-05-17.md.
+
+- 05/11/2026 — DC-A14: thử nắn riêng quần ở hông khi cúi sâu. Cả mức nhẹ 4/3 mm cũng làm lộ da trong WebGL, giữ thử nghiệm riêng. Xem di-chua-team-run-2026-11-05-18.md.
+
+- 05/11/2026 — DC-A14: chỉnh cặp da/quần trong preview khi cúi sâu, giảm quần lộ ở ROI trước và giữ che da ở ROI ngang. Chưa kiểm chuyển pha. Xem di-chua-team-run-2026-11-05-19.md.
+
+- 05/11/2026 — DC-A14: kiểm mẫu chỉnh hông qua 13 mốc cúi/nâng, ba góc WebGL. Không thấy pixel quần chuyển thành màu da trong mẫu đo, vạt vẫn cuộn. Xem di-chua-team-run-2026-11-05-20.md.
+
+- 05/11/2026 — DC-A14: thử hạ hông cuối động tác lạy. Bản nhẹ tăng giao áo–quần, giữ nguyên pose runtime. Xem di-chua-team-run-2026-11-05-21.md.
+
+- 05/11/2026 — DC-A14: tích hợp giày xám than cho mẫu nữ, đối chiếu WebGL đứng/thiền/lạy, 493 test pass và build đạt. Xem di-chua-team-run-2026-11-05-23.md.
+
+- 06/11/2026 — DC-A14: ưu tiên nam, mốc tối thiểu bằng mẫu nữ hiện hành. Sửa mép cổ mẫu nam hiện hành; ứng viên nam có rig riêng còn lỗi bind/che phủ trong WebGL. Xem di-chua-team-run-2026-11-06-01.md.
+
+- 06/11/2026 — DC-A14: bake shape cơ thể và chỉnh weights phần đầu của mẫu nam V2; xác nhận WebGL bind/đứng hết lỗi lệch diện rộng. Chưa thay mẫu runtime. Xem di-chua-team-run-2026-11-06-02.md.
+
+- 06/11/2026 — DC-A14: dựng cổ đứng, nẹp và khuy trên mẫu nam V3. WebGL xác nhận còn lỗi nẹp/che phủ khi thiền và lạy; giữ bản thử riêng. Xem di-chua-team-run-2026-11-06-03.md.
+
+- 06/11/2026 — DC-A14: mẫu nam V5 che được mảng da đầu gối và giữ nẹp liền khi thiền. Còn cổ và độ che phủ ở cúi lạy. Xem di-chua-team-run-2026-11-06-04.md.
+
+- 06/11/2026 — DC-A14: mẫu nam V6 che chỗ lộ ở đùi trên khi cúi. Còn điểm nhỏ ở nách và mép cổ, giữ prototype riêng. Xem di-chua-team-run-2026-11-06-05.md.
+
+- 06/11/2026 — DC-A14: đối chiếu độ che nách nam bằng tia WebGL, loại V7/V8 vì vẫn lộ da khi cúi. Xem di-chua-team-run-2026-11-06-06.md và di-chua-team-run-2026-11-06-07.md.
+
+- 06/11/2026 — DC-A14: V9 xử lý chấm da nách ở góc cúi đã kiểm, sáu tia chạm áo trước. Cổ vẫn cuộn, chưa tích hợp. Xem di-chua-team-run-2026-11-06-08.md.
+
+- 06/11/2026 — DC-A14: thử gọn chân cổ nam V10/V11, điểm nách kiểm trước vẫn kín. Chưa tích hợp. Xem di-chua-team-run-2026-11-06-09.md.
+
+- 06/11/2026 — DC-A14: V12 có Idle/Walk retarget sang rig nam, kiểm WebGL và lấy mẫu sàn bằng controller. Còn kiểm chân trụ, nối vòng và blink. Xem di-chua-team-run-2026-11-06-10.md.
+
+- 06/11/2026 — DC-A14: V13 có morph mí/mi và bản WebP/meshopt riêng, kiểm WebGL cận và thiền. Chưa tích hợp. Xem di-chua-team-run-2026-11-06-11.md.
+
+- 06/11/2026 — DC-A14: kiểm V13 tối ưu qua WebGL, hiệu chỉnh tốc độ clip nam giảm trượt trung vị khi đi thẳng. Chưa tích hợp. Xem di-chua-team-run-2026-11-06-12.md.
+
+- 06/11/2026 — DC-A14: đưa nam V13 vào Đi Chùa local, kiểm tải mẫu thật, chuyển nam/nữ và fallback sai profile. 493 test pass và build đạt. Mốc nữ còn đang làm. Xem di-chua-team-run-2026-11-06-13.md.
+
+- 06/11/2026 — DC-A14: V14 đổi tóc nam nâu trầm và giày xám than, tích hợp local sau WebGL A/B, review, 493 test và build. Xem di-chua-team-run-2026-11-06-14.md.
+
+- 06/11/2026 — DC-A14: thử làm dịu gờ ngực V15/V16 trên nam. Bản thu vào làm lộ da; bản đẩy ra chưa cải thiện đủ, giữ V14. Xem di-chua-team-run-2026-11-06-15.md.
+
+- 06/11/2026 — DC-A14: tích hợp V17 làm dịu gờ sáng ngực bằng pháp tuyến, giữ hình học. WebGL, review, 493 test và build đạt. Xem di-chua-team-run-2026-11-06-16.md.
+
+- 06/11/2026 — DC-A14: so nam/nữ cùng camera, tích hợp V18 gọn cổ và đầu nẹp nam, 493 test pass/build đạt. Còn bo tay/lai và nếp đùi. Xem di-chua-team-run-2026-11-06-17.md.
+
+- 06/11/2026 — DC-A14: tích hợp V19 gọn lai và bo tay nam, chạy lại 20 cặp nam/nữ; 493 test pass và build đạt. Xem di-chua-team-run-2026-11-06-18.md.
+
+- 06/11/2026 — DC-A14: loại V20 normal-only vì khe gối khi thiền vẫn rõ; tia WebGL xác nhận nhiều lớp quần chồng tại đó. Xem di-chua-team-run-2026-11-06-19.md.
+
+- 06/11/2026 — DC-A14: tích hợp V23 morph quần khi thiền sau ảnh hai góc, chín tia che phủ và kiểm reset qua tư thế. Xem di-chua-team-run-2026-11-06-20.md.
+
+- 06/11/2026 — DC-A14: thử V24 làm dịu đùi khi thiền, WebGL chưa cho cải thiện đủ; giữ V23. Xem di-chua-team-run-2026-11-06-21.md.
+
+- 06/11/2026 — DC-A14: thử hạ cổ V25, vẫn gập và lộ thêm cổ dưới mép khi cúi; giữ V23. Xem di-chua-team-run-2026-11-06-22.md.
+
+- 06/11/2026 — DC-A14: thử mỏng chân cổ V26/V27, đã sửa đốm lộ da thử nghiệm nhưng mức cải thiện còn nhỏ; giữ V23. Xem di-chua-team-run-2026-11-06-23.md.
+
+- 06/11/2026 — DC-A14: thử V28 đổi weights mép cổ; hiệu quả nhỏ, giữ V23. Xem di-chua-team-run-2026-11-06-24.md.
+
+- 06/11/2026 — DC-A14: thử morph cổ riêng khi lạy V29, nếp cuộn vẫn rõ, giữ V23. Xem di-chua-team-run-2026-11-06-25.md.
+
+- 06/11/2026 — DC-A14: bản nam dùng cùng cơ chế lệch pha và làm dịu chuyển động đầu khi đứng như mẫu nữ. Kiểm 22 cặp khung WebGL, 493 test và build đạt. Cổ và nẹp nam còn dày ở cận cảnh. Xem di-chua-team-run-2026-11-06-26.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V30 bỏ nẹp nổi và giữ tám khuy sau WebGL và review độc lập. V31/V32 chưa giải quyết gờ chân cổ. 493 test pass, build đạt, route local tải đúng GLB và chuyển nam/nữ thành công. Xem di-chua-team-run-2026-11-06-27.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V36 dựng lại viền cổ và dải lưới chân cổ nam. 28 tia kiểm vùng mép chạm áo trước, gồm 10 điểm bản V30 chạm da trước. Còn độ rủ vai và ngực khi so với mẫu nữ. Xem di-chua-team-run-2026-11-06-28.md.
+
+- 06/11/2026 — DC-A14 (Doing): thử V37/V38 ở vai và ngực, cải thiện nhỏ. Tích hợp V39 sửa quần lấn qua lai sau khi thiền, 15 điểm giao cũ nay chạm áo trước. Xem di-chua-team-run-2026-11-06-29.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V42 làm dịu dải sáng tối ngang ngực khi thiền, sau đối chiếu WebGL có bóng và chế độ nhẹ. Còn dáng tay áo khi so với mẫu nữ. Xem di-chua-team-run-2026-11-06-30.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V46 thu vai/tay áo và làm dịu dải ngang ngực khi đứng. Kiểm 216 cặp tia ở mỗi chế độ WebGL, còn độ rủ khuỷu và lai sau khi thiền. Xem di-chua-team-run-2026-11-06-31.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V50 làm dịu cục bộ nếp gập khuỷu khi thiền. 168 cặp tia mỗi chế độ, một điểm giảm từ ba lớp áo xuống một trước da. Cải thiện nhỏ, còn lai sau dày. Xem di-chua-team-run-2026-11-06-32.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V56 làm phẳng gờ và kéo dài lai sau khi thiền. Kiểm 169 điểm mỗi chế độ, thêm 13 điểm chạm áo trước thay vì quần. Còn nhúm nhỏ hai đầu lai. Xem di-chua-team-run-2026-11-06-33.md.
+
+- 06/11/2026 — DC-A14 (Doing): đối chiếu toàn thân/cận với mẫu nữ và tích hợp V57 giảm dải sáng ở lai thiền. Bản thử Walk giảm trượt trung vị nhưng P90 đi cung tăng, giữ riêng. Xem di-chua-team-run-2026-11-06-34.md.
+
+- 06/11/2026 — DC-A14 (Doing): tích hợp V63 làm mượt mũi giày và bake chỉnh chân. P50/P90 trượt đều giảm trên bảy tuyến thử; P50 vẫn cao hơn nữ. Xem di-chua-team-run-2026-11-06-35.md.
+
+- 06/11/2026 — DC-A14 (Doing): đo V63 khi bắt đầu/dừng/rẽ và thử V64–V66. Chưa có ứng viên cho lợi ích đồng đều giữa đi thẳng, hai chiều cung và các pha chuyển. Giữ V63. Xem di-chua-team-run-2026-11-06-36.md.

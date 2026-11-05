@@ -5,8 +5,10 @@ import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js'
 import {clone} from 'three/addons/utils/SkeletonUtils.js'
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js'
 import {createDetailedVisitor} from '../src/components/templeDetailedVisitors.js'
+import {createTempleModels} from '../src/components/templeModels.js'
 
 const params=new URLSearchParams(location.search),actors=[]
+const templeModels=createTempleModels()
 const staticOnly=params.get('static')==='1',count=!staticOnly&&[1,4,8,24].includes(Number(params.get('count')))?Number(params.get('count')):1,solo=params.get('solo')==='1',low=params.get('quality')==='low'
 let pose=staticOnly?'rest':'standing',turn=0,closeup=false,last=0,time=0
 let statsAt=0,statsFrames=0,updateMs=0,submitMs=0,cadence=0,cpuUpdate=0,cpuSubmit=0
@@ -36,7 +38,11 @@ async function load(canvas,url){
   const light=new THREE.DirectionalLight(0xfff4e7,2.15);light.position.set(-2,4,3);light.castShadow=true;light.shadow.mapSize.set(1024,1024);Object.assign(light.shadow.camera,{left:-2,right:2,top:3,bottom:-2});light.shadow.normalBias=.008;scene.add(light)
   const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment(),environment=pmrem.fromScene(room,.04);scene.environment=environment.texture;scene.environmentIntensity=.28;pmrem.dispose();room.dispose()
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0xb7b9b2,roughness:.92}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.position.y=-.004;scene.add(ground)
-  const source=await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);if(!staticOnly)normalizeLegacy(source)
+  const liveMale=!staticOnly&&new URL(url).pathname==='/dichua/models/visitor-male.glb'
+  const source=liveMale
+    ? {scene:await templeModels.load('visitor-male')}
+    : await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url)
+  if(!staticOnly&&!liveMale)normalizeLegacy(source)
   const rig=staticOnly?null:createDetailedVisitor(source.scene,scene),bind=clone(source.scene)
   // Vendor rigs can keep meshes before their skeleton hierarchy in scene order.
   // Update the whole hierarchy before measuring the actual current skinned pose.
@@ -57,18 +63,30 @@ try{
   await Promise.all([...(solo?[]:[load(document.querySelector('#before'),assetUrl('before','/dichua/models/visitor-female-lam.glb'))]),load(document.querySelector('#after'),assetUrl('after','/dichua/models/visitor-female-human.glb'))])
   document.querySelector('#status').textContent=`Studio QA cục bộ · ${count} nhân vật/khung · ${low?'không bóng':'có bóng'} · pixel ratio1. Cadence/CPU submit của studio không phải benchmark cảnh chùa hay GPU.`
   for(const button of document.querySelectorAll('[data-pose]')){button.disabled=staticOnly;button.onclick=()=>{pose=button.dataset.pose;time=0;for(const other of document.querySelectorAll('[data-pose]'))other.setAttribute('aria-pressed',String(other===button))}}
-  document.querySelector('#turn').onclick=()=>{turn=(turn+1)%4}
+  document.querySelector('#turn').onclick=()=>{turn=(turn+1)%8}
   document.querySelector('#closeup').onclick=()=>{closeup=!closeup}
   function render(now){
     const dt=Math.min(last?(now-last)/1000:1/60,.05);last=now;time+=dt
     document.querySelector('#status').textContent=staticOnly?'Chỉ kiểm mesh/vật liệu tĩnh theo source. Chưa kiểm rig, chuyển động hay nghi thức; không phải nhân vật đã tích hợp.':`Studio QA cục bộ · ${pose==='rest'?1:count} nhân vật/khung · ${low?'không bóng':'có bóng'} · pixel ratio1. Cadence/CPU submit của studio không phải benchmark cảnh chùa hay GPU.`
     for(const {rigs,bind,scene,camera,renderer,canvas,columns}of actors){
       const updateAt=performance.now()
-      bind.rotation.y=turn*Math.PI/2;bind.visible=pose==='rest'
+      bind.rotation.y=turn*Math.PI/4;bind.visible=pose==='rest'
       const animated=pose==='walk'||pose==='idle'
-      for(const rig of rigs){rig.root.rotation.y=turn*Math.PI/2;rig.root.visible=pose!=='rest';if(pose!=='rest')rig.update({pose:animated?'standing':pose==='prayer'?'bowing':pose,moving:pose==='walk',progress:pose==='bowing'?1/6:0,time:animated?time:0,dt:animated?dt:1/60,reduced:!animated&&pose!=='bowing'})}
+      for(const rig of rigs){rig.root.rotation.y=turn*Math.PI/4;rig.root.visible=pose!=='rest';if(pose!=='rest')rig.update({pose:animated?'standing':pose==='prayer'?'bowing':pose,moving:pose==='walk',progress:pose==='bowing'?1/6:0,time:animated?time:0,dt:animated?dt:1/60,reduced:!animated&&pose!=='bowing'})}
       updateMs+=performance.now()-updateAt
-      camera.position.set(0,count>1?columns*.8:closeup?1.50:.96,count>1?columns*2.7:closeup?1.15:3.25);camera.lookAt(0,count>1?.8:closeup?1.46:.91,0)
+      if(count>1){
+        camera.position.set(0,columns*.8,columns*2.7)
+        camera.lookAt(0,.8,0)
+      }else if(closeup&&pose==='meditating'){
+        camera.position.set(0,.86,1.65)
+        camera.lookAt(0,.48,.10)
+      }else if(closeup&&(pose==='bowing'||pose==='prayer')){
+        camera.position.set(0,.95,1.85)
+        camera.lookAt(0,pose==='bowing'?.32:.60,.16)
+      }else{
+        camera.position.set(0,closeup?1.50:.96,closeup?1.15:3.25)
+        camera.lookAt(0,closeup?1.46:.91,0)
+      }
       const renderAt=performance.now();renderer.render(scene,camera);submitMs+=performance.now()-renderAt
       canvas.dataset.ready='true';canvas.dataset.pose=pose;canvas.dataset.calls=renderer.info.render.calls;canvas.dataset.triangles=renderer.info.render.triangles;canvas.dataset.turn=turn
     }

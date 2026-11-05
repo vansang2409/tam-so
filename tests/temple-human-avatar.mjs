@@ -64,6 +64,30 @@ const pristine=blink.map(m=>m.morphTargetInfluences.slice()),parent=new THREE.Gr
 rig.model.traverse(mesh=>{if(mesh.isSkinnedMesh)meshes.push({mesh,ids:[...new Set(mesh.geometry.index?.array||Array.from({length:mesh.geometry.attributes.position.count},(_,i)=>i))]})})
 assert.notEqual(rig.bones.get('Hips'),peer.bones.get('Hips'))
 const sourceSnapshot=()=>[...new Set(peer.bones.values())].map(b=>[...b.position.toArray(),...b.quaternion.toArray()]),peerRest=sourceSnapshot()
+for(const [part,target] of [['pants','templeSeatedPants'],['shirt','templeSeatedShirt']]){
+  const sourceCloth=skinned.filter(mesh=>mesh.material.userData.templePart===part&&mesh.morphTargetDictionary?.[target]!==undefined)
+  if(!override)assert.equal(sourceCloth.length,1,`The shipped avatar has one authored seated ${part} shape`)
+  if(!sourceCloth.length)continue
+  const [mesh]=sourceCloth
+  const index=mesh.morphTargetDictionary[target]
+  const actorCloth=rig.model.getObjectByName(mesh.name)
+  const peerCloth=peer.model.getObjectByName(mesh.name)
+  assert.equal(mesh.morphTargetInfluences[index],0)
+  assert.ok(mesh.geometry.morphAttributes.position[index].array.some(value=>value!==0))
+  assert.ok(mesh.geometry.morphAttributes.normal[index].array.some(value=>value!==0))
+  for(const [state,expected] of [
+    [{pose:'meditating',reduced:true},1],
+    [{pose:'meditating'},1],
+    [{moving:true,speed:1.35},0],
+    [{pose:'meditating'},1],
+    [{pose:'bowing',progress:1/6},0]
+  ]){
+    rig.update(state)
+    assert.equal(actorCloth.morphTargetInfluences[index],expected)
+    assert.equal(mesh.morphTargetInfluences[index],0)
+    assert.equal(peerCloth.morphTargetInfluences[index],0)
+  }
+}
 function bounds(){rig.root.updateMatrixWorld(true);const box=new THREE.Box3();let support=Infinity;for(const {mesh,ids}of meshes)for(const id of ids){mesh.getVertexPosition(id,point).applyMatrix4(mesh.matrixWorld);assert.ok(point.toArray().every(Number.isFinite),'Actual posed rendered vertices remain finite');box.expandByPoint(point);if(['pants','shoes'].includes(mesh.material.userData.templePart))support=Math.min(support,point.y)}return {box,support}}
 for(const pose of ['standing','meditating','bowing']){
   const frames=pose==='bowing'?25:1

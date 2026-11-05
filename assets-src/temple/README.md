@@ -44,3 +44,30 @@ Skin nguồn chỉ có diffuse; AO/tint/roughness scalar hiện tại không tha
 ## Studio QA local
 
 Chạy `npm run dev`, mở `/scripts/temple-character-preview.html`. Có thể truyền `before`/`after` là đường dẫn GLB cùng origin, `solo=1`, `count=1|4|8|24`, `quality=low`. `static=1` chỉ xem mesh/vật liệu của rig nguồn khác, vô hiệu hóa nghi thức; không chứng minh actor đã tích hợp. Công cụ cập nhật toàn skeleton trước khi đo precise bounds, ghi rõ cadence/CPU submit/GPU renderer và không nằm trong production entry. File QA/private dưới `.setest` không được đưa vào commit.
+
+Khi ngồi thiền, controller bật `templeSeatedPants` trên mesh quần. Đây là morph POSITION/NORMAL được dựng lại từ hai mảng vải quanh gối, có trọng số mặc định 0. Áp dụng trước phép đo tiếp xúc sàn. Khi chuyển sang đứng, đi hoặc lạy, trọng số về 0. Nếu đổi rig, tỷ lệ hoặc tư thế thiền, cần kiểm lại shape này trên GLB thực trong browser.
+
+Áo có shape cùng cơ chế tên `templeSeatedShirt`. Shape sửa hai điểm gập ở vòng nách với một vòng lưới cục bộ. Kiểm hình dáng ở cả góc chính diện và nghiêng, cùng các tia chứng kiến trong `tests/temple-human-clothing.mjs` khi sửa asset.
+## Mẫu nam
+
+Chạy `node scripts/build-temple-human-avatar.mjs --male` để dựng `visitor-male-human.glb` và report từ `male-human-source.glb`. Profile nam là `male-human-v1`, rig `mpfb-gameengine`, cao 1,72 m. Loader giữ áo skinned và PBR, dùng Grab3D nam nếu tải model mới thất bại.
+
+Mesh/texture CC0 gồm MakeHuman core/system (da young_asian_male, tóc short02 và các phần phụ), áo/quần từ Toigo, mí/mi từ faceunits01 của Mika Suominen. Walk và Idle retarget từ hai clip CMU đã ghi ở trên; giữ điều kiện phân phối motion. Runtime hiện dùng cùng cách lệch pha theo actor và làm dịu chuyển động đầu khi đứng cho cả hai mẫu authored.
+
+V30 bỏ dải nẹp nổi rời trên áo nam và giữ tám khuy trên thân áo. Phần lưới cổ, rig, trọng số skin và clip giữ thiết kế V23.
+
+V36 làm viền cổ thấp và thay sáu vòng lưới gập phía dưới bằng dải liền với thân. Trọng số skin của dải được nội suy từ đường may và vòng lưới thân áo, pháp tuyến được dựng lại theo bề mặt mới.
+
+V39 dùng `templeSeatedShirt` để tạo thêm khoảng hở ở lai sau khi thiền. Morph POSITION/NORMAL được tính trên lưới ở dáng thiền rồi chuyển về không gian bind theo ma trận skin mỗi đỉnh. Kiểm lại vùng chồng áo và quần nếu đổi pose thiền hoặc hình học lai.
+
+V42 bổ sung pháp tuyến vùng ngực vào morph thiền từ tiết diện bề mặt đã skin. Dữ liệu POSITION của morph V39 được giữ để duy trì khoảng hở ở lai sau.
+
+V46 thu phần trên tay áo trên lưới bind, giới hạn theo khoảng hở da ở các khung đứng, Idle, Walk, thiền và lạy. Pháp tuyến mặt trước ngực được làm dịu trên lưới bind, bù vào delta NORMAL của morph để giữ kết quả đã duyệt khi thiền.
+
+V50 thêm chỉnh hình khuỷu vào morph `templeSeatedShirt`, ưu tiên mặt trong và giữ biên ngoài. Kiểm lại mặt trong và ngoài khuỷu nếu chỉnh góc tay ở tư thế thiền.
+
+V56 sửa nếp gập ở lai sau trong `templeSeatedShirt`. Dải vòng lưới phía sau được sắp lại ở tư thế thiền và fit theo tiết diện quần quanh hông, giảm dần ảnh hưởng về hai bên. Kiểm lại từ sau và hai góc nghiêng khi đổi áo, quần hoặc pose thiền.
+
+V57 làm dịu pháp tuyến vùng lai sau trong morph thiền từ tiết diện lưới đã skin. Bản này dùng dữ liệu POSITION của V56.
+
+V63 làm mượt đoạn xoay mũi giày trái trong Walk, giữ độ gập bằng một key đỡ giữa đoạn. Offset chân tuần hoàn fit từ các mẫu đi thẳng và đi cung được giải IK ngoại tuyến rồi bake vào sáu track xoay chân. Điều kiện nguồn CMU35_01 vẫn áp dụng.

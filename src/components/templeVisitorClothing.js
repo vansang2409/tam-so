@@ -34,24 +34,21 @@ export function prepareTempleVisitorClothing(root,{female=false}={}) {
     const skinMatrix=new THREE.Matrix4(),boneMatrix=new THREE.Matrix4()
     for(const id of new Set(keep)){
       // Quantized GLB skins may store their position decode in inverse bind matrices.
-      // Female neckline edits must measure the rendered bind position, then undo skinning.
-      if(female)mesh.getVertexPosition(id,point).applyMatrix4(mesh.matrixWorld)
-      else point.fromBufferAttribute(a,id).applyMatrix4(mesh.matrixWorld)
+      // Measure the rendered bind position, then undo skinning after the edit.
+      mesh.getVertexPosition(id,point).applyMatrix4(mesh.matrixWorld)
       const y=(point.y-bounds.min.y)/height
       if(y<.76||y>(female?.845:.85))continue
       const blend=1-THREE.MathUtils.smoothstep(y,female?.826:.832,female?.845:.85),x=(point.x-center.x)/height,z=(point.z-center.z)/height-chestZ
       const radius=Math.hypot(x/(female?.033:.037),z/(female?.030:.033))
       if(radius>1){
         const factor=THREE.MathUtils.lerp(1,1/radius,blend);point.x=center.x+x*factor*height;point.z=center.z+(chestZ+z*factor)*height;point.applyMatrix4(inverse)
-        if(female){
-          skinMatrix.elements.fill(0)
-          for(let k=0;k<4;k++){
-            const joint=g.attributes.skinIndex.getComponent(id,k),w=g.attributes.skinWeight.getComponent(id,k)
-            boneMatrix.multiplyMatrices(mesh.skeleton.bones[joint].matrixWorld,mesh.skeleton.boneInverses[joint])
-            for(let e=0;e<16;e++)skinMatrix.elements[e]+=boneMatrix.elements[e]*w
-          }
-          skinMatrix.premultiply(mesh.bindMatrixInverse).multiply(mesh.bindMatrix).invert();point.applyMatrix4(skinMatrix)
+        skinMatrix.elements.fill(0)
+        for(let k=0;k<4;k++){
+          const joint=g.attributes.skinIndex.getComponent(id,k),w=g.attributes.skinWeight.getComponent(id,k)
+          boneMatrix.multiplyMatrices(mesh.skeleton.bones[joint].matrixWorld,mesh.skeleton.boneInverses[joint])
+          for(let e=0;e<16;e++)skinMatrix.elements[e]+=boneMatrix.elements[e]*w
         }
+        skinMatrix.premultiply(mesh.bindMatrixInverse).multiply(mesh.bindMatrix).invert();point.applyMatrix4(skinMatrix)
         a.setXYZ(id,point.x,point.y,point.z)
       }
     }
@@ -130,7 +127,7 @@ export function prepareTempleVisitorClothing(root,{female=false}={}) {
     const ripple=ridge+shoulderCrease+waistCrease,drape=hem*.002*(Math.sin(angle*3)+.35*Math.sin(angle*7+.4))
     // Patterned front/back ease: loose over the chest, then hanging from the shoulder.
     // Dropping the outer shoulder avoids a horizontal shelf under the sleeve cap.
-    const shoulderDrop=female?.012*Math.pow(Math.abs(Math.sin(angle)),3)*THREE.MathUtils.smoothstep(y,.74,.785)*(1-THREE.MathUtils.smoothstep(y,.785,.811)):0
+    const shoulderDrop=(female?.012:.007)*Math.pow(Math.abs(Math.sin(angle)),3)*THREE.MathUtils.smoothstep(y,.74,.785)*(1-THREE.MathUtils.smoothstep(y,.785,.811))
     const frontEase=female?.004*Math.exp(-Math.pow((y-.72)/.045,2))*front**2:0
     const collarNotch=female?.007*Math.pow(front,18)*THREE.MathUtils.smoothstep(y,.805,.822):0
     return v(Math.sin(angle)*(rx+ripple),y+drape-shoulderDrop-collarNotch,chestZ+Math.cos(angle)*(rz+ripple)+frontEase)
@@ -187,7 +184,7 @@ export function prepareTempleVisitorClothing(root,{female=false}={}) {
         const blend=THREE.MathUtils.smoothstep(t,.36,.65),w=[[ids.get(prefix+'Arm'),1-blend],[ids.get(prefix+'ForeArm'),blend]],ring=[]
         for(let j=0;j<segments;j++){
           const angle=angles[j],fold=.025*Math.exp(-Math.pow((t-.5)/.17,2))*Math.sin(t*32+angle*2)
-          const radius=height*THREE.MathUtils.lerp((female?.029:.043)*fitWidth,female?.020:.025,t)*(1+fold)
+          const radius=height*THREE.MathUtils.lerp((female?.029:.038)*fitWidth,female?.020:.023,t)*(1+fold)
           const target=p.clone().addScaledVector(axis,Math.cos(angle)*radius).addScaledVector(cross,Math.sin(angle)*radius)
           const cap=THREE.MathUtils.smoothstep(t,0,female?.26:.22),start=new THREE.Vector3().fromArray(positions,boundary[j]*3),point=start.clone().lerp(target,cap)
           const initial=[];for(let k=0;k<4;k++)if(weights[boundary[j]*4+k])initial.push([joints[boundary[j]*4+k],weights[boundary[j]*4+k]*(1-cap)])
